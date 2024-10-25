@@ -19,4 +19,6 @@
     <string name="search">Search</string>
     <string name="chat">Chat</string>
     <string name="profile">Profile</string>
+    <string name="notifications">Notifications</string>
+    <string name="user_filters">user filters</string>
 </resources>

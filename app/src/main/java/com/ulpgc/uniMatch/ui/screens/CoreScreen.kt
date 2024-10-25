@@ -34,8 +34,9 @@ object CoreRoutes {
     const val CHAT_LIST = "chatList"
     const val CHAT_DETAIL = "chatDetail/{chatId}"
     const val PROFILE = "profile"
+    const val NOTIFICATIONS = "notifications"
+    const val FILTER = "filter"
 }
-
 
 @Composable
 fun CoreScreen(
@@ -55,14 +56,17 @@ fun CoreScreen(
     val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
-        topBar = { TopBar(currentRoute = currentRoute) },
-        bottomBar = { BottomNavigationBar(navController) } // Añadir la barra de navegación inferior
+        topBar = {
+            TopBar(currentRoute = currentRoute, navController = navController)
+        },
+        bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             CoreNavHost(navController, authViewModel, chatViewModel)
         }
     }
 }
+
 
 @Composable
 fun CoreNavHost(
