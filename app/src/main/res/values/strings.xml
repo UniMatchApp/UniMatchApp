@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">UniMatch</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="register">Registrar</string>
+    <string name="enter_email">Introduce tu email</string>
+    <string name="enter_password">Introduce tu contraseña</string>
+    <string name="confirm_password">Confirma tu contraseña</string>
+    <string name="login_button">Entrar</string>
+    <string name="register_button">Registrarse</string>
+    <string name="switch_to_register">¿No tienes cuenta? Regístrate</string>
+    <string name="switch_to_login">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="cancel">Cancelar</string>
+    <string name="remember_me">Remember me</string>
+    <string name="forgot_password">Forgot Password?\t\t\t\t</string>
+    <string name="find_your_ideal_partner_near_you">Encuentra a la persona ideal cerca de ti.</string>
+    <string name="enter_your_email_and_password_to_log_in">Enter your email and password to log in</string>
+    <string name="sign_in_to_unimatch">Sign in to UniMatch</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="chat">Chat</string>
+    <string name="profile">Profile</string>
+</resources>
