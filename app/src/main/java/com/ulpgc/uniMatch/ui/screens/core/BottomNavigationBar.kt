@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -21,6 +22,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.ui.screens.CoreRoutes
+import com.ulpgc.uniMatch.ui.theme.AppSize
+import com.ulpgc.uniMatch.ui.theme.MainColor
+import com.ulpgc.uniMatch.ui.theme.White
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
@@ -40,33 +44,43 @@ fun BottomNavigationBar(navController: NavController) {
         )
 
         NavigationBar(
-            containerColor = MaterialTheme.colorScheme.background, // Color de fondo
-            contentColor = MaterialTheme.colorScheme.primary // Color de los iconos seleccionados
+            containerColor = MainColor,
+            contentColor = MaterialTheme.colorScheme.primary
         ) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
 
             items.forEach { item ->
+                val isSelected = currentRoute == item.route
                 NavigationBarItem(
                     icon = {
                         Icon(
-                            painter = painterResource(id = item.icon),
+                            painter = painterResource(
+                                id = if (isSelected) item.iconFilled else item.icon
+                            ),
                             contentDescription = stringResource(id = item.labelResId),
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(AppSize.iconSize),
+                            tint = if (isSelected) White else MaterialTheme.colorScheme.secondary
                         )
                     },
-                    label = { Text(text = stringResource(id = item.labelResId)) },
-                    selected = currentRoute == item.route,
+                    label = {
+                        Text(
+                            text = stringResource(id = item.labelResId),
+                            color = if (isSelected) White else MaterialTheme.colorScheme.secondary
+                        )
+                    },
+                    selected = isSelected,
                     onClick = {
-                        if (currentRoute != item.route) {
+                        if (!isSelected) {
                             navController.navigate(item.route)
                         }
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.primary,  // Color del icono seleccionado
-                        unselectedIconColor = MaterialTheme.colorScheme.secondary, // Color del icono no seleccionado
-                        selectedTextColor = MaterialTheme.colorScheme.primary, // Color del texto seleccionado
-                        indicatorColor = MaterialTheme.colorScheme.tertiary // Color del indicador debajo del icono seleccionado
+                        selectedIconColor = White,
+                        unselectedIconColor = MaterialTheme.colorScheme.secondary,
+                        selectedTextColor = White,
+                        unselectedTextColor = MaterialTheme.colorScheme.secondary,
+                        indicatorColor = Color.Transparent
                     )
                 )
             }
@@ -74,14 +88,34 @@ fun BottomNavigationBar(navController: NavController) {
     }
 }
 
-sealed class BottomNavItem(val route: String, val icon: Int, val labelResId: Int) {
-    data object Home : BottomNavItem(CoreRoutes.HOME, R.drawable.icon_home_clear, R.string.home)
-    data object Search :
-        BottomNavItem(CoreRoutes.SEARCH, R.drawable.icon_search_clear, R.string.search)
-
-    data object Chat :
-        BottomNavItem(CoreRoutes.CHAT_LIST, R.drawable.icon_chat_clear, R.string.chat)
-
-    data object Profile :
-        BottomNavItem(CoreRoutes.PROFILE, R.drawable.icon_user_clear, R.string.profile)
+sealed class BottomNavItem(
+    val route: String,
+    val icon: Int,
+    val iconFilled: Int, // Icono con relleno para el estado seleccionado
+    val labelResId: Int
+) {
+    data object Home : BottomNavItem(
+        CoreRoutes.HOME,
+        R.drawable.icon_home_clear,
+        R.drawable.icon_home_filled, // Icono con relleno
+        R.string.home
+    )
+    data object Search : BottomNavItem(
+        CoreRoutes.SEARCH,
+        R.drawable.icon_search_clear,
+        R.drawable.icon_search_filled, // Icono con relleno
+        R.string.search
+    )
+    data object Chat : BottomNavItem(
+        CoreRoutes.CHAT_LIST,
+        R.drawable.icon_chat_clear,
+        R.drawable.icon_chat_filled, // Icono con relleno
+        R.string.chat
+    )
+    data object Profile : BottomNavItem(
+        CoreRoutes.PROFILE,
+        R.drawable.icon_user_clear,
+        R.drawable.icon_user_filled, // Icono con relleno
+        R.string.profile
+    )
 }
