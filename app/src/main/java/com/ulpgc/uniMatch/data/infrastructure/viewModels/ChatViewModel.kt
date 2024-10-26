@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.infrastructure.entities.ChatPreviewData
 import com.ulpgc.uniMatch.data.infrastructure.entities.Message
 import com.ulpgc.uniMatch.data.infrastructure.entities.db.MessageStatus
+import com.ulpgc.uniMatch.data.infrastructure.services.auth.AuthService
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.ChatService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,14 +15,14 @@ import kotlinx.coroutines.launch
 
 open class ChatViewModel(
     private val chatService: ChatService,
-    private val errorViewModel: ErrorViewModel
+    private val errorViewModel: ErrorViewModel,
+    private val authViewModel: AuthViewModel
 ) : ViewModel() {
 
     private val _chatPreviewDataList = MutableStateFlow<List<ChatPreviewData>>(emptyList())
     val chatPreviewDataList: StateFlow<List<ChatPreviewData>> get() = _chatPreviewDataList
 
-    private val _messages =
-        MutableStateFlow<List<Message>>(emptyList())  // Lista de mensajes del chat actual
+    private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages: StateFlow<List<Message>> get() = _messages
 
     private val _isLoading = MutableStateFlow(false)
@@ -33,7 +34,9 @@ open class ChatViewModel(
             _isLoading.value = true
             val result = chatService.getChats()
             result.onSuccess { chats ->
-                _chatPreviewDataList.value = chats
+                // Ordenar los chats por la fecha del último mensaje
+                val sortedChats = chats.sortedByDescending { it.lastMessageTime }
+                _chatPreviewDataList.value = sortedChats
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -54,7 +57,7 @@ open class ChatViewModel(
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error loading messages"
-                ) // Usamos el ErrorViewModel
+                )
                 _isLoading.value = false
             }
         }
@@ -65,7 +68,7 @@ open class ChatViewModel(
             val message = Message(
                 messageId = generateMessageId(),
                 chatId = chatId,
-                senderId = "currentUserId",  // Obtén el ID del usuario actual
+                senderId = authViewModel.userId ?: "",
                 content = content,
                 timestamp = System.currentTimeMillis(),
                 status = MessageStatus.SENDING

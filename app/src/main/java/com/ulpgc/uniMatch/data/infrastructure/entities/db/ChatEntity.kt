@@ -20,7 +20,7 @@ data class ChatEntity(
             id = id,
             userName = userName,
             lastMessage = lastMessage,
-            lastMessageTime = lastMessageTime.toString(),
+            lastMessageTime = lastMessageTime,
             unreadMessagesCount = unreadMessagesCount,
             profileImageUrl = profileImageUrl
         )
@@ -33,7 +33,7 @@ data class ChatEntity(
                 id = chatPreviewData.id,
                 userName = chatPreviewData.userName,
                 lastMessage = chatPreviewData.lastMessage,
-                lastMessageTime = chatPreviewData.lastMessageTime.toLong(),
+                lastMessageTime = chatPreviewData.lastMessageTime,
                 unreadMessagesCount = chatPreviewData.unreadMessagesCount,
                 profileImageUrl = chatPreviewData.profileImageUrl
             )

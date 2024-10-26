@@ -23,11 +23,11 @@ fun TopBar(currentRoute: String?, navController: NavHostController) {
         CoreRoutes.SEARCH -> SearchTopBar()
         CoreRoutes.CHAT_LIST -> ChatDetailTopBar()
         CoreRoutes.PROFILE -> ProfileTopBar()
-        else -> {
-            Text(
-                text = stringResource(id = R.string.app_name),
-                style = MaterialTheme.typography.titleLarge
-            )
-        }
+//        else -> {
+//            Text(
+//                text = stringResource(id = R.string.app_name),
+//                style = MaterialTheme.typography.titleLarge
+//            )
+//        }
     }
 }

@@ -1,10 +1,12 @@
 package com.ulpgc.uniMatch.data.infrastructure.entities
 
+import com.google.protobuf.Timestamp
+
 data class ChatPreviewData(
     val id: String,
     val userName: String,
     val lastMessage: String,
-    val lastMessageTime: String,
+    val lastMessageTime: Long,
     val unreadMessagesCount: Int,
     val profileImageUrl: String
 ) {
@@ -41,7 +43,12 @@ data class ChatPreviewData(
             return availableIndices.map { index ->
                 val name = names[index]
                 val message = messages.random()
-                val time = "${(0..23).random()}:${(0..59).random().toString().padStart(2, '0')}"
+
+                // Generar un timestamp aleatorio en las últimas 24 horas
+                val currentTime = System.currentTimeMillis() // Tiempo actual en milisegundos
+                val randomOffset = (1..86400).random() // 86400 segundos en 24 horas
+                val time = currentTime - (randomOffset * 1000) // Restar segundos aleatorios del tiempo actual
+
                 val unreadMessagesCount = (0..5).random()
                 val profileImage = profileImages[index]
 
@@ -49,7 +56,7 @@ data class ChatPreviewData(
                     id = index.toString(),
                     userName = name,
                     lastMessage = message,
-                    lastMessageTime = time,
+                    lastMessageTime = time, // Aquí se usa el tiempo aleatorio
                     unreadMessagesCount = unreadMessagesCount,
                     profileImageUrl = profileImage
                 )

@@ -1,7 +1,6 @@
 package com.ulpgc.uniMatch.ui.screens.core.topBars
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,7 +23,6 @@ import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.ui.screens.CoreRoutes
 import com.ulpgc.uniMatch.ui.theme.AppPadding
 import com.ulpgc.uniMatch.ui.theme.AppSize
-import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +63,6 @@ fun HomeTopBar(navController: NavHostController) {
                 )
             }
         },
-        modifier = Modifier.fillMaxWidth() // Hace que la TopAppBar ocupe todo el ancho
+        modifier = Modifier.fillMaxWidth()
     )
 }

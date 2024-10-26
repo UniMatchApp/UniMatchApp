@@ -56,6 +56,7 @@ fun ChatDetailScreen(
     val messages by chatViewModel.messages.collectAsState()
     val isLoading by chatViewModel.isLoading.collectAsState()
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -141,7 +142,11 @@ fun PreviewChatDetailScreen() {
             chatId = "sampleChatId",
             chatViewModel = ChatViewModel(
                 chatService = MockChatService(),
-                errorViewModel = ErrorViewModel()
+                errorViewModel = ErrorViewModel(),
+                authViewModel = AuthViewModel(
+                    authService = MockAuthService(),
+                    errorViewModel = ErrorViewModel()
+                )
             ),
             authViewModel = AuthViewModel(
                 authService = MockAuthService(),

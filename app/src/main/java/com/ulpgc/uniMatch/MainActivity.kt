@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
         val authViewModel = AuthViewModel(authService, errorViewModel)
 
         val chatService = MockChatService()
-        val chatViewModel = ChatViewModel(chatService, errorViewModel)
+        val chatViewModel = ChatViewModel(chatService, errorViewModel, authViewModel)
 
         enableEdgeToEdge()
 
