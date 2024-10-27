@@ -1,4 +1,4 @@
-package com.ulpgc.uniMatch.data.application
+package com.ulpgc.uniMatch.data.application.api
 
 import com.ulpgc.uniMatch.BuildConfig
 import retrofit2.Retrofit

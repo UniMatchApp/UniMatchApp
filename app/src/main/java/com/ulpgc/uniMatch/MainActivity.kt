@@ -6,8 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.ulpgc.uniMatch.data.application.ApiClient
-import com.ulpgc.uniMatch.data.application.ApiEndpoints
+import com.ulpgc.uniMatch.data.application.api.ApiClient
+import com.ulpgc.uniMatch.data.infrastructure.controllers.AuthController
+import com.ulpgc.uniMatch.data.infrastructure.controllers.MessageController
+import com.ulpgc.uniMatch.data.infrastructure.controllers.ProfileController
+import com.ulpgc.uniMatch.data.infrastructure.controllers.UserController
+import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
+import com.ulpgc.uniMatch.data.infrastructure.services.auth.ApiAuthService
 import com.ulpgc.uniMatch.data.infrastructure.services.auth.MockAuthService
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
@@ -27,8 +32,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // Manual DI: Crear instancias de las dependencias
-        val apiEndpoints = ApiClient.retrofit.create(ApiEndpoints::class.java)
-        val authService = MockAuthService() // ApiAuthService(apiEndpoints)
+//        ApiClient.retrofit.create(AuthController::class.java)
+//        ApiClient.retrofit.create(MessageController::class.java)
+//        ApiClient.retrofit.create(ProfileController::class.java)
+//        ApiClient.retrofit.create(UserController::class.java)
+//        val authService = ApiAuthService(
+//            authController = ApiClient.retrofit.create(AuthController::class.java),
+//            secureStorage = SecureStorage(this)
+//        )
+        val authService = MockAuthService()
         val errorViewModel = ErrorViewModel()
         val authViewModel = AuthViewModel(authService, errorViewModel)
 

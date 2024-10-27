@@ -3,11 +3,10 @@ package com.ulpgc.uniMatch.data.infrastructure.viewModels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ulpgc.uniMatch.data.infrastructure.entities.ChatPreviewData
-import com.ulpgc.uniMatch.data.infrastructure.entities.Message
-import com.ulpgc.uniMatch.data.infrastructure.entities.db.MessageStatus
-import com.ulpgc.uniMatch.data.infrastructure.services.auth.AuthService
-import com.ulpgc.uniMatch.data.infrastructure.services.chat.ChatService
+import com.ulpgc.uniMatch.data.domain.models.ChatPreviewData
+import com.ulpgc.uniMatch.data.domain.models.Message
+import com.ulpgc.uniMatch.data.infrastructure.entities.MessageStatus
+import com.ulpgc.uniMatch.data.application.services.ChatService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

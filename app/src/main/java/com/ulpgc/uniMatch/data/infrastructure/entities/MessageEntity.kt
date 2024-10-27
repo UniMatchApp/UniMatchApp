@@ -1,4 +1,4 @@
-package com.ulpgc.uniMatch.data.infrastructure.entities.db
+package com.ulpgc.uniMatch.data.infrastructure.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

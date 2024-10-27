@@ -30,8 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.ulpgc.uniMatch.data.infrastructure.entities.Message
-import com.ulpgc.uniMatch.data.infrastructure.entities.db.MessageStatus
+import com.ulpgc.uniMatch.data.domain.models.Message
+import com.ulpgc.uniMatch.data.infrastructure.entities.MessageStatus
 import com.ulpgc.uniMatch.ui.theme.Bone
 import com.ulpgc.uniMatch.ui.theme.LightGrey
 import com.ulpgc.uniMatch.ui.theme.MainColor

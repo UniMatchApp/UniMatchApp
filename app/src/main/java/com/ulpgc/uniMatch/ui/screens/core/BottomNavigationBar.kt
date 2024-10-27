@@ -43,46 +43,50 @@ fun BottomNavigationBar(navController: NavController) {
             color = MaterialTheme.colorScheme.surface
         )
 
-        NavigationBar(
-            containerColor = MainColor,
-            contentColor = MaterialTheme.colorScheme.primary
-        ) {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = navBackStackEntry?.destination?.route
+        // Obtener la entrada de la pila de navegación actual
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route
 
-            items.forEach { item ->
-                val isSelected = currentRoute == item.route
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(
-                                id = if (isSelected) item.iconFilled else item.icon
-                            ),
-                            contentDescription = stringResource(id = item.labelResId),
-                            modifier = Modifier.size(AppSize.iconSize),
-                            tint = if (isSelected) White else MaterialTheme.colorScheme.secondary
+        // Verifica si la ruta actual está en los elementos permitidos
+        if (items.any { it.route == currentRoute }) {
+            NavigationBar(
+                containerColor = MainColor,
+                contentColor = MaterialTheme.colorScheme.primary
+            ) {
+                items.forEach { item ->
+                    val isSelected = currentRoute == item.route
+                    NavigationBarItem(
+                        icon = {
+                            Icon(
+                                painter = painterResource(
+                                    id = if (isSelected) item.iconFilled else item.icon
+                                ),
+                                contentDescription = stringResource(id = item.labelResId),
+                                modifier = Modifier.size(AppSize.iconSize),
+                                tint = if (isSelected) White else MaterialTheme.colorScheme.secondary
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = stringResource(id = item.labelResId),
+                                color = if (isSelected) White else MaterialTheme.colorScheme.secondary
+                            )
+                        },
+                        selected = isSelected,
+                        onClick = {
+                            if (!isSelected) {
+                                navController.navigate(item.route)
+                            }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = White,
+                            unselectedIconColor = MaterialTheme.colorScheme.secondary,
+                            selectedTextColor = White,
+                            unselectedTextColor = MaterialTheme.colorScheme.secondary,
+                            indicatorColor = Color.Transparent
                         )
-                    },
-                    label = {
-                        Text(
-                            text = stringResource(id = item.labelResId),
-                            color = if (isSelected) White else MaterialTheme.colorScheme.secondary
-                        )
-                    },
-                    selected = isSelected,
-                    onClick = {
-                        if (!isSelected) {
-                            navController.navigate(item.route)
-                        }
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = White,
-                        unselectedIconColor = MaterialTheme.colorScheme.secondary,
-                        selectedTextColor = White,
-                        unselectedTextColor = MaterialTheme.colorScheme.secondary,
-                        indicatorColor = Color.Transparent
                     )
-                )
+                }
             }
         }
     }

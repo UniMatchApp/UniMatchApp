@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.ulpgc.uniMatch.data.infrastructure.entities.ChatPreviewData
+import com.ulpgc.uniMatch.data.domain.models.ChatPreviewData
 import java.text.SimpleDateFormat
 import java.util.*
 

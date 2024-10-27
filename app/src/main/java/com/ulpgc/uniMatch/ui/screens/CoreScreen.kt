@@ -100,7 +100,8 @@ fun CoreNavHost(
                 ChatDetailScreen(
                     chatId = chatId,
                     chatViewModel = chatViewModel,
-                    authViewModel = authViewModel
+                    authViewModel = authViewModel,
+                    navController = navController
                 )
             }
         }

@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.volley)
     implementation(libs.protolite.well.known.types)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -97,10 +98,13 @@ dependencies {
 
     // Coil
     implementation(libs.coil.compose)
+
+    // Secure Storage
+    implementation(libs.androidx.security.crypto)
 }
 
 
-/*tasks.whenTaskAdded {
+tasks.whenTaskAdded {
     if (name == "generateDebugBuildConfig") {
         dependsOn("generateDebugResources")
         println("Running adb reverse...")
@@ -111,5 +115,5 @@ dependencies {
             }
         }
     }
-}/*
+}
 

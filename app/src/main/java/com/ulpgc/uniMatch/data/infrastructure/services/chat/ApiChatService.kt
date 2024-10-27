@@ -1,50 +1,42 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.chat
 
-import com.ulpgc.uniMatch.data.application.ApiEndpoints
-import com.ulpgc.uniMatch.data.infrastructure.entities.ChatPreviewData
-import com.ulpgc.uniMatch.data.infrastructure.entities.Message
-import com.ulpgc.uniMatch.data.infrastructure.entities.db.ChatDao
-import com.ulpgc.uniMatch.data.infrastructure.entities.db.ChatEntity
-import com.ulpgc.uniMatch.data.infrastructure.entities.db.MessageDao
-import com.ulpgc.uniMatch.data.infrastructure.entities.db.MessageEntity
-import com.ulpgc.uniMatch.data.infrastructure.entities.db.MessageStatus
+
+import com.ulpgc.uniMatch.data.application.services.ChatService
+import com.ulpgc.uniMatch.data.domain.models.ChatPreviewData
+import com.ulpgc.uniMatch.data.domain.models.Message
+import com.ulpgc.uniMatch.data.infrastructure.controllers.MessageController
+import com.ulpgc.uniMatch.data.infrastructure.entities.ChatDao
+import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
+import com.ulpgc.uniMatch.data.infrastructure.entities.MessageDao
 
 
 class ApiChatService(
-    private val apiEndpoints: ApiEndpoints,
-    private val chatDao: ChatDao, // DAO para manejar la base de datos local
-    private val messageDao: MessageDao // DAO para manejar la base de datos local
+    private val messageController: MessageController,
+    private val chatDao: ChatDao,
+    private val messageDao: MessageDao
 ) : ChatService {
 
     override suspend fun getChats(): Result<List<ChatPreviewData>> {
         return try {
-            // Lista vacía que contendrá los chats para retornar
             val chats = mutableListOf<ChatPreviewData>()
 
-            // Obtener los chats de la base de datos local
             val dbChats = chatDao.getAllChats().map { it.toPreviewData() }
 
-            // Añadir los chats locales a la lista que se retornará
             chats.addAll(dbChats)
 
-            // Obtener el timestamp del último mensaje almacenado en la base de datos
             val lastMessageTime = messageDao.getLatestMessageTimestamp()
 
-            // Obtener los mensajes más recientes del backend
-            val response = apiEndpoints.getMessages("Bearer token", lastMessageTime)
+            val response = messageController.getMessages("Bearer token", lastMessageTime)
 
-            // Verificar si la respuesta fue exitosa
             if (!response.success) {
                 throw Throwable(response.errorMessage ?: "Unknown error occurred")
             }
 
             val messages = response.value ?: emptyList()
 
-            // Almacenar los nuevos mensajes en la base de datos
             val messageEntities = messages.map { it.toEntity() }
             messageDao.insertMessages(messageEntities)
 
-            // Actualizar o crear los chats en la base de datos en función de los nuevos mensajes
             messages.forEach { message ->
                 val chatEntity = chatDao.getChatById(message.chatId)
 
@@ -72,7 +64,6 @@ class ApiChatService(
                 }
             }
 
-            // Devolver la lista de chats actualizada (local + mensajes recientes)
             Result.success(chats)
 
         } catch (e: Exception) {

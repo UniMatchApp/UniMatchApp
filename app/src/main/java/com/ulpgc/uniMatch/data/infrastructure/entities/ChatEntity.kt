@@ -1,8 +1,8 @@
-package com.ulpgc.uniMatch.data.infrastructure.entities.db
+package com.ulpgc.uniMatch.data.infrastructure.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.ulpgc.uniMatch.data.infrastructure.entities.ChatPreviewData
+import com.ulpgc.uniMatch.data.domain.models.ChatPreviewData
 
 // Entidad que representa los chats almacenados en la base de datos
 @Entity(tableName = "chats")

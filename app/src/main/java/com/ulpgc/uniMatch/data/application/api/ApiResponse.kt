@@ -1,4 +1,4 @@
-package com.ulpgc.uniMatch.data.application
+package com.ulpgc.uniMatch.data.application.api
 
 data class ApiResponse<T>(
     val value: T?,
