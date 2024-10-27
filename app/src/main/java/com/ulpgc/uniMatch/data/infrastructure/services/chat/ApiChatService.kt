@@ -79,4 +79,8 @@ class ApiChatService(
     override suspend fun getOtherUserByChatId(chatId: String): Result<Profile> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun getChatByName(chatName: String): Result<List<ChatPreviewData>> {
+        TODO("Not yet implemented")
+    }
 }
