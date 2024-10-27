@@ -10,4 +10,6 @@ interface ChatService {
     suspend fun getMessages(chatId: String): Result<List<Message>>
 
     suspend fun getOtherUserByChatId(chatId: String): Result<Profile>
+
+    suspend fun getChatByName(chatName: String): Result<List<ChatPreviewData>>
 }

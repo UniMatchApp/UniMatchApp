@@ -2,10 +2,13 @@ package com.ulpgc.uniMatch.ui.screens.core
 
 
 import android.util.Log
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.ui.screens.CoreRoutes
@@ -23,11 +26,8 @@ fun TopBar(currentRoute: String?, navController: NavHostController) {
         CoreRoutes.SEARCH -> SearchTopBar()
         CoreRoutes.CHAT_LIST -> ChatDetailTopBar()
         CoreRoutes.PROFILE -> ProfileTopBar()
-//        else -> {
-//            Text(
-//                text = stringResource(id = R.string.app_name),
-//                style = MaterialTheme.typography.titleLarge
-//            )
-//        }
+        else -> {
+            Modifier.padding(0.dp)
+        }
     }
 }

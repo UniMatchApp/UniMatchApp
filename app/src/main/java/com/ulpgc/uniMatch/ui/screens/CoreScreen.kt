@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -55,21 +56,35 @@ fun CoreScreen(
         return
     }
 
-    // Definir NavController para manejar la navegación en el Core
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    // Determina si necesitas padding o no
+    val isPaddingRequired = when (currentRoute) {
+        CoreRoutes.HOME, CoreRoutes.SEARCH, CoreRoutes.CHAT_LIST, CoreRoutes.PROFILE -> true
+        else -> false
+    }
 
     Scaffold(
         topBar = {
             TopBar(currentRoute = currentRoute, navController = navController)
         },
         bottomBar = { BottomNavigationBar(navController) }
-    ) { Box(modifier = Modifier.fillMaxSize()) {
+    ) { innerPadding ->
+        // Ajusta el padding del Box basado en la ruta actual
+        val paddingModifier = if (isPaddingRequired) {
+            Modifier.padding(innerPadding)
+        } else {
+            Modifier.padding(0.dp)
+        }
+
+        Box(modifier = Modifier.fillMaxSize().then(paddingModifier)) {
             CoreNavHost(navController, authViewModel, chatViewModel, profileViewModel)
         }
     }
 }
+
 
 
 @Composable

@@ -54,4 +54,10 @@ object ChatPreviewDataMock {
             )
         }
     }
+
+    fun searchChatPreviewDataMocks(query: String): List<ChatPreviewData> {
+        return createChatPreviewDataMocks().filter {
+            it.userName.contains(query, ignoreCase = true)
+        }
+    }
 }

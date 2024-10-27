@@ -19,6 +19,9 @@ open class ChatViewModel(
     private val authViewModel: AuthViewModel
 ) : ViewModel() {
 
+    private val _searchQuery = MutableStateFlow("Buscar chats")
+    val searchQuery: StateFlow<String> get() = _searchQuery
+
     private val _chatPreviewDataList = MutableStateFlow<List<ChatPreviewData>>(emptyList())
     val chatPreviewDataList: StateFlow<List<ChatPreviewData>> get() = _chatPreviewDataList
 
@@ -89,6 +92,23 @@ open class ChatViewModel(
             // TODO: Llamar al servicio para enviar el mensaje y luego actualizar el estado
         }
     }
+
+    fun updateSearchQuery(recipientName: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = chatService.getChatByName(recipientName)
+            result.onSuccess { chats ->
+                _chatPreviewDataList.value = chats
+                _isLoading.value = false
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error searching for chats"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
 
     fun editMessage(messageId: String, newContent: String) {
         viewModelScope.launch {

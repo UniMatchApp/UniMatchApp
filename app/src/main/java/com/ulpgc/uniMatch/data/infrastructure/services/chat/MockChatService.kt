@@ -26,4 +26,10 @@ class MockChatService: ChatService {
             ProfileMock.createMockProfile()
         )
     }
+
+    override suspend fun getChatByName(chatName: String): Result<List<ChatPreviewData>> {
+        return Result.success(
+            ChatPreviewDataMock.searchChatPreviewDataMocks(chatName)
+        )
+    }
 }
