@@ -1,14 +1,11 @@
 package com.ulpgc.uniMatch.ui.screens.core.chat
 
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,14 +17,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,28 +30,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.services.auth.MockAuthService
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
+import com.ulpgc.uniMatch.data.infrastructure.services.profile.MockProfileService
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.chats.MessageBubble
 import com.ulpgc.uniMatch.ui.theme.UniMatchTheme
-
+import com.ulpgc.uniMatch.ui.screens.core.topBars.MessageTopBar
 
 @Composable
 fun ChatDetailScreen(
     chatId: String,
     chatViewModel: ChatViewModel,
     authViewModel: AuthViewModel,
-    navController: NavController
+    navController: NavController,
+    profileViewModel: ProfileViewModel
 ) {
     // Cargar los mensajes del chat cuando la pantalla se inicia
     LaunchedEffect(chatId) {
@@ -68,88 +60,47 @@ fun ChatDetailScreen(
 
     val messages by chatViewModel.messages.collectAsState()
     val isLoading by chatViewModel.isLoading.collectAsState()
+    val recipientProfile by chatViewModel.otherUser.collectAsState()
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier = Modifier.fillMaxSize()
     ) {
         // Top Bar con la foto del usuario, nombre y flecha de retroceso
-        TopBar(
-            userName = "User Name",
+        MessageTopBar(
+            userName = recipientProfile?.name ?: "User",
             onBackPressed = { navController.popBackStack() },
-            userImage = 4
+            userImage = recipientProfile?.preferredImage ?: "R.drawable.ic_profile"
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))  // Espaciado entre el TopBar y el contenido de los mensajes
 
-        if (isLoading) {
-            CircularProgressIndicator()
-        } else {
-            // Mostrar los mensajes
-            LazyColumn(
-                modifier = Modifier.weight(1f)
-            ) {
-                items(messages) { message ->
-                    MessageBubble(
-                        message = message,
-                        isCurrentUser = message.senderId == authViewModel.userId
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
+        // Contenedor para mensajes y input con padding de 16
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator()
+            } else {
+                // Mostrar los mensajes en una LazyColumn
+                LazyColumn(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    items(messages) { message ->
+                        MessageBubble(
+                            message = message,
+                            isCurrentUser = message.senderId == authViewModel.userId
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
-            }
 
-            // Input para enviar mensajes
-            MessageInput(chatViewModel, chatId)
+                // Input para enviar mensajes
+                MessageInput(chatViewModel, chatId)
+            }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBar(userName: String, onBackPressed: () -> Unit, userImage: Int) {
-    TopAppBar(
-        title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxHeight()
-            ) {
-                // Icono de retroceso
-                IconButton(onClick = onBackPressed) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_back), // Reemplaza con tu icono de flecha
-                        contentDescription = "Back",
-                        modifier = Modifier.size(24.dp),
-                        tint = Color.White
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                // Imagen del usuario (comentada)
-                // Image(
-                //    painter = painterResource(id = userImage),
-                //    contentDescription = "User profile picture",
-                //    modifier = Modifier
-                //        .size(40.dp)
-                //        .clip(CircleShape) // Hacer que la imagen sea redonda
-                // )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text = userName,
-                    color = Color.White
-                )
-            }
-        },
-        modifier = Modifier
-            .fillMaxWidth(),
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Blue
-        )
-    )
 }
 
 @Composable
@@ -163,7 +114,7 @@ private fun MessageInput(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 0.dp)
+            .padding(vertical = 8.dp)
             .height(56.dp)
     ) {
         TextField(
@@ -171,7 +122,6 @@ private fun MessageInput(
             onValueChange = { newMessage = it },
             modifier = Modifier
                 .weight(1f)
-                .padding(0.dp)
                 .clip(CircleShape),
             shape = MaterialTheme.shapes.medium,
             textStyle = MaterialTheme.typography.bodyLarge,
@@ -199,6 +149,7 @@ private fun MessageInput(
 }
 
 
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewChatDetailScreen() {
@@ -219,6 +170,14 @@ fun PreviewChatDetailScreen() {
             ),
             navController = NavController(
                 context = LocalContext.current
+            ),
+            profileViewModel = ProfileViewModel(
+                profileService = MockProfileService(),
+                errorViewModel = ErrorViewModel(),
+                authViewModel = AuthViewModel(
+                    authService = MockAuthService(),
+                    errorViewModel = ErrorViewModel()
+                )
             )
         )
     }

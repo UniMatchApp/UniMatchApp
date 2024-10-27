@@ -7,6 +7,7 @@ import com.ulpgc.uniMatch.data.domain.models.ChatPreviewData
 import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.infrastructure.entities.MessageStatus
 import com.ulpgc.uniMatch.data.application.services.ChatService
+import com.ulpgc.uniMatch.data.domain.models.Profile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -26,6 +27,9 @@ open class ChatViewModel(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
+
+    private val _otherUser = MutableStateFlow<Profile?>(null)
+    val otherUser: StateFlow<Profile?> get() = _otherUser
 
     fun loadChats() {
         Log.i("ChatViewModel", "Loading chats")
@@ -53,6 +57,15 @@ open class ChatViewModel(
             result.onSuccess { messages ->
                 _messages.value = messages
                 _isLoading.value = false
+                // Obtener el perfil del otro usuario y manejar el Result
+                val otherUserResult = chatService.getOtherUserByChatId(chatId)
+                otherUserResult.onSuccess { profile ->
+                    _otherUser.value = profile
+                }.onFailure { error ->
+                    errorViewModel.showError(
+                        error.message ?: "Error loading other user profile"
+                    )
+                }
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error loading messages"

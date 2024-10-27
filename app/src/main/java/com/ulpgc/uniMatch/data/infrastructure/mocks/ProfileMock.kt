@@ -22,7 +22,7 @@ object ProfileMock {
             birthday = Date(),
             interests = listOf("mockInterest1", "mockInterest2"),
             wall = listOf("mockImage1", "mockImage2"),
-            preferredImage = "mockImage1",
+            preferredImage = "https://i.pinimg.com/736x/83/ca/48/83ca48f723206997ccc852915f3af4d2.jpg",
             maxDistance = 50,
             ageRange = 18 to 100,
             horoscope = Horoscope.ARIES,
@@ -39,5 +39,9 @@ object ProfileMock {
             genderPriority = Gender.OTHER,
             fact = "Mock Fact"
         )
+    }
+
+    fun getUserProfileByChatId(chatId: String): Profile {
+        return createMockProfile()
     }
 }

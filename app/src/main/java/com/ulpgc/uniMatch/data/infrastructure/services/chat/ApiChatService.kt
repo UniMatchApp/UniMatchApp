@@ -4,6 +4,7 @@ package com.ulpgc.uniMatch.data.infrastructure.services.chat
 import com.ulpgc.uniMatch.data.application.services.ChatService
 import com.ulpgc.uniMatch.data.domain.models.ChatPreviewData
 import com.ulpgc.uniMatch.data.domain.models.Message
+import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MessageController
 import com.ulpgc.uniMatch.data.infrastructure.entities.ChatDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
@@ -72,6 +73,10 @@ class ApiChatService(
     }
 
     override suspend fun getMessages(chatId: String): Result<List<Message>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getOtherUserByChatId(chatId: String): Result<Profile> {
         TODO("Not yet implemented")
     }
 }

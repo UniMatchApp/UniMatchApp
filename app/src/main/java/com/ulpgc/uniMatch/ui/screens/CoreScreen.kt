@@ -1,10 +1,12 @@
 package com.ulpgc.uniMatch.ui.screens
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -20,6 +22,7 @@ import androidx.navigation.navigation
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.screens.core.BottomNavigationBar
 import com.ulpgc.uniMatch.ui.screens.core.HomeScreen
 import com.ulpgc.uniMatch.ui.screens.core.ProfileScreen
@@ -38,10 +41,12 @@ object CoreRoutes {
     const val FILTER = "filter"
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CoreScreen(
     authViewModel: AuthViewModel,
-    chatViewModel: ChatViewModel
+    chatViewModel: ChatViewModel,
+    profileViewModel: ProfileViewModel
 ) {
     val authState by authViewModel.authState.collectAsState()
 
@@ -60,9 +65,8 @@ fun CoreScreen(
             TopBar(currentRoute = currentRoute, navController = navController)
         },
         bottomBar = { BottomNavigationBar(navController) }
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            CoreNavHost(navController, authViewModel, chatViewModel)
+    ) { Box(modifier = Modifier.fillMaxSize()) {
+            CoreNavHost(navController, authViewModel, chatViewModel, profileViewModel)
         }
     }
 }
@@ -72,7 +76,8 @@ fun CoreScreen(
 fun CoreNavHost(
     navController: NavHostController,
     authViewModel: AuthViewModel,
-    chatViewModel: ChatViewModel
+    chatViewModel: ChatViewModel,
+    profileViewModel: ProfileViewModel
 ) {
     NavHost(
         navController = navController,
@@ -101,7 +106,9 @@ fun CoreNavHost(
                     chatId = chatId,
                     chatViewModel = chatViewModel,
                     authViewModel = authViewModel,
-                    navController = navController
+                    navController = navController,
+                    profileViewModel = profileViewModel
+
                 )
             }
         }
