@@ -21,4 +21,17 @@
     <string name="profile">Profile</string>
     <string name="notifications">Notifications</string>
     <string name="user_filters">user filters</string>
+
+
+    <string-array name="funny_questions">
+        <item>Selecciona una pregunta</item>
+        <item>¿Por qué los pájaros no usan Facebook?</item>
+        <item>¿Cuál es el animal más antiguo?</item>
+        <item>¿Qué hace una abeja en el gimnasio?</item>
+        <item>¿Por qué los esqueletos no pelean entre ellos?</item>
+        <item>¿Cómo se despiden los químicos?</item>
+        <item>¿Por qué los fantasmas son malos mentirosos?</item>ç
+        <item>Mock Fact</item>
+    </string-array>
+
 </resources>

@@ -1,11 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ulpgc.uniMatch.data.domain.models.ChatPreviewData
-import com.ulpgc.uniMatch.data.domain.models.Message
-import com.ulpgc.uniMatch.data.infrastructure.entities.MessageStatus
-import com.ulpgc.uniMatch.data.application.services.ChatService
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import kotlinx.coroutines.flow.MutableStateFlow

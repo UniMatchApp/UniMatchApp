@@ -26,7 +26,7 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.screens.core.BottomNavigationBar
 import com.ulpgc.uniMatch.ui.screens.core.HomeScreen
-import com.ulpgc.uniMatch.ui.screens.core.ProfileScreen
+import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileScreen
 import com.ulpgc.uniMatch.ui.screens.core.SearchScreen
 import com.ulpgc.uniMatch.ui.screens.core.TopBar
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
@@ -102,7 +102,7 @@ fun CoreNavHost(
     ) {
         composable(CoreRoutes.HOME) { HomeScreen() }
         composable(CoreRoutes.SEARCH) { SearchScreen() }
-        composable(CoreRoutes.PROFILE) { ProfileScreen() }
+        composable(CoreRoutes.PROFILE) { ProfileScreen(viewModel = profileViewModel) }
         composable(CoreRoutes.CHAT_LIST) {
             ChatListScreen(
                 viewModel = chatViewModel,
