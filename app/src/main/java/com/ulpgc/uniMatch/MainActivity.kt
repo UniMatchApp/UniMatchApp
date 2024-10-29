@@ -15,12 +15,14 @@ import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
 import com.ulpgc.uniMatch.data.infrastructure.services.auth.ApiAuthService
 import com.ulpgc.uniMatch.data.infrastructure.services.auth.MockAuthService
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
+import com.ulpgc.uniMatch.data.infrastructure.services.matching.MockMatchingService
 import com.ulpgc.uniMatch.data.infrastructure.services.profile.MockProfileService
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.ErrorDialog
 import com.ulpgc.uniMatch.ui.screens.AuthScreen
@@ -43,10 +45,12 @@ class MainActivity : ComponentActivity() {
 //            secureStorage = SecureStorage(this)
 //        )
         val authService = MockAuthService()
+        val matchingService = MockMatchingService()
         val errorViewModel = ErrorViewModel()
         val authViewModel = AuthViewModel(authService, errorViewModel)
         val profileService = MockProfileService()
         val profileViewModel = ProfileViewModel(profileService, errorViewModel, authViewModel)
+        val homeViewModel = HomeViewModel(profileService, errorViewModel, authViewModel, matchingService)
 
         val chatService = MockChatService()
         val chatViewModel = ChatViewModel(chatService, errorViewModel, authViewModel)
@@ -61,7 +65,12 @@ class MainActivity : ComponentActivity() {
 
                 // Decidir si mostrar AuthScreen o CoreScreen basado en el estado
                 when (authState) {
-                    is AuthState.Authenticated -> CoreScreen(authViewModel, chatViewModel, profileViewModel)
+                    is AuthState.Authenticated -> CoreScreen(
+                        authViewModel,
+                        chatViewModel,
+                        profileViewModel,
+                        homeViewModel
+                    )
                     is AuthState.Unauthenticated -> AuthScreen(authViewModel)
                 }
 

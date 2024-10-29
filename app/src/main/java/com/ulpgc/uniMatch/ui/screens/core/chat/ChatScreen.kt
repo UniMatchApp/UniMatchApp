@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.ui.components.chats.ChatList
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomStyledTextField(
     value: String,

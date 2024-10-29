@@ -23,14 +23,15 @@ import androidx.navigation.navigation
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.screens.core.BottomNavigationBar
-import com.ulpgc.uniMatch.ui.screens.core.HomeScreen
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileScreen
 import com.ulpgc.uniMatch.ui.screens.core.SearchScreen
 import com.ulpgc.uniMatch.ui.screens.core.TopBar
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatListScreen
+import com.ulpgc.uniMatch.ui.screens.core.home.HomeScreen
 
 object CoreRoutes {
     const val HOME = "home"
@@ -47,7 +48,8 @@ object CoreRoutes {
 fun CoreScreen(
     authViewModel: AuthViewModel,
     chatViewModel: ChatViewModel,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    homeViewModel: HomeViewModel
 ) {
     val authState by authViewModel.authState.collectAsState()
 
@@ -80,7 +82,7 @@ fun CoreScreen(
         }
 
         Box(modifier = Modifier.fillMaxSize().then(paddingModifier)) {
-            CoreNavHost(navController, authViewModel, chatViewModel, profileViewModel)
+            CoreNavHost(navController, authViewModel, chatViewModel, profileViewModel, homeViewModel)
         }
     }
 }
@@ -92,7 +94,8 @@ fun CoreNavHost(
     navController: NavHostController,
     authViewModel: AuthViewModel,
     chatViewModel: ChatViewModel,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    homeViewModel: HomeViewModel
 ) {
     NavHost(
         navController = navController,
@@ -100,7 +103,11 @@ fun CoreNavHost(
         enterTransition = { fadeIn(animationSpec = tween(0)) },
         exitTransition = { fadeOut(animationSpec = tween(0)) },
     ) {
-        composable(CoreRoutes.HOME) { HomeScreen() }
+        composable(CoreRoutes.HOME) { HomeScreen(
+            homeViewModel = homeViewModel,
+            profileViewModel = profileViewModel,
+            authViewModel = authViewModel
+        ) }
         composable(CoreRoutes.SEARCH) { SearchScreen() }
         composable(CoreRoutes.PROFILE) { ProfileScreen(viewModel = profileViewModel) }
         composable(CoreRoutes.CHAT_LIST) {
