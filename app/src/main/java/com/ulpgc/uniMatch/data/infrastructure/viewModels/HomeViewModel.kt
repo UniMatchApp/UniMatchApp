@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.MatchingService
@@ -60,23 +61,33 @@ class HomeViewModel (
 
     fun dislikeUser(userId: String, targetId: String) {
         viewModelScope.launch {
-            authViewModel.userId?.let { matchingService.dislikeUser(userId, targetId) }
-                ?.onFailure { error ->
+            authViewModel.userId?.let { userId ->
+                matchingService.dislikeUser(userId, targetId)?.onSuccess {
+                    // Eliminar el perfil de la lista
+                    Log.i("Matching Profiles size", _matchingProfiles.value.size.toString())
+                    _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != targetId }
+                    Log.i("Matching Profiles size", _matchingProfiles.value.size.toString())
+                }?.onFailure { error ->
                     errorViewModel.showError(
                         error.message ?: "Error disliking user"
                     )
                 }
+            }
         }
     }
 
     fun likeUser(userId: String, targetId: String) {
         viewModelScope.launch {
-            authViewModel.userId?.let { matchingService.likeUser(userId, targetId) }
-                ?.onFailure { error ->
+            authViewModel.userId?.let { userId ->
+                matchingService.likeUser(userId, targetId)?.onSuccess {
+                    // Eliminar el perfil de la lista
+                    _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != targetId }
+                }?.onFailure { error ->
                     errorViewModel.showError(
                         error.message ?: "Error liking user"
                     )
                 }
+            }
         }
     }
 
