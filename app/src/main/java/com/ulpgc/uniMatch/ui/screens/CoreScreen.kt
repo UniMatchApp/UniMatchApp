@@ -32,6 +32,7 @@ import com.ulpgc.uniMatch.ui.screens.core.TopBar
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatListScreen
 import com.ulpgc.uniMatch.ui.screens.core.home.HomeScreen
+import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileSettings
 
 object CoreRoutes {
     const val HOME = "home"
@@ -41,6 +42,7 @@ object CoreRoutes {
     const val PROFILE = "profile"
     const val NOTIFICATIONS = "notifications"
     const val FILTER = "filter"
+    const val PROFILE_SETTINGS = "profile-settings/{userId}"
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -109,7 +111,10 @@ fun CoreNavHost(
             authViewModel = authViewModel
         ) }
         composable(CoreRoutes.SEARCH) { SearchScreen() }
-        composable(CoreRoutes.PROFILE) { ProfileScreen(viewModel = profileViewModel) }
+        composable(CoreRoutes.PROFILE) {
+            ProfileScreen(
+                profileViewModel = profileViewModel
+        ) }
         composable(CoreRoutes.CHAT_LIST) {
             ChatListScreen(
                 viewModel = chatViewModel,
@@ -131,6 +136,14 @@ fun CoreNavHost(
                     navController = navController,
                     profileViewModel = profileViewModel
 
+                )
+            }
+        }
+        navigation(startDestination = "profile-settings/{userId}", route = "profile_settings") {
+            composable("profile-settings/{userId}") {
+                ProfileSettings(
+                    profileViewModel = profileViewModel,
+                    navController = navController
                 )
             }
         }
