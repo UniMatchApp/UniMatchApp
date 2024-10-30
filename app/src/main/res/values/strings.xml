@@ -25,13 +25,53 @@
 
     <string-array name="funny_questions">
         <item>Selecciona una pregunta</item>
-        <item>¿Por qué los pájaros no usan Facebook?</item>
-        <item>¿Cuál es el animal más antiguo?</item>
-        <item>¿Qué hace una abeja en el gimnasio?</item>
-        <item>¿Por qué los esqueletos no pelean entre ellos?</item>
-        <item>¿Cómo se despiden los químicos?</item>
-        <item>¿Por qué los fantasmas son malos mentirosos?</item>ç
-        <item>Mock Fact</item>
+        <item>I once Reading for a whole day!</item>
+        <item>I once Traveling for a whole day!</item>
+        <item>I once Cooking for a whole day!</item>
+        <item>I once Gaming for a whole day!</item>
     </string-array>
+
+    <string-array name="genders">
+        <item>Seleccionar</item>
+        <item>Hombre</item>
+        <item>Mujer</item>
+        <item>No binario</item>
+        <item>Otro</item>
+    </string-array>
+
+    <string-array name="sexual_orientation">
+        <item>Seleccionar</item>
+        <item>Heterosexual</item>
+        <item>Homosexual</item>
+        <item>Bisexual</item>
+        <item>Asexual</item>
+        <item>Otro</item>
+    </string-array>
+
+    <string-array name="relationship_type">
+        <item>Seleccionar</item>
+        <item>Amigos</item>
+        <item>Casual</item>
+        <item>Relación</item>
+        <item>Abierta</item>
+        <item>Otro</item>
+    </string-array>
+
+    <string-array name="horoscopes">
+        <item>Seleccionar</item>
+        <item>Aries</item>
+        <item>Tauro</item>
+        <item>Géminis</item>
+        <item>Cáncer</item>
+        <item>Leo</item>
+        <item>Virgo</item>
+        <item>Libra</item>
+        <item>Escorpio</item>
+        <item>Sagitario</item>
+        <item>Capricornio</item>
+        <item>Acuario</item>
+        <item>Piscis</item>
+    </string-array>
+
 
 </resources>

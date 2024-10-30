@@ -25,7 +25,12 @@ fun TopBar(currentRoute: String?, navController: NavHostController) {
         CoreRoutes.HOME -> HomeTopBar(navController)
         CoreRoutes.SEARCH -> SearchTopBar()
         CoreRoutes.CHAT_LIST -> ChatDetailTopBar()
-        CoreRoutes.PROFILE -> ProfileTopBar()
+        CoreRoutes.PROFILE -> ProfileTopBar(
+            navController,
+            onClickSettings = {
+                navController.navigate(CoreRoutes.PROFILE_SETTINGS)
+            }
+        )
         else -> {
             Modifier.padding(0.dp)
         }
