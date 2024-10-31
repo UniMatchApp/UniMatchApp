@@ -67,9 +67,9 @@ fun ProfileSettings(
             ProfileSection(
                 title = "Más sobre mí",
                 rowTitles = listOf(
-                    "Horóscopo" to profile?.horoscope.toString(),
-                    "Educación" to profile?.education,
-                    "Tipo de personalidad" to profile?.personalityType
+                    "horoscope" to profile?.horoscope.toString(),
+                    "education" to profile?.education,
+                    "personality_type" to profile?.personalityType
                 )
             )
 
@@ -79,11 +79,11 @@ fun ProfileSettings(
             ProfileSection(
                 title = "Estilo de vida",
                 rowTitles = listOf(
-                    "Mascotas" to profile?.pets,
-                    "¿Bebes?" to profile?.drinks,
-                    "¿Fumas?" to profile?.smokes,
-                    "¿Haces deporte?" to profile?.doesSports,
-                    "Valores y creencias" to profile?.valuesAndBeliefs
+                    "pets" to profile?.pets,
+                    "drinks" to profile?.drinks,
+                    "smokes" to profile?.smokes,
+                    "sports" to profile?.doesSports,
+                    "religion" to profile?.valuesAndBeliefs
                 )
             )
 

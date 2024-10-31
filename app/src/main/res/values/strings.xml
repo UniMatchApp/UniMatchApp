@@ -22,6 +22,16 @@
     <string name="notifications">Notifications</string>
     <string name="user_filters">user filters</string>
 
+    <string name="horoscope">Horóscopo</string>
+    <string name="education">Educación</string>
+    <string name="personality_type">Personalidad</string>
+    <string name="pets">Mascotas</string>
+    <string name="drinks">Beber</string>
+    <string name="smokes">¿Fumas?</string>
+    <string name="sports">¿Haces deporte?</string>
+    <string name="religion">Valores y creencias</string>
+
+
 
     <string-array name="funny_questions">
         <item>Selecciona una pregunta</item>
@@ -57,7 +67,7 @@
         <item>Otro</item>
     </string-array>
 
-    <string-array name="horoscopes">
+    <string-array name="horoscope">
         <item>Seleccionar</item>
         <item>Aries</item>
         <item>Tauro</item>
@@ -73,7 +83,7 @@
         <item>Piscis</item>
     </string-array>
 
-    <string-array name="school">
+    <string-array name="education">
         <item>Seleccionar</item>
         <item>Sin estudios</item>
         <item>Educación primaria</item>

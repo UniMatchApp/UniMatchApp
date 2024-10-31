@@ -19,23 +19,13 @@ import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.ui.components.DropdownMenuShorter
 
 @Composable
-fun ProfileOptionRow(title: String, option: String) {
-    val traducciones = mapOf(
-        "Horóscopo" to "horoscopes",
-        "Educación" to "school",
-        "Tipo de personalidad" to "personality_type",
-        "Mascotas" to "pets",
-        "¿Bebes?" to "drinks",
-        "¿Fumas?" to "smokes",
-        "¿Haces deporte?" to "sports",
-        "Valores y creencias" to "religion"
-    )
+fun ProfileOptionRow(type: String, option: String, isSelectable: Boolean = true) {
 
     val context = LocalContext.current
-    val iconName = "icon_${traducciones[title] ?: "default"}"
+    val iconName = "icon_${type.lowercase()}"
+    val title = context.resources.getString(context.resources.getIdentifier(type, "string", context.packageName))
     val iconId = context.resources.getIdentifier(iconName, "drawable", context.packageName)
-    val listName = traducciones[title] ?: "default"
-    val listId = context.resources.getIdentifier(listName, "array", context.packageName) // Obtenemos el ID del array de strings
+    val listId = context.resources.getIdentifier(type, "array", context.packageName) // Obtenemos el ID del array de strings
 
     val options = if (listId != 0) {
         context.resources.getStringArray(listId).toList()
@@ -69,6 +59,6 @@ fun ProfileOptionRow(title: String, option: String) {
             Text(text = title, color = Color.DarkGray, fontSize = 12.sp)
         }
 
-        DropdownMenuShorter(items = options, selectedItem = option)
+        DropdownMenuShorter(items = options, selectedItem = option, isSelectable = isSelectable)
     }
 }

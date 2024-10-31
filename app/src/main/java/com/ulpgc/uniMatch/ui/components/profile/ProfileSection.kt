@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ProfileSection(title: String, rowTitles: List<Pair<String, String?>>) {
+fun ProfileSection(title: String, rowTitles: List<Pair<String, String?>>, isSelectable: Boolean = true) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -31,7 +31,7 @@ fun ProfileSection(title: String, rowTitles: List<Pair<String, String?>>) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
         rowTitles.forEach { (rowTitle, defaultValue) ->
-            ProfileOptionRow(rowTitle, defaultValue ?: "Seleccionar")
+            ProfileOptionRow(rowTitle, defaultValue ?: "Seleccionar", isSelectable)
             Spacer(modifier = Modifier.height(8.dp)) // Separador entre filas
         }
     }

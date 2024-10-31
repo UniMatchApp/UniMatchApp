@@ -30,7 +30,11 @@ import com.ulpgc.uniMatch.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownMenuShorter(items: List<String>, selectedItem: String) {
+fun DropdownMenuShorter(
+    items: List<String>,
+    selectedItem: String,
+    isSelectable: Boolean = true
+) {
     var isExpanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(selectedItem) }
 
@@ -41,7 +45,7 @@ fun DropdownMenuShorter(items: List<String>, selectedItem: String) {
     ) {
         ExposedDropdownMenuBox(
             expanded = isExpanded,
-            onExpandedChange = { isExpanded = !isExpanded }
+            onExpandedChange = { if (isSelectable) isExpanded = !isExpanded } // Controla la expansión
         ) {
             TextField(
                 modifier = Modifier
