@@ -2,6 +2,8 @@ package com.ulpgc.uniMatch.ui.screens.core.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -32,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,10 +44,15 @@ import coil.request.ImageRequest
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
+import com.ulpgc.uniMatch.ui.components.profile.LegalSection
+import com.ulpgc.uniMatch.ui.components.profile.ProfileDropdownField
+import com.ulpgc.uniMatch.ui.components.profile.ProfileInputField
+import com.ulpgc.uniMatch.ui.components.profile.ProfileSection
 
 @Composable
 fun ProfileScreen(
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    onEditClick: () -> Unit
 ) {
 
     LaunchedEffect(Unit) {
@@ -84,6 +93,26 @@ fun ProfileScreen(
                     .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
+
+            Box(
+                modifier = Modifier
+                    .size(36.dp) // Tamaño del círculo
+                    .background(Color.White, CircleShape)
+                    .border(2.dp, Color.Black, CircleShape)
+                    .align(Alignment.TopEnd)
+                    .clickable {  }
+                    .padding(4.dp)
+            ) {
+                IconButton(onClick = { onEditClick() }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.icon_edit), // Asegúrate de tener el ícono en los recursos
+                        contentDescription = "Edit profile",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape)
+                    )
+                }
+            }
         }
 
 
@@ -96,7 +125,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Sobre mí",
-            style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp, fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
             color = Color.Gray,
             modifier = Modifier.align(Alignment.Start)
         )
@@ -112,7 +141,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Preguntas",
-            style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp, fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
             color = Color.Gray,
             modifier = Modifier.align(Alignment.Start)
         )
@@ -127,7 +156,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Intereses",
-            style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp, fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
             color = Color.Gray,
             modifier = Modifier.align(Alignment.Start)
         )
@@ -143,6 +172,52 @@ fun ProfileScreen(
             )
         }
 
+        ProfileDropdownField(label = "Sexo", options = context.resources.getStringArray(R.array.genders).toList())
+        ProfileInputField(
+            label = "Altura en cm",
+            initialValue = profile?.height?.toString() ?: "170cm",
+            onValueChange = { newAltura -> /* Actualizar valor en el ViewModel */ }
+        )
+
+        ProfileInputField(
+            label = "Peso en kg",
+            initialValue = profile?.weight?.toString() ?: "70kg",
+            onValueChange = { newPeso -> /* Actualizar valor en el ViewModel */ }
+        )
+        ProfileDropdownField(label = "Orientación sexual", options = context.resources.getStringArray(R.array.sexual_orientation).toList())
+        ProfileDropdownField(label = "Puesto", options = listOf("Ingeniero", "Médico", "Profesor", "Diseñador"))
+        ProfileDropdownField(label = "¿Qué tipo de relación buscas?", options = context.resources.getStringArray(R.array.relationship_type).toList())
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Section: Más sobre mí
+        ProfileSection(
+            title = "Más sobre mí",
+            rowTitles = listOf(
+                "horoscope" to profile?.horoscope.toString(),
+                "education" to profile?.education,
+                "personality_type" to profile?.personalityType
+            )
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Section: Estilo de vida
+        ProfileSection(
+            title = "Estilo de vida",
+            rowTitles = listOf(
+                "pets" to profile?.pets,
+                "drinks" to profile?.drinks,
+                "smokes" to profile?.smokes,
+                "sports" to profile?.doesSports,
+                "religion" to profile?.valuesAndBeliefs
+            )
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LegalSection()
+
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = { /*TODO viewModel.saveChanges()*/ },
@@ -150,6 +225,8 @@ fun ProfileScreen(
         ) {
             Text("Guardar cambios")
         }
+
+
 
 
     }
