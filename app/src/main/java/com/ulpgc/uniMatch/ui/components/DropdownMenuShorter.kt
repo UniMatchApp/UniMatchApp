@@ -1,16 +1,19 @@
 package com.ulpgc.uniMatch.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +27,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
@@ -40,45 +44,46 @@ fun DropdownMenuShorter(
 
     Column(
         modifier = Modifier
-            .background(Color.Transparent),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.End
     ) {
         ExposedDropdownMenuBox(
             expanded = isExpanded,
-            onExpandedChange = { if (isSelectable) isExpanded = !isExpanded } // Controla la expansión
+            onExpandedChange = {
+                if (isSelectable) isExpanded = !isExpanded
+            },
+            modifier = Modifier.fillMaxHeight().align(Alignment.End)
         ) {
-            TextField(
+            Row(
                 modifier = Modifier
-                    .menuAnchor()
-                    .height(50.dp),
-                value = if (selectedText.isNotEmpty()) selectedText else items[0],
-                onValueChange = { },
-                readOnly = true,
-                trailingIcon = {
+                    .fillMaxHeight()
+                    .menuAnchor(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = if (selectedText.isNotEmpty()) selectedText else items[0],
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.Black,
+                        textAlign = TextAlign.Start
+                    )
+                )
+
+                if (isSelectable) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.baseline_arrow_drop_down_24),
                         contentDescription = null,
                         tint = Color.Black,
                         modifier = Modifier.size(16.dp)
                     )
-                },
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                textStyle = TextStyle(
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Normal,
-                    textAlign = TextAlign.End
-                )
-            )
+                }
+            }
 
             ExposedDropdownMenu(
                 expanded = isExpanded,
-                onDismissRequest = { isExpanded = false }
+                onDismissRequest = { isExpanded = false },
+                modifier = Modifier.fillMaxWidth()
             ) {
                 items.forEach { text ->
                     DropdownMenuItem(

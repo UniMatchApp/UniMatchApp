@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -32,8 +33,6 @@ import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Lens
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.Icon
@@ -67,6 +66,7 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.InputField
+import com.ulpgc.uniMatch.ui.components.profile.ProfileSection
 import com.ulpgc.uniMatch.ui.theme.Bone
 
 @Composable
@@ -122,11 +122,10 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.7f))
-                    .zIndex(1f) // Trae el modal al frente
-                    .clickable { isModalOpen = false }
+                    .zIndex(1f)
             ) {
                 ProfileInfoModal(profile = selectedProfile) {
-                    isModalOpen = false // Cierra el modal al hacer clic en "Cerrar"
+                    isModalOpen = false
                 }
             }
         }
@@ -187,6 +186,8 @@ fun ProfileCard(
     var showLikeDislike by remember { mutableStateOf(false) }
     var isLike by remember { mutableStateOf(true) }
 
+    val iconDisplayDuration = 500L
+
     // Animaciones para rotación y desplazamiento
     val animatedOffsetX by animateFloatAsState(
         targetValue = if (isTracking) accumulatedDrag else 0f,
@@ -211,7 +212,7 @@ fun ProfileCard(
                     onDragEnd = {
                         isTracking = false
                         accumulatedDrag = 0f
-                        showLikeDislike = false
+//                        showLikeDislike = false
                     },
                     onHorizontalDrag = { _, dragAmount ->
                         accumulatedDrag += dragAmount
@@ -237,7 +238,7 @@ fun ProfileCard(
             contentScale = ContentScale.Crop
         )
 
-        // Icono de Like/Dislike con animación
+        // Icono de Like/Dislike con animación y temporizador
         AnimatedVisibility(
             visible = showLikeDislike,
             enter = fadeIn(),
@@ -255,6 +256,14 @@ fun ProfileCard(
                     ),
                 tint = if (isLike) Color.Red else Color.Gray
             )
+
+            // Controla la visibilidad del icono después de un retraso
+            LaunchedEffect(showLikeDislike) {
+                if (showLikeDislike) {
+                    kotlinx.coroutines.delay(iconDisplayDuration)
+                    showLikeDislike = false
+                }
+            }
         }
 
         Row(
@@ -437,33 +446,38 @@ fun ProfileInfoModal(profile: Profile?, onClose: () -> Unit) {
                 .background(Color.White)
                 .padding(16.dp)
         ) {
-            Column(
+            LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.Start
             ) {
 
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(Color.Black.copy(alpha = 0.5f))
-                        .clickable { onClose() }
-                        .align(Alignment.End)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowDownward,
-                        contentDescription = "Cerrar",
-                        tint = Color.White,
-                        modifier = Modifier.size(16.dp)
-                    )
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .background(Color.Black.copy(alpha = 0.5f))
+                                .clickable { onClose() }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowDownward,
+                                contentDescription = "Cerrar",
+                                tint = Color.White,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Column() {
+                item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Buscando",
@@ -481,7 +495,9 @@ fun ProfileInfoModal(profile: Profile?, onClose: () -> Unit) {
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
+                }
 
+                item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         InputField(
                             value = profile.relationshipType.toString(),
@@ -493,10 +509,39 @@ fun ProfileInfoModal(profile: Profile?, onClose: () -> Unit) {
                             isRound = true
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
 
+                item {
+                    ProfileSection(
+                        title = "Más sobre mí",
+                        rowTitles = listOf(
+                            "horoscope" to profile.horoscope.toString(),
+                            "education" to profile.education,
+                            "personality_type" to profile.personalityType
+                        ),
+                        isSelectable = true
+                    )
 
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                item {
+                    ProfileSection(
+                        title = "Estilo de vida",
+                        rowTitles = listOf(
+                            "pets" to profile.pets,
+                            "drinks" to profile.drinks,
+                            "smokes" to profile.smokes,
+                            "sports" to profile.doesSports,
+                            "religion" to profile.valuesAndBeliefs
+                        ),
+                        isSelectable = true
+                    )
+                }
             }
         }
     }
 }
+
