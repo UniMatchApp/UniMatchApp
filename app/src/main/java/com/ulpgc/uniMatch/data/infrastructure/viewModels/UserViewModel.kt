@@ -4,14 +4,14 @@ package com.ulpgc.uniMatch.data.infrastructure.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.domain.models.User
-import com.ulpgc.uniMatch.data.application.services.AuthService
+import com.ulpgc.uniMatch.data.application.services.UserService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
 open class AuthViewModel(
-    private val authService: AuthService,
+    private val userService: UserService,
     private val errorViewModel: ErrorViewModel
 ) : ViewModel() {
 
@@ -25,7 +25,7 @@ open class AuthViewModel(
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            val result = authService.login(email, password)
+            val result = userService.login(email, password)
             result.onSuccess { loginResponse ->
                 authToken = loginResponse.token
                 _authState.value = AuthState.Authenticated(loginResponse.user)
@@ -40,7 +40,7 @@ open class AuthViewModel(
 
     fun register(email: String, password: String) {
         viewModelScope.launch {
-            val result = authService.register(email, password)
+            val result = userService.register(email, password)
             result.onSuccess {
                 _authState.value = AuthState.Authenticated(it.user)
             }.onFailure {

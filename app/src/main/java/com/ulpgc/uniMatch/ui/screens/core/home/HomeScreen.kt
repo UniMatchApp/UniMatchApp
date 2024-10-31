@@ -35,6 +35,8 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -59,7 +61,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
@@ -116,18 +117,26 @@ fun HomeScreen(
             }
         }
 
-        // Mostrar modal si `isModalOpen` es true, con un `zIndex` mayor
+        // Mostrar el modal si hay un perfil seleccionado
         if (isModalOpen) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.7f))
-                    .zIndex(1f)
-            ) {
-                ProfileInfoModal(profile = selectedProfile) {
+            ProfileInfoModal(
+                profile = selectedProfile,
+                onClose = { isModalOpen = false },
+                onReport = {
+                    // Lógica para reportar el perfil
+                    selectedProfile?.userId?.let { targetId ->
+                        homeViewModel.reportUser(targetId)
+                    }
+                    isModalOpen = false
+                },
+                onBlock = {
+                    // Lógica para bloquear el perfil
+                    selectedProfile?.userId?.let { targetId ->
+                        homeViewModel.blockUser(targetId)
+                    }
                     isModalOpen = false
                 }
-            }
+            )
         }
     }
 }
@@ -438,7 +447,12 @@ fun ProfileCard(
 
 
 @Composable
-fun ProfileInfoModal(profile: Profile?, onClose: () -> Unit) {
+fun ProfileInfoModal(
+    profile: Profile?,
+    onClose: () -> Unit,
+    onReport: () -> Unit, // Función para manejar la acción de reportar
+    onBlock: () -> Unit // Función para manejar la acción de bloquear
+) {
     if (profile != null) {
         Box(
             modifier = Modifier
@@ -451,6 +465,7 @@ fun ProfileInfoModal(profile: Profile?, onClose: () -> Unit) {
                 horizontalAlignment = Alignment.Start
             ) {
 
+                // Cerrar el modal
                 item {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -476,6 +491,7 @@ fun ProfileInfoModal(profile: Profile?, onClose: () -> Unit) {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
+                // Información sobre el perfil
                 item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
@@ -513,6 +529,7 @@ fun ProfileInfoModal(profile: Profile?, onClose: () -> Unit) {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
+                // Sección "Más sobre mí"
                 item {
                     ProfileSection(
                         title = "Más sobre mí",
@@ -527,6 +544,7 @@ fun ProfileInfoModal(profile: Profile?, onClose: () -> Unit) {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
+                // Sección "Estilo de vida"
                 item {
                     ProfileSection(
                         title = "Estilo de vida",
@@ -539,9 +557,40 @@ fun ProfileInfoModal(profile: Profile?, onClose: () -> Unit) {
                         ),
                         isSelectable = true
                     )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
+                // Botones para acciones
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        Button(
+                            onClick = {
+                                onReport()
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                        ) {
+                            Text("Denunciar", color = Color.White)
+                        }
+
+                        Button(
+                            onClick = {
+                                onBlock()
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                        ) {
+                            Text("Bloquear", color = Color.White)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
     }
 }
+
 

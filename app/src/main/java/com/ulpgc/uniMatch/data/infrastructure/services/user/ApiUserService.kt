@@ -1,29 +1,29 @@
-package com.ulpgc.uniMatch.data.infrastructure.services.auth
+package com.ulpgc.uniMatch.data.infrastructure.services.user
 
 import android.util.Log
 
 
-import com.ulpgc.uniMatch.data.application.services.AuthService
 import com.ulpgc.uniMatch.data.application.services.LoginRequest
 import com.ulpgc.uniMatch.data.application.services.LoginResponse
 import com.ulpgc.uniMatch.data.application.services.RegisterRequest
 import com.ulpgc.uniMatch.data.application.services.RegisterResponse
+import com.ulpgc.uniMatch.data.application.services.UserService
 import com.ulpgc.uniMatch.data.domain.models.User
-import com.ulpgc.uniMatch.data.infrastructure.controllers.AuthController
+import com.ulpgc.uniMatch.data.infrastructure.controllers.UserController
 import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ApiAuthService(
-    private val authController: AuthController, private val secureStorage: SecureStorage
-) : AuthService {
+class ApiUserService(
+    private val userController: UserController, private val secureStorage: SecureStorage
+) : UserService {
 
     override suspend fun login(email: String, password: String): Result<LoginResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 Log.i("ApiAuthService", "Logging in with email: $email, password: $password")
-                val response = authController.login(LoginRequest(email, password))
+                val response = userController.login(LoginRequest(email, password))
                 Log.i("ApiAuthService", "Login response: $response")
                 if (response.success) {
                     Result.success(response.value!!)
@@ -40,7 +40,7 @@ class ApiAuthService(
     override suspend fun register(email: String, password: String): Result<RegisterResponse> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = authController.register(RegisterRequest(email, password))
+                val response = userController.register(RegisterRequest(email, password))
                 if (response.success) {
                     if (response.value == null) {
                         return@withContext Result.failure(Throwable("Registration failed: response value is null"))
@@ -69,6 +69,47 @@ class ApiAuthService(
             } catch (e: Exception) {
                 Log.e("ApiAuthService", "Failed to get current user: ${e.message}")
                 Result.failure(Throwable("Failed to get current user: ${e.message}"))
+            }
+        }
+    }
+
+    override suspend fun logout(): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                secureStorage.clearUser()
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(Throwable("Failed to logout: ${e.message}"))
+            }
+        }
+    }
+
+    override suspend fun reportUser(userId: String, reportedUserId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = userController.reportUser(userId, reportedUserId)
+                if (response.success) {
+                    Result.success(Unit)
+                } else {
+                    Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
+                }
+            } catch (e: Exception) {
+                Result.failure(Throwable("Failed to report user: ${e.message}"))
+            }
+        }
+    }
+
+    override suspend fun blockUser(userId: String, blockedUserId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = userController.blockUser(userId, blockedUserId)
+                if (response.success) {
+                    Result.success(Unit)
+                } else {
+                    Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
+                }
+            } catch (e: Exception) {
+                Result.failure(Throwable("Failed to block user: ${e.message}"))
             }
         }
     }

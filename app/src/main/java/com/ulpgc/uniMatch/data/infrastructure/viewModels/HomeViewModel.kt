@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.MatchingService
 import com.ulpgc.uniMatch.data.application.services.ProfileService
+import com.ulpgc.uniMatch.data.application.services.UserService
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,8 @@ class HomeViewModel (
     private val profileService: ProfileService,
     private val errorViewModel: ErrorViewModel,
     private val authViewModel: AuthViewModel,
-    private val matchingService: MatchingService
+    private val matchingService: MatchingService,
+    private val userService: UserService
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
@@ -91,4 +93,31 @@ class HomeViewModel (
         }
     }
 
+    fun reportUser(reportedUserId: String) {
+        viewModelScope.launch {
+            authViewModel.userId?.let { userId ->
+                userService.reportUser(userId, reportedUserId).onSuccess {
+                    _matchingProfiles.value = matchingProfiles.value.filter { it.userId != reportedUserId }
+                }.onFailure { error ->
+                    errorViewModel.showError(
+                        error.message ?: "Error reporting user"
+                    )
+                }
+            }
+        }
+    }
+
+    fun blockUser(blockedUserId: String) {
+        viewModelScope.launch {
+            authViewModel.userId?.let { userId ->
+                userService.blockUser(userId, blockedUserId).onSuccess {
+                    _matchingProfiles.value = matchingProfiles.value.filter { it.userId != blockedUserId }
+                }.onFailure { error ->
+                    errorViewModel.showError(
+                        error.message ?: "Error blocking user"
+                    )
+                }
+            }
+        }
+    }
 }

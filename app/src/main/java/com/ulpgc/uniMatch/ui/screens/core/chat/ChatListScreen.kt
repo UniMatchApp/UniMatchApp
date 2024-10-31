@@ -34,7 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.ulpgc.uniMatch.data.infrastructure.services.auth.MockAuthService
+import com.ulpgc.uniMatch.data.infrastructure.services.user.MockUserService
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
 import com.ulpgc.uniMatch.data.infrastructure.services.profile.MockProfileService
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
@@ -160,12 +160,12 @@ fun PreviewChatDetailScreen() {
                 chatService = MockChatService(),
                 errorViewModel = ErrorViewModel(),
                 authViewModel = AuthViewModel(
-                    authService = MockAuthService(),
+                    userService = MockUserService(),
                     errorViewModel = ErrorViewModel()
                 )
             ),
             authViewModel = AuthViewModel(
-                authService = MockAuthService(),
+                userService = MockUserService(),
                 errorViewModel = ErrorViewModel(),
             ),
             navController = NavController(
@@ -175,7 +175,7 @@ fun PreviewChatDetailScreen() {
                 profileService = MockProfileService(),
                 errorViewModel = ErrorViewModel(),
                 authViewModel = AuthViewModel(
-                    authService = MockAuthService(),
+                    userService = MockUserService(),
                     errorViewModel = ErrorViewModel()
                 )
             )
