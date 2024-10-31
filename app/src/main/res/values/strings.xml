@@ -73,5 +73,75 @@
         <item>Piscis</item>
     </string-array>
 
+    <string-array name="school">
+        <item>Seleccionar</item>
+        <item>Sin estudios</item>
+        <item>Educación primaria</item>
+        <item>Educación secundaria</item>
+        <item>Bachillerato</item>
+        <item>Formación profesional</item>
+        <item>Grado universitario</item>
+        <item>Máster</item>
+        <item>Doctorado</item>
+    </string-array>
+
+    <!-- Tipo de personalidad -->
+    <string-array name="personality_type">
+        <item>Seleccionar</item>
+        <item>Introvertido</item>
+        <item>Extrovertido</item>
+        <item>Ambivertido</item>
+    </string-array>
+
+    <!-- Mascotas -->
+    <string-array name="pets">
+        <item>Seleccionar</item>
+        <item>No tengo mascotas</item>
+        <item>Perro</item>
+        <item>Gato</item>
+        <item>Roedor</item>
+        <item>Pez</item>
+        <item>Otro</item>
+    </string-array>
+
+    <!-- Beber -->
+    <string-array name="drinks">
+        <item>Seleccionar</item>
+        <item>No bebo</item>
+        <item>Socialmente</item>
+        <item>Frecuentemente</item>
+        <item>A diario</item>
+    </string-array>
+
+    <!-- ¿Fumas? -->
+    <string-array name="smokes">
+        <item>Seleccionar</item>
+        <item>No fumo</item>
+        <item>Socialmente</item>
+        <item>Frecuentemente</item>
+        <item>A diario</item>
+    </string-array>
+
+    <!-- ¿Haces deporte? -->
+    <string-array name="sports">
+        <item>Seleccionar</item>
+        <item>No hago deporte</item>
+        <item>Ocasionalmente</item>
+        <item>Frecuentemente</item>
+        <item>A diario</item>
+    </string-array>
+
+    <!-- Valores y creencias -->
+    <string-array name="religion">
+        <item>Seleccionar</item>
+        <item>Catolicismo</item>
+        <item>Protestantismo</item>
+        <item>Islam</item>
+        <item>Judaísmo</item>
+        <item>Budismo</item>
+        <item>Ateísmo</item>
+        <item>Agnosticismo</item>
+        <item>Otra</item>
+    </string-array>
 
 </resources>

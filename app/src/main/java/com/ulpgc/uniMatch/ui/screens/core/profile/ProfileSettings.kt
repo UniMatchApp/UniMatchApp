@@ -55,15 +55,11 @@ fun ProfileSettings(
     val profile = profileViewModel.profileData.collectAsState().value
     val context = LocalContext.current
 
-
-
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        // TopBar fija en la parte superior
         ProfileSettingsTopBar(onBackPressed = { navController.popBackStack() })
 
-        // Contenido desplazable
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -83,7 +79,11 @@ fun ProfileSettings(
             // Section: Más sobre mí
             ProfileSection(
                 title = "Más sobre mí",
-                rowTitles = listOf("Horóscopo", "Educación", "Tipo de personalidad")
+                rowTitles = listOf(
+                    "Horóscopo" to profile?.horoscope.toString(),
+                    "Educación" to profile?.education,
+                    "Tipo de personalidad" to profile?.personalityType
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -91,7 +91,13 @@ fun ProfileSettings(
             // Section: Estilo de vida
             ProfileSection(
                 title = "Estilo de vida",
-                rowTitles = listOf("Mascotas", "Beber", "¿Fumas?", "¿Haces deporte?", "Valores y creencias")
+                rowTitles = listOf(
+                    "Mascotas" to profile?.pets,
+                    "¿Bebes?" to profile?.drinks,
+                    "¿Fumas?" to profile?.smokes,
+                    "¿Haces deporte?" to profile?.doesSports,
+                    "Valores y creencias" to profile?.valuesAndBeliefs
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -99,8 +105,8 @@ fun ProfileSettings(
             LegalSection()
         }
     }
-
 }
+
 
 @Composable
 fun ProfileDropdownField(label: String, options: List<String>) {
@@ -115,7 +121,7 @@ fun ProfileDropdownField(label: String, options: List<String>) {
 }
 
 @Composable
-fun ProfileSection(title: String, rowTitles: List<String>) {
+fun ProfileSection(title: String, rowTitles: List<Pair<String, String?>>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -129,15 +135,37 @@ fun ProfileSection(title: String, rowTitles: List<String>) {
             color = Color.Black,
             modifier = Modifier.padding(bottom = 8.dp)
         )
-        rowTitles.forEach { rowTitle ->
-            ProfileOptionRow(rowTitle)
+        rowTitles.forEach { (rowTitle, defaultValue) ->
+            ProfileOptionRow(rowTitle, defaultValue ?: "Seleccionar")
             Spacer(modifier = Modifier.height(8.dp)) // Separador entre filas
         }
     }
 }
 
 @Composable
-fun ProfileOptionRow(title: String) {
+fun ProfileOptionRow(title: String, option: String) {
+    val traducciones = mapOf(
+        "Horóscopo" to "horoscopes",
+        "Educación" to "school",
+        "Tipo de personalidad" to "personality_type",
+        "Mascotas" to "pets",
+        "¿Bebes?" to "drinks",
+        "¿Fumas?" to "smokes",
+        "¿Haces deporte?" to "sports",
+        "Valores y creencias" to "religion"
+    )
+
+    val context = LocalContext.current
+    val iconName = "icon_${traducciones[title] ?: "default"}"
+    val iconId = context.resources.getIdentifier(iconName, "drawable", context.packageName)
+    val listName = traducciones[title] ?: "default"
+    val listId = context.resources.getIdentifier(listName, "array", context.packageName) // Obtenemos el ID del array de strings
+
+    val options = if (listId != 0) {
+        context.resources.getStringArray(listId).toList()
+    } else {
+        listOf("Sin opciones disponibles")
+    }
 
     Row(
         modifier = Modifier
@@ -147,16 +175,25 @@ fun ProfileOptionRow(title: String) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row {
-            Icon(
-                painter = painterResource(id = R.drawable.icon_personality_type),
-                contentDescription = "Icono de usuario",
-                tint = Color.DarkGray,
-                modifier = Modifier.padding(end = 8.dp)
-            )
+            if (iconId != 0) { // Verificamos que iconId sea válido
+                Icon(
+                    painter = painterResource(id = iconId),
+                    contentDescription = "Icono de usuario",
+                    tint = Color.DarkGray,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Person, // Icono por defecto
+                    contentDescription = "Icono por defecto",
+                    tint = Color.DarkGray,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+            }
             Text(text = title, color = Color.DarkGray, fontSize = 12.sp)
         }
 
-        DropdownMenuShorter(items = listOf("Opción 1", "Opción 2", "Opción 3"), selectedItem = "Opción 1")
+        DropdownMenuShorter(items = options, selectedItem = option)
     }
 }
 
