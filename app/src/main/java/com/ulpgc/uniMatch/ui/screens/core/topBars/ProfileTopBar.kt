@@ -5,11 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -27,7 +23,7 @@ import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileTopBar(navController : NavController, onClickSettings : () -> Unit) {
+fun ProfileTopBar(navController : NavController) {
     TopAppBar(
         title = {
             Row(
@@ -47,13 +43,7 @@ fun ProfileTopBar(navController : NavController, onClickSettings : () -> Unit) {
                         .padding(start = 8.dp)
                         .weight(1f) // Esto expande el texto ocupando el espacio disponible.
                 )
-                IconButton(onClick = { onClickSettings() }) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "Configuración",
-                        tint = Color.White
-                    )
-                }
+
             }
         },
         modifier = Modifier.fillMaxWidth(),

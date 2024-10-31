@@ -32,7 +32,7 @@ import com.ulpgc.uniMatch.ui.screens.core.TopBar
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatListScreen
 import com.ulpgc.uniMatch.ui.screens.core.home.HomeScreen
-import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileSettings
+import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileWall
 
 object CoreRoutes {
     const val HOME = "home"
@@ -42,7 +42,7 @@ object CoreRoutes {
     const val PROFILE = "profile"
     const val NOTIFICATIONS = "notifications"
     const val FILTER = "filter"
-    const val PROFILE_SETTINGS = "profile-settings/{userId}"
+    const val PROFILE_WALL = "profile-wall/{userId}"
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -113,7 +113,11 @@ fun CoreNavHost(
         composable(CoreRoutes.SEARCH) { SearchScreen() }
         composable(CoreRoutes.PROFILE) {
             ProfileScreen(
-                profileViewModel = profileViewModel
+                profileViewModel = profileViewModel,
+                onEditClick = {
+                    // Navegar a la pantalla de edición de perfil
+                    navController.navigate("profile-wall/{userId}")
+                }
         ) }
         composable(CoreRoutes.CHAT_LIST) {
             ChatListScreen(
@@ -139,11 +143,14 @@ fun CoreNavHost(
                 )
             }
         }
-        navigation(startDestination = "profile-settings/{userId}", route = "profile_settings") {
-            composable("profile-settings/{userId}") {
-                ProfileSettings(
+        navigation(startDestination = "profile-wall/{userId}", route = "wall") {
+            composable("profile-wall/{userId}") {
+                ProfileWall(
                     profileViewModel = profileViewModel,
-                    navController = navController
+                    navController = navController,
+                    onAddImageClick = {
+                        navController.navigate("chat-detail/{chatId}")
+                    }
                 )
             }
         }
