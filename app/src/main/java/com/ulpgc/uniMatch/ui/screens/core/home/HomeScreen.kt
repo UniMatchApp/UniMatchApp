@@ -2,6 +2,7 @@ package com.ulpgc.uniMatch.ui.screens.core.home
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -76,7 +77,7 @@ fun HomeScreen(
     profileViewModel: ProfileViewModel,
     authViewModel: AuthViewModel
 ) {
-    val matchingProfiles by homeViewModel.matchingProfiles.collectAsState(emptyList())
+    val matchingProfiles by homeViewModel.matchingProfiles.collectAsState()
     val userId = authViewModel.userId ?: return
     var isModalOpen by remember { mutableStateOf(false) }
     var selectedProfile: Profile? by remember { mutableStateOf(null) }
@@ -100,15 +101,9 @@ fun HomeScreen(
             } else {
                 CardStack(
                     profiles = matchingProfiles,
-                    onSwipeLeft = { profile ->
-                        homeViewModel.dislikeUser(userId, profile.userId)
-                    },
-                    onSwipeRight = { profile ->
-                        homeViewModel.likeUser(userId, profile.userId)
-                    },
-                    onRequestMoreProfiles = {
-                        homeViewModel.loadMoreMatchingUsers()
-                    },
+                    onSwipeLeft = { profile -> homeViewModel.dislikeUser(userId, profile.userId) },
+                    onSwipeRight = { profile -> homeViewModel.likeUser(userId, profile.userId) },
+                    onRequestMoreProfiles = { homeViewModel.loadMoreMatchingUsers() },
                     onOpenProfile = { profile ->
                         selectedProfile = profile
                         isModalOpen = true
@@ -149,34 +144,32 @@ fun CardStack(
     onRequestMoreProfiles: () -> Unit,
     onOpenProfile: (Profile) -> Unit
 ) {
-    var isRequestingMore by remember { mutableStateOf(false) }
+    var profileToDisplay by remember { mutableStateOf<Profile?>(null) }
 
-    if (profiles.size < 3 && !isRequestingMore) {
-        isRequestingMore = true
+    LaunchedEffect(profiles) {
+        profileToDisplay = profiles.firstOrNull()
+
+    }
+
+    if (profiles.size < 4) {
         onRequestMoreProfiles()
     }
 
-    LaunchedEffect(profiles.size) {
-        isRequestingMore = false
-        Log.i("CardStack", "Profiles: ${profiles.size}")
-    }
-
-    if (profiles.isNotEmpty()) {
+    profileToDisplay?.let { profile ->
         ProfileCard(
-            profile = profiles[0],
+            profile = profile,
             onSwipeLeft = {
-                onSwipeLeft(profiles[0])
-                Log.i("CardStack", "Swipe left")
+                onSwipeLeft(profile)
+                profileToDisplay = null
             },
             onSwipeRight = {
-                onSwipeRight(profiles[0])
+                onSwipeRight(profile)
+                profileToDisplay = null
             },
             onOpenProfile = {
-                onOpenProfile(profiles[0])
+                onOpenProfile(profile)
             }
         )
-    } else {
-        Text("No more profiles", textAlign = TextAlign.Center, modifier = Modifier.fillMaxSize())
     }
 }
 
@@ -188,28 +181,37 @@ fun ProfileCard(
     onSwipeRight: () -> Unit,
     onOpenProfile: () -> Unit
 ) {
-    var currentImageIndex by remember(profile) { mutableIntStateOf(0) }
-    val swipeThreshold = 200f
+    var currentImageIndex by remember { mutableIntStateOf(0) }
+    val swipeThreshold = 500f
     var accumulatedDrag by remember { mutableStateOf(0f) }
     var isTracking by remember { mutableStateOf(false) }
     var showLikeDislike by remember { mutableStateOf(false) }
     var isLike by remember { mutableStateOf(true) }
 
-    val iconDisplayDuration = 500L
-
-    // Animaciones para rotación y desplazamiento
     val animatedOffsetX by animateFloatAsState(
         targetValue = if (isTracking) accumulatedDrag else 0f,
-        animationSpec = tween(durationMillis = 300)
+        animationSpec = tween(durationMillis = 400)
     )
-    val rotation by animateFloatAsState(
-        targetValue = if (showLikeDislike) 20f else 0f, // Rotación cuando se hace swipe
-        animationSpec = tween(durationMillis = 300)
+
+    // Estado para la rotación de los iconos
+    val rotationState by animateFloatAsState(
+        targetValue = if (showLikeDislike) 360f else 0f,
+        animationSpec = tween(durationMillis = 1000) // Tiempo de rotación
     )
+
+    // Determinar los colores de fondo según la dirección del deslizamiento
+    val leftColor = Color.Red.copy(alpha = 0.5f)
+    val rightColor = Color.Gray.copy(alpha = 0.5f)
+    val backgroundColor = when {
+        !isTracking -> Color.White // Fondo blanco si no se está haciendo swipe
+        accumulatedDrag < 0 -> leftColor // Fondo rojo si se desliza a la izquierda
+        else -> rightColor // Fondo verde si se desliza a la derecha
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(backgroundColor) // Agrega el color de fondo aquí
             .pointerInput(Unit) {
                 detectHorizontalDragGestures(
                     onDragStart = {
@@ -220,14 +222,17 @@ fun ProfileCard(
                     },
                     onDragEnd = {
                         isTracking = false
-                        accumulatedDrag = 0f
-//                        showLikeDislike = false
+                        showLikeDislike = false
+                        if (kotlin.math.abs(accumulatedDrag) < swipeThreshold) {
+                            accumulatedDrag = 0f
+                        }
                     },
                     onHorizontalDrag = { _, dragAmount ->
                         accumulatedDrag += dragAmount
+                        showLikeDislike = true
+                        isLike = accumulatedDrag < 0
+
                         if (kotlin.math.abs(accumulatedDrag) > swipeThreshold) {
-                            isLike = accumulatedDrag < 0
-                            showLikeDislike = true
                             if (isLike) onSwipeRight() else onSwipeLeft()
                             isTracking = false
                             accumulatedDrag = 0f
@@ -235,10 +240,8 @@ fun ProfileCard(
                     }
                 )
             }
-            .clickable {
-                currentImageIndex = (currentImageIndex + 1) % profile.wall.size
-            }
             .offset { IntOffset(animatedOffsetX.toInt(), 0) }
+            .animateContentSize()
     ) {
         AsyncImage(
             model = profile.wall[currentImageIndex],
@@ -247,7 +250,6 @@ fun ProfileCard(
             contentScale = ContentScale.Crop
         )
 
-        // Icono de Like/Dislike con animación y temporizador
         AnimatedVisibility(
             visible = showLikeDislike,
             enter = fadeIn(),
@@ -259,17 +261,13 @@ fun ProfileCard(
                 contentDescription = if (isLike) "Like" else "Dislike",
                 modifier = Modifier
                     .size(120.dp)
-                    .graphicsLayer(
-                        rotationZ = rotation,
-                        alpha = 0.9f
-                    ),
+                    .graphicsLayer(rotationZ = rotationState, alpha = 0.9f), // Aplicar rotación
                 tint = if (isLike) Color.Red else Color.Gray
             )
 
-            // Controla la visibilidad del icono después de un retraso
             LaunchedEffect(showLikeDislike) {
                 if (showLikeDislike) {
-                    kotlinx.coroutines.delay(iconDisplayDuration)
+                    kotlinx.coroutines.delay(1500L) // Mantener visible por más tiempo
                     showLikeDislike = false
                 }
             }

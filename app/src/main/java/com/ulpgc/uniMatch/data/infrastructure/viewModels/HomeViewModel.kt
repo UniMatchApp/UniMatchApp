@@ -66,9 +66,12 @@ class HomeViewModel (
             authViewModel.userId?.let { userId ->
                 matchingService.dislikeUser(userId, targetId)?.onSuccess {
                     // Eliminar el perfil de la lista
-                    Log.i("Matching Profiles size", _matchingProfiles.value.size.toString())
+                    Log.i("DislikeUser", "Successfully disliked user: $targetId")
                     _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != targetId }
-                    Log.i("Matching Profiles size", _matchingProfiles.value.size.toString())
+                    //Print the list of profiles de uno en uno
+                    for (profile in _matchingProfiles.value) {
+                        Log.i("DislikeUser", "Profile: $profile")
+                    }
                 }?.onFailure { error ->
                     errorViewModel.showError(
                         error.message ?: "Error disliking user"
