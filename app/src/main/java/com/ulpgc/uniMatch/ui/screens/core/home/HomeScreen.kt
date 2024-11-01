@@ -10,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,6 +59,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
@@ -208,6 +210,11 @@ fun ProfileCard(
         else -> rightColor // Fondo verde si se desliza a la derecha
     }
 
+    // Obtenemos el ancho de la pantalla en dp
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    // La mitad del ancho de la pantalla
+    val clickAreaWidth = screenWidth / 2
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -239,14 +246,33 @@ fun ProfileCard(
                         }
                     }
                 )
+            }.pointerInput(Unit) {
+                detectTapGestures(onTap = { offset ->
+                    val x = offset.x.toDp()
+
+                    when {
+                        x < clickAreaWidth -> {
+                            if (currentImageIndex > 0) {
+                                currentImageIndex--
+                            }
+                        }
+                        x > clickAreaWidth -> {
+                            if (currentImageIndex < profile.wall.size - 1) {
+                                currentImageIndex++
+                            }
+                        }
+                    }
+                })
             }
             .offset { IntOffset(animatedOffsetX.toInt(), 0) }
             .animateContentSize()
     ) {
+        // Imagen que cambia al hacer clic
         AsyncImage(
             model = profile.wall[currentImageIndex],
             contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize(),
             contentScale = ContentScale.Crop
         )
 
