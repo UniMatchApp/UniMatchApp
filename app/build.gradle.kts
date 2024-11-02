@@ -99,6 +99,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
+    // ImagePicker
+    implementation("com.github.dhaval2404:imagepicker:2.1")
     // Retrofit 2
     implementation(libs.retrofit)
     implementation(libs.converter.gson)

@@ -1,10 +1,12 @@
 package com.ulpgc.uniMatch.ui.screens.core.profile
 
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
@@ -36,7 +38,9 @@ fun ProfileWall(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            WallGrid(initialProfileImages = profileImages, onAddImageClick = onAddImageClick) // Añadido el parámetro onAddImageClick
+            val activity = LocalContext.current as? ComponentActivity // Obtener la actividad actual
+
+            WallGrid(activity!!, initialProfileImages = profileImages, onAddImageClick = onAddImageClick) // Añadido el parámetro onAddImageClick
 
             Spacer(modifier = Modifier.height(16.dp))
 

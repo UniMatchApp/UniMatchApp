@@ -5,12 +5,17 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,42 +30,41 @@ import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.ui.theme.MainColor
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun InterestGrid(initialInterestList: List<String>) {
-    // Usamos remember para mantener la lista de intereses seleccionados
     val selectedInterests = remember { mutableStateListOf<String>().apply { addAll(initialInterestList) } }
 
     val context = LocalContext.current
     val interests = context.resources.getStringArray(R.array.interests).toList()
-    val combinedList = interests + selectedInterests // Combina la lista de intereses
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    FlowRow (
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(combinedList.distinct(), key = { it }) { interest ->
+        interests.forEach { interest ->
+            val isSelected = selectedInterests.contains(interest)
+
             Box(
                 modifier = Modifier
                     .background(
-                        if (interest in selectedInterests) MainColor else Color.LightGray,
-                        shape = RoundedCornerShape(16.dp)
-                    ) // Fondo redondeado
-                    .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(16.dp)) // Bordes redondeados
-                    .padding(8.dp) // Padding interno
+                        color = if (isSelected) MainColor else Color.Gray.copy(alpha = 0.5f),
+                        shape = CircleShape
+                    )
                     .clickable {
-                        if (interest !in selectedInterests) {
-                            selectedInterests.add(interest)
-                        } else {
+                        if (isSelected) {
                             selectedInterests.remove(interest)
+                        } else {
+                            selectedInterests.add(interest)
                         }
                     }
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
             ) {
                 Text(
                     text = interest,
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.align(Alignment.Center) // Centrar el texto
+                    color = if (isSelected) Color.Black else Color.White
                 )
             }
         }
