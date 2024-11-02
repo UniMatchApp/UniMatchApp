@@ -22,6 +22,7 @@ android {
 
     buildFeatures {
         buildConfig = true
+        viewBinding = true
     }
 
     buildTypes {
@@ -77,6 +78,15 @@ dependencies {
     implementation(libs.volley)
     implementation(libs.protolite.well.known.types)
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.gson)
+
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
     implementation(libs.ui)
     implementation(libs.google.material)
     implementation(libs.androidx.constraintlayout)

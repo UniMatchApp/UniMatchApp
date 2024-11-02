@@ -154,4 +154,23 @@
         <item>Otra</item>
     </string-array>
 
+    <string-array name="interests">
+        <item>Deportes</item>
+        <item>Música</item>
+        <item>Cine</item>
+        <item>Viajes</item>
+        <item>Lectura</item>
+        <item>Gastronomía</item>
+        <item>Tecnología</item>
+        <item>Arte</item>
+        <item>Fotografía</item>
+        <item>Moda</item>
+        <item>Juegos de mesa</item>
+        <item>Yoga</item>
+        <item>Senderismo</item>
+        <item>Voluntariado</item>
+        <item>Emprendimiento</item>
+    </string-array>
+
+
 </resources>
