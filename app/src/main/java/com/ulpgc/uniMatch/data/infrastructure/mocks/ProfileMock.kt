@@ -61,11 +61,57 @@ object ProfileMock {
         )
     }
 
-    fun createMockProfiles(count: Int): List<Profile> {
-        return List(count) { createMockProfile() }
-    }
+    fun createNamedProfiles(): List<Profile> {
+        val names = listOf("Marilola", "Adrián Pèñate", "Jose Carlos")
+        val images = listOf(
+            listOf(
+                "https://www.eii.ulpgc.es/sites/default/files/styles/height/public/team/marilola800x800.png?itok=zMv5SjYa",
+                "https://www.eii.ulpgc.es/sites/default/files/styles/height/public/team/Marilola_Afonso_Su%C3%A1rez_0.jpg?itok=jHco3IEU",
+                "https://mt4sd.ulpgc.es/wp-content/uploads/2018/03/Marilola.png"
+            ),
+            listOf(
+                "https://imagenes2.fotos.europapress.es/preview/5309176.jpg?s=1000",
+                "https://i1.rgstatic.net/ii/profile.image/11431281127138961-1678964775589_Q512/Adrian-Penate-Sanchez.jpg"
+            ),
+            listOf(
+                "https://www.eii.ulpgc.es/sites/default/files/styles/height/public/team/Foto%20oficial%20Jose%20Carlos%20Rodriguez%2005.jpeg?itok=eFOM2TXu",
+                "https://estaticos-cdn.prensaiberica.es/clip/53ccde93-d373-422a-8426-4dbee8ffbcf3_16-9-aspect-ratio_default_0.jpg"
+            ),
+        )
 
-    fun getUserProfileByChatId(chatId: String): Profile {
-        return createMockProfile()
+        return names.mapIndexed { index, name ->
+            Profile(
+                userId = "Mock Id ${Random.nextInt(1, 1000)}",
+                name = name,
+                age = Random.nextInt(18, 60),
+                aboutMe = "I am $name, a ${jobs.random()} who loves ${interests.random()}.",
+                location = Location(
+                    Random.nextDouble(27.0, 29.0),
+                    Random.nextDouble(14.0, 16.0)
+                ),
+                gender = Gender.entries.toTypedArray().random(),
+                sexualOrientation = SexualOrientation.entries.toTypedArray().random(),
+                relationshipType = RelationshipType.entries.toTypedArray().random(),
+                birthday = Date(),
+                interests = List(Random.nextInt(1, 8)) { interests.random() },
+                wall = images[index],
+                preferredImage = images[index].first(),
+                maxDistance = Random.nextInt(10, 100),
+                ageRange = Random.nextInt(18, 40) to Random.nextInt(41, 100),
+                horoscope = Horoscope.entries.toTypedArray().random(),
+                height = Random.nextInt(150, 200),
+                weight = Random.nextInt(50, 100),
+                job = jobs.random(),
+                education = educationLevels.random(),
+                personalityType = personalityTypes.random(),
+                pets = petPreferences.random(),
+                drinks = listOf("Yes", "No").random(),
+                smokes = listOf("Yes", "No").random(),
+                doesSports = listOf("Yes", "No").random(),
+                valuesAndBeliefs = "I believe in ${interests.random()} and respect.",
+                genderPriority = Gender.entries.toTypedArray().random(),
+                fact = "I once ${interests.random()} for a whole day!"
+            )
+        }
     }
 }

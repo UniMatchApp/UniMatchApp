@@ -7,7 +7,7 @@ import com.ulpgc.uniMatch.data.infrastructure.mocks.ProfileMock
 class MockMatchingService: MatchingService {
     override suspend fun getMatchingUsers(userId: String, limit: Int): Result<List<Profile>> {
         return Result.success(
-            ProfileMock.createMockProfiles(limit)
+            ProfileMock.createNamedProfiles()
         )
     }
 
