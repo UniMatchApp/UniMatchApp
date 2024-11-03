@@ -252,7 +252,7 @@ fun ProfileCard(
                         Icon(
                             imageVector = Icons.Default.ArrowUpward,
                             contentDescription = stringResource(R.string.interests),
-                            tint = MaterialTheme.colorScheme.onSecondary,
+                            tint = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier.size(16.dp)
                         )
                     }
@@ -296,7 +296,7 @@ fun ProfileCard(
                             Text(
                                 text = interest,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSecondary
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         }
 
@@ -329,7 +329,7 @@ fun ProfileCard(
                         Icon(
                             Icons.Default.SwapHoriz,
                             contentDescription = stringResource(R.string.next),
-                            tint = MaterialTheme.colorScheme.onSecondary
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
 
