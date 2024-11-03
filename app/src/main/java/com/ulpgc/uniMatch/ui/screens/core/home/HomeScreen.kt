@@ -754,7 +754,10 @@ fun ReasonScreen(onNext: (String) -> Unit, onDismiss: () -> Unit) {
                     selected = (selectedReason == reason),
                     onClick = { selectedReason = reason }
                 )
-                Text(reason)
+                Text(
+                    reason,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
             }
         }
 
@@ -777,7 +780,7 @@ fun ReasonScreen(onNext: (String) -> Unit, onDismiss: () -> Unit) {
             Button(
                 onClick = { if (selectedReason.isNotEmpty()) onNext(selectedReason) },
                 enabled = selectedReason.isNotEmpty(), // Deshabilitar si no hay opción seleccionada
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
+                colors = ButtonDefaults.buttonColors(containerColor = MainColor)
             ) {
                 Text("Siguiente", color = Color.White)
             }
@@ -816,7 +819,10 @@ fun DetailsScreen(reason: String, onNext: (String) -> Unit, onBack: () -> Unit) 
                     selected = (selectedDetail == detail),
                     onClick = { selectedDetail = detail }
                 )
-                Text(detail)
+                Text(
+                    detail,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
             }
         }
 
@@ -839,7 +845,7 @@ fun DetailsScreen(reason: String, onNext: (String) -> Unit, onBack: () -> Unit) 
             Button(
                 onClick = { if (selectedDetail.isNotEmpty()) onNext(selectedDetail) },
                 enabled = selectedDetail.isNotEmpty(), // Deshabilitar si no hay opción seleccionada
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
+                colors = ButtonDefaults.buttonColors(containerColor = MainColor)
             ) {
                 Text("Siguiente", color = Color.White)
             }
@@ -884,7 +890,7 @@ fun SendScreen(
 
             Button(onClick = {
                 onSubmit() // Aquí se envían todos los datos
-            }, colors = ButtonDefaults.buttonColors(containerColor = Color.Green)) {
+            }, colors = ButtonDefaults.buttonColors(containerColor = MainColor)) {
                 Text("Enviar", color = Color.White)
             }
         }
