@@ -17,14 +17,17 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownMenu(items: List<String>, selectedItem: String) {
+fun DropdownMenu(
+    items: List<String>,
+    selectedItem: String,
+    onItemSelected: (String) -> Unit = {}
+) {
 
     var isExpanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(selectedItem) }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
     ) {
         ExposedDropdownMenuBox(
             expanded = isExpanded,
@@ -47,6 +50,7 @@ fun DropdownMenu(items: List<String>, selectedItem: String) {
                         onClick = {
                             selectedText = text
                             isExpanded = false
+                            onItemSelected(text) // Llamada a onItemSelected con el elemento seleccionado
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                     )

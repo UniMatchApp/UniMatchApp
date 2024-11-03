@@ -31,6 +31,8 @@
     <string name="sports">¿Haces deporte?</string>
     <string name="religion">Valores y creencias</string>
 
+    <string name="edit_preferences">Editar preferencias</string>
+
 
 
     <string-array name="funny_questions">

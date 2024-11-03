@@ -30,6 +30,8 @@
     <string name="sports">Do you do sports?</string>
     <string name="religion">Values and beliefs</string>
 
+    <string name="edit_preferences">Edit preferences</string>
+
 
 
     <string-array name="report_reasons">

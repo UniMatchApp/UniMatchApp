@@ -540,6 +540,35 @@ fun ProfileInfoModal(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
+                // Sobre mi perfil
+                item {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Sobre mí",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Color.Black
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+
+                item {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        InputField(
+                            value = profile.aboutMe,
+                            onValueChange = {},
+                            label = "Sobre mí",
+                            textColor = Color.Black,
+                            isEditable = false,
+                            backgroundColor = Bone,
+                            isRound = true
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
                 // Información sobre el perfil
                 item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
