@@ -31,7 +31,15 @@
     <string name="sports">¿Haces deporte?</string>
     <string name="religion">Valores y creencias</string>
 
+    <!--PREFERENCES SCREEN-->
     <string name="edit_preferences">Editar preferencias</string>
+    <string name="preferences_title">Preferencias</string>
+    <string name="no_preferences_info">No hay información de preferencias disponible.</string>
+    <string name="max_distance">Distancia Máxima: %d km</string>
+    <string name="gender_priority_title">Prioridad de Género</string>
+    <string name="age_range_title">Rango de Edad: %d - %d</string>
+    <string name="relationship_type_title">Tipo de Relación</string>
+    <string name="preferences_explanation">Unimatch utiliza estas preferencias para sugerir coincidencias. Algunas sugerencias pueden no estar dentro de tus parámetros.</string>
 
 
 

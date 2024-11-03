@@ -30,7 +30,16 @@
     <string name="sports">Do you do sports?</string>
     <string name="religion">Values and beliefs</string>
 
+
+    <!--PREFERENCES SCREEN-->
     <string name="edit_preferences">Edit preferences</string>
+    <string name="preferences_title">Preferences</string>
+    <string name="no_preferences_info">No preferences information available.</string>
+    <string name="max_distance">Maximum Distance: %d km</string>
+    <string name="gender_priority_title">Gender Priority</string>
+    <string name="age_range_title">Age Range: %d - %d</string>
+    <string name="relationship_type_title">Relationship Type</string>
+    <string name="preferences_explanation">Unimatch uses these preferences to suggest matches. Some suggestions may not be within your parameters.</string>
 
 
 

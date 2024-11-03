@@ -18,7 +18,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enum.Gender
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
@@ -50,19 +52,19 @@ fun PreferencesScreen(
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Preferences", style = MaterialTheme.typography.headlineMedium)
+        Text(text = stringResource(id = R.string.preferences_title), style = MaterialTheme.typography.headlineMedium)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Mostrar mensaje si no hay perfil
         if (profile == null) {
             Text(
-                text = "No hay información de preferencias disponible.",
+                text = stringResource(id = R.string.no_preferences_info),
                 style = MaterialTheme.typography.bodySmall
             )
         } else {
             // Max Distance Slider
-            Text(text = "Maximum Distance: $maxDistance km")
+            Text(text = stringResource(id = R.string.max_distance, maxDistance))
             Slider(
                 value = maxDistance.toFloat(),
                 onValueChange = { maxDistance = it.toInt() },
@@ -75,7 +77,7 @@ fun PreferencesScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Gender Priority Selector
-            Text(text = "Gender Priority")
+            Text(text = stringResource(id = R.string.gender_priority_title))
             var expandedGender by remember { mutableStateOf(false) }
             Box {
                 Text(
@@ -95,15 +97,13 @@ fun PreferencesScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = "Age Range: ${ageRange.first.toInt()} - ${ageRange.second.toInt()}")
+            Text(text = stringResource(id = R.string.age_range_title, ageRange.first.toInt(), ageRange.second.toInt()))
 
             val minAge = 18f
             val maxAge = 100f
 
             val ageMin = ageRange.first.coerceIn(minAge.toInt(), maxAge.toInt()).toFloat()
             val ageMax = ageRange.second.coerceIn(minAge.toInt(), maxAge.toInt()).toFloat()
-
-
 
             RangeSlider(
                 value = ageMin..ageMax,
@@ -114,14 +114,13 @@ fun PreferencesScreen(
                 },
                 valueRange = minAge..maxAge,
                 onValueChangeFinished = {
-
                     profileViewModel.updateAgeRange(ageRange.first, ageRange.second)
                 },
             )
             Spacer(modifier = Modifier.height(16.dp))
 
             // Relationship Type Selector
-            Text(text = "Relationship Type")
+            Text(text = stringResource(id = R.string.relationship_type_title))
             var expandedRelationship by remember { mutableStateOf(false) }
             Box {
                 relationshipType.let {
@@ -144,10 +143,9 @@ fun PreferencesScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Unimatch usa estas preferencias para sugerir matches. Algunas sugerencias pueden no estar dentro de tus parámetros.",
+                text = stringResource(id = R.string.preferences_explanation),
                 style = MaterialTheme.typography.bodySmall
             )
         }
     }
 }
-
