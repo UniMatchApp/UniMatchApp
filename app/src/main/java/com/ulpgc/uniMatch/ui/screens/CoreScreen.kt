@@ -32,6 +32,7 @@ import com.ulpgc.uniMatch.ui.screens.core.TopBar
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatListScreen
 import com.ulpgc.uniMatch.ui.screens.core.home.HomeScreen
+import com.ulpgc.uniMatch.ui.screens.core.preferences.PreferencesScreen
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileInterests
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileWall
 
@@ -41,10 +42,10 @@ object CoreRoutes {
     const val CHAT_LIST = "chatList"
     const val CHAT_DETAIL = "chatDetail/{chatId}"
     const val PROFILE = "profile"
-    const val NOTIFICATIONS = "notifications"
-    const val FILTER = "filter"
     const val PROFILE_WALL = "profile-wall/{userId}"
     const val PROFILE_INTERESTS = "profile-interests/{userId}"
+    const val NOTIFICATIONS = "home/notifications"
+    const val PREFERENCES = "home/preferences"
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -68,7 +69,7 @@ fun CoreScreen(
 
     // Determina si necesitas padding o no
     val isPaddingRequired = when (currentRoute) {
-        CoreRoutes.HOME, CoreRoutes.SEARCH, CoreRoutes.CHAT_LIST, CoreRoutes.PROFILE -> true
+        CoreRoutes.HOME, CoreRoutes.SEARCH, CoreRoutes.CHAT_LIST, CoreRoutes.PROFILE, CoreRoutes.PREFERENCES -> true
         else -> false
     }
 
@@ -132,6 +133,12 @@ fun CoreNavHost(
                     // Navegar a la pantalla de detalles del chat usando un subenrutamiento
                     navController.navigate(CoreRoutes.CHAT_DETAIL.replace("{chatId}", chatId))
                 }
+            )
+        }
+
+        composable(CoreRoutes.PREFERENCES) {
+            PreferencesScreen(
+                profileViewModel = profileViewModel
             )
         }
 

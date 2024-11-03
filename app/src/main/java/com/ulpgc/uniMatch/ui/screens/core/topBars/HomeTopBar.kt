@@ -55,7 +55,7 @@ fun HomeTopBar(navController: NavHostController) {
                 )
 
             }
-            IconButton(onClick = { navController.navigate(CoreRoutes.FILTER) }) {
+            IconButton(onClick = { navController.navigate(CoreRoutes.PREFERENCES) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_filter),
                     contentDescription = "Filter",
