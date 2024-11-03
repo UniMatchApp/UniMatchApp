@@ -32,6 +32,7 @@ import com.ulpgc.uniMatch.ui.screens.core.TopBar
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatListScreen
 import com.ulpgc.uniMatch.ui.screens.core.home.HomeScreen
+import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileInterests
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileWall
 
 object CoreRoutes {
@@ -43,6 +44,7 @@ object CoreRoutes {
     const val NOTIFICATIONS = "notifications"
     const val FILTER = "filter"
     const val PROFILE_WALL = "profile-wall/{userId}"
+    const val PROFILE_INTERESTS = "profile-interests/{userId}"
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -114,9 +116,13 @@ fun CoreNavHost(
         composable(CoreRoutes.PROFILE) {
             ProfileScreen(
                 profileViewModel = profileViewModel,
-                onEditClick = {
+                onEditClick = { userId ->
                     // Navegar a la pantalla de edición de perfil
-                    navController.navigate("profile-wall/{userId}")
+                    navController.navigate(CoreRoutes.PROFILE_WALL.replace("{userId}", userId))
+                },
+                onEditInterestsClick = { userId ->
+                    // Navegar a la pantalla de intereses del perfil
+                    navController.navigate(CoreRoutes.PROFILE_INTERESTS.replace("{userId}", userId))
                 }
         ) }
         composable(CoreRoutes.CHAT_LIST) {
@@ -151,6 +157,15 @@ fun CoreNavHost(
                     onAddImageClick = {
                         navController.navigate("chat-detail/{chatId}")
                     }
+                )
+            }
+        }
+
+        navigation(startDestination = "profile-interests", route = "interests") {
+            composable("profile-interests/{userId}") {
+                ProfileInterests(
+                    profileViewModel = profileViewModel,
+                    navController = navController
                 )
             }
         }
