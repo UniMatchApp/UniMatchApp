@@ -136,9 +136,10 @@ open class ProfileViewModel(
         }
     }
 
-    fun updateGenderPriority(gender: Gender) {
+    fun updateGenderPriority(gender: Gender?) {
         viewModelScope.launch {
             _isLoading.value = true
+
             val result = profileService.updateGenderPriority(authViewModel.userId!!, gender)
 
             result.onSuccess {
@@ -152,6 +153,7 @@ open class ProfileViewModel(
             }
         }
     }
+
 
     fun updateRelationshipType(relationshipType: RelationshipType) {
         viewModelScope.launch {

@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,34 +37,34 @@ fun PreferencesScreen(
         profileViewModel.loadProfile()
     }
 
-    // Variables para preferencias
-    var maxDistance by remember { mutableStateOf(0) }
-    var genderPriority by remember { mutableStateOf(Gender.MALE) }
-    var ageRange by remember { mutableStateOf(18 to 100) } // o cualquier valor predeterminado
+    var maxDistance by remember { mutableIntStateOf(0) }
+    var genderPriority by remember { mutableStateOf<Gender?>(null) }
+    var ageRange by remember { mutableStateOf(18 to 100) }
     var relationshipType by remember { mutableStateOf(RelationshipType.FRIENDSHIP) }
 
     LaunchedEffect(profile) {
         profile?.let {
             maxDistance = it.maxDistance
-            genderPriority = it.genderPriority!!
+            genderPriority = it.genderPriority
             ageRange = it.ageRange
             relationshipType = it.relationshipType
         }
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = stringResource(id = R.string.preferences_title), style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = stringResource(id = R.string.preferences_title),
+            style = MaterialTheme.typography.headlineMedium
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mostrar mensaje si no hay perfil
         if (profile == null) {
             Text(
                 text = stringResource(id = R.string.no_preferences_info),
                 style = MaterialTheme.typography.bodySmall
             )
         } else {
-            // Max Distance Slider
             Text(text = stringResource(id = R.string.max_distance, maxDistance))
             Slider(
                 value = maxDistance.toFloat(),
@@ -76,28 +77,42 @@ fun PreferencesScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Gender Priority Selector
             Text(text = stringResource(id = R.string.gender_priority_title))
             var expandedGender by remember { mutableStateOf(false) }
             Box {
-                Text(
-                    text = genderPriority.name,
-                    modifier = Modifier.clickable { expandedGender = true }
-                )
+                genderPriority?.let {
+                    Text(
+                        text = it.name,
+                        modifier = Modifier.clickable { expandedGender = true }
+                    )
+                }
 
                 DropdownMenu(
                     items = Gender.entries.map { it.name },
-                    selectedItem = genderPriority.name,
+                    selectedItem = genderPriority?.name,
                     onItemSelected = { selectedGender ->
-                        genderPriority = Gender.valueOf(selectedGender)
+
+                        genderPriority = if (selectedGender != null) {
+                            Gender.valueOf(selectedGender)
+                        } else {
+                            null
+                        }
+
                         profileViewModel.updateGenderPriority(genderPriority)
-                    }
+                    },
+                    includeNullOption = true
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = stringResource(id = R.string.age_range_title, ageRange.first.toInt(), ageRange.second.toInt()))
+            Text(
+                text = stringResource(
+                    id = R.string.age_range_title,
+                    ageRange.first,
+                    ageRange.second
+                )
+            )
 
             val minAge = 18f
             val maxAge = 100f
@@ -119,7 +134,6 @@ fun PreferencesScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Relationship Type Selector
             Text(text = stringResource(id = R.string.relationship_type_title))
             var expandedRelationship by remember { mutableStateOf(false) }
             Box {
@@ -133,8 +147,10 @@ fun PreferencesScreen(
                         items = RelationshipType.entries.map { it.name },
                         selectedItem = it.name,
                         onItemSelected = { selectedRelationship ->
-                            relationshipType = RelationshipType.valueOf(selectedRelationship)
-                            profileViewModel.updateRelationshipType(relationshipType)
+                            if (selectedRelationship != null) {
+                                relationshipType = RelationshipType.valueOf(selectedRelationship)
+                                profileViewModel.updateRelationshipType(relationshipType)
+                            }
                         }
                     )
                 }

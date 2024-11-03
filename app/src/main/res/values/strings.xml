@@ -41,7 +41,8 @@
     <string name="relationship_type_title">Tipo de Relación</string>
     <string name="preferences_explanation">Unimatch utiliza estas preferencias para sugerir coincidencias. Algunas sugerencias pueden no estar dentro de tus parámetros.</string>
 
-
+    <!--DROPDOWN MENU-->
+    <string name="dropdown_empty_option">Ninguno</string>
 
     <string-array name="funny_questions">
         <item>Selecciona una pregunta</item>

@@ -41,7 +41,8 @@
     <string name="relationship_type_title">Relationship Type</string>
     <string name="preferences_explanation">Unimatch uses these preferences to suggest matches. Some suggestions may not be within your parameters.</string>
 
-
+    <!--DROPDOWN MENU-->
+    <string name="dropdown_empty_option">None</string>
 
     <string-array name="report_reasons">
         <item>Spam</item>

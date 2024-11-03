@@ -30,8 +30,8 @@ fun ProfileDropdownField(
         Text(text = label, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = Color.Gray)
 
         DropdownMenu(options, selectedOption, onItemSelected = { selected ->
-            selectedOption = selected
-            onEditField(selected)
+            selectedOption = selected ?: "Seleccionar"
+            onEditField(selectedOption)
         })
     }
 }

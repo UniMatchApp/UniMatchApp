@@ -21,7 +21,7 @@ class MockProfileService: ProfileService {
         return Result.success(Unit)
     }
 
-    override suspend fun updateGenderPriority(userId: String, gender: Gender): Result<Unit> {
+    override suspend fun updateGenderPriority(userId: String, gender: Gender?): Result<Unit> {
         return Result.success(Unit)
     }
 

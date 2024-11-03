@@ -31,7 +31,7 @@ class ApiProfileService (
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateGenderPriority(userId: String, gender: Gender): Result<Unit> {
+    override suspend fun updateGenderPriority(userId: String, gender: Gender?): Result<Unit> {
         TODO("Not yet implemented")
     }
 
