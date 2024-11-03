@@ -41,6 +41,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.enum.Gender
+import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
 import com.ulpgc.uniMatch.ui.components.profile.LegalSection
@@ -61,26 +64,11 @@ fun ProfileScreen(
 
     val context = LocalContext.current
 
-    val profile = profileViewModel.profileData.collectAsState().value
+    var profile = profileViewModel.profileData.collectAsState().value
+
+    val facts = context.resources.getStringArray(R.array.funny_questions).toList()
 
     var aboutMeText by remember { mutableStateOf(profile?.aboutMe ?: "") }
-    val facts = context.resources.getStringArray(R.array.funny_questions).toList()
-    var selectedFact by remember { mutableStateOf(profile?.fact ?: "") }
-    var selectedInterests by remember { mutableStateOf(profile?.interests ?: emptyList()) }
-    var selectedHeight by remember { mutableStateOf(profile?.height?.toString() ?: "170") }
-    var selectedWeight by remember { mutableStateOf(profile?.weight?.toString() ?: "70") }
-    var selectedGender by remember { mutableStateOf(profile?.gender ?: "") }
-    var selectedOrientation by remember { mutableStateOf(profile?.sexualOrientation ?: "") }
-    var selectedJob by remember { mutableStateOf(profile?.job ?: "") }
-    var selectedRelationshipType by remember { mutableStateOf(profile?.relationshipType ?: "") }
-    var selectedHoroscope by remember { mutableStateOf(profile?.horoscope ?: "") }
-    var selectedEducation by remember { mutableStateOf(profile?.education ?: "") }
-    var selectedPersonalityType by remember { mutableStateOf(profile?.personalityType ?: "") }
-    var selectedPets by remember { mutableStateOf(profile?.pets ?: "") }
-    var selectedDrinks by remember { mutableStateOf(profile?.drinks ?: "") }
-    var selectedSmokes by remember { mutableStateOf(profile?.smokes ?: "") }
-    var selectedSports by remember { mutableStateOf(profile?.doesSports ?: "") }
-    var selectedReligion by remember { mutableStateOf(profile?.valuesAndBeliefs ?: "") }
 
     Column(
         modifier = Modifier
@@ -150,7 +138,7 @@ fun ProfileScreen(
         OutlinedTextField(
             value = aboutMeText,
             onValueChange = { newText ->
-                aboutMeText = newText
+                profile?.aboutMe = newText
             },
             modifier = Modifier.fillMaxWidth(),
         )
@@ -167,7 +155,7 @@ fun ProfileScreen(
             DropdownMenu(
                 items = facts,
                 selectedItem = it,
-                onItemSelected = { newFact -> selectedFact = newFact }
+                onItemSelected = { newFact -> profile.fact = newFact }
             )
         }
 
@@ -184,7 +172,7 @@ fun ProfileScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { profile?.let { onEditInterestsClick(it.profileId) } }
-                .border(width = 1.dp, color = Color.Gray) // Bordes
+                .border(width = 1.dp, color = Color.Gray)
                 .padding(16.dp)
         ) {
             Text(
@@ -195,21 +183,40 @@ fun ProfileScreen(
 
 
 
-        ProfileDropdownField(label = "Sexo", options = context.resources.getStringArray(R.array.genders).toList(), onEditField = { selectedGender = it })
+        ProfileDropdownField(
+            label = "Sexo",
+            options = context.resources.getStringArray(R.array.genders).toList(),
+            onEditField = { selectedOption ->
+                profile?.gender = Gender.values().firstOrNull { it.name == selectedOption.toUpperCase() }!!
+            }
+        )
         ProfileInputField(
             label = "Altura en cm",
             initialValue = profile?.height?.toString() ?: "170",
-            onValueChange = { newHeight -> selectedHeight = newHeight }
+            onValueChange = { newHeight -> profile?.height = newHeight.toInt() }
         )
 
         ProfileInputField(
             label = "Peso en kg",
             initialValue = profile?.weight?.toString() ?: "70",
-            onValueChange = { newWeight -> selectedWeight = newWeight }
+            onValueChange = { newWeight -> profile?.weight = newWeight.toInt() }
         )
-        ProfileDropdownField(label = "Orientación sexual", options = context.resources.getStringArray(R.array.sexual_orientation).toList(), onEditField = { selectedOrientation = it })
-        ProfileDropdownField(label = "Puesto", options = listOf("Ingeniero", "Médico", "Profesor", "Diseñador"), onEditField = { selectedJob = it })
-        ProfileDropdownField(label = "¿Qué tipo de relación buscas?", options = context.resources.getStringArray(R.array.relationship_type).toList(), onEditField = { selectedRelationshipType = it })
+        ProfileDropdownField(
+            label = "Orientación sexual",
+            options = context.resources.getStringArray(R.array.sexual_orientation).toList(),
+            onEditField = { selectedOption ->
+                profile?.sexualOrientation = SexualOrientation.values().firstOrNull { it.name == selectedOption.toUpperCase() }!!
+            }
+        )
+
+        ProfileDropdownField(label = "Puesto", options = listOf("Ingeniero", "Médico", "Profesor", "Diseñador"), onEditField = { profile?.job = it })
+        ProfileDropdownField(
+            label = "¿Qué tipo de relación buscas?",
+            options = context.resources.getStringArray(R.array.relationship_type).toList(),
+            onEditField = { selectedOption ->
+                profile?.relationshipType = RelationshipType.values().firstOrNull { it.name == selectedOption.toUpperCase() }!!
+            }
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -244,23 +251,9 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                if (aboutMeText != profile?.aboutMe) profileViewModel.updateAboutMe(aboutMeText)
-                if (selectedFact != profile?.fact) profileViewModel.updateFact(selectedFact)
-                if (selectedInterests != profile?.interests) profileViewModel.updateInterests(selectedInterests)
-//                if (selectedHeight != profile?.height?.toString()) profileViewModel.updateHeight(selectedHeight.toInt())
-//                if (selectedWeight != profile?.weight?.toString()) profileViewModel.updateWeight(selectedWeight.toInt())
-//                if (selectedJob != profile?.job) profileViewModel.updateJob(selectedJob)
-//                if (selectedEducation != profile?.education) profileViewModel.updateEducation(selectedEducation)
-//                if (selectedPersonalityType != profile?.personalityType) profileViewModel.updatePersonalityType(selectedPersonalityType)
-//                if (selectedPets != profile?.pets) profileViewModel.updatePets(selectedPets)
-//                if (selectedDrinks != profile?.drinks) profileViewModel.updateDrinks(selectedDrinks)
-//                if (selectedSmokes != profile?.smokes) profileViewModel.updateSmokes(selectedSmokes)
-//                if (selectedSports != profile?.doesSports) profileViewModel.updateDoesSports(selectedSports)
-//                if (selectedReligion != profile?.valuesAndBeliefs) profileViewModel.updateValuesAndBeliefs(selectedReligion)
-//                if (selectedOrientation != profile?.sexualOrientation) profileViewModel.updateSexualOrientation(selectedOrientation)
-//                if (selectedHoroscope != profile?.horoscope) profileViewModel.updateHoroscope(selectedHoroscope)
-//                if (selectedRelationshipType != profile?.relationshipType) profileViewModel.updateRelationshipType(selectedRelationshipType)
-//                if (selectedGender != profile?.gender) profileViewModel.updateGender(selectedGender)
+                profile?.let {
+                    profileViewModel.updateProfile(it)
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {

@@ -41,9 +41,9 @@ fun ProfileInterests(
 
             InterestGrid(profile?.interests ?: emptyList()) { interest, isAdded ->
                 if (isAdded) {
-                    profileViewModel.addInterest(interest) // Llama a addInterest si se añadió
+                    profileViewModel.addInterest(interest)
                 } else {
-                    profileViewModel.removeInterest(interest) // Llama a removeInterest si se eliminó
+                    profileViewModel.removeInterest(interest)
                 }
             }
         }

@@ -37,6 +37,73 @@ open class ProfileViewModel(
         }
     }
 
+    fun updateProfile(profile: Profile) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _profileData.value?.let { currentProfile ->
+                runCatching {
+                    // Mapa que asocia cada propiedad con su función de actualización
+                    val updateMap = mapOf(
+                        profile.aboutMe to { updateAboutMe(profile.aboutMe) },
+                        profile.fact to { profile.fact?.let { updateFact(it) } },
+                        profile.interests to { updateInterests(profile.interests) },
+                        profile.height to { profile.height?.let { updateHeight(it) } },
+                        profile.weight to { profile.weight?.let { updateWeight(it) } },
+                        profile.gender to { updateGender(profile.gender.name) },
+                        profile.sexualOrientation to { updateSexualOrientation(profile.sexualOrientation.name) },
+                        profile.job to { profile.job?.let { updateJob(it) } },
+                        profile.relationshipType to { updateRelationshipType(profile.relationshipType.name) },
+                        profile.horoscope to { profile.horoscope?.let { updateHoroscope(it.name) } },
+                        profile.education to { profile.education?.let { updateEducation(it) } },
+                        profile.personalityType to { profile.personalityType?.let { updatePersonalityType(it) } },
+                        profile.pets to { profile.pets?.let { updatePets(it) } },
+                        profile.drinks to { profile.drinks?.let { updateDrinks(it) } },
+                        profile.smokes to { profile.smokes?.let { updateSmokes(it) } },
+                        profile.doesSports to { profile.doesSports?.let { updateDoesSports(it) } },
+                        profile.valuesAndBeliefs to { profile.valuesAndBeliefs?.let { updateValuesAndBeliefs(it) } }
+                    )
+
+                    // Itera sobre el mapa y ejecuta la actualización si el valor es diferente
+                    updateMap.forEach { (newValue, updateFunction) ->
+                        val currentValue = when (newValue) {
+                            profile.aboutMe -> currentProfile.aboutMe
+                            profile.fact -> currentProfile.fact
+                            profile.interests -> currentProfile.interests
+                            profile.height -> currentProfile.height
+                            profile.weight -> currentProfile.weight
+                            profile.gender -> currentProfile.gender
+                            profile.sexualOrientation -> currentProfile.sexualOrientation
+                            profile.job -> currentProfile.job
+                            profile.relationshipType -> currentProfile.relationshipType
+                            profile.horoscope -> currentProfile.horoscope
+                            profile.education -> currentProfile.education
+                            profile.personalityType -> currentProfile.personalityType
+                            profile.pets -> currentProfile.pets
+                            profile.drinks -> currentProfile.drinks
+                            profile.smokes -> currentProfile.smokes
+                            profile.doesSports -> currentProfile.doesSports
+                            profile.valuesAndBeliefs -> currentProfile.valuesAndBeliefs
+                            else -> null
+                        }
+
+                        if (newValue != currentValue) {
+                            updateFunction()
+                        }
+                    }
+                }.onFailure { error ->
+                    errorViewModel.showError(error.message ?: "Error updating profile")
+                }
+
+                // Recarga el perfil una vez finalizadas las actualizaciones.
+                loadProfile()
+                _isLoading.value = false
+            }
+        }
+    }
+
+
+
+
     fun updateAgeRange(min: Int, max: Int) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -102,7 +169,6 @@ open class ProfileViewModel(
             }
         }
     }
-
 
 
     fun updateAboutMe(aboutMe: String) {
