@@ -104,4 +104,289 @@ open class ProfileViewModel(
     }
 
 
+
+    fun updateAboutMe(aboutMe: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateAboutMe(authViewModel.userId!!, aboutMe)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating about me"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateFact(fact: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateFact(authViewModel.userId!!, fact)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating fact"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateInterests(interest: List<String>) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateInterests(authViewModel.userId!!, interest)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating interest"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateHeight(height: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateHeight(authViewModel.userId!!, height)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating height"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateWeight(weight: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateWeight(authViewModel.userId!!, weight)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating weight"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateGender(gender: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateGender(authViewModel.userId!!, gender)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating gender"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateSexualOrientation(orientation: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateSexualOrientation(authViewModel.userId!!, orientation)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating sexual orientation"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateJob(position: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateJob(authViewModel.userId!!, position)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating position"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateRelationshipType(relationshipType: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateRelationshipType(authViewModel.userId!!, relationshipType)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating relationship type"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateHoroscope(horoscope: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateHoroscope(authViewModel.userId!!, horoscope)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating horoscope"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateEducation(education: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateEducation(authViewModel.userId!!, education)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating education"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updatePersonalityType(personalityType: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updatePersonalityType(authViewModel.userId!!, personalityType)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating personality type"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updatePets(pets: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updatePets(authViewModel.userId!!, pets)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating pets"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateDrinks(drinks: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateDrinks(authViewModel.userId!!, drinks)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating drinks"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateSmokes(smokes: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateSmokes(authViewModel.userId!!, smokes)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating smokes"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateDoesSports(doesSports: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateDoesSports(authViewModel.userId!!, doesSports)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating sports participation"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateValuesAndBeliefs(valuesAndBeliefs: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateValuesAndBeliefs(authViewModel.userId!!, valuesAndBeliefs)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating values and beliefs"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun addInterest(interest: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.addInterest(authViewModel.userId!!, interest)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error adding interest"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun removeInterest(interest: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.removeInterest(authViewModel.userId!!, interest)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error removing interest"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
 }
