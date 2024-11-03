@@ -29,4 +29,36 @@
     <string name="smokes">Do you smoke?</string>
     <string name="sports">Do you do sports?</string>
     <string name="religion">Values and beliefs</string>
+
+
+
+    <string-array name="report_reasons">
+        <item>Spam</item>
+        <item>Inappropriate Content</item>
+        <item>Harassment</item>
+        <item>Other</item>
+    </string-array>
+
+
+    <string-array name="details_options_spam">
+        <item>Unwanted messages</item>
+        <item>Fake account</item>
+    </string-array>
+
+    <string-array name="details_options_inappropriate_content">
+        <item>Nudity</item>
+        <item>Violence</item>
+        <item>Hate speech</item>
+    </string-array>
+
+    <string-array name="details_options_harassment">
+        <item>Threats</item>
+        <item>Bullying</item>
+    </string-array>
+
+    <string-array name="details_options_other">
+        <item>Other issue</item>
+    </string-array>
+
+
 </resources>

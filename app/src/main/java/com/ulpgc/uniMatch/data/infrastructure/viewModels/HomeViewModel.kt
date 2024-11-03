@@ -96,7 +96,7 @@ class HomeViewModel (
         }
     }
 
-    fun reportUser(reportedUserId: String) {
+    fun reportUser(reportedUserId: String, reason: String, details: String, extra: String = "") {
         viewModelScope.launch {
             authViewModel.userId?.let { userId ->
                 userService.reportUser(userId, reportedUserId).onSuccess {
@@ -114,7 +114,8 @@ class HomeViewModel (
         viewModelScope.launch {
             authViewModel.userId?.let { userId ->
                 userService.blockUser(userId, blockedUserId).onSuccess {
-                    _matchingProfiles.value = matchingProfiles.value.filter { it.userId != blockedUserId }
+                    _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != blockedUserId }
+                    Log.i("HomeViewModel", "User $blockedUserId has been blocked and profiles updated.")
                 }.onFailure { error ->
                     errorViewModel.showError(
                         error.message ?: "Error blocking user"
@@ -123,4 +124,5 @@ class HomeViewModel (
             }
         }
     }
+
 }

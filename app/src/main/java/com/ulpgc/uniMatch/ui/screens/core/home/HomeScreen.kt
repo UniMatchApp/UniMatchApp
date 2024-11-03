@@ -37,12 +37,15 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -60,11 +63,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
@@ -72,6 +80,8 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.InputField
 import com.ulpgc.uniMatch.ui.components.profile.ProfileSection
 import com.ulpgc.uniMatch.ui.theme.Bone
+import com.ulpgc.uniMatch.ui.theme.MainColor
+
 
 @Composable
 fun HomeScreen(
@@ -82,34 +92,42 @@ fun HomeScreen(
     val matchingProfiles by homeViewModel.matchingProfiles.collectAsState()
     val userId = authViewModel.userId ?: return
     var isModalOpen by remember { mutableStateOf(false) }
+    var showBlockDialog by remember { mutableStateOf(false) }
     var selectedProfile: Profile? by remember { mutableStateOf(null) }
 
     LaunchedEffect(Unit) {
         homeViewModel.loadMatchingUsers()
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
+    if (matchingProfiles.size < 5) {
+        Log.i("HomeScreen", "Loading more profiles...")
+        homeViewModel.loadMoreMatchingUsers()
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
             if (matchingProfiles.isEmpty()) {
-                Text(
-                    "Loading profiles...",
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxSize()
-                )
+                LoadingIndicator()
             } else {
-                CardStack(
-                    profiles = matchingProfiles,
-                    onSwipeLeft = { profile -> homeViewModel.dislikeUser(userId, profile.userId) },
-                    onSwipeRight = { profile -> homeViewModel.likeUser(userId, profile.userId) },
-                    onRequestMoreProfiles = { homeViewModel.loadMoreMatchingUsers() },
-                    onOpenProfile = { profile ->
-                        selectedProfile = profile
-                        isModalOpen = true
-                    }
+                val profileToDisplay = matchingProfiles.first()
+
+                ProfileCard(
+                    profile = profileToDisplay,
+                    onSwipeLeft = {
+                        Log.i("HomeScreen", "Dislike profile: $profileToDisplay")
+                        homeViewModel.dislikeUser(
+                            userId,
+                            profileToDisplay.userId
+                        ) // Lógica de rechazo
+                    },
+                    onSwipeRight = {
+                        Log.i("HomeScreen", "Like profile: $profileToDisplay")
+                        homeViewModel.likeUser(
+                            userId,
+                            profileToDisplay.userId
+                        ) // Lógica de aceptación
+                    },
+                    onOpenProfile = { selectedProfile = profileToDisplay; isModalOpen = true }
                 )
             }
         }
@@ -119,61 +137,58 @@ fun HomeScreen(
             ProfileInfoModal(
                 profile = selectedProfile,
                 onClose = { isModalOpen = false },
-                onReport = {
-                    // Lógica para reportar el perfil
-                    selectedProfile?.userId?.let { targetId ->
-                        homeViewModel.reportUser(targetId)
-                    }
+                onReport = { reason, detail, extraDetails ->
                     isModalOpen = false
+                    homeViewModel.reportUser(selectedProfile?.userId ?: "", reason, detail, extraDetails)
                 },
                 onBlock = {
-                    // Lógica para bloquear el perfil
-                    selectedProfile?.userId?.let { targetId ->
-                        homeViewModel.blockUser(targetId)
-                    }
                     isModalOpen = false
+                    showBlockDialog = true
                 }
+            )
+        }
+
+        // Diálogo para confirmar el bloqueo
+        if (showBlockDialog) {
+            ConfirmBlockDialog(
+                onConfirm = {
+                    homeViewModel.blockUser(selectedProfile?.userId ?: "")
+                    showBlockDialog = false
+                },
+                onDismiss = { showBlockDialog = false }
             )
         }
     }
 }
 
 @Composable
-fun CardStack(
-    profiles: List<Profile>,
-    onSwipeLeft: (Profile) -> Unit,
-    onSwipeRight: (Profile) -> Unit,
-    onRequestMoreProfiles: () -> Unit,
-    onOpenProfile: (Profile) -> Unit
-) {
-    var profileToDisplay by remember { mutableStateOf<Profile?>(null) }
-
-    LaunchedEffect(profiles) {
-        profileToDisplay = profiles.firstOrNull()
-
-    }
-
-    if (profiles.size < 4) {
-        onRequestMoreProfiles()
-    }
-
-    profileToDisplay?.let { profile ->
-        ProfileCard(
-            profile = profile,
-            onSwipeLeft = {
-                onSwipeLeft(profile)
-                profileToDisplay = null
-            },
-            onSwipeRight = {
-                onSwipeRight(profile)
-                profileToDisplay = null
-            },
-            onOpenProfile = {
-                onOpenProfile(profile)
-            }
-        )
-    }
+fun LoadingIndicator() {
+    Text(
+        "Loading profiles...",
+        textAlign = TextAlign.Center,
+        modifier = Modifier.fillMaxSize()
+    )
 }
+
+@Composable
+fun ConfirmBlockDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Bloquear usuario") },
+        text = { Text("¿Estás seguro de que deseas bloquear a este usuario?") },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text("Bloquear")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
+
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -194,6 +209,10 @@ fun ProfileCard(
         targetValue = if (isTracking) accumulatedDrag else 0f,
         animationSpec = tween(durationMillis = 400)
     )
+
+    LaunchedEffect(
+        Log.i("ProfileCard", "Profile: $profile")
+    ) { }
 
     // Estado para la rotación de los iconos
     val rotationState by animateFloatAsState(
@@ -246,7 +265,8 @@ fun ProfileCard(
                         }
                     }
                 )
-            }.pointerInput(Unit) {
+            }
+            .pointerInput(Unit) {
                 detectTapGestures(onTap = { offset ->
                     val x = offset.x.toDp()
 
@@ -256,6 +276,7 @@ fun ProfileCard(
                                 currentImageIndex--
                             }
                         }
+
                         x > clickAreaWidth -> {
                             if (currentImageIndex < profile.wall.size - 1) {
                                 currentImageIndex++
@@ -436,7 +457,7 @@ fun ProfileCard(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = onSwipeLeft) {
+                    IconButton(onClick = { onSwipeLeft() }) {
                         Icon(
                             Icons.Default.Close,
                             contentDescription = "Dislike",
@@ -456,7 +477,7 @@ fun ProfileCard(
                         )
                     }
 
-                    IconButton(onClick = onSwipeRight) {
+                    IconButton(onClick = { onSwipeRight() }) {
                         Icon(
                             Icons.Default.Favorite,
                             contentDescription = "Like",
@@ -474,10 +495,15 @@ fun ProfileCard(
 fun ProfileInfoModal(
     profile: Profile?,
     onClose: () -> Unit,
-    onReport: () -> Unit, // Función para manejar la acción de reportar
-    onBlock: () -> Unit // Función para manejar la acción de bloquear
+    onReport: (String, String, String) -> Unit,
+    onBlock: () -> Unit
 ) {
-    if (profile != null) {
+    var showReportModal by remember { mutableStateOf(false) } // Estado para controlar la visibilidad del modal de denuncia
+    var selectedReason by remember { mutableStateOf("") }
+    var selectedDetail by remember { mutableStateOf("") }
+    var extraDetails by remember { mutableStateOf("") }
+
+    if (profile != null && !showReportModal) { // Mostrar ProfileInfoModal solo si showReportModal es falso
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -488,7 +514,6 @@ fun ProfileInfoModal(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.Start
             ) {
-
                 // Cerrar el modal
                 item {
                     Row(
@@ -593,7 +618,7 @@ fun ProfileInfoModal(
                     ) {
                         Button(
                             onClick = {
-                                onReport()
+                                showReportModal = true // Cambiar a mostrar el modal de denuncia
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                         ) {
@@ -615,6 +640,314 @@ fun ProfileInfoModal(
             }
         }
     }
+
+    // Mostrar el modal de denuncia si showReportModal es true
+    if (showReportModal) {
+        ReportModal(
+            onDismiss = { showReportModal = false; onClose() },
+            onReasonChange = { reason -> selectedReason = reason },
+            onDetailChange = { detail -> selectedDetail = detail },
+            onExtraDetailsChange = { extra -> extraDetails = extra },
+            onReport = {
+                onReport(
+                    selectedReason,
+                    selectedDetail,
+                    extraDetails
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun ReportModal(
+    onDismiss: () -> Unit,
+    onReasonChange: (String) -> Unit,
+    onDetailChange: (String) -> Unit,
+    onExtraDetailsChange: (String) -> Unit,
+    onReport: () -> Unit
+) {
+    val navController = rememberNavController()
+    var extraDetails by remember { mutableStateOf("") }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(16.dp)
+            .clip(RoundedCornerShape(8.dp))
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            ReportProgressBar(currentStep = navController.currentBackStackEntry?.destination?.route?.let {
+                getCurrentStep(it)
+            } ?: 0)
+
+            NavHost(navController = navController, startDestination = "reason") {
+                composable("reason") {
+                    ReasonScreen(
+                        onNext = { reason ->
+                            onReasonChange(reason) // Notificar el cambio
+                            navController.navigate("details/$reason")
+                        },
+                        onDismiss = onDismiss
+                    )
+                }
+                composable("details/{reason}") { backStackEntry ->
+                    val reason = backStackEntry.arguments?.getString("reason") ?: ""
+                    DetailsScreen(
+                        reason = reason,
+                        onNext = { detail ->
+                            onDetailChange(detail) // Notificar el cambio
+                            navController.navigate("send")
+                        },
+                        onBack = {
+                            navController.popBackStack() // Volver a "reason"
+                        }
+                    )
+                }
+                composable("send") {
+                    SendScreen(
+                        extraDetails = extraDetails,
+                        onExtraDetailsChange = { extraDetails = it
+                            onExtraDetailsChange(it) // Notificar el cambio
+                        },
+                        onSubmit = {
+                            // Llamar a onReport con los datos recopilados
+                            onReport()
+                            navController.popBackStack(
+                                "reason",
+                                inclusive = false
+                            ) // Volver a "reason"
+                        },
+                        onBack = {
+                            navController.popBackStack() // Volver a "details"
+                        }
+                    )
+                }
+            }
+        }
+    }
 }
 
 
+@Composable
+fun ReasonScreen(onNext: (String) -> Unit, onDismiss: () -> Unit) {
+    val reasons = LocalContext.current.resources.getStringArray(R.array.report_reasons)
+    var selectedReason by remember { mutableStateOf("") }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        Text(
+            "¿Por qué quieres denunciar este perfil?",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        // Crear una lista de opciones
+        reasons.forEach { reason ->
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                RadioButton(
+                    selected = (selectedReason == reason),
+                    onClick = { selectedReason = reason }
+                )
+                Text(reason)
+            }
+        }
+
+        // Spacer para empujar los botones hacia abajo
+        Spacer(modifier = Modifier.weight(1f)) // Ocupa el espacio restante
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+            ) {
+                Text("Cerrar", color = Color.White)
+            }
+
+            Button(
+                onClick = { if (selectedReason.isNotEmpty()) onNext(selectedReason) },
+                enabled = selectedReason.isNotEmpty(), // Deshabilitar si no hay opción seleccionada
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
+            ) {
+                Text("Siguiente", color = Color.White)
+            }
+        }
+    }
+}
+
+@Composable
+fun DetailsScreen(reason: String, onNext: (String) -> Unit, onBack: () -> Unit) {
+    val context = LocalContext.current
+    val detailsOptions = when (reason) {
+        "Spam" -> context.resources.getStringArray(R.array.details_options_spam)
+        "Inappropriate Content" -> context.resources.getStringArray(R.array.details_options_inappropriate_content)
+        "Harassment" -> context.resources.getStringArray(R.array.details_options_harassment)
+        "Other" -> context.resources.getStringArray(R.array.details_options_other)
+        else -> emptyArray()
+    }
+
+    var selectedDetail by remember { mutableStateOf("") }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        Text(
+            "Selecciona más detalles sobre tu denuncia",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        // Crear una lista de opciones
+        detailsOptions.forEach { detail ->
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clickable { selectedDetail = detail }
+                    .padding(8.dp)
+            ) {
+                RadioButton(
+                    selected = (selectedDetail == detail),
+                    onClick = { selectedDetail = detail }
+                )
+                Text(detail)
+            }
+        }
+
+        // Spacer para empujar los botones hacia abajo
+        Spacer(modifier = Modifier.weight(1f)) // Ocupa el espacio restante
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button(
+                onClick = onBack,
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+            ) {
+                Text("Cancelar", color = Color.White)
+            }
+
+            Button(
+                onClick = { if (selectedDetail.isNotEmpty()) onNext(selectedDetail) },
+                enabled = selectedDetail.isNotEmpty(), // Deshabilitar si no hay opción seleccionada
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
+            ) {
+                Text("Siguiente", color = Color.White)
+            }
+        }
+    }
+}
+
+@Composable
+fun SendScreen(
+    extraDetails: String,
+    onExtraDetailsChange: (String) -> Unit,
+    onSubmit: () -> Unit,
+    onBack: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Text("Revisa y envía tu denuncia")
+
+        // Campo para detalles adicionales
+        TextField(
+            value = extraDetails,
+            onValueChange = onExtraDetailsChange,
+            label = { Text("Detalles adicionales") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button(
+                onClick = onBack,
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+            ) {
+                Text("Volver", color = Color.White)
+            }
+
+            Button(onClick = {
+                onSubmit() // Aquí se envían todos los datos
+            }, colors = ButtonDefaults.buttonColors(containerColor = Color.Green)) {
+                Text("Enviar", color = Color.White)
+            }
+        }
+    }
+}
+
+@Composable
+fun ReportProgressBar(currentStep: Int) {
+    val colors = List(3) { Color.Gray }.toMutableList()
+    if (currentStep in colors.indices) colors[currentStep] = MainColor
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("Reportar Perfil", style = MaterialTheme.typography.titleLarge)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            colors.forEachIndexed { index, color ->
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .height(4.dp)
+                            .background(color)
+                    )
+
+                    Text(
+                        when (index) {
+                            0 -> "Razón"
+                            1 -> "Detalles"
+                            2 -> "Enviar"
+                            else -> ""
+                        },
+                        color = if (currentStep == index) MainColor else Color.Gray
+                    )
+                }
+
+                if (index < colors.size - 1) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+            }
+        }
+    }
+}
+
+// Añade la función para obtener el paso actual
+fun getCurrentStep(route: String?): Int {
+    return when (route) {
+        "reason" -> 0
+        "details/{reason}" -> 1
+        "send" -> 2
+        else -> 0
+    }
+}

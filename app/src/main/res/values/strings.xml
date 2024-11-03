@@ -154,4 +154,34 @@
         <item>Otra</item>
     </string-array>
 
+
+    <string-array name="report_reasons">
+        <item>Spam</item>
+        <item>Contenido inapropiado</item>
+        <item>Acoso</item>
+        <item>Otro</item>
+    </string-array>
+
+
+    <string-array name="details_options_spam">
+        <item>Mensajes no deseados</item>
+        <item>Cuentas falsas</item>
+    </string-array>
+
+    <string-array name="details_options_inappropriate_content">
+        <item>Desnudez</item>
+        <item>Violencia</item>
+        <item>Discurso de odio</item>
+    </string-array>
+
+    <string-array name="details_options_harassment">
+        <item>Amenazas</item>
+        <item>Bullying</item>
+    </string-array>
+
+    <string-array name="details_options_other">
+        <item>Otro problema</item>
+    </string-array>
+
+
 </resources>
