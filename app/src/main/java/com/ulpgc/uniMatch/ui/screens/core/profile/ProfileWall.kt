@@ -18,7 +18,7 @@ import com.ulpgc.uniMatch.ui.screens.core.topBars.ProfileSettingsTopBar
 fun ProfileWall(
     profileViewModel: ProfileViewModel,
     navController: NavController,
-    onAddImageClick: () -> Unit // Añadido el parámetro onAddImageClick
+    onAddImageClick: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         profileViewModel.loadProfile()
@@ -26,6 +26,7 @@ fun ProfileWall(
 
     val profile = profileViewModel.profileData.collectAsState().value
     val profileImages = profile?.wall ?: emptyList()
+    val activity = LocalContext.current as? ComponentActivity
 
     Column {
         ProfileSettingsTopBar { navController.popBackStack() }
@@ -38,11 +39,12 @@ fun ProfileWall(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            val activity = LocalContext.current as? ComponentActivity // Obtener la actividad actual
 
-            WallGrid(activity!!, initialProfileImages = profileImages, onAddImageClick = onAddImageClick) // Añadido el parámetro onAddImageClick
+
+            WallGrid(activity!!, initialProfileImages = profileImages, onAddImageClick = onAddImageClick)
 
             Spacer(modifier = Modifier.height(16.dp))
+
 
 
             Text(text = "Datos de sesión", style = MaterialTheme.typography.titleLarge)
@@ -66,3 +68,4 @@ fun ProfileWall(
         }
     }
 }
+

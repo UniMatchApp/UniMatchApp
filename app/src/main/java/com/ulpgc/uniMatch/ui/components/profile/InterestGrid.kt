@@ -1,22 +1,14 @@
 package com.ulpgc.uniMatch.ui.components.profile
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,9 +24,11 @@ import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun InterestGrid(initialInterestList: List<String>) {
-    val selectedInterests = remember { mutableStateListOf<String>().apply { addAll(initialInterestList) } }
+fun InterestGrid(
+    initialInterestList: List<String>,
+    onInterestChange: (String, Boolean) -> Unit) {
 
+    val selectedInterests = remember { mutableStateListOf<String>().apply { addAll(initialInterestList) } }
     val context = LocalContext.current
     val interests = context.resources.getStringArray(R.array.interests).toList()
 
@@ -55,8 +49,10 @@ fun InterestGrid(initialInterestList: List<String>) {
                     .clickable {
                         if (isSelected) {
                             selectedInterests.remove(interest)
+                            onInterestChange(interest, false)
                         } else {
                             selectedInterests.add(interest)
+                            onInterestChange(interest, true)
                         }
                     }
                     .padding(horizontal = 12.dp, vertical = 8.dp)

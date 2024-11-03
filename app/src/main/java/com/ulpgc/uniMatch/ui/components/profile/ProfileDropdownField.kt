@@ -17,13 +17,21 @@ import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
 
 @Composable
-fun ProfileDropdownField(label: String, options: List<String>) {
+fun ProfileDropdownField(
+    label: String,
+    options: List<String>,
+    onEditField: (String) -> Unit
+) {
     var selectedOption by remember { mutableStateOf(options.firstOrNull() ?: "Seleccionar") }
 
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(vertical = 4.dp)) {
         Text(text = label, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = Color.Gray)
-        DropdownMenu(options, selectedOption)
+
+        DropdownMenu(options, selectedOption, onItemSelected = { selected ->
+            selectedOption = selected
+            onEditField(selected)
+        })
     }
 }

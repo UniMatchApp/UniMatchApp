@@ -27,20 +27,21 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 
 @Composable
 fun WallGrid(
-    activity: Activity, // Agregar parámetro de Activity
+    activity: Activity,
     initialProfileImages: List<String>,
     onAddImageClick: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
     val profileImages = remember { mutableStateListOf(*initialProfileImages.toTypedArray()) }
 
-    // Lanzador de resultado para la cámara y la galería
+
+    // Lanzador para obtener la imagen seleccionada y modificarla
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data = result.data
-            val imageUri: Uri? = data?.data // Obtener la URI de la imagen
+            val imageUri: Uri? = data?.data
             imageUri?.let {
-                profileImages.add(it.toString()) // Añadir URI a la lista
+                profileImages.add(it.toString())
             }
         }
     }
@@ -69,7 +70,7 @@ fun WallGrid(
             }
         }
 
-        // Espacio para añadir imágenes
+
         item {
             Surface(
                 modifier = Modifier
@@ -78,7 +79,6 @@ fun WallGrid(
                 shape = RoundedCornerShape(16.dp),
                 color = Color.LightGray
             ) {
-                // Puedes añadir un contenido aquí para el espacio de añadir imágenes, como un icono.
             }
         }
     }
@@ -91,11 +91,10 @@ fun WallGrid(
             confirmButton = {
                 Button(onClick = {
                     showDialog = false
-                    // Usar ImagePicker para tomar foto con la cámara
                     ImagePicker.with(activity)
                         .cameraOnly()
-                        .compress(1024) // Opcional: comprimir imagen
-                        .maxResultSize(1080, 1080) // Opcional: tamaño máximo de la imagen
+                        .compress(1024)
+                        .maxResultSize(1080, 1080)
                         .createIntent { intent -> imagePickerLauncher.launch(intent) }
                 }) {
                     Text("Cámara")
@@ -104,7 +103,6 @@ fun WallGrid(
             dismissButton = {
                 Button(onClick = {
                     showDialog = false
-                    // Usar ImagePicker para seleccionar desde la galería
                     ImagePicker.with(activity)
                         .galleryOnly()
                         .compress(1024)
