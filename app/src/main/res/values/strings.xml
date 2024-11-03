@@ -1,5 +1,14 @@
 <resources>
+    <!--GENERAL-->
     <string name="app_name">UniMatch</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="chat">Chat</string>
+    <string name="profile">Profile</string>
+    <string name="notifications">Notifications</string>
+    <string name="user_filters">user filters</string>
+
+    <!--LOGIN SCREEN-->
     <string name="login">Iniciar sesión</string>
     <string name="register">Registrar</string>
     <string name="enter_email">Introduce tu email</string>
@@ -9,19 +18,13 @@
     <string name="register_button">Registrarse</string>
     <string name="switch_to_register">¿No tienes cuenta? Regístrate</string>
     <string name="switch_to_login">¿Ya tienes cuenta? Inicia sesión</string>
-    <string name="cancel">Cancelar</string>
-    <string name="remember_me">Remember me</string>
-    <string name="forgot_password">Forgot Password?\t\t\t\t</string>
+    <string name="remember_me">Recordarme</string>
+    <string name="forgot_password">¿Has olvidado tu contraseña?</string>
     <string name="find_your_ideal_partner_near_you">Encuentra a la persona ideal cerca de ti.</string>
-    <string name="enter_your_email_and_password_to_log_in">Enter your email and password to log in</string>
-    <string name="sign_in_to_unimatch">Sign in to UniMatch</string>
-    <string name="home">Home</string>
-    <string name="search">Search</string>
-    <string name="chat">Chat</string>
-    <string name="profile">Profile</string>
-    <string name="notifications">Notifications</string>
-    <string name="user_filters">user filters</string>
+    <string name="enter_your_email_and_password_to_log_in">Introduce tu email y contraseña para iniciar sesión</string>
+    <string name="sign_in_to_unimatch">Inicia sesión en UniMatch</string>
 
+    <!--PROFILE-->
     <string name="horoscope">Horóscopo</string>
     <string name="education">Educación</string>
     <string name="personality_type">Personalidad</string>
@@ -30,6 +33,7 @@
     <string name="smokes">¿Fumas?</string>
     <string name="sports">¿Haces deporte?</string>
     <string name="religion">Valores y creencias</string>
+    <string name="interests">Intereses</string>
 
     <!--PREFERENCES SCREEN-->
     <string name="edit_preferences">Editar preferencias</string>
@@ -44,6 +48,28 @@
     <!--DROPDOWN MENU-->
     <string name="dropdown_empty_option">Ninguno</string>
 
+    <!--BLOCK DIALOG-->
+    <string name="block_user_title">Bloquear usuario</string>
+    <string name="block_user_message">¿Estás seguro de que deseas bloquear a este usuario?</string>
+    <string name="block_user_confirm">Bloquear</string>
+    <string name="block_user_cancel">Cancelar</string>
+
+    <!--HOME SCREEN-->
+    <string name="loading_profiles">Loading profiles...</string>
+    <string name="like">Me gusta</string>
+
+    <!--PROFILE INFO SCREEN-->
+    <string name="about_me">Sobre mí</string>
+    <string name="about_me_label">Sobre mí</string>
+    <string name="searching">Buscando</string>
+    <string name="looking_for">Busco...</string>
+    <string name="relationship">Relación</string>
+    <string name="more_about_me">Más sobre mí</string>
+    <string name="lifestyle">Estilo de vida</string>
+    <string name="report">Denunciar</string>
+    <string name="block">Bloquear</string>
+
+    <!--Funny questions-->
     <string-array name="funny_questions">
         <item>Selecciona una pregunta</item>
         <item>I once Reading for a whole day!</item>
@@ -52,6 +78,7 @@
         <item>I once Gaming for a whole day!</item>
     </string-array>
 
+    <!--Género-->
     <string-array name="genders">
         <item>Seleccionar</item>
         <item>Hombre</item>
@@ -60,6 +87,7 @@
         <item>Otro</item>
     </string-array>
 
+    <!--Edad-->
     <string-array name="sexual_orientation">
         <item>Seleccionar</item>
         <item>Heterosexual</item>
@@ -69,6 +97,7 @@
         <item>Otro</item>
     </string-array>
 
+    <!--Tipo de relación-->
     <string-array name="relationship_type">
         <item>Seleccionar</item>
         <item>Amigos</item>
@@ -78,6 +107,7 @@
         <item>Otro</item>
     </string-array>
 
+    <!--Horóscopo-->
     <string-array name="horoscope">
         <item>Seleccionar</item>
         <item>Aries</item>
@@ -94,6 +124,7 @@
         <item>Piscis</item>
     </string-array>
 
+    <!-- Educación -->
     <string-array name="education">
         <item>Seleccionar</item>
         <item>Sin estudios</item>
@@ -165,6 +196,7 @@
         <item>Otra</item>
     </string-array>
 
+    <!-- Intereses -->
     <string-array name="interests">
         <item>Deportes</item>
         <item>Música</item>
@@ -183,7 +215,14 @@
         <item>Emprendimiento</item>
     </string-array>
 
-
+    <!--REPORT-->
+    <string name="report_title">Reportar Perfil</string>
+    <string name="send_title">Revisa y envía tu denuncia</string>
+    <string name="extra_details_label">Detalles adicionales</string>
+    <string name="report_profile">Reportar Perfil</string>
+    <string name="reason_step">Razón</string>
+    <string name="details_step">Detalles</string>
+    <string name="send_step">Enviar</string>
 
     <string-array name="report_reasons">
         <item>Spam</item>
@@ -191,7 +230,6 @@
         <item>Acoso</item>
         <item>Otro</item>
     </string-array>
-
 
     <string-array name="details_options_spam">
         <item>Mensajes no deseados</item>
@@ -213,5 +251,25 @@
         <item>Otro problema</item>
     </string-array>
 
+    <!--MISC-->
+    <string name="error_title">Error</string>
+    <string name="success_title">Éxito</string>
+    <string name="no_internet">No hay conexión a Internet disponible.</string>
+    <string name="try_again">Por favor, inténtalo de nuevo.</string>
+    <string name="loading">Cargando...</string>
+    <string name="clear_all">Borrar todo</string>
+    <string name="empty_list">No hay elementos para mostrar.</string>
+    <string name="welcome">¡Bienvenido a UniMatch!</string>
+    <string name="version">Versión 1.0</string>
+    <string name="app_description">Una aplicación de citas diseñada para que los estudiantes universitarios se conecten, chateen y encuentren a su pareja ideal.</string>
+    <string name="close">Cerrar</string>
+    <string name="next">Siguiente</string>
+    <string name="cancel">Cancelar</string>
+    <string name="back">Volver</string>
+    <string name="delete">Eliminar</string>
+    <string name="edit">Editar</string>
+    <string name="save">Guardar</string>
+    <string name="add">Añadir</string>
+    <string name="send">Enviar</string>
 
 </resources>

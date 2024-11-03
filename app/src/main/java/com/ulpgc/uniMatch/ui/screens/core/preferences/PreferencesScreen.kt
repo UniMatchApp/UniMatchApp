@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,28 +63,41 @@ fun PreferencesScreen(
         if (profile == null) {
             Text(
                 text = stringResource(id = R.string.no_preferences_info),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground
             )
         } else {
-            Text(text = stringResource(id = R.string.max_distance, maxDistance))
+            Text(
+                text = stringResource(id = R.string.max_distance, maxDistance),
+                color = MaterialTheme.colorScheme.onBackground
+            )
             Slider(
                 value = maxDistance.toFloat(),
                 onValueChange = { maxDistance = it.toInt() },
                 valueRange = 0f..100f,
                 onValueChangeFinished = {
                     profileViewModel.updateMaxDistance(maxDistance)
-                }
+                },
+                colors = SliderDefaults.colors(
+                    thumbColor = MaterialTheme.colorScheme.primary,
+                    activeTrackColor = MaterialTheme.colorScheme.primary,
+                    inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = stringResource(id = R.string.gender_priority_title))
+            Text(
+                text = stringResource(id = R.string.gender_priority_title),
+                color = MaterialTheme.colorScheme.onBackground
+            )
             var expandedGender by remember { mutableStateOf(false) }
             Box {
                 genderPriority?.let {
                     Text(
                         text = it.name,
-                        modifier = Modifier.clickable { expandedGender = true }
+                        modifier = Modifier.clickable { expandedGender = true },
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -111,7 +125,8 @@ fun PreferencesScreen(
                     id = R.string.age_range_title,
                     ageRange.first,
                     ageRange.second
-                )
+                ),
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             val minAge = 18f
@@ -131,16 +146,25 @@ fun PreferencesScreen(
                 onValueChangeFinished = {
                     profileViewModel.updateAgeRange(ageRange.first, ageRange.second)
                 },
+                colors = SliderDefaults.colors(
+                    thumbColor = MaterialTheme.colorScheme.primary,
+                    activeTrackColor = MaterialTheme.colorScheme.primary,
+                    inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                ),
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = stringResource(id = R.string.relationship_type_title))
+            Text(
+                text = stringResource(id = R.string.relationship_type_title),
+                color = MaterialTheme.colorScheme.onBackground
+            )
             var expandedRelationship by remember { mutableStateOf(false) }
             Box {
                 relationshipType.let {
                     Text(
                         text = it.name,
-                        modifier = Modifier.clickable { expandedRelationship = true }
+                        modifier = Modifier.clickable { expandedRelationship = true },
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     DropdownMenu(
@@ -160,7 +184,8 @@ fun PreferencesScreen(
 
             Text(
                 text = stringResource(id = R.string.preferences_explanation),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }

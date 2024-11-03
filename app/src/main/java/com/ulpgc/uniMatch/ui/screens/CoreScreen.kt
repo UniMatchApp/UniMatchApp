@@ -110,7 +110,6 @@ fun CoreNavHost(
     ) {
         composable(CoreRoutes.HOME) { HomeScreen(
             homeViewModel = homeViewModel,
-            profileViewModel = profileViewModel,
             authViewModel = authViewModel
         ) }
         composable(CoreRoutes.SEARCH) { SearchScreen() }

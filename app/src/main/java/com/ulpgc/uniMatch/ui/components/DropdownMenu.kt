@@ -26,7 +26,7 @@ fun DropdownMenu(
     includeNullOption: Boolean = false
 ) {
     var isExpanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf(selectedItem) } // Ahora puede ser null
+    var selectedText by remember { mutableStateOf(selectedItem) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -37,7 +37,7 @@ fun DropdownMenu(
         ) {
             TextField(
                 modifier = Modifier.menuAnchor().fillMaxWidth(),
-                value = selectedText ?: stringResource(id = R.string.dropdown_empty_option), // Mostrar texto vacío si es null
+                value = selectedText ?: stringResource(id = R.string.dropdown_empty_option),
                 onValueChange = { },
                 readOnly = true,
                 trailingIcon = {
@@ -46,14 +46,13 @@ fun DropdownMenu(
             )
 
             ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
-                // Agregar un item vacío si se desea
                 if (includeNullOption) {
                     DropdownMenuItem(
                         text = { Text(text = stringResource(id = R.string.dropdown_empty_option)) },
                         onClick = {
-                            selectedText = null // Asignar null cuando se selecciona la opción vacía
+                            selectedText = null
                             isExpanded = false
-                            onItemSelected(null) // Llamada a onItemSelected con null
+                            onItemSelected(null)
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                     )
