@@ -215,6 +215,32 @@
         <item>Emprendimiento</item>
     </string-array>
 
+    <string-array name="jobs">
+        <item>Estudiante</item>
+        <item>Ingeniero</item>
+        <item>Médico</item>
+        <item>Profesor</item>
+        <item>Diseñador</item>
+        <item>Artista</item>
+        <item>Fotógrafo</item>
+        <item>Músico</item>
+        <item>Escritor</item>
+        <item>Emprendedor</item>
+        <item>Científico</item>
+        <item>Abogado</item>
+        <item>Contador</item>
+        <item>Psicólogo</item>
+        <item>Terapeuta</item>
+        <item>Consultor</item>
+        <item>Gerente</item>
+        <item>Desarrollador</item>
+        <item>Analista</item>
+        <item>Mercadero</item>
+        <item>Comerciante</item>
+        <item>Otro</item>
+    </string-array>
+
+
     <!--REPORT-->
     <string name="report_title">Reportar Perfil</string>
     <string name="send_title">Revisa y envía tu denuncia</string>

@@ -13,9 +13,9 @@ object ProfileMock {
 
     private val names = listOf("Alice", "Bob", "Charlie", "Diana", "Edward")
     private val jobs = listOf("Engineer", "Teacher", "Artist", "Doctor", "Lawyer")
-    private val educationLevels = listOf("High School", "Bachelor's", "Master's", "PhD")
-    private val personalityTypes = listOf("INTJ", "ENFP", "ISTJ", "ESFP")
-    private val petPreferences = listOf("Dogs", "Cats", "None")
+    private val educationLevels = listOf("No education", "Primary", "Secondary", "High School", "University")
+    private val personalityTypes = listOf("Introvert", "Extrovert", "Ambivert")
+    private val petPreferences = listOf("Dog", "Cat", "None")
     private val interests = listOf("Reading", "Traveling", "Cooking", "Gaming", "Hiking", "Photography", "Music")
     private val imageUrls = listOf(
         "https://www.eii.ulpgc.es/sites/default/files/styles/height/public/team/marilola800x800.png?itok=zMv5SjYa",
@@ -52,10 +52,10 @@ object ProfileMock {
             education = educationLevels.random(),
             personalityType = personalityTypes.random(),
             pets = petPreferences.random(),
-            drinks = listOf("Yes", "No").random(),
-            smokes = listOf("Yes", "No").random(),
-            doesSports = listOf("Yes", "No").random(),
-            valuesAndBeliefs = "I believe in ${interests.random()} and respect.",
+            drinks = listOf("Daily", "Frequently").random(),
+            smokes = listOf("Daily", "Frequently").random(),
+            doesSports = listOf("Daily", "Frequently").random(),
+            valuesAndBeliefs = listOf("Islam", "Judaism").random(),
             genderPriority = Gender.entries.toTypedArray().random(),
             fact = "I once ${interests.random()} for a whole day!"
         )
@@ -105,10 +105,10 @@ object ProfileMock {
                 education = educationLevels.random(),
                 personalityType = personalityTypes.random(),
                 pets = petPreferences.random(),
-                drinks = listOf("Yes", "No").random(),
-                smokes = listOf("Yes", "No").random(),
-                doesSports = listOf("Yes", "No").random(),
-                valuesAndBeliefs = "I believe in ${interests.random()} and respect.",
+                drinks = listOf("Daily", "Frequently").random(),
+                smokes = listOf("Daily", "Frequently").random(),
+                doesSports = listOf("Daily", "Frequently").random(),
+                valuesAndBeliefs = listOf("Islam", "Judaism").random(),
                 genderPriority = Gender.entries.toTypedArray().random(),
                 fact = "I once ${interests.random()} for a whole day!"
             )

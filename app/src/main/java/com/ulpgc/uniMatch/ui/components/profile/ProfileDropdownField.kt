@@ -20,18 +20,32 @@ import com.ulpgc.uniMatch.ui.components.DropdownMenu
 fun ProfileDropdownField(
     label: String,
     options: List<String>,
+    selectedOption: String,
     onEditField: (String) -> Unit
 ) {
-    var selectedOption by remember { mutableStateOf(options.firstOrNull() ?: "Seleccionar") }
+    var currentSelection by remember { mutableStateOf(selectedOption.takeIf { it in options } ?: options.first()) }
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 4.dp)) {
-        Text(text = label, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = Color.Gray)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    ) {
+        Text(
+            text = label,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color.Gray
+        )
 
-        DropdownMenu(options, selectedOption, onItemSelected = { selected ->
-            selectedOption = selected ?: "Seleccionar"
-            onEditField(selectedOption)
-        })
+        DropdownMenu(
+            options,
+            currentSelection,
+            onItemSelected = { selected ->
+                currentSelection = selected ?: options.first()
+                onEditField(currentSelection)
+            }
+        )
     }
 }
+
+

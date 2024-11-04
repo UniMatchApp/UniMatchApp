@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.screens.core.profile
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -69,244 +71,263 @@ fun ProfileScreen(
 
     var profile = profileViewModel.profileData.collectAsState().value
 
-    val facts = context.resources.getStringArray(R.array.funny_questions).toList()
+    val isLoading by profileViewModel.isLoading.collectAsState()
 
-    var aboutMeText by remember { mutableStateOf(profile?.aboutMe ?: "") }
+    if (isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else if( profile != null) {
+        val facts = context.resources.getStringArray(R.array.funny_questions).toList()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+        var aboutMeText by remember { mutableStateOf(profile.aboutMe ?: "") }
 
-        Box(
+        Column(
             modifier = Modifier
-                .size(150.dp)
-                .background(Color.Gray, CircleShape),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val painter = rememberAsyncImagePainter(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(profile?.preferredImage)
-                    .build()
-            )
-
-            Image(
-                painter = painter,
-                contentDescription = "User profile image",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
 
             Box(
                 modifier = Modifier
-                    .size(36.dp)
-                    .background(Color.White, CircleShape)
-                    .border(2.dp, Color.Black, CircleShape)
-                    .align(Alignment.TopEnd)
-                    .clickable {  }
-                    .padding(4.dp)
+                    .size(150.dp)
+                    .background(Color.Gray, CircleShape),
+                contentAlignment = Alignment.Center
             ) {
-                IconButton(onClick = { profile?.let { onEditClick(it.profileId) } }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.icon_edit),
-                        contentDescription = "Edit profile",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape)
-                    )
-                }
-            }
-        }
+                val painter = rememberAsyncImagePainter(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(profile.preferredImage)
+                        .build()
+                )
 
+                Image(
+                    painter = painter,
+                    contentDescription = "User profile image",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
 
-        Text(
-            text = "${profile?.name ?: "Nombre no disponible"}, ${profile?.age ?: "--"}",
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-            modifier = Modifier.padding(top = 8.dp)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Sobre mí",
-            style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-            color = Color.Gray,
-            modifier = Modifier.align(Alignment.Start)
-        )
-        OutlinedTextField(
-            value = aboutMeText,
-            onValueChange = { newText ->
-                profile?.aboutMe = newText
-            },
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Preguntas",
-            style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-            color = Color.Gray,
-            modifier = Modifier.align(Alignment.Start)
-        )
-
-        profile?.fact?.let {
-            DropdownMenu(
-                items = facts,
-                selectedItem = it,
-                onItemSelected = { newFact -> profile.fact = newFact }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Intereses",
-            style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-            color = Color.Gray,
-            modifier = Modifier.align(Alignment.Start)
-        )
-
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { profile?.let { onEditInterestsClick(it.profileId) } }
-                .border(width = 1.dp, color = Color.Gray)
-                .padding(16.dp)
-        ) {
-            Text(
-                text = profile?.interests?.joinToString(", ") ?: "Selecciona tus intereses",
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        ProfileDropdownField(
-            label = "Sexo",
-            options = context.resources.getStringArray(R.array.genders).toList(),
-            onEditField = { selectedOption ->
-                val option = Gender.values().firstOrNull { it.name == selectedOption.toUpperCase() }
-
-                if (option != null) {
-                    profile?.gender = option
-                } else {
-                    // Manejo de error en caso de que no coincida con ningún valor de Gender
-                    println("El valor '$selectedOption' no corresponde a ningún género válido.")
-                }
-            }
-        )
-
-        ProfileInputField(
-            label = "Altura en cm",
-            initialValue = profile?.height?.toString() ?: "170",
-            onValueChange = { newHeight -> profile?.height = newHeight.toInt() }
-        )
-
-        ProfileInputField(
-            label = "Peso en kg",
-            initialValue = profile?.weight?.toString() ?: "70",
-            onValueChange = { newWeight -> profile?.weight = newWeight.toInt() }
-        )
-        ProfileDropdownField(
-            label = "Orientación sexual",
-            options = context.resources.getStringArray(R.array.sexual_orientation).toList(),
-            onEditField = { selectedOption ->
-                val option = SexualOrientation.values().firstOrNull { it.name == selectedOption.toUpperCase() }
-
-                if (option != null) {
-                    profile?.sexualOrientation = option
-                } else {
-                    println("El valor '$selectedOption' no corresponde a ninguna orientación sexual válida.")
-                }
-            }
-        )
-
-        ProfileDropdownField(
-            label = "Puesto",
-            options = listOf("Ingeniero", "Médico", "Profesor", "Diseñador"),
-            onEditField = { profile?.job = it }
-        )
-
-        ProfileDropdownField(
-            label = "¿Qué tipo de relación buscas?",
-            options = context.resources.getStringArray(R.array.relationship_type).toList(),
-            onEditField = { selectedOption ->
-                val option = RelationshipType.values().firstOrNull { it.name == selectedOption.toUpperCase() }
-
-                if (option != null) {
-                    profile?.relationshipType = option
-                } else {
-                    println("El valor '$selectedOption' no corresponde a ningún tipo de relación válido.")
-                }
-            }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        ProfileSection(
-            title = "Más sobre mí",
-            rowTitles = listOf(
-                "horoscope" to profile?.horoscope.toString(),
-                "education" to profile?.education,
-                "personality_type" to profile?.personalityType
-            ),
-            onSelectedItemChange = { field, selectedOption ->
-                when (field) {
-                    "horoscope" -> {
-                        val horoscopeOption = Horoscope.values().firstOrNull { it.name == selectedOption.toUpperCase() }
-                        if (horoscopeOption != null) {
-                            profile?.horoscope = horoscopeOption
-                        } else {
-                            println("El valor '$selectedOption' no corresponde a un horóscopo válido.")
-                        }
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .background(Color.White, CircleShape)
+                        .border(2.dp, Color.Black, CircleShape)
+                        .align(Alignment.TopEnd)
+                        .clickable {  }
+                        .padding(4.dp)
+                ) {
+                    IconButton(onClick = { profile.let { onEditClick(it.profileId) } }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.icon_edit),
+                            contentDescription = "Edit profile",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                        )
                     }
-                    "education" -> profile?.education = selectedOption
-                    "personality_type" -> profile?.personalityType = selectedOption
-                    else -> println("Campo desconocido: $field")
                 }
             }
-        )
 
-        Spacer(modifier = Modifier.height(16.dp))
 
-        ProfileSection(
-            title = "Estilo de vida",
-            rowTitles = listOf(
-                "pets" to profile?.pets,
-                "drinks" to profile?.drinks,
-                "smokes" to profile?.smokes,
-                "sports" to profile?.doesSports,
-                "religion" to profile?.valuesAndBeliefs
-            ),
-            onSelectedItemChange = { field, selectedOption ->
-                when (field) {
-                    "pets" -> profile?.pets = selectedOption
-                    "drinks" -> profile?.drinks = selectedOption
-                    "smokes" -> profile?.smokes = selectedOption
-                    "sports" -> profile?.doesSports = selectedOption
-                    "religion" -> profile?.valuesAndBeliefs = selectedOption
-                    else -> println("Campo desconocido: $field")
-                }
+            Text(
+                text = "${profile.name ?: "Nombre no disponible"}, ${profile.age ?: "--"}",
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(top = 8.dp)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Sobre mí",
+                style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                color = Color.Gray,
+                modifier = Modifier.align(Alignment.Start)
+            )
+            OutlinedTextField(
+                value = aboutMeText,
+                onValueChange = { newText ->
+                    aboutMeText = newText
+                    profile.aboutMe = newText
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Preguntas",
+                style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                color = Color.Gray,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            profile.fact?.let {
+                DropdownMenu(
+                    items = facts,
+                    selectedItem = it,
+                    onItemSelected = { newFact -> profile.fact = newFact }
+                )
             }
-        )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Intereses",
+                style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                color = Color.Gray,
+                modifier = Modifier.align(Alignment.Start)
+            )
 
-        LegalSection(onCookiesClick, onPrivacyClick)
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-                profile?.let {
-                    profileViewModel.updateProfile(it)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { profile.let { onEditInterestsClick(it.profileId) } }
+                    .border(width = 1.dp, color = Color.Gray)
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = profile.interests?.joinToString(", ") ?: "Selecciona tus intereses",
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            ProfileDropdownField(
+                label = "Sexo",
+                options = context.resources.getStringArray(R.array.genders).toList(),
+                selectedOption = profile.gender.toString() ?: "Seleccionar",
+                onEditField = { selectedOption ->
+                    val option = Gender.values().firstOrNull { it.name == selectedOption.toUpperCase() }
+
+                    if (option != null) {
+                        profile.gender = option
+                    } else {
+                        // Manejo de error en caso de que no coincida con ningún valor de Gender
+                        println("El valor '$selectedOption' no corresponde a ningún género válido.")
+                    }
                 }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Guardar cambios")
+            )
+
+            ProfileInputField(
+                label = "Altura en cm",
+                initialValue = profile.height.toString() ?: "170",
+                onValueChange = { newHeight -> profile.height = newHeight.toInt() }
+            )
+
+            ProfileInputField(
+                label = "Peso en kg",
+                initialValue = profile.weight?.toString() ?: "70",
+                onValueChange = { newWeight -> profile.weight = newWeight.toInt() }
+            )
+            ProfileDropdownField(
+                label = "Orientación sexual",
+                options = context.resources.getStringArray(R.array.sexual_orientation).toList(),
+                selectedOption = profile.sexualOrientation?.name ?: "Seleccionar",
+                onEditField = { selectedOption ->
+                    val option = SexualOrientation.values().firstOrNull { it.name == selectedOption.toUpperCase() }
+
+                    if (option != null) {
+                        profile.sexualOrientation = option
+                    } else {
+                        println("El valor '$selectedOption' no corresponde a ninguna orientación sexual válida.")
+                    }
+                }
+            )
+
+            ProfileDropdownField(
+                label = "Puesto",
+                options = context.resources.getStringArray(R.array.jobs).toList(),
+                selectedOption = profile.job ?: "Seleccionar",
+                onEditField = { profile.job = it }
+            )
+
+            ProfileDropdownField(
+                label = "¿Qué tipo de relación buscas?",
+                options = context.resources.getStringArray(R.array.relationship_type).toList(),
+                selectedOption = profile.relationshipType?.toString() ?: "Seleccionar",
+                onEditField = { selectedOption ->
+                    val option = RelationshipType.values().firstOrNull { it.name == selectedOption.toUpperCase() }
+
+                    if (option != null) {
+                        profile.relationshipType = option
+                    } else {
+                        println("El valor '$selectedOption' no corresponde a ningún tipo de relación válido.")
+                    }
+                }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ProfileSection(
+                title = "Más sobre mí",
+                rowTitles = listOf(
+                    "horoscope" to profile.horoscope.toString().lowercase().replaceFirstChar { it.uppercase() },
+                    "education" to profile.education,
+                    "personality_type" to profile.personalityType
+                ),
+                onSelectedItemChange = { field, selectedOption ->
+                    when (field) {
+                        "horoscope" -> {
+                            val horoscopeOption = Horoscope.values().firstOrNull { it.name == selectedOption.toUpperCase() }
+                            if (horoscopeOption != null) {
+                                profile.horoscope = horoscopeOption
+                            } else {
+                                println("El valor '$selectedOption' no corresponde a un horóscopo válido.")
+                            }
+                        }
+                        "education" -> profile.education = selectedOption
+                        "personality_type" -> profile.personalityType = selectedOption
+                        else -> println("Campo desconocido: $field")
+                    }
+                }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ProfileSection(
+                title = "Estilo de vida",
+                rowTitles = listOf(
+                    "pets" to profile.pets,
+                    "drinks" to profile.drinks,
+                    "smokes" to profile.smokes,
+                    "sports" to profile.doesSports,
+                    "religion" to profile.valuesAndBeliefs
+                ),
+                onSelectedItemChange = { field, selectedOption ->
+                    when (field) {
+                        "pets" -> profile.pets = selectedOption
+                        "drinks" -> profile.drinks = selectedOption
+                        "smokes" -> profile.smokes = selectedOption
+                        "sports" -> profile.doesSports = selectedOption
+                        "religion" -> profile.valuesAndBeliefs = selectedOption
+                        else -> println("Campo desconocido: $field")
+                    }
+                }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LegalSection(onCookiesClick, onPrivacyClick)
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    profile.let {
+                        profileViewModel.updateProfile(it)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Guardar cambios")
+            }
+        }
+    } else {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("No se ha podido cargar el perfil")
         }
     }
+
+
 }

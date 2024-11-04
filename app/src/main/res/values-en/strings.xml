@@ -215,6 +215,31 @@
         <item>Entrepreneurship</item>
     </string-array>
 
+    <string-array name="jobs">
+        <item>Student</item>
+        <item>Engineer</item>
+        <item>Doctor</item>
+        <item>Teacher</item>
+        <item>Designer</item>
+        <item>Artist</item>
+        <item>Photographer</item>
+        <item>Musician</item>
+        <item>Writer</item>
+        <item>Entrepreneur</item>
+        <item>Scientist</item>
+        <item>Lawyer</item>
+        <item>Accountant</item>
+        <item>Psychologist</item>
+        <item>Therapist</item>
+        <item>Consultant</item>
+        <item>Manager</item>
+        <item>Developer</item>
+        <item>Analyst</item>
+        <item>Marketer</item>
+        <item>Trader</item>
+        <item>Other</item>
+    </string-array>
+
     <!--REPORT-->
     <string name="report_title">Report User</string>
     <string name="send_title">Review and submit your report</string>
