@@ -29,6 +29,7 @@ fun ProfileWall(
     val activity = LocalContext.current as? ComponentActivity
 
     Column {
+
         ProfileSettingsTopBar { navController.popBackStack() }
 
         Column(

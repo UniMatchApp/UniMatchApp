@@ -37,7 +37,8 @@ import com.ulpgc.uniMatch.R
 fun DropdownMenuShorter(
     items: List<String>,
     selectedItem: String,
-    isSelectable: Boolean = true
+    isSelectable: Boolean = true,
+    onSelectedItemChange: (String) -> Unit
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(selectedItem) }

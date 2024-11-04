@@ -14,14 +14,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LegalSection() {
+fun LegalSection(
+    onCookiesClick : () -> Unit,
+    onPrivacyClick : () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Transparent, shape = RoundedCornerShape(8.dp))
     ) {
-        LegalOptionButton("Política de cookies")
-        LegalOptionButton("Política de privacidad")
+        LegalOptionButton("Política de cookies", onCookiesClick)
+        LegalOptionButton("Política de privacidad", onPrivacyClick)
         Button(
             onClick = { /* Acción de eliminar cuenta */ },
             colors = ButtonDefaults.buttonColors(Color(0xFFD7A2C3)),
@@ -35,9 +38,9 @@ fun LegalSection() {
 }
 
 @Composable
-fun LegalOptionButton(text: String) {
+fun LegalOptionButton(text: String, onClick: () -> Unit) {
     Button(
-        onClick = { /* Acción de legalidad */ },
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(Color.LightGray),
         modifier = Modifier
             .fillMaxWidth()
