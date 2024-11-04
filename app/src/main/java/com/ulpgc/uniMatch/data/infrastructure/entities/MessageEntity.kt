@@ -18,6 +18,6 @@ data class MessageEntity(
     val senderId: String,
     val content: String,
     val timestamp: Long,
-    val status: MessageStatus // Estados: ENVIANDO, ENVIADO, RECIBIDO, LEÍDO, FALLADO
+    val status: MessageStatus
 )
 
