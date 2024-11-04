@@ -157,7 +157,7 @@ fun ProfileInfoModal(
                             "education" to profile.education,
                             "personality_type" to profile.personalityType
                         ),
-                        isSelectable = true
+                        isSelectable = false
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -173,7 +173,7 @@ fun ProfileInfoModal(
                             "sports" to profile.doesSports,
                             "religion" to profile.valuesAndBeliefs
                         ),
-                        isSelectable = true
+                        isSelectable = false
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))

@@ -22,7 +22,9 @@ import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileSettingsTopBar(onBackPressed: () -> Unit) {
+fun PoliciesTopBar(
+    onBackPressed: () -> Unit
+) {
     TopAppBar(
         title = {
             Row(
@@ -42,7 +44,7 @@ fun ProfileSettingsTopBar(onBackPressed: () -> Unit) {
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = "Editar Perfil",
+                    text = "Políticas",
                     color = Color.White
                 )
             }

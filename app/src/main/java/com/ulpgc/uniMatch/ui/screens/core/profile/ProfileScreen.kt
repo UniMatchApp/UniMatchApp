@@ -42,6 +42,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enum.Gender
+import com.ulpgc.uniMatch.data.domain.enum.Horoscope
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
@@ -55,7 +56,9 @@ import com.ulpgc.uniMatch.ui.components.profile.ProfileSection
 fun ProfileScreen(
     profileViewModel: ProfileViewModel,
     onEditClick: (String) -> Unit,
-    onEditInterestsClick: (String) -> Unit
+    onEditInterestsClick: (String) -> Unit,
+    onCookiesClick : () -> Unit,
+    onPrivacyClick : () -> Unit,
 ) {
 
     LaunchedEffect(Unit) {
@@ -181,15 +184,21 @@ fun ProfileScreen(
             )
         }
 
-
-
         ProfileDropdownField(
             label = "Sexo",
             options = context.resources.getStringArray(R.array.genders).toList(),
             onEditField = { selectedOption ->
-                profile?.gender = Gender.values().firstOrNull { it.name == selectedOption.toUpperCase() }!!
+                val option = Gender.values().firstOrNull { it.name == selectedOption.toUpperCase() }
+
+                if (option != null) {
+                    profile?.gender = option
+                } else {
+                    // Manejo de error en caso de que no coincida con ningún valor de Gender
+                    println("El valor '$selectedOption' no corresponde a ningún género válido.")
+                }
             }
         )
+
         ProfileInputField(
             label = "Altura en cm",
             initialValue = profile?.height?.toString() ?: "170",
@@ -205,34 +214,64 @@ fun ProfileScreen(
             label = "Orientación sexual",
             options = context.resources.getStringArray(R.array.sexual_orientation).toList(),
             onEditField = { selectedOption ->
-                profile?.sexualOrientation = SexualOrientation.values().firstOrNull { it.name == selectedOption.toUpperCase() }!!
+                val option = SexualOrientation.values().firstOrNull { it.name == selectedOption.toUpperCase() }
+
+                if (option != null) {
+                    profile?.sexualOrientation = option
+                } else {
+                    println("El valor '$selectedOption' no corresponde a ninguna orientación sexual válida.")
+                }
             }
         )
 
-        ProfileDropdownField(label = "Puesto", options = listOf("Ingeniero", "Médico", "Profesor", "Diseñador"), onEditField = { profile?.job = it })
+        ProfileDropdownField(
+            label = "Puesto",
+            options = listOf("Ingeniero", "Médico", "Profesor", "Diseñador"),
+            onEditField = { profile?.job = it }
+        )
+
         ProfileDropdownField(
             label = "¿Qué tipo de relación buscas?",
             options = context.resources.getStringArray(R.array.relationship_type).toList(),
             onEditField = { selectedOption ->
-                profile?.relationshipType = RelationshipType.values().firstOrNull { it.name == selectedOption.toUpperCase() }!!
+                val option = RelationshipType.values().firstOrNull { it.name == selectedOption.toUpperCase() }
+
+                if (option != null) {
+                    profile?.relationshipType = option
+                } else {
+                    println("El valor '$selectedOption' no corresponde a ningún tipo de relación válido.")
+                }
             }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Section: Más sobre mí
         ProfileSection(
             title = "Más sobre mí",
             rowTitles = listOf(
                 "horoscope" to profile?.horoscope.toString(),
                 "education" to profile?.education,
                 "personality_type" to profile?.personalityType
-            )
+            ),
+            onSelectedItemChange = { field, selectedOption ->
+                when (field) {
+                    "horoscope" -> {
+                        val horoscopeOption = Horoscope.values().firstOrNull { it.name == selectedOption.toUpperCase() }
+                        if (horoscopeOption != null) {
+                            profile?.horoscope = horoscopeOption
+                        } else {
+                            println("El valor '$selectedOption' no corresponde a un horóscopo válido.")
+                        }
+                    }
+                    "education" -> profile?.education = selectedOption
+                    "personality_type" -> profile?.personalityType = selectedOption
+                    else -> println("Campo desconocido: $field")
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Section: Estilo de vida
         ProfileSection(
             title = "Estilo de vida",
             rowTitles = listOf(
@@ -241,12 +280,22 @@ fun ProfileScreen(
                 "smokes" to profile?.smokes,
                 "sports" to profile?.doesSports,
                 "religion" to profile?.valuesAndBeliefs
-            )
+            ),
+            onSelectedItemChange = { field, selectedOption ->
+                when (field) {
+                    "pets" -> profile?.pets = selectedOption
+                    "drinks" -> profile?.drinks = selectedOption
+                    "smokes" -> profile?.smokes = selectedOption
+                    "sports" -> profile?.doesSports = selectedOption
+                    "religion" -> profile?.valuesAndBeliefs = selectedOption
+                    else -> println("Campo desconocido: $field")
+                }
+            }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LegalSection()
+        LegalSection(onCookiesClick, onPrivacyClick)
 
         Spacer(modifier = Modifier.height(16.dp))
         Button(
@@ -259,9 +308,5 @@ fun ProfileScreen(
         ) {
             Text("Guardar cambios")
         }
-
-
-
-
     }
 }

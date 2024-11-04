@@ -15,7 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ProfileSection(title: String, rowTitles: List<Pair<String, String?>>, isSelectable: Boolean = true) {
+fun ProfileSection(
+    title: String,
+    rowTitles: List<Pair<String, String?>>,
+    isSelectable: Boolean = true,
+    onSelectedItemChange: (String, String) -> Unit = { _, _ -> } // función vacía por defecto
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,7 +40,14 @@ fun ProfileSection(title: String, rowTitles: List<Pair<String, String?>>, isSele
                 .background(Color(0xFFF0F0F0))
         ) {
             rowTitles.forEach { (rowTitle, defaultValue) ->
-                ProfileOptionRow(rowTitle, defaultValue ?: "", isSelectable)
+                ProfileOptionRow(
+                    rowTitle,
+                    defaultValue ?: "",
+                    isSelectable,
+                    onSelectedItemChange = { selectedItem ->
+                        onSelectedItemChange(rowTitle, selectedItem)
+                    }
+                )
             }
         }
     }

@@ -32,6 +32,8 @@ import com.ulpgc.uniMatch.ui.screens.core.TopBar
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatListScreen
 import com.ulpgc.uniMatch.ui.screens.core.home.HomeScreen
+import com.ulpgc.uniMatch.ui.screens.core.policies.CookiesPolicyScreen
+import com.ulpgc.uniMatch.ui.screens.core.policies.PrivacyPolicyScreen
 import com.ulpgc.uniMatch.ui.screens.core.preferences.PreferencesScreen
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileInterests
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileWall
@@ -46,6 +48,8 @@ object CoreRoutes {
     const val PROFILE_INTERESTS = "profile-interests/{userId}"
     const val NOTIFICATIONS = "home/notifications"
     const val PREFERENCES = "home/preferences"
+    const val PRIVACYPOLICIES = "privacy-policies"
+    const val COOKIESPOLICIES = "cookies-policies"
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -123,6 +127,12 @@ fun CoreNavHost(
                 onEditInterestsClick = { userId ->
                     // Navegar a la pantalla de intereses del perfil
                     navController.navigate(CoreRoutes.PROFILE_INTERESTS.replace("{userId}", userId))
+                },
+                onCookiesClick = {
+                    navController.navigate(CoreRoutes.COOKIESPOLICIES)
+                },
+                onPrivacyClick = {
+                    navController.navigate(CoreRoutes.PRIVACYPOLICIES)
                 }
         ) }
         composable(CoreRoutes.CHAT_LIST) {
@@ -151,7 +161,6 @@ fun CoreNavHost(
                     authViewModel = authViewModel,
                     navController = navController,
                     profileViewModel = profileViewModel
-
                 )
             }
         }
@@ -173,6 +182,18 @@ fun CoreNavHost(
                     profileViewModel = profileViewModel,
                     navController = navController
                 )
+            }
+        }
+
+        navigation(startDestination = "privacy-policies", route = "privacy") {
+            composable("privacy-policies") {
+                PrivacyPolicyScreen { navController.popBackStack() }
+            }
+        }
+
+        navigation(startDestination = "cookies-policies", route = "cookies") {
+            composable("cookies-policies") {
+                CookiesPolicyScreen { navController.popBackStack() }
             }
         }
     }

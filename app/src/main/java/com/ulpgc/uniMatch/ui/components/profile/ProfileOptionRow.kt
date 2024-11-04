@@ -21,7 +21,12 @@ import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.ui.components.DropdownMenuShorter
 
 @Composable
-fun ProfileOptionRow(type: String, option: String, isSelectable: Boolean = true) {
+fun ProfileOptionRow(
+    type: String,
+    option: String,
+    isSelectable: Boolean = true,
+    onSelectedItemChange: (String) -> Unit
+) {
 
     val context = LocalContext.current
     val iconName = "icon_${type.lowercase()}"
@@ -71,6 +76,13 @@ fun ProfileOptionRow(type: String, option: String, isSelectable: Boolean = true)
 
         }
 
-        DropdownMenuShorter(items = options, selectedItem = option, isSelectable = isSelectable)
+        DropdownMenuShorter(
+            items = options,
+            selectedItem = option,
+            isSelectable = isSelectable,
+            onSelectedItemChange = { selectedItem ->
+                onSelectedItemChange(selectedItem)
+            }
+        )
     }
 }
