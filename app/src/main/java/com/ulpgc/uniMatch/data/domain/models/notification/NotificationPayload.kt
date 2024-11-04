@@ -4,21 +4,17 @@ import com.ulpgc.uniMatch.data.domain.enum.MessageStatus
 
 abstract class NotificationPayload(
     protected val id: String
-) {
-    abstract fun getId(): String
-}
+)
 
 class AppNotificationPayload(
     id: String,
     private val title: String,
     private val description: String
 ) : NotificationPayload(id) {
-    override fun getId(): String {
-        return id
-    }
     fun getTitle(): String {
         return title
     }
+
     fun getDescription(): String {
         return description
     }
@@ -29,12 +25,10 @@ class EventNotificationPayload(
     private val title: String,
     private val status: EventStatus,
 ) : NotificationPayload(id) {
-    override fun getId(): String {
-        return id
-    }
     fun getTitle(): String {
         return title
     }
+
     fun getStatus(): EventStatus {
         return status
     }
@@ -45,12 +39,10 @@ class MatchNotificationPayload(
     private val userMatched: String,
     private val isLiked: Boolean
 ) : NotificationPayload(id) {
-    override fun getId(): String {
-        return id
-    }
     fun getUserMatched(): String {
         return userMatched
     }
+
     fun isLiked(): Boolean {
         return isLiked
     }
@@ -63,23 +55,23 @@ class MessageNotificationPayload(
     private val thumbnail: String?,
     private val status: MessageStatus,
     private val deletedStatus: DeletedMessageStatus
-
-    ) : NotificationPayload(id) {
-    override fun getId(): String {
-        return id
-    }
+) : NotificationPayload(id) {
     fun getSender(): String {
         return sender
     }
+
     fun getContent(): String {
         return content
     }
+
     fun getThumbnail(): String? {
         return thumbnail
     }
+
     fun getStatus(): MessageStatus {
         return status
     }
+
     fun getDeletedStatus(): DeletedMessageStatus {
         return deletedStatus
     }

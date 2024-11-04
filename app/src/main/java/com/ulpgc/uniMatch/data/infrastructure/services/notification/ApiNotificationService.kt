@@ -1,6 +1,5 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.notification
 
-import android.app.Notification
 import com.ulpgc.uniMatch.data.application.services.NotificationsService
 import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
 import com.ulpgc.uniMatch.data.infrastructure.controllers.NotificationController
