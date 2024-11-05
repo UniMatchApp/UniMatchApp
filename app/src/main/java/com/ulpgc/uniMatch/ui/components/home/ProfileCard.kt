@@ -123,6 +123,7 @@ fun ProfileCard(
                         isLike = accumulatedDrag < 0
 
                         if (kotlin.math.abs(accumulatedDrag) > swipeThreshold) {
+                            currentImageIndex = 0
                             if (isLike) onSwipeRight() else onSwipeLeft()
                             isTracking = false
                             accumulatedDrag = 0f
@@ -313,7 +314,7 @@ fun ProfileCard(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = { onSwipeLeft() }) {
+                    IconButton(onClick = { currentImageIndex=0; onSwipeLeft() }) {
                         Icon(
                             imageVector = Icons.Filled.Close,
                             contentDescription = stringResource(R.string.close),
@@ -333,7 +334,7 @@ fun ProfileCard(
                         )
                     }
 
-                    IconButton(onClick = { onSwipeRight() }) {
+                    IconButton(onClick = { currentImageIndex=0; onSwipeRight() }) {
                         Icon(
                             imageVector = Icons.Filled.Favorite,
                             contentDescription = stringResource(R.string.like),
