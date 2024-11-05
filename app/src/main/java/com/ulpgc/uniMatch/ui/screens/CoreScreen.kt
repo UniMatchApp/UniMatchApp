@@ -24,6 +24,7 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.screens.core.BottomNavigationBar
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileScreen
@@ -32,6 +33,7 @@ import com.ulpgc.uniMatch.ui.screens.core.TopBar
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatListScreen
 import com.ulpgc.uniMatch.ui.screens.core.home.HomeScreen
+import com.ulpgc.uniMatch.ui.screens.core.notifications.NotificationsScreen
 import com.ulpgc.uniMatch.ui.screens.core.policies.CookiesPolicyScreen
 import com.ulpgc.uniMatch.ui.screens.core.policies.PrivacyPolicyScreen
 import com.ulpgc.uniMatch.ui.screens.core.preferences.PreferencesScreen
@@ -58,7 +60,8 @@ fun CoreScreen(
     authViewModel: AuthViewModel,
     chatViewModel: ChatViewModel,
     profileViewModel: ProfileViewModel,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    notificationsViewModel: NotificationsViewModel
 ) {
     val authState by authViewModel.authState.collectAsState()
 
@@ -71,9 +74,8 @@ fun CoreScreen(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    // Determina si necesitas padding o no
     val isPaddingRequired = when (currentRoute) {
-        CoreRoutes.HOME, CoreRoutes.SEARCH, CoreRoutes.CHAT_LIST, CoreRoutes.PROFILE, CoreRoutes.PREFERENCES -> true
+        CoreRoutes.HOME, CoreRoutes.SEARCH, CoreRoutes.CHAT_LIST, CoreRoutes.PROFILE, CoreRoutes.PREFERENCES, CoreRoutes.NOTIFICATIONS -> true
         else -> false
     }
 
@@ -83,7 +85,6 @@ fun CoreScreen(
         },
         bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
-        // Ajusta el padding del Box basado en la ruta actual
         val paddingModifier = if (isPaddingRequired) {
             Modifier.padding(innerPadding)
         } else {
@@ -91,7 +92,14 @@ fun CoreScreen(
         }
 
         Box(modifier = Modifier.fillMaxSize().then(paddingModifier)) {
-            CoreNavHost(navController, authViewModel, chatViewModel, profileViewModel, homeViewModel)
+            CoreNavHost(
+                navController,
+                authViewModel,
+                chatViewModel,
+                profileViewModel,
+                homeViewModel,
+                notificationsViewModel
+            )
         }
     }
 }
@@ -104,7 +112,8 @@ fun CoreNavHost(
     authViewModel: AuthViewModel,
     chatViewModel: ChatViewModel,
     profileViewModel: ProfileViewModel,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
+    notificationsViewModel: NotificationsViewModel
 ) {
     NavHost(
         navController = navController,
@@ -121,11 +130,9 @@ fun CoreNavHost(
             ProfileScreen(
                 profileViewModel = profileViewModel,
                 onEditClick = { userId ->
-                    // Navegar a la pantalla de edición de perfil
                     navController.navigate(CoreRoutes.PROFILE_WALL.replace("{userId}", userId))
                 },
                 onEditInterestsClick = { userId ->
-                    // Navegar a la pantalla de intereses del perfil
                     navController.navigate(CoreRoutes.PROFILE_INTERESTS.replace("{userId}", userId))
                 },
                 onCookiesClick = {
@@ -139,7 +146,6 @@ fun CoreNavHost(
             ChatListScreen(
                 viewModel = chatViewModel,
                 onChatClick = { chatId ->
-                    // Navegar a la pantalla de detalles del chat usando un subenrutamiento
                     navController.navigate(CoreRoutes.CHAT_DETAIL.replace("{chatId}", chatId))
                 }
             )
@@ -151,7 +157,13 @@ fun CoreNavHost(
             )
         }
 
-        // Anidamos un NavHost secundario para la pantalla de detalles del chat
+        composable(CoreRoutes.NOTIFICATIONS) {
+            NotificationsScreen(
+                notificationsViewModel = notificationsViewModel,
+                profileViewModel = profileViewModel
+            )
+        }
+
         navigation(startDestination = "chatDetail/{chatId}", route = "chat_navigation") {
             composable("chatDetail/{chatId}") { backStackEntry ->
                 val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
@@ -164,6 +176,7 @@ fun CoreNavHost(
                 )
             }
         }
+
         navigation(startDestination = "profile-wall/{userId}", route = "wall") {
             composable("profile-wall/{userId}") {
                 ProfileWall(

@@ -37,6 +37,22 @@ open class ProfileViewModel(
         }
     }
 
+    fun loadProfile(userId: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.getProfile(userId)
+            result.onSuccess { profileData ->
+                _profileData.value = profileData
+                _isLoading.value = false
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error loading profile"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
     fun updateProfile(profile: Profile) {
         viewModelScope.launch {
             _isLoading.value = true

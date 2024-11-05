@@ -3,6 +3,7 @@ package com.ulpgc.uniMatch.data.infrastructure.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.NotificationsService
+import com.ulpgc.uniMatch.data.domain.enum.NotificationStatus
 import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +20,9 @@ class NotificationsViewModel (
 
     private val _notifications = MutableStateFlow<List<Notifications>>(emptyList())
     val notifications: StateFlow<List<Notifications>> get() = _notifications
+
+    private val _notificationsEnabled = MutableStateFlow(true)
+    val notificationsEnabled: StateFlow<Boolean> get() = _notificationsEnabled
 
     fun loadNotifications() {
         viewModelScope.launch {
@@ -41,6 +45,15 @@ class NotificationsViewModel (
     fun markNotificationAsRead(notificationId: String) {
         viewModelScope.launch {
             val result = notificationsService.markNotificationAsRead(notificationId)
+            result.onSuccess {
+                _notifications.value = _notifications.value.map { notification ->
+                    if (notification.id == notificationId) {
+                        notification.copy(status = NotificationStatus.READ)
+                    } else {
+                        notification
+                    }
+                }
+            }
             result.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error marking notification as read"
@@ -52,6 +65,11 @@ class NotificationsViewModel (
     fun deleteNotification(notificationId: String) {
         viewModelScope.launch {
             val result = notificationsService.deleteNotification(notificationId)
+            result.onSuccess {
+                _notifications.value = _notifications.value.filter { notification ->
+                    notification.id != notificationId
+                }
+            }
             result.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error deleting notification"
@@ -63,11 +81,22 @@ class NotificationsViewModel (
     fun deleteAllNotifications() {
         viewModelScope.launch {
             authViewModel.userId?.let { notificationsService.deleteAllNotifications(it) }
+                ?.onSuccess {
+                    _notifications.value = emptyList()
+                }
                 ?.onFailure { error ->
                     errorViewModel.showError(
                         error.message ?: "Error deleting all notifications"
                     )
                 }
         }
+    }
+
+    fun disableAllNotifications() {
+        TODO("Not yet implemented")
+    }
+
+    fun toggleNotifications(it: Boolean) {
+        _notificationsEnabled.value = it
     }
 }

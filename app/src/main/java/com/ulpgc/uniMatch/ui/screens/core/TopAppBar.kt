@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import com.ulpgc.uniMatch.ui.screens.CoreRoutes
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatDetailTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.HomeTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.NotificationTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.PreferencesTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ProfileTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.SearchTopBar
@@ -26,6 +27,9 @@ fun TopBar(currentRoute: String?, navController: NavHostController) {
             navController
         )
         CoreRoutes.PREFERENCES -> PreferencesTopBar(
+            navController
+        )
+        CoreRoutes.NOTIFICATIONS -> NotificationTopBar(
             navController
         )
         else -> {

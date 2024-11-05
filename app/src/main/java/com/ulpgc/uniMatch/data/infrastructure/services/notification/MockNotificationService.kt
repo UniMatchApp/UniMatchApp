@@ -2,11 +2,9 @@ package com.ulpgc.uniMatch.data.infrastructure.services.notification
 
 import com.ulpgc.uniMatch.data.application.services.NotificationsService
 import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
-import com.ulpgc.uniMatch.data.infrastructure.controllers.NotificationController
 import com.ulpgc.uniMatch.data.infrastructure.mocks.NotificationMock
 
 class MockNotificationService(
-    private val notificationController: NotificationController
 ) : NotificationsService {
 
     override suspend fun getNotifications(userId: String): Result<List<Notifications>> {

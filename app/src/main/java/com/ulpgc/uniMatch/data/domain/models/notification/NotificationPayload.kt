@@ -3,7 +3,7 @@ import com.ulpgc.uniMatch.data.domain.enum.EventStatus
 import com.ulpgc.uniMatch.data.domain.enum.MessageStatus
 
 abstract class NotificationPayload(
-    protected val id: String
+    val id: String
 )
 
 class AppNotificationPayload(

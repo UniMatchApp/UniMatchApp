@@ -17,7 +17,7 @@ object NotificationMock {
                 contentId = "content1",
                 payload = AppNotificationPayload("1", "New Message", "You have a new message"),
                 date = System.currentTimeMillis(),
-                recipient = "user1"
+                recipient = "1"
             )
         )
         notificationsList.add(
@@ -28,7 +28,7 @@ object NotificationMock {
                 contentId = "content2",
                 payload = AppNotificationPayload("2", "Friend Request", "John Doe sent you a friend request"),
                 date = System.currentTimeMillis(),
-                recipient = "user1"
+                recipient = "1"
             )
         )
     }

@@ -277,6 +277,17 @@
         <item>Otro problema</item>
     </string-array>
 
+    <!--NOTIFICATIONS-->
+    <string name="notifications_title">Notificaciones</string>
+    <string name="delete_all_notifications">Eliminar todas las notificaciones</string>
+    <string name="delete_notification_confirmation">¿Estás seguro de que deseas eliminar esta notificación?</string>
+    <string name="liked_you">le ha dado me gusta a tu perfil</string>
+    <string name="unliked_you">no le ha gustado tu perfil</string>
+    <string name="you_have_a_new_message_from">Tienes un nuevo mensaje de</string>
+    <string name="thumbnail_available">Thumbnail disponible</string>"
+    <string name="unknown_notification">Notificación desconocida</string>
+
+
     <!--MISC-->
     <string name="error_title">Error</string>
     <string name="success_title">Éxito</string>
@@ -297,5 +308,7 @@
     <string name="save">Guardar</string>
     <string name="add">Añadir</string>
     <string name="send">Enviar</string>
+    <string name="delete_confirmation">¿Estás seguro de que deseas eliminar?</string>
+    <string name="confirm">Confirmar</string>
 
 </resources>

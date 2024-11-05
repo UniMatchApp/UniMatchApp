@@ -272,6 +272,16 @@
         <item>Persistent messages</item>
     </string-array>
 
+    <!--NOTIFICATIONS-->
+    <string name="notifications_title">Notifications</string>
+    <string name="delete_all_notifications">Delete All Notifications</string>
+    <string name="delete_notification_confirmation">Are you sure you want to delete this notification?</string>
+    <string name="liked_you">liked you</string>
+    <string name="unliked_you">unliked you</string>
+    <string name="you_have_a_new_message_from">You have a new message from</string>
+    <string name="thumbnail_available">Thumbnail available</string>
+    <string name="unknown_notification">Unknown notification</string>
+
     <!--MISC-->
     <string name="error_title">Error</string>
     <string name="success_title">Success</string>
@@ -292,6 +302,8 @@
     <string name="save">Save</string>
     <string name="add">Add</string>
     <string name="send">Send</string>
+    <string name="delete_confirmation">Are you sure you want to delete?</string>
+    <string name="confirm">Confirm</string>
 
 
 </resources>

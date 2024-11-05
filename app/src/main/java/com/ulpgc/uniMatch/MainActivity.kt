@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import com.ulpgc.uniMatch.data.infrastructure.services.user.MockUserService
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
 import com.ulpgc.uniMatch.data.infrastructure.services.matching.MockMatchingService
+import com.ulpgc.uniMatch.data.infrastructure.services.notification.MockNotificationService
 import com.ulpgc.uniMatch.data.infrastructure.services.profile.MockProfileService
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
@@ -16,6 +17,7 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.ErrorDialog
 import com.ulpgc.uniMatch.ui.screens.AuthScreen
@@ -39,11 +41,13 @@ class MainActivity : ComponentActivity() {
 //        )
         val userService = MockUserService()
         val matchingService = MockMatchingService()
+        val notificationService = MockNotificationService()
         val errorViewModel = ErrorViewModel()
         val authViewModel = AuthViewModel(userService, errorViewModel)
         val profileService = MockProfileService()
         val profileViewModel = ProfileViewModel(profileService, errorViewModel, authViewModel)
         val homeViewModel = HomeViewModel(profileService, errorViewModel, authViewModel, matchingService, userService)
+        val notificationsViewModel = NotificationsViewModel(notificationService, errorViewModel, authViewModel)
 
         val chatService = MockChatService()
         val chatViewModel = ChatViewModel(chatService, errorViewModel, authViewModel)
@@ -62,7 +66,8 @@ class MainActivity : ComponentActivity() {
                         authViewModel,
                         chatViewModel,
                         profileViewModel,
-                        homeViewModel
+                        homeViewModel,
+                        notificationsViewModel
                     )
                     is AuthState.Unauthenticated -> AuthScreen(authViewModel)
                 }
