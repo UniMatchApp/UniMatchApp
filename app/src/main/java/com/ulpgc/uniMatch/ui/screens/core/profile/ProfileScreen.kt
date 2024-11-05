@@ -1,6 +1,5 @@
 package com.ulpgc.uniMatch.ui.screens.core.profile
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -213,14 +212,19 @@ fun ProfileScreen(
             ProfileInputField(
                 label = "Altura en cm",
                 initialValue = profile.height.toString() ?: "170",
-                onValueChange = { newHeight -> profile.height = newHeight.toInt() }
+                onValueChange = { newHeight ->
+                    profile.height = newHeight.toIntOrNull() ?: 170
+                }
             )
 
             ProfileInputField(
                 label = "Peso en kg",
                 initialValue = profile.weight?.toString() ?: "70",
-                onValueChange = { newWeight -> profile.weight = newWeight.toInt() }
+                onValueChange = { newWeight ->
+                    profile.weight = newWeight.toIntOrNull() ?: 70
+                }
             )
+
             ProfileDropdownField(
                 label = "Orientación sexual",
                 options = context.resources.getStringArray(R.array.sexual_orientation).toList(),
