@@ -39,8 +39,6 @@ fun ProfileWall(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-
-
             WallGrid(
                 activity!!,
                 initialProfileImages = profileImages,
