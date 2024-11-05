@@ -2,7 +2,9 @@ package com.ulpgc.uniMatch.data.infrastructure.services.profile
 
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enum.Gender
+import com.ulpgc.uniMatch.data.domain.enum.Horoscope
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.controllers.ProfileController
 import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileDao
@@ -77,13 +79,13 @@ class ApiProfileService (
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateGender(userId: String, gender: String): Result<Unit> {
+    override suspend fun updateGender(userId: String, gender: Gender): Result<Unit> {
         TODO("Not yet implemented")
     }
 
     override suspend fun updateSexualOrientation(
         userId: String,
-        orientation: String
+        orientation: SexualOrientation
     ): Result<Unit> {
         TODO("Not yet implemented")
     }
@@ -92,14 +94,7 @@ class ApiProfileService (
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateRelationshipType(
-        userId: String,
-        relationshipType: String
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun updateHoroscope(userId: String, horoscope: String): Result<Unit> {
+    override suspend fun updateHoroscope(userId: String, horoscope: Horoscope): Result<Unit> {
         TODO("Not yet implemented")
     }
 

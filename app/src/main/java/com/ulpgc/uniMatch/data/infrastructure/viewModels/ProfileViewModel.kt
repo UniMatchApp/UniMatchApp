@@ -3,7 +3,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enum.Gender
+import com.ulpgc.uniMatch.data.domain.enum.Horoscope
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -49,11 +51,11 @@ open class ProfileViewModel(
                         profile.interests to { updateInterests(profile.interests) },
                         profile.height to { profile.height?.let { updateHeight(it) } },
                         profile.weight to { profile.weight?.let { updateWeight(it) } },
-                        profile.gender to { updateGender(profile.gender.name) },
-                        profile.sexualOrientation to { updateSexualOrientation(profile.sexualOrientation.name) },
+                        profile.gender to { updateGender(profile.gender) },
+                        profile.sexualOrientation to { updateSexualOrientation(profile.sexualOrientation) },
                         profile.job to { profile.job?.let { updateJob(it) } },
-                        profile.relationshipType to { updateRelationshipType(profile.relationshipType.name) },
-                        profile.horoscope to { profile.horoscope?.let { updateHoroscope(it.name) } },
+                        profile.relationshipType to { updateRelationshipType(profile.relationshipType) },
+                        profile.horoscope to { profile.horoscope?.let { updateHoroscope(it) } },
                         profile.education to { profile.education?.let { updateEducation(it) } },
                         profile.personalityType to { profile.personalityType?.let { updatePersonalityType(it) } },
                         profile.pets to { profile.pets?.let { updatePets(it) } },
@@ -93,7 +95,6 @@ open class ProfileViewModel(
                 }.onFailure { error ->
                     errorViewModel.showError(error.message ?: "Error updating profile")
                 }
-
                 // Recarga el perfil una vez finalizadas las actualizaciones.
                 loadProfile()
                 _isLoading.value = false
@@ -178,7 +179,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateAboutMe(authViewModel.userId!!, aboutMe)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(aboutMe = aboutMe)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating about me"
@@ -193,7 +195,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateFact(authViewModel.userId!!, fact)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(fact = fact)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating fact"
@@ -208,7 +211,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateInterests(authViewModel.userId!!, interest)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(interests = interest)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating interest"
@@ -223,7 +227,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateHeight(authViewModel.userId!!, height)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(height = height)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating height"
@@ -238,7 +243,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateWeight(authViewModel.userId!!, weight)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(weight = weight)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating weight"
@@ -248,12 +254,13 @@ open class ProfileViewModel(
         }
     }
 
-    fun updateGender(gender: String) {
+    fun updateGender(gender: Gender) {
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.updateGender(authViewModel.userId!!, gender)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(gender = gender)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating gender"
@@ -263,12 +270,13 @@ open class ProfileViewModel(
         }
     }
 
-    fun updateSexualOrientation(orientation: String) {
+    fun updateSexualOrientation(orientation: SexualOrientation) {
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.updateSexualOrientation(authViewModel.userId!!, orientation)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(sexualOrientation = orientation)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating sexual orientation"
@@ -283,7 +291,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateJob(authViewModel.userId!!, position)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(job = position)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating position"
@@ -293,27 +302,13 @@ open class ProfileViewModel(
         }
     }
 
-    fun updateRelationshipType(relationshipType: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateRelationshipType(authViewModel.userId!!, relationshipType)
-            result.onSuccess {
-//                loadProfile()
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating relationship type"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updateHoroscope(horoscope: String) {
+    fun updateHoroscope(horoscope: Horoscope) {
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.updateHoroscope(authViewModel.userId!!, horoscope)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(horoscope = horoscope)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating horoscope"
@@ -328,7 +323,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateEducation(authViewModel.userId!!, education)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(education = education)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating education"
@@ -343,7 +339,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updatePersonalityType(authViewModel.userId!!, personalityType)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(personalityType = personalityType)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating personality type"
@@ -358,7 +355,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updatePets(authViewModel.userId!!, pets)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(pets = pets)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating pets"
@@ -373,7 +371,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateDrinks(authViewModel.userId!!, drinks)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(drinks = drinks)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating drinks"
@@ -388,7 +387,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateSmokes(authViewModel.userId!!, smokes)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(smokes = smokes)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating smokes"
@@ -403,7 +403,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateDoesSports(authViewModel.userId!!, doesSports)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(doesSports = doesSports)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating sports participation"
@@ -418,7 +419,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateValuesAndBeliefs(authViewModel.userId!!, valuesAndBeliefs)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(valuesAndBeliefs = valuesAndBeliefs)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating values and beliefs"
@@ -433,7 +435,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.addInterest(authViewModel.userId!!, interest)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(interests = _profileData.value?.interests.orEmpty() + interest)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error adding interest"
@@ -448,7 +451,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.removeInterest(authViewModel.userId!!, interest)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(interests = _profileData.value?.interests.orEmpty() - interest)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error removing interest"
@@ -463,7 +467,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.addImage(authViewModel.userId!!, imageUrl)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(wall = _profileData.value?.wall.orEmpty() + imageUrl)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error adding image"
@@ -478,7 +483,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.removeImage(authViewModel.userId!!, imageUrl)
             result.onSuccess {
-//                loadProfile()
+                _profileData.value = _profileData.value?.copy(wall = _profileData.value?.wall.orEmpty() - imageUrl)
+                _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error adding image"
