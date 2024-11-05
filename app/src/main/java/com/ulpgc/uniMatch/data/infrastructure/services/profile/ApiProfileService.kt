@@ -155,5 +155,23 @@ class ApiProfileService (
         }
     }
 
+    override suspend fun addImage(userId: String, image: String): Result<Unit> {
+        return try {
+            // profileController.addImage(userId, image) TODO
+            Result.success(Unit)
+        } catch (e: Throwable) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun removeImage(userId: String, image: String): Result<Unit> {
+        return try {
+            // profileController.removeImage(userId, image) TODO
+            Result.success(Unit)
+        } catch (e: Throwable) {
+            Result.failure(e)
+        }
+    }
+
 }
 

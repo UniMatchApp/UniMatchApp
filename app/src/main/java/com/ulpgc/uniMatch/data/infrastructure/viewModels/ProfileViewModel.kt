@@ -457,4 +457,34 @@ open class ProfileViewModel(
             }
         }
     }
+
+    fun addImage(imageUrl: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.addImage(authViewModel.userId!!, imageUrl)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error adding image"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun deleteImage(imageUrl: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.removeImage(authViewModel.userId!!, imageUrl)
+            result.onSuccess {
+//                loadProfile()
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error adding image"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
 }

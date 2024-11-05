@@ -30,4 +30,7 @@ interface ProfileService {
 
     suspend fun addInterest(userId: String, interest: String): Result<Unit>
     suspend fun removeInterest(userId: String, interest: String): Result<Unit>
+
+    suspend fun addImage(userId: String, image: String): Result<Unit>
+    suspend fun removeImage(userId: String, image: String): Result<Unit>
 }

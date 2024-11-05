@@ -18,7 +18,6 @@ import com.ulpgc.uniMatch.ui.screens.core.topBars.ProfileSettingsTopBar
 fun ProfileWall(
     profileViewModel: ProfileViewModel,
     navController: NavController,
-    onAddImageClick: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         profileViewModel.loadProfile()
@@ -42,7 +41,16 @@ fun ProfileWall(
 
 
 
-            WallGrid(activity!!, initialProfileImages = profileImages, onAddImageClick = onAddImageClick)
+            WallGrid(
+                activity!!,
+                initialProfileImages = profileImages,
+                onAddImageClick = { imageUrl ->
+                    profileViewModel.addImage(imageUrl)
+                },
+                onDeleteImageClick = { imageUrl ->
+                    profileViewModel.deleteImage(imageUrl)
+                }
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 

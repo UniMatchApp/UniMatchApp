@@ -25,15 +25,6 @@ fun LegalSection(
     ) {
         LegalOptionButton("Política de cookies", onCookiesClick)
         LegalOptionButton("Política de privacidad", onPrivacyClick)
-        Button(
-            onClick = { /* Acción de eliminar cuenta */ },
-            colors = ButtonDefaults.buttonColors(Color(0xFFD7A2C3)),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-        ) {
-            Text(text = "Eliminar cuenta", color = Color.White)
-        }
     }
 }
 

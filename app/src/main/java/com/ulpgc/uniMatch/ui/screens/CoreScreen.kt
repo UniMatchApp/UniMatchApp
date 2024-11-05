@@ -169,9 +169,6 @@ fun CoreNavHost(
                 ProfileWall(
                     profileViewModel = profileViewModel,
                     navController = navController,
-                    onAddImageClick = {
-                        navController.navigate("chat-detail/{chatId}")
-                    }
                 )
             }
         }
