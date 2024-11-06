@@ -47,6 +47,7 @@
 
     <!--DROPDOWN MENU-->
     <string name="dropdown_empty_option">Ninguno</string>
+    <string name="select">Seleccionar</string>
 
     <!--BLOCK DIALOG-->
     <string name="block_user_title">Bloquear usuario</string>
@@ -71,45 +72,37 @@
 
     <!--Funny questions-->
     <string-array name="funny_questions">
-        <item>Selecciona una pregunta</item>
-        <item>I once Reading for a whole day!</item>
-        <item>I once Traveling for a whole day!</item>
-        <item>I once Cooking for a whole day!</item>
-        <item>I once Gaming for a whole day!</item>
+        <item>Una vez lei por todo un día</item>
+        <item>Una vez viaje por todo un dia</item>
+        <item>Una vez cocine por todo un dia</item>
+        <item>Una vez jugue por todo un dia</item>
     </string-array>
 
     <!--Género-->
     <string-array name="genders">
-        <item>Seleccionar</item>
         <item>Hombre</item>
         <item>Mujer</item>
-        <item>No binario</item>
         <item>Otro</item>
     </string-array>
 
     <!--Edad-->
     <string-array name="sexual_orientation">
-        <item>Seleccionar</item>
         <item>Heterosexual</item>
         <item>Homosexual</item>
         <item>Bisexual</item>
-        <item>Asexual</item>
         <item>Otro</item>
     </string-array>
 
     <!--Tipo de relación-->
     <string-array name="relationship_type">
-        <item>Seleccionar</item>
         <item>Amigos</item>
         <item>Casual</item>
         <item>Relación</item>
-        <item>Abierta</item>
         <item>Otro</item>
     </string-array>
 
     <!--Horóscopo-->
     <string-array name="horoscope">
-        <item>Seleccionar</item>
         <item>Aries</item>
         <item>Tauro</item>
         <item>Géminis</item>
@@ -126,7 +119,6 @@
 
     <!-- Educación -->
     <string-array name="education">
-        <item>Seleccionar</item>
         <item>Sin estudios</item>
         <item>Educación primaria</item>
         <item>Educación secundaria</item>
@@ -139,7 +131,6 @@
 
     <!-- Tipo de personalidad -->
     <string-array name="personality_type">
-        <item>Seleccionar</item>
         <item>Introvertido</item>
         <item>Extrovertido</item>
         <item>Ambivertido</item>
@@ -147,7 +138,6 @@
 
     <!-- Mascotas -->
     <string-array name="pets">
-        <item>Seleccionar</item>
         <item>No tengo mascotas</item>
         <item>Perro</item>
         <item>Gato</item>
@@ -158,7 +148,6 @@
 
     <!-- Beber -->
     <string-array name="drinks">
-        <item>Seleccionar</item>
         <item>No bebo</item>
         <item>Socialmente</item>
         <item>Frecuentemente</item>
@@ -167,7 +156,6 @@
 
     <!-- ¿Fumas? -->
     <string-array name="smokes">
-        <item>Seleccionar</item>
         <item>No fumo</item>
         <item>Socialmente</item>
         <item>Frecuentemente</item>
@@ -176,7 +164,6 @@
 
     <!-- ¿Haces deporte? -->
     <string-array name="sports">
-        <item>Seleccionar</item>
         <item>No hago deporte</item>
         <item>Ocasionalmente</item>
         <item>Frecuentemente</item>
@@ -185,7 +172,6 @@
 
     <!-- Valores y creencias -->
     <string-array name="religion">
-        <item>Seleccionar</item>
         <item>Catolicismo</item>
         <item>Protestantismo</item>
         <item>Islam</item>

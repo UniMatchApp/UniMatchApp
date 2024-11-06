@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.screens.core.profile
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -77,9 +78,25 @@ fun ProfileScreen(
             CircularProgressIndicator()
         }
     } else if( profile != null) {
-        val facts = context.resources.getStringArray(R.array.funny_questions).toList()
+
 
         var aboutMeText by remember { mutableStateOf(profile.aboutMe ?: "") }
+
+        val horoscopeMap = context.resources.getStringArray(R.array.horoscope).mapIndexed { index, name ->
+            Horoscope.values().getOrNull(index) to name
+        }.toMap()
+
+        val relationshipTypeMap = context.resources.getStringArray(R.array.relationship_type).mapIndexed { index, name ->
+            RelationshipType.values().getOrNull(index) to name
+        }.toMap()
+
+        val genderMap = context.resources.getStringArray(R.array.genders).mapIndexed { index, name ->
+            Gender.values().getOrNull(index) to name
+        }.toMap()
+
+        val sexualOrientationMap = context.resources.getStringArray(R.array.sexual_orientation).mapIndexed { index, name ->
+            SexualOrientation.values().getOrNull(index) to name
+        }.toMap()
 
         Column(
             modifier = Modifier
@@ -165,7 +182,7 @@ fun ProfileScreen(
 
             profile.fact?.let {
                 DropdownMenu(
-                    items = facts,
+                    items = context.resources.getStringArray(R.array.funny_questions).toList(),
                     selectedItem = it,
                     onItemSelected = { newFact -> profile.fact = newFact }
                 )
@@ -179,7 +196,6 @@ fun ProfileScreen(
                 modifier = Modifier.align(Alignment.Start)
             )
 
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -188,7 +204,7 @@ fun ProfileScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = profile.interests?.joinToString(", ") ?: "Selecciona tus intereses",
+                    text = profile.interests.joinToString(", ") ?: "Selecciona tus intereses",
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -196,14 +212,12 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = "Sexo",
                 options = context.resources.getStringArray(R.array.genders).toList(),
-                selectedOption = profile.gender.toString() ?: "Seleccionar",
+                selectedOption = genderMap[profile.gender] ?: "Seleccionar",
                 onEditField = { selectedOption ->
-                    val option = Gender.values().firstOrNull { it.name == selectedOption.toUpperCase() }
-
-                    if (option != null) {
-                        profile.gender = option
+                    var genderOption = genderMap.entries.find { it.value == selectedOption }?.key
+                    if (genderOption != null) {
+                        profile.gender = genderOption
                     } else {
-                        // Manejo de error en caso de que no coincida con ningún valor de Gender
                         println("El valor '$selectedOption' no corresponde a ningún género válido.")
                     }
                 }
@@ -228,12 +242,11 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = "Orientación sexual",
                 options = context.resources.getStringArray(R.array.sexual_orientation).toList(),
-                selectedOption = profile.sexualOrientation?.name ?: "Seleccionar",
+                selectedOption = sexualOrientationMap[profile.sexualOrientation] ?: "Seleccionar",
                 onEditField = { selectedOption ->
-                    val option = SexualOrientation.values().firstOrNull { it.name == selectedOption.toUpperCase() }
-
-                    if (option != null) {
-                        profile.sexualOrientation = option
+                    var sexualOrientationOption = sexualOrientationMap.entries.find { it.value == selectedOption }?.key
+                    if (sexualOrientationOption != null) {
+                        profile.sexualOrientation = sexualOrientationOption
                     } else {
                         println("El valor '$selectedOption' no corresponde a ninguna orientación sexual válida.")
                     }
@@ -243,19 +256,18 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = "Puesto",
                 options = context.resources.getStringArray(R.array.jobs).toList(),
-                selectedOption = profile.job ?: "Seleccionar",
+                selectedOption = context.resources.getStringArray(R.array.jobs).toList().find { it == profile.job } ?: "Seleccionar",
                 onEditField = { profile.job = it }
             )
 
             ProfileDropdownField(
                 label = "¿Qué tipo de relación buscas?",
                 options = context.resources.getStringArray(R.array.relationship_type).toList(),
-                selectedOption = profile.relationshipType?.toString() ?: "Seleccionar",
+                selectedOption = relationshipTypeMap[profile.relationshipType] ?: "Seleccionar",
                 onEditField = { selectedOption ->
-                    val option = RelationshipType.values().firstOrNull { it.name == selectedOption.toUpperCase() }
-
-                    if (option != null) {
-                        profile.relationshipType = option
+                    var relationshipTypeOption = relationshipTypeMap.entries.find { it.value == selectedOption }?.key
+                    if (relationshipTypeOption != null) {
+                        profile.relationshipType = relationshipTypeOption
                     } else {
                         println("El valor '$selectedOption' no corresponde a ningún tipo de relación válido.")
                     }
@@ -267,14 +279,14 @@ fun ProfileScreen(
             ProfileSection(
                 title = "Más sobre mí",
                 rowTitles = listOf(
-                    "horoscope" to profile.horoscope.toString().lowercase().replaceFirstChar { it.uppercase() },
+                    "horoscope" to horoscopeMap[profile.horoscope],
                     "education" to profile.education,
                     "personality_type" to profile.personalityType
                 ),
                 onSelectedItemChange = { field, selectedOption ->
                     when (field) {
                         "horoscope" -> {
-                            val horoscopeOption = Horoscope.values().firstOrNull { it.name == selectedOption.toUpperCase() }
+                            var horoscopeOption = horoscopeMap.entries.find { it.value == selectedOption }?.key
                             if (horoscopeOption != null) {
                                 profile.horoscope = horoscopeOption
                             } else {
@@ -319,6 +331,7 @@ fun ProfileScreen(
             Button(
                 onClick = {
                     profile.let {
+                        Log.i("ProfileScreen", "Updating profile: $it")
                         profileViewModel.updateProfile(it)
                     }
                 },
