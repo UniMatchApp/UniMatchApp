@@ -1,6 +1,5 @@
 package com.ulpgc.uniMatch.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -31,7 +29,10 @@ import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
 
 @Composable
-fun ForgotPasswordScreen(onSubmit: (String) -> Unit) {
+fun ForgotPasswordScreen(
+    onSubmit: (String) -> Unit,
+    onBack: () -> Unit
+) {
     var emailOrPhone by remember { mutableStateOf(TextFieldValue("")) }
 
     Column(
@@ -41,16 +42,14 @@ fun ForgotPasswordScreen(onSubmit: (String) -> Unit) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Ilustración
         Icon(
-            painter = painterResource(id = R.drawable.ep_question_filled), // Tu drawable aquí
+            painter = painterResource(id = R.drawable.ep_question_filled),
             contentDescription = null,
             modifier = Modifier.size(150.dp),
-            tint = MaterialTheme.colorScheme.primary // Cambia dinámicamente el color según el tema
+            tint = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Título
         Text(
             text = "Forgot Password?",
             style = MaterialTheme.typography.headlineLarge,
@@ -59,7 +58,6 @@ fun ForgotPasswordScreen(onSubmit: (String) -> Unit) {
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Descripción
         Text(
             text = "Don't worry! It happens. Please enter the address associated with your account.",
             fontSize = 14.sp,
@@ -69,7 +67,6 @@ fun ForgotPasswordScreen(onSubmit: (String) -> Unit) {
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Campo de entrada
         BasicTextField(
             value = emailOrPhone,
             onValueChange = { emailOrPhone = it },
@@ -90,7 +87,6 @@ fun ForgotPasswordScreen(onSubmit: (String) -> Unit) {
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Botón "Submit"
         Button(
             onClick = { onSubmit(emailOrPhone.text) },
             modifier = Modifier
@@ -100,5 +96,18 @@ fun ForgotPasswordScreen(onSubmit: (String) -> Unit) {
         ) {
             Text(text = "Submit", fontSize = 16.sp)
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { onBack() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .height(48.dp)
+        ) {
+            Text(text = "Back", fontSize = 16.sp)
+        }
     }
 }
+

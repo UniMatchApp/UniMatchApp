@@ -113,4 +113,19 @@ class ApiUserService(
             }
         }
     }
+
+    override suspend fun forgotPassword(email: String): Result<Boolean> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = userController.forgotPassword(email)
+                if (response.success) {
+                    Result.success(true)
+                } else {
+                    Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
+                }
+            } catch (e: Exception) {
+                Result.failure(Throwable("Failed to send forgot password email: ${e.message}"))
+            }
+        }
+    }
 }

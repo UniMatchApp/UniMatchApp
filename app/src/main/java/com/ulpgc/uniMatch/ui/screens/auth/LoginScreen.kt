@@ -38,7 +38,8 @@ import com.ulpgc.uniMatch.ui.components.InputField
 fun LoginScreen(
     onLoginClick: (String, String) -> Unit,
     onSignUpClick: () -> Unit,
-    onForgotPasswordClick: () -> Unit
+    onForgotPasswordClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -91,12 +92,26 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Login button
-            ButtonComponent(
-                onClick = { onLoginClick(email, password) },
-                text = stringResource(R.string.login_button),
-                modifier = Modifier.fillMaxWidth()
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                ButtonComponent(
+                    onClick = onBackClick,
+                    text = stringResource(R.string.back),
+                    modifier = Modifier.weight(1f)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                ButtonComponent(
+                    onClick = { onLoginClick(email, password) },
+                    text = stringResource(R.string.login_button),
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Forgot password link
             Row(
@@ -104,12 +119,7 @@ fun LoginScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { rememberMe = !rememberMe }) {
-                    Checkbox(checked = rememberMe, onCheckedChange = {})
-                    Text(text = stringResource(R.string.remember_me), fontSize = 14.sp)
-                }
+                Spacer(modifier = Modifier.weight(1f))
                 ClickableText(
                     text = AnnotatedString(stringResource(R.string.forgot_password)),
                     onClick = { onForgotPasswordClick() },
@@ -119,7 +129,6 @@ fun LoginScreen(
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        // "Don't have an account?" with Sign Up link
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
@@ -133,5 +142,7 @@ fun LoginScreen(
                 style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.primary)
             )
         }
+
+
     }
 }

@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.domain.models.User
@@ -17,6 +18,10 @@ open class AuthViewModel(
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Unauthenticated)
     val authState: StateFlow<AuthState> get() = _authState
+
+    private val _forgotPasswordResult = MutableStateFlow<Boolean>(false)
+    val forgotPasswordResult: StateFlow<Boolean> = _forgotPasswordResult
+
 
     val userId: String?
         get() = (_authState.value as? AuthState.Authenticated)?.user?.id
@@ -55,9 +60,17 @@ open class AuthViewModel(
         _authState.value = AuthState.Unauthenticated
     }
 
-    fun forgotPassword(email: String) {
-        TODO("Not yet implemented")
-
+    fun forgotPassword(email: String): Boolean {
+        viewModelScope.launch {
+            val result = userService.forgotPassword(email)
+            result.onSuccess {
+                _forgotPasswordResult.value = true
+            }.onFailure {
+                errorViewModel.showError(it.message ?: "Unknown error occurred")
+                _forgotPasswordResult.value = false
+            }
+        }
+        return _forgotPasswordResult.value
     }
 
 }

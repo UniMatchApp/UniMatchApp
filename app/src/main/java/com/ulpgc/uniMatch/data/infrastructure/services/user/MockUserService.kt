@@ -81,4 +81,14 @@ class MockUserService : UserService {
             }
         }
     }
+
+    override suspend fun forgotPassword(email: String): Result<Boolean> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Result.success(true)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
 }

@@ -24,4 +24,8 @@ interface UserController {
     // Bloquear a un usuario
     @POST("users/block")
     suspend fun blockUser(@Query("userId") userId: String, @Query("blockedUserId") blockedUserId: String): ApiResponse<Unit>
+
+    // Olvidar contraseña
+    @POST("users/forgotPassword")
+    suspend fun forgotPassword(@Query("email") email: String): ApiResponse<Boolean>
 }
