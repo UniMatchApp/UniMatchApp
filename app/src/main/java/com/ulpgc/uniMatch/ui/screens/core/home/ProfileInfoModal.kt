@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,9 +29,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.enum.Habits
+import com.ulpgc.uniMatch.data.domain.enum.Horoscope
+import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.ui.components.InputField
 import com.ulpgc.uniMatch.ui.components.profile.ProfileSection
@@ -47,6 +53,26 @@ fun ProfileInfoModal(
     var selectedReason by remember { mutableStateOf("") }
     var selectedDetail by remember { mutableStateOf("") }
     var extraDetails by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
+
+    val horoscopeMap = context.resources.getStringArray(R.array.horoscope).mapIndexed { index, name ->
+        Horoscope.values().getOrNull(index) to name
+    }.toMap()
+
+    val relationshipTypeMap = context.resources.getStringArray(R.array.relationship_type).mapIndexed { index, name ->
+        RelationshipType.values().getOrNull(index) to name
+    }.toMap()
+
+    val religionMap = context.resources.getStringArray(R.array.religion).mapIndexed { index, name ->
+        Religion.values().getOrNull(index) to name
+    }.toMap()
+
+    val habitsMap = context.resources.getStringArray(R.array.habits).mapIndexed { index, name ->
+        Habits.values().getOrNull(index) to name
+    }.toMap()
+
+    Log.i("ProfileInfoModal", "Profile: $profile")
 
     if (profile != null && !showReportModal) {
         Box(
@@ -136,7 +162,7 @@ fun ProfileInfoModal(
                 item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         InputField(
-                            value = profile.relationshipType.toString(),
+                            value = relationshipTypeMap[profile.relationshipType].toString(),
                             onValueChange = {},
                             label = stringResource(R.string.relationship),
                             textColor = MaterialTheme.colorScheme.onBackground,
@@ -153,7 +179,7 @@ fun ProfileInfoModal(
                     ProfileSection(
                         title = stringResource(R.string.more_about_me),
                         rowTitles = listOf(
-                            "horoscope" to profile.horoscope.toString(),
+                            "horoscope" to horoscopeMap[profile.horoscope],
                             "education" to profile.education,
                             "personality_type" to profile.personalityType
                         ),
@@ -168,10 +194,10 @@ fun ProfileInfoModal(
                         title = stringResource(R.string.lifestyle),
                         rowTitles = listOf(
                             "pets" to profile.pets,
-                            "drinks" to profile.drinks,
-                            "smokes" to profile.smokes,
-                            "sports" to profile.doesSports,
-                            "religion" to profile.valuesAndBeliefs
+                            "drinks" to habitsMap[profile.drinks],
+                            "smokes" to habitsMap[profile.smokes],
+                            "sports" to habitsMap[profile.doesSports],
+                            "religion" to religionMap[profile.valuesAndBeliefs]
                         ),
                         isSelectable = false
                     )

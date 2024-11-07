@@ -35,7 +35,7 @@ fun ProfileInputField(label: String, initialValue: String, onValueChange: (Strin
                 // Filtramos la entrada para permitir solo números
                 if ((newValue.isEmpty() || newValue.all { it.isDigit() }) && newValue.length <= 3) {
                     value = newValue
-                    onValueChange(newValue) // Actualizamos el valor en el ViewModel o en el estado externo
+                    onValueChange(newValue)
                 }
             },
             modifier = Modifier.fillMaxWidth(),

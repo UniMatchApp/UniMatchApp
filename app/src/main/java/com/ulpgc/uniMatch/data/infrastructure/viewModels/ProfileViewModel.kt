@@ -3,8 +3,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enum.Gender
+import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
+import com.ulpgc.uniMatch.data.domain.enum.Jobs
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -302,7 +305,7 @@ open class ProfileViewModel(
         }
     }
 
-    fun updateJob(position: String) {
+    fun updateJob(position: Jobs) {
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.updateJob(authViewModel.userId!!, position)
@@ -382,7 +385,7 @@ open class ProfileViewModel(
         }
     }
 
-    fun updateDrinks(drinks: String) {
+    fun updateDrinks(drinks: Habits) {
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.updateDrinks(authViewModel.userId!!, drinks)
@@ -398,7 +401,7 @@ open class ProfileViewModel(
         }
     }
 
-    fun updateSmokes(smokes: String) {
+    fun updateSmokes(smokes: Habits) {
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.updateSmokes(authViewModel.userId!!, smokes)
@@ -414,7 +417,7 @@ open class ProfileViewModel(
         }
     }
 
-    fun updateDoesSports(doesSports: String) {
+    fun updateDoesSports(doesSports: Habits) {
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.updateDoesSports(authViewModel.userId!!, doesSports)
@@ -430,7 +433,7 @@ open class ProfileViewModel(
         }
     }
 
-    fun updateValuesAndBeliefs(valuesAndBeliefs: String) {
+    fun updateValuesAndBeliefs(valuesAndBeliefs: Religion) {
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.updateValuesAndBeliefs(authViewModel.userId!!, valuesAndBeliefs)

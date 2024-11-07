@@ -47,6 +47,7 @@
 
     <!--DROPDOWN MENU-->
     <string name="dropdown_empty_option">None</string>
+    <string name="select">Select</string>
 
     <!--BLOCK DIALOG-->
     <string name="block_user_title">Block User</string>
@@ -71,7 +72,6 @@
 
     <!--Funny questions-->
     <string-array name="funny_questions">
-        <item>Select a question</item>
         <item>I once read for a whole day!</item>
         <item>I once traveled for a whole day!</item>
         <item>I once cooked for a whole day!</item>
@@ -80,36 +80,29 @@
 
     <!--Gender-->
     <string-array name="genders">
-        <item>Select</item>
         <item>Male</item>
         <item>Female</item>
-        <item>Non-binary</item>
         <item>Other</item>
     </string-array>
 
     <!--Age-->
     <string-array name="sexual_orientation">
-        <item>Select</item>
         <item>Heterosexual</item>
         <item>Homosexual</item>
         <item>Bisexual</item>
-        <item>Asexual</item>
         <item>Other</item>
     </string-array>
 
     <!--Relationship type-->
     <string-array name="relationship_type">
-        <item>Select</item>
         <item>Friends</item>
         <item>Casual</item>
         <item>Relationship</item>
-        <item>Open</item>
         <item>Other</item>
     </string-array>
 
     <!--Horoscope-->
     <string-array name="horoscope">
-        <item>Select</item>
         <item>Aries</item>
         <item>Taurus</item>
         <item>Gemini</item>
@@ -126,7 +119,6 @@
 
     <!--Education-->
     <string-array name="education">
-        <item>Select</item>
         <item>No education</item>
         <item>Primary education</item>
         <item>Secondary education</item>
@@ -139,7 +131,6 @@
 
     <!--Personality type-->
     <string-array name="personality_type">
-        <item>Select</item>
         <item>Introverted</item>
         <item>Extroverted</item>
         <item>Ambiverted</item>
@@ -147,7 +138,6 @@
 
     <!--Pets-->
     <string-array name="pets">
-        <item>Select</item>
         <item>I have no pets</item>
         <item>Dog</item>
         <item>Cat</item>
@@ -158,8 +148,7 @@
 
     <!--Drinks-->
     <string-array name="drinks">
-        <item>Select</item>
-        <item>I don\'t drink</item>
+        <item>Never</item>
         <item>Socially</item>
         <item>Frequently</item>
         <item>Daily</item>
@@ -167,8 +156,7 @@
 
     <!--Do you smoke?-->
     <string-array name="smokes">
-        <item>Select</item>
-        <item>I don\'t smoke</item>
+        <item>Never</item>
         <item>Socially</item>
         <item>Frequently</item>
         <item>Daily</item>
@@ -176,16 +164,22 @@
 
     <!--Do you exercise?-->
     <string-array name="sports">
-        <item>Select</item>
-        <item>I don\'t exercise</item>
+        <item>Never</item>
         <item>Occasionally</item>
         <item>Frequently</item>
         <item>Daily</item>
     </string-array>
 
+    <string-array name="habits">
+        <item>Never</item>
+        <item>Occasionally</item>
+        <item>Frequently</item>
+        <item>Daily</item>
+    </string-array>
+
+
     <!--Values and beliefs-->
     <string-array name="religion">
-        <item>Select</item>
         <item>Christianity</item>
         <item>Protestantism</item>
         <item>Islam</item>

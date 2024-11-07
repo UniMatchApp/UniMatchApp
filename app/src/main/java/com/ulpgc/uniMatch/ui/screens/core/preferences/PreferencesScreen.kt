@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
@@ -42,6 +43,15 @@ fun PreferencesScreen(
     var genderPriority by remember { mutableStateOf<Gender?>(null) }
     var ageRange by remember { mutableStateOf(18 to 100) }
     var relationshipType by remember { mutableStateOf(RelationshipType.FRIENDSHIP) }
+
+    val context = LocalContext.current
+    val relationshipTypeMap = context.resources.getStringArray(R.array.relationship_type).mapIndexed { index, name ->
+        RelationshipType.values().getOrNull(index) to name
+    }.toMap()
+
+    val genderMap = context.resources.getStringArray(R.array.genders).mapIndexed { index, name ->
+        Gender.values().getOrNull(index) to name
+    }.toMap()
 
     LaunchedEffect(profile) {
         profile?.let {

@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
@@ -27,6 +28,7 @@ fun DropdownMenu(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(selectedItem) }
+    var defaultText = stringResource(id = R.string.select)
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -35,15 +37,18 @@ fun DropdownMenu(
             expanded = isExpanded,
             onExpandedChange = { isExpanded = !isExpanded }
         ) {
-            TextField(
-                modifier = Modifier.menuAnchor().fillMaxWidth(),
-                value = selectedText ?: stringResource(id = R.string.dropdown_empty_option),
-                onValueChange = { },
-                readOnly = true,
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-                }
-            )
+            (if (selectedText in items) selectedText else defaultText)?.let {
+                TextField(
+                    modifier = Modifier.menuAnchor().fillMaxWidth(),
+                    value = it,
+                    onValueChange = { },
+                    readOnly = true,
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+                    }
+                )
+            }
+
 
             ExposedDropdownMenu(expanded = isExpanded, onDismissRequest = { isExpanded = false }) {
                 if (includeNullOption) {

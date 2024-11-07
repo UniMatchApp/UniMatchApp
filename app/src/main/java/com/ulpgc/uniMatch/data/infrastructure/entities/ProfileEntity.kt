@@ -3,11 +3,15 @@ package com.ulpgc.uniMatch.data.infrastructure.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.ulpgc.uniMatch.data.domain.enum.Gender
+import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
+import com.ulpgc.uniMatch.data.domain.enum.Jobs
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.domain.valueObjects.Location
+import kotlinx.coroutines.Job
 import java.util.Date
 
 @Entity(tableName = "profiles")
@@ -32,14 +36,14 @@ data class ProfileEntity(
     val horoscope: Horoscope?,
     val height: Int?,
     val weight: Int?,
-    val job: String?,
+    val job: Jobs?,
     val education: String?,
     val personalityType: String?,
     val pets: String?,
-    val drinks: String?,
-    val smokes: String?,
-    val doesSports: String?,
-    val valuesAndBeliefs: String?,
+    val drinks: Habits?,
+    val smokes: Habits?,
+    val doesSports: Habits?,
+    val valuesAndBeliefs: Religion?,
     val genderPriority: Gender?,
     val fact: String?
 ) {
