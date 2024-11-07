@@ -1,8 +1,11 @@
 package com.ulpgc.uniMatch.data.domain.models
 
 import com.ulpgc.uniMatch.data.domain.enum.Gender
+import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
+import com.ulpgc.uniMatch.data.domain.enum.Jobs
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.valueObjects.Location
 import java.util.Date
@@ -26,14 +29,14 @@ data class Profile(
     var horoscope: Horoscope? = null,
     var height: Int? = null,
     var weight: Int? = null,
-    var job: String? = null,
+    var job: Jobs? = null,
     var education: String? = null,
     var personalityType: String? = null,
     var pets: String? = null,
-    var drinks: String? = null,
-    var smokes: String? = null,
-    var doesSports: String? = null,
-    var valuesAndBeliefs: String? = null,
+    var drinks: Habits? = null,
+    var smokes: Habits? = null,
+    var doesSports: Habits? = null,
+    var valuesAndBeliefs: Religion? = null,
     var genderPriority: Gender? = null,
     var fact: String? = null
 ) {

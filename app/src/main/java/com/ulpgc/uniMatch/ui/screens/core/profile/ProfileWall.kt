@@ -3,6 +3,8 @@ package com.ulpgc.uniMatch.ui.screens.core.profile
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -27,7 +29,8 @@ fun ProfileWall(
     val profileImages = profile?.wall ?: emptyList()
     val activity = LocalContext.current as? ComponentActivity
 
-    Column {
+    Column(
+    ) {
 
         ProfileSettingsTopBar { navController.popBackStack() }
 
@@ -35,6 +38,7 @@ fun ProfileWall(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
 
             Spacer(modifier = Modifier.height(16.dp))

@@ -1,8 +1,11 @@
 package com.ulpgc.uniMatch.data.infrastructure.mocks
 
 import com.ulpgc.uniMatch.data.domain.enum.Gender
+import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
+import com.ulpgc.uniMatch.data.domain.enum.Jobs
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.domain.valueObjects.Location
@@ -48,14 +51,14 @@ object ProfileMock {
             horoscope = Horoscope.entries.toTypedArray().random(),
             height = Random.nextInt(150, 200),
             weight = Random.nextInt(50, 100),
-            job = jobs.random(),
+            job = Jobs.entries.toTypedArray().random(),
             education = educationLevels.random(),
             personalityType = personalityTypes.random(),
             pets = petPreferences.random(),
-            drinks = listOf("Daily", "Frequently").random(),
-            smokes = listOf("Daily", "Frequently").random(),
-            doesSports = listOf("Daily", "Frequently").random(),
-            valuesAndBeliefs = listOf("Islam", "Judaism").random(),
+            drinks = Habits.entries.toTypedArray().random(),
+            smokes = Habits.entries.toTypedArray().random(),
+            doesSports = Habits.entries.toTypedArray().random(),
+            valuesAndBeliefs = Religion.entries.toTypedArray().random(),
             genderPriority = Gender.entries.toTypedArray().random(),
             fact = "I once ${interests.random()} for a whole day!"
         )
@@ -101,14 +104,14 @@ object ProfileMock {
                 horoscope = Horoscope.entries.toTypedArray().random(),
                 height = Random.nextInt(150, 200),
                 weight = Random.nextInt(50, 100),
-                job = jobs.random(),
+                job = Jobs.entries.toTypedArray().random(),
                 education = educationLevels.random(),
                 personalityType = personalityTypes.random(),
                 pets = petPreferences.random(),
-                drinks = listOf("Daily", "Frequently").random(),
-                smokes = listOf("Daily", "Frequently").random(),
-                doesSports = listOf("Daily", "Frequently").random(),
-                valuesAndBeliefs = listOf("Islam", "Judaism").random(),
+                drinks = Habits.entries.toTypedArray().random(),
+                smokes = Habits.entries.toTypedArray().random(),
+                doesSports = Habits.entries.toTypedArray().random(),
+                valuesAndBeliefs = Religion.entries.toTypedArray().random(),
                 genderPriority = Gender.entries.toTypedArray().random(),
                 fact = "I once ${interests.random()} for a whole day!"
             )

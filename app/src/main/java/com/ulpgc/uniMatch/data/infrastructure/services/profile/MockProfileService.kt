@@ -2,8 +2,11 @@ package com.ulpgc.uniMatch.data.infrastructure.services.profile
 
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enum.Gender
+import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
+import com.ulpgc.uniMatch.data.domain.enum.Jobs
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.mocks.ProfileMock
@@ -65,7 +68,7 @@ class MockProfileService: ProfileService {
         return Result.success(Unit)
     }
 
-    override suspend fun updateJob(userId: String, position: String): Result<Unit> {
+    override suspend fun updateJob(userId: String, position: Jobs): Result<Unit> {
         return Result.success(Unit)
     }
 
@@ -89,21 +92,21 @@ class MockProfileService: ProfileService {
         return Result.success(Unit)
     }
 
-    override suspend fun updateDrinks(userId: String, drinks: String): Result<Unit> {
+    override suspend fun updateDrinks(userId: String, drinks: Habits): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateSmokes(userId: String, smokes: String): Result<Unit> {
+    override suspend fun updateSmokes(userId: String, smokes: Habits): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateDoesSports(userId: String, doesSports: String): Result<Unit> {
+    override suspend fun updateDoesSports(userId: String, doesSports: Habits): Result<Unit> {
         return Result.success(Unit)
     }
 
     override suspend fun updateValuesAndBeliefs(
         userId: String,
-        valuesAndBeliefs: String
+        valuesAndBeliefs: Religion
     ): Result<Unit> {
         return Result.success(Unit)
     }

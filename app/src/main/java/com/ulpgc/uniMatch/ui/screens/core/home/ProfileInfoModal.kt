@@ -33,8 +33,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.ui.components.InputField
 import com.ulpgc.uniMatch.ui.components.profile.ProfileSection
@@ -60,6 +62,14 @@ fun ProfileInfoModal(
 
     val relationshipTypeMap = context.resources.getStringArray(R.array.relationship_type).mapIndexed { index, name ->
         RelationshipType.values().getOrNull(index) to name
+    }.toMap()
+
+    val religionMap = context.resources.getStringArray(R.array.religion).mapIndexed { index, name ->
+        Religion.values().getOrNull(index) to name
+    }.toMap()
+
+    val habitsMap = context.resources.getStringArray(R.array.habits).mapIndexed { index, name ->
+        Habits.values().getOrNull(index) to name
     }.toMap()
 
     Log.i("ProfileInfoModal", "Profile: $profile")
@@ -184,10 +194,10 @@ fun ProfileInfoModal(
                         title = stringResource(R.string.lifestyle),
                         rowTitles = listOf(
                             "pets" to profile.pets,
-                            "drinks" to profile.drinks,
-                            "smokes" to profile.smokes,
-                            "sports" to profile.doesSports,
-                            "religion" to profile.valuesAndBeliefs
+                            "drinks" to habitsMap[profile.drinks],
+                            "smokes" to habitsMap[profile.smokes],
+                            "sports" to habitsMap[profile.doesSports],
+                            "religion" to religionMap[profile.valuesAndBeliefs]
                         ),
                         isSelectable = false
                     )

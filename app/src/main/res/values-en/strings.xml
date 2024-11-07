@@ -148,7 +148,7 @@
 
     <!--Drinks-->
     <string-array name="drinks">
-        <item>I don\'t drink</item>
+        <item>Never</item>
         <item>Socially</item>
         <item>Frequently</item>
         <item>Daily</item>
@@ -156,7 +156,7 @@
 
     <!--Do you smoke?-->
     <string-array name="smokes">
-        <item>I don\'t smoke</item>
+        <item>Never</item>
         <item>Socially</item>
         <item>Frequently</item>
         <item>Daily</item>
@@ -164,11 +164,19 @@
 
     <!--Do you exercise?-->
     <string-array name="sports">
-        <item>I don\'t exercise</item>
+        <item>Never</item>
         <item>Occasionally</item>
         <item>Frequently</item>
         <item>Daily</item>
     </string-array>
+
+    <string-array name="habits">
+        <item>Never</item>
+        <item>Occasionally</item>
+        <item>Frequently</item>
+        <item>Daily</item>
+    </string-array>
+
 
     <!--Values and beliefs-->
     <string-array name="religion">

@@ -78,7 +78,7 @@ dependencies {
     implementation(libs.volley)
     implementation(libs.protolite.well.known.types)
     implementation("io.coil-kt:coil-compose:2.4.0")
-
+    implementation("com.google.accompanist:accompanist-flowlayout:0.20.0")
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)

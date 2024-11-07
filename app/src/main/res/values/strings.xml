@@ -148,23 +148,30 @@
 
     <!-- Beber -->
     <string-array name="drinks">
-        <item>No bebo</item>
-        <item>Socialmente</item>
+        <item>Nunca</item>
+        <item>Ocasionalmente</item>
         <item>Frecuentemente</item>
         <item>A diario</item>
     </string-array>
 
     <!-- ¿Fumas? -->
     <string-array name="smokes">
-        <item>No fumo</item>
-        <item>Socialmente</item>
+        <item>Nunca</item>
+        <item>Ocasionalmente</item>
         <item>Frecuentemente</item>
         <item>A diario</item>
     </string-array>
 
     <!-- ¿Haces deporte? -->
     <string-array name="sports">
-        <item>No hago deporte</item>
+        <item>Nunca</item>
+        <item>Ocasionalmente</item>
+        <item>Frecuentemente</item>
+        <item>A diario</item>
+    </string-array>
+
+    <string-array name="habits">
+        <item>Nunca</item>
         <item>Ocasionalmente</item>
         <item>Frecuentemente</item>
         <item>A diario</item>
