@@ -20,8 +20,9 @@ import com.ulpgc.uniMatch.ui.components.DropdownMenu
 fun ProfileDropdownField(
     label: String,
     options: List<String>,
-    selectedOption: String,
-    onEditField: (String) -> Unit
+    selectedOption: String?,
+    onEditField: (String) -> Unit,
+    includeNullOption: Boolean = false
 ) {
     var currentSelection by remember { mutableStateOf(selectedOption.takeIf { it in options } ?: options.first()) }
 
@@ -43,7 +44,8 @@ fun ProfileDropdownField(
             onItemSelected = { selected ->
                 currentSelection = selected ?: options.first()
                 onEditField(currentSelection)
-            }
+            },
+            includeNullOption
         )
     }
 }
