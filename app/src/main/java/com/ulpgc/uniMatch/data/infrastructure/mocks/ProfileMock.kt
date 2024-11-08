@@ -21,7 +21,6 @@ object ProfileMock {
     private val petPreferences = listOf("Dog", "Cat", "None")
     private val interests = listOf("Reading", "Traveling", "Cooking", "Gaming", "Hiking", "Photography", "Music")
     private val imageUrls = listOf(
-        "https://www.eii.ulpgc.es/sites/default/files/styles/height/public/team/marilola800x800.png?itok=zMv5SjYa",
         "https://imagenes2.fotos.europapress.es/preview/5309176.jpg?s=1000",
         "https://www.eii.ulpgc.es/sites/default/files/styles/height/public/team/IMG-20230602-WA0007-B.jpg?itok=Xwradmzk",
         "https://www.eii.ulpgc.es/sites/default/files/styles/height/public/team/daniel800-B.png?itok=JAJrobhA",
@@ -65,13 +64,8 @@ object ProfileMock {
     }
 
     fun createNamedProfiles(): List<Profile> {
-        val names = listOf("Marilola", "Adrián Pèñate", "Jose Carlos")
+        val names = listOf("Adrián Pèñate", "Jose Carlos")
         val images = listOf(
-            listOf(
-                "https://www.eii.ulpgc.es/sites/default/files/styles/height/public/team/marilola800x800.png?itok=zMv5SjYa",
-                "https://www.eii.ulpgc.es/sites/default/files/styles/height/public/team/Marilola_Afonso_Su%C3%A1rez_0.jpg?itok=jHco3IEU",
-                "https://mt4sd.ulpgc.es/wp-content/uploads/2018/03/Marilola.png"
-            ),
             listOf(
                 "https://imagenes2.fotos.europapress.es/preview/5309176.jpg?s=1000",
                 "https://i1.rgstatic.net/ii/profile.image/11431281127138961-1678964775589_Q512/Adrian-Penate-Sanchez.jpg"

@@ -34,6 +34,13 @@
     <string name="sports">Do you exercise?</string>
     <string name="religion">Values and Beliefs</string>
     <string name="interests">Interests</string>
+    <string name="what_type_of_relationship">What type of relationship are you looking for?</string>
+    <string name="job">Job</string>
+    <string name="sexual_orientation">Sexual Orientation</string>
+    <string name="weight">Weight</string>
+    <string name="height">Height</string>
+    <string name="gender">Gender</string>
+    <string name="questions">Questions</string>
 
     <!--PREFERENCES SCREEN-->
     <string name="edit_preferences">Edit Preferences</string>
@@ -298,6 +305,7 @@
     <string name="send">Send</string>
     <string name="delete_confirmation">Are you sure you want to delete?</string>
     <string name="confirm">Confirm</string>
+    <string name="loading_error">An error occurred while loading the data.</string>
 
 
 </resources>

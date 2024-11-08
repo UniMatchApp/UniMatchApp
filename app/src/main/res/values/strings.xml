@@ -34,6 +34,14 @@
     <string name="sports">¿Haces deporte?</string>
     <string name="religion">Valores y creencias</string>
     <string name="interests">Intereses</string>
+    <string name="what_type_of_relationship">¿Qué tipo de relación estás buscando?</string>
+    <string name="job">Trabajo</string>
+    <string name="sexual_orientation">Orientación sexual</string>
+    <string name="weight">Peso</string>
+    <string name="height">Altura</string>
+    <string name="gender">Sexo</string>
+    <string name="questions">Preguntas</string>
+
 
     <!--PREFERENCES SCREEN-->
     <string name="edit_preferences">Editar preferencias</string>
@@ -303,5 +311,6 @@
     <string name="send">Enviar</string>
     <string name="delete_confirmation">¿Estás seguro de que deseas eliminar?</string>
     <string name="confirm">Confirmar</string>
+    <string name="loading_error">Ha habido un error a la hora de cargar los recursos.</string>
 
 </resources>
