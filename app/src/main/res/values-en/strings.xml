@@ -306,6 +306,7 @@
     <string name="delete_confirmation">Are you sure you want to delete?</string>
     <string name="confirm">Confirm</string>
     <string name="loading_error">An error occurred while loading the data.</string>
+    <string name="none">None</string>
 
 
 </resources>

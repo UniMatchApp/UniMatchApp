@@ -114,6 +114,14 @@ fun ProfileScreen(
             Habits.entries.getOrNull(index) to name
         }.toMap()
 
+        val interestsMapping = context.resources.getStringArray(R.array.interests).toList()
+        val profileInterests = profile.interests.mapNotNull { interest ->
+            val index = profile.interests.indexOf(interest)
+            if (index >= 0 && index < interestsMapping.size) {
+                interestsMapping[index]
+            } else null
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -237,7 +245,7 @@ fun ProfileScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = profile.interests.joinToString(", "),
+                    text = profileInterests.joinToString(", "),
                     modifier = Modifier.fillMaxWidth()
                 )
             }

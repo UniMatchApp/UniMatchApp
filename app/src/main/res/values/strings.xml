@@ -312,5 +312,6 @@
     <string name="delete_confirmation">¿Estás seguro de que deseas eliminar?</string>
     <string name="confirm">Confirmar</string>
     <string name="loading_error">Ha habido un error a la hora de cargar los recursos.</string>
+    <string name="none">Ninguno</string>
 
 </resources>

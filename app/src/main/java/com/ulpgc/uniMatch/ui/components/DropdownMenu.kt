@@ -28,7 +28,7 @@ fun DropdownMenu(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(selectedItem) }
-    var defaultText = stringResource(id = R.string.select)
+    var defaultText = stringResource(id = R.string.none)
 
     Column(
         modifier = Modifier.fillMaxWidth(),

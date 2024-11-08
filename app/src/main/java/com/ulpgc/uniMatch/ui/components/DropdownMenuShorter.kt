@@ -40,7 +40,7 @@ fun DropdownMenuShorter(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
-    val defaultText = stringResource(R.string.select)
+    val defaultText = stringResource(R.string.none)
     var selectedText by remember { mutableStateOf(selectedItem) }
 
     Column(
