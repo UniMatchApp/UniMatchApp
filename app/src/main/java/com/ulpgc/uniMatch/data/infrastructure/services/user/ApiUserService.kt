@@ -128,4 +128,34 @@ class ApiUserService(
             }
         }
     }
+
+    override suspend fun verifyCode(email: String, code: String): Result<Boolean> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = userController.verifyCode(email, code)
+                if (response.success) {
+                    Result.success(true)
+                } else {
+                    Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
+                }
+            } catch (e: Exception) {
+                Result.failure(Throwable("Failed to verify code: ${e.message}"))
+            }
+        }
+    }
+
+    override suspend fun resetPassword(email: String, newPassword: String): Result<Boolean> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = userController.resetPassword(email, newPassword)
+                if (response.success) {
+                    Result.success(true)
+                } else {
+                    Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
+                }
+            } catch (e: Exception) {
+                Result.failure(Throwable("Failed to reset password: ${e.message}"))
+            }
+        }
+    }
 }

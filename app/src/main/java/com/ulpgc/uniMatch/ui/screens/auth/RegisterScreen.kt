@@ -21,7 +21,6 @@ import com.ulpgc.uniMatch.ui.components.InputField
 
 @Composable
 fun RegisterScreen(
-    // Function callback to handle registration
     authViewModel: AuthViewModel,
     onBack: () -> Unit
 ) {

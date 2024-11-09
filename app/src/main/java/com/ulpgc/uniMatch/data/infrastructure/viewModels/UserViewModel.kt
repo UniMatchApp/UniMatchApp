@@ -1,11 +1,10 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ulpgc.uniMatch.data.domain.models.User
 import com.ulpgc.uniMatch.data.application.services.UserService
+import com.ulpgc.uniMatch.data.domain.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -16,12 +15,17 @@ open class AuthViewModel(
     private val errorViewModel: ErrorViewModel
 ) : ViewModel() {
 
+    private val _verifyCodeResult = MutableStateFlow<Boolean>(true)
+    val verifyCodeResult: StateFlow<Boolean> = _verifyCodeResult
+
     private val _authState = MutableStateFlow<AuthState>(AuthState.Unauthenticated)
     val authState: StateFlow<AuthState> get() = _authState
 
-    private val _forgotPasswordResult = MutableStateFlow<Boolean>(false)
+    private val _forgotPasswordResult = MutableStateFlow<Boolean>(true)
     val forgotPasswordResult: StateFlow<Boolean> = _forgotPasswordResult
 
+    private val _resetPasswordResult = MutableStateFlow<Boolean>(true)
+    val resetPasswordResult: StateFlow<Boolean> = _resetPasswordResult
 
     val userId: String?
         get() = (_authState.value as? AuthState.Authenticated)?.user?.id
@@ -71,6 +75,30 @@ open class AuthViewModel(
             }
         }
         return _forgotPasswordResult.value
+    }
+
+    fun verifyCode(email: String, code: String) {
+        viewModelScope.launch {
+            val result = userService.verifyCode(email, code)
+            result.onSuccess {
+                _verifyCodeResult.value = true
+            }.onFailure {
+                errorViewModel.showError(it.message ?: "Unknown error occurred")
+                _verifyCodeResult.value = false
+            }
+        }
+    }
+
+    fun resetPassword(email: String, newPassword: String) {
+        viewModelScope.launch {
+            val result = userService.resetPassword(email, newPassword)
+            result.onSuccess {
+                _resetPasswordResult.value = true
+            }.onFailure {
+                errorViewModel.showError(it.message ?: "Unknown error occurred")
+                _resetPasswordResult.value = false
+            }
+        }
     }
 
 }

@@ -29,17 +29,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
 import com.ulpgc.uniMatch.ui.components.ButtonComponent
 import com.ulpgc.uniMatch.ui.components.InputField
 
 
 @Composable
 fun LoginScreen(
-    onLoginClick: (String, String) -> Unit,
-    onSignUpClick: () -> Unit,
+    authViewModel: AuthViewModel,
+    onBackClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
-    onBackClick: () -> Unit
+    onSignUpClick: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -105,7 +107,7 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 ButtonComponent(
-                    onClick = { onLoginClick(email, password) },
+                    onClick = { authViewModel.login(email, password) },
                     text = stringResource(R.string.login_button),
                     modifier = Modifier.weight(1f)
                 )

@@ -23,6 +23,20 @@
     <string name="find_your_ideal_partner_near_you">Encuentra a la persona ideal cerca de ti.</string>
     <string name="enter_your_email_and_password_to_log_in">Introduce tu email y contraseña para iniciar sesión</string>
     <string name="sign_in_to_unimatch">Inicia sesión en UniMatch</string>
+    <string name="verify_code">Verificar código</string>
+    <string name="introduce_code">Introduce el código de verificación</string>
+    <string name="introduce_digits">Introduce los 6 dígitos que has recibido en tu email</string>
+    <string name="resend_code">Reenviar código</string>
+    <string name="code_sent">Código enviado</string>
+    <string name="invalid_code">Código inválido</string>
+    <string name="please_enter_valid_code">Por favor, introduce un código válido</string>
+    <string name="forgot_password_cheers">No te preocupes, suele ocurrir. Introduce el email asociado con tu cuenta</string>
+    <string name="reset_password_failed">La recuperación de contraseña ha fallado. Inténtalo de nuevo.</string>
+    <string name="password_too_short">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="passwords_do_not_match">Las contraseñas no coinciden</string>
+    <string name="there_was_an_error_changing_password">Ha habido un error al cambiar la contraseña</string>
+    <string name="reset_password">Restablecer contraseña</string>
+    <string name="new_password">Nueva contraseña</string>
 
     <!--PROFILE-->
     <string name="horoscope">Horóscopo</string>
@@ -313,5 +327,7 @@
     <string name="confirm">Confirmar</string>
     <string name="loading_error">Ha habido un error a la hora de cargar los recursos.</string>
     <string name="none">Ninguno</string>
+    <string name="submit">Enviar</string>
+    <string name="ok">Aceptar</string>
 
 </resources>

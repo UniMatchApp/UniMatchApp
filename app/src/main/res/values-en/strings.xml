@@ -23,6 +23,20 @@
     <string name="find_your_ideal_partner_near_you">Find your ideal partner near you.</string>
     <string name="enter_your_email_and_password_to_log_in">Enter your email and password to log in</string>
     <string name="sign_in_to_unimatch">Sign In to UniMatch</string>
+    <string name="verify_code">Verify Code</string>
+    <string name="introduce_code">Introduce the code sent to your email</string>
+    <string name="introduce_digits">Introduce the 6 digits code</string>
+    <string name="resend_code">Resend Code</string>
+    <string name="code_sent">Code sent to your email</string>
+    <string name="invalid_code">Invalid code</string>
+    <string name="please_enter_valid_code">Please enter a valid code</string>
+    <string name="forgot_password_cheers">Don\'t worry! It happens. Please enter the address associated with your account.</string>
+    <string name="reset_password_failed">Reset password failed</string>
+    <string name="password_too_short">Password must be at least 6 characters</string>"
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="there_was_an_error_changing_password">Here was an error changing your password</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="new_password">New Password</string>
 
     <!--PROFILE-->
     <string name="horoscope">Horoscope</string>
@@ -307,6 +321,8 @@
     <string name="confirm">Confirm</string>
     <string name="loading_error">An error occurred while loading the data.</string>
     <string name="none">None</string>
+    <string name="submit">Submit</string>
+    <string name="ok">OK</string>
 
 
 </resources>
