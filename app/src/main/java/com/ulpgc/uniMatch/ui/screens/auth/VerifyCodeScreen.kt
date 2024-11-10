@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.ui.screens.auth
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,9 +42,9 @@ import com.ulpgc.uniMatch.ui.screens.AuthRoutes
 @Composable
 fun VerifyCodeScreen(
     authViewModel: AuthViewModel,
-    navController: NavController,
     userId: String,
-    onVerifyCode: () -> Unit
+    onVerificationSuccess: () -> Unit = {},
+    onBack: () -> Unit
 ) {
 
     val verifyCodeResult = authViewModel.verifyCodeResult.collectAsState()
@@ -53,10 +54,14 @@ fun VerifyCodeScreen(
     LaunchedEffect (verifyCodeResult.value) {
         if (verifyCodeResult.value != null) {
             if (verifyCodeResult.value!!) {
-                onVerifyCode()
+                onVerificationSuccess()
             }
             authViewModel.resetVerificationResult()
         }
+    }
+
+    BackHandler {
+        onBack()
     }
 
     VerifyCodeContent(
@@ -72,7 +77,7 @@ fun VerifyCodeScreen(
                 authViewModel.verifyCode(userId, code)
             }
         },
-        onBack = { navController.navigate(AuthRoutes.FORGOT_PASSWORD) },
+        onBack = { onBack() },
         showErrorDialog = showErrorDialog,
         errorMessage = errorMessage,
         onDismissErrorDialog = { showErrorDialog = false }

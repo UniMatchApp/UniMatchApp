@@ -27,7 +27,7 @@ interface UserController {
 
     // Olvidar contraseña
     @POST("users/forgotPassword")
-    suspend fun forgotPassword(@Query("email") email: String): ApiResponse<Boolean>
+    suspend fun forgotPassword(@Query("email") email: String): ApiResponse<String>
 
     // Verificar código
     @POST("users/verifyCode")

@@ -1,6 +1,8 @@
 package com.ulpgc.uniMatch.ui.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,16 +19,21 @@ object AuthRoutes {
     const val OPTIONS = "options"
     const val LOGIN = "login"
     const val REGISTER = "register"
-    const val REGISTER_PROFILE = "register/profile/{userId}"
+    const val REGISTER_PROFILE = "register/profile"
     const val FORGOT_PASSWORD = "forgotPassword"
-    const val REGISTER_VERIFY_CODE = "register/verifyCode/{userId}"
-    const val FORGOT_VERIFY_CODE = "forgotPassword/verifyCode/{userId}"
-    const val RESET_PASSWORD = "resetPassword/{email}"
+    const val REGISTER_VERIFY_CODE = "register/verifyCode"
+    const val FORGOT_VERIFY_CODE = "forgotPassword/verifyCode"
+    const val RESET_PASSWORD = "resetPassword"
 }
 
 @Composable
 fun AuthScreen(authViewModel: AuthViewModel) {
     val navController = rememberNavController()
+
+    val registeredUserId = authViewModel.registeredUserId.collectAsState()
+    val forgotPasswordUserId = authViewModel.forgotPasswordUserId.collectAsState()
+
+
 
     NavHost(navController = navController, startDestination = AuthRoutes.OPTIONS) {
         composable(AuthRoutes.OPTIONS) {
@@ -46,21 +53,32 @@ fun AuthScreen(authViewModel: AuthViewModel) {
         }
 
         composable(AuthRoutes.REGISTER) {
+
             RegisterScreen(
                 authViewModel = authViewModel,
                 onBackClick = { navController.navigate(AuthRoutes.OPTIONS) },
                 onLoginClick = { navController.navigate(AuthRoutes.LOGIN) },
-                continueRegister = { userId -> navController.navigate("register/verifyCode/$userId")}
+                continueRegister = {
+                    authViewModel.register()
+                }
             )
+
+            LaunchedEffect(registeredUserId.value) {
+                if (registeredUserId.value != null) {
+                    navController.navigate(AuthRoutes.REGISTER_VERIFY_CODE)
+                }
+            }
         }
 
-        composable(AuthRoutes.REGISTER_PROFILE) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getString("userId")
-            if (userId != null) {
+        composable(AuthRoutes.REGISTER_PROFILE) {
+            if (registeredUserId.value != null) {
                 RegisterProfileScreen(
                     authViewModel = authViewModel,
-                    userId = userId,
-                    onCompleteProfile = { navController.navigate(AuthRoutes.OPTIONS) }
+                    userId = registeredUserId.value!!,
+                    onCompleteProfile = {
+                        navController.navigate(AuthRoutes.OPTIONS)
+                        authViewModel.resetRegisteredUserId()
+                    }
                 )
             }
         }
@@ -68,42 +86,57 @@ fun AuthScreen(authViewModel: AuthViewModel) {
         composable(AuthRoutes.FORGOT_PASSWORD) {
             ForgotPasswordScreen(
                 authViewModel = authViewModel,
-                navController = navController
+                onSubmit = { navController.navigate(AuthRoutes.FORGOT_VERIFY_CODE) },
+                onBack = { navController.navigate(AuthRoutes.LOGIN) }
             )
-        }
 
-        composable(AuthRoutes.FORGOT_VERIFY_CODE) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getString("userId")
-            if (userId != null) {
-                VerifyCodeScreen(
-                    authViewModel = authViewModel,
-                    navController = navController,
-                    userId = userId,
-                    onVerifyCode = { navController.navigate("resetPassword/$userId") }
-                )
+            LaunchedEffect(forgotPasswordUserId.value) {
+                if (forgotPasswordUserId.value != null) {
+                    navController.navigate(AuthRoutes.FORGOT_VERIFY_CODE)
+                }
             }
         }
 
-        composable(AuthRoutes.REGISTER_VERIFY_CODE) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getString("userId")
-            if (userId != null) {
+        composable(AuthRoutes.FORGOT_VERIFY_CODE) {
+            if (forgotPasswordUserId.value != null) {
                 VerifyCodeScreen(
                     authViewModel = authViewModel,
-                    navController = navController,
-                    userId = userId,
-                    onVerifyCode = { navController.navigate("register/profile/$userId") }
+                    userId = forgotPasswordUserId.value!!,
+                    onVerificationSuccess = { navController.navigate(AuthRoutes.RESET_PASSWORD) },
+                    onBack = {
+                        navController.navigate(AuthRoutes.FORGOT_PASSWORD)
+                        authViewModel.resetForgotPasswordUserId()
+                    }
                 )
             }
+
+        }
+
+        composable(AuthRoutes.REGISTER_VERIFY_CODE) {
+            if (registeredUserId.value != null) {
+                VerifyCodeScreen(
+                    authViewModel = authViewModel,
+                    userId = registeredUserId.value!!,
+                    onVerificationSuccess = { navController.navigate(AuthRoutes.REGISTER_PROFILE) },
+                    onBack = {
+                        navController.navigate(AuthRoutes.REGISTER)
+                        authViewModel.resetRegisteredUserId()
+                    }
+                )
+            }
+
         }
 
 
-        composable(AuthRoutes.RESET_PASSWORD) { backStackEntry ->
-            val email = backStackEntry.arguments?.getString("email")
-            if (email != null) {
+        composable(AuthRoutes.RESET_PASSWORD) {
+            if (forgotPasswordUserId.value != null) {
                 ResetPasswordScreen(
                     authViewModel = authViewModel,
-                    navController = navController,
-                    email = email
+                    userId = forgotPasswordUserId.value!!,
+                    onPasswordReset = {
+                        navController.navigate(AuthRoutes.LOGIN)
+                        authViewModel.resetForgotPasswordUserId()
+                    }
                 )
             }
         }

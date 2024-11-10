@@ -23,17 +23,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
 import com.ulpgc.uniMatch.ui.components.InputField
-import com.ulpgc.uniMatch.ui.screens.AuthRoutes
 
 @Composable
 fun ResetPasswordScreen(
     authViewModel: AuthViewModel,
-    navController: NavController,
-    email: String
+    userId: String,
+    onPasswordReset: () -> Unit
 ) {
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -42,9 +40,12 @@ fun ResetPasswordScreen(
 
     val resultPasswordReset by authViewModel.resetPasswordResult.collectAsState()
 
-    LaunchedEffect (resultPasswordReset) {
-        if (resultPasswordReset){
-            navController.navigate(AuthRoutes.LOGIN)
+    LaunchedEffect(resultPasswordReset) {
+        if (resultPasswordReset != null) {
+            if (resultPasswordReset!!) {
+                onPasswordReset()
+            }
+            authViewModel.resetPasswordResult()
         }
     }
 
@@ -56,7 +57,7 @@ fun ResetPasswordScreen(
             errorMessage = R.string.passwords_do_not_match
             showErrorDialog = true
         } else {
-            authViewModel.resetPassword(email, newPassword)
+            authViewModel.resetPassword(userId, newPassword)
         }
     }
 

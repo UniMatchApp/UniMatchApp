@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.screens.auth.login
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -50,6 +51,8 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var showPasswordErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableIntStateOf(0) }
+
+    BackHandler { onBackClick() }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -113,10 +116,14 @@ fun LoginScreen(
 
                 ButtonComponent(
                     onClick = {
-                        if (password.isEmpty()) {
+                        if (password.isEmpty() ) {
                             showPasswordErrorDialog = true
                             errorMessage = R.string.password_empty_error
-                        } else {
+                        } else if (email.isEmpty()) {
+                            showPasswordErrorDialog = true
+                            errorMessage = R.string.email_empty_error
+                        }
+                        else {
                             authViewModel.login(email, password)
                         }
                     },

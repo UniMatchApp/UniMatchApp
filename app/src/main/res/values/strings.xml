@@ -53,6 +53,7 @@
     <string name="full_name_and_age_required">El nombre y la edad son obligatorios</string>
     <string name="selected_date">Fecha seleccionada</string>
     <string name="select_date">Selecciona una fecha</string>
+    <string name="email_empty_error">El email no puede estar vacío</string>
 
     <!--PROFILE-->
     <string name="horoscope">Horóscopo</string>

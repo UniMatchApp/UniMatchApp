@@ -1,6 +1,6 @@
 package com.ulpgc.uniMatch.ui.screens.auth.register
 
-import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,8 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,22 +43,15 @@ fun RegisterScreen(
     authViewModel: AuthViewModel,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
-    continueRegister: (String) -> Unit
+    continueRegister: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableIntStateOf(0) }
-    val registeredUserId by authViewModel.registeredUserId.collectAsState()
 
-    LaunchedEffect(registeredUserId) {
-        registeredUserId?.let {
-            continueRegister.invoke(
-                it
-            )
-        }
-    }
+    BackHandler { onBackClick() }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -139,7 +130,8 @@ fun RegisterScreen(
                             showErrorDialog = true
                             errorMessage = R.string.fields_empty_error
                         } else {
-                            authViewModel.register(email, password)
+                            authViewModel.partialRegistration(email, password)
+                            continueRegister()
                         }
                     },
                     text = stringResource(R.string.register_button),

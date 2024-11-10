@@ -118,12 +118,12 @@ class ApiUserService(
         }
     }
 
-    override suspend fun forgotPassword(email: String): Result<Boolean> {
+    override suspend fun forgotPassword(email: String): Result<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val response = userController.forgotPassword(email)
                 if (response.success) {
-                    Result.success(true)
+                    Result.success(response.value!!)
                 } else {
                     Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
                 }

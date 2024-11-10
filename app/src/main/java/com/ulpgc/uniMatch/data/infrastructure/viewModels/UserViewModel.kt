@@ -13,7 +13,7 @@ import com.ulpgc.uniMatch.data.domain.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
+import org.mindrot.jbcrypt.BCrypt
 
 open class AuthViewModel(
     private val userService: UserService,
@@ -27,11 +27,11 @@ open class AuthViewModel(
     private val _authState = MutableStateFlow<AuthState>(AuthState.Unauthenticated)
     val authState: StateFlow<AuthState> get() = _authState
 
-    private val _forgotPasswordResult = MutableStateFlow<Boolean>(true)
-    val forgotPasswordResult: StateFlow<Boolean> = _forgotPasswordResult
+    private val _forgotPasswordResult = MutableStateFlow<Boolean?>(null)
+    val forgotPasswordResult: StateFlow<Boolean?> = _forgotPasswordResult
 
-    private val _resetPasswordResult = MutableStateFlow<Boolean>(true)
-    val resetPasswordResult: StateFlow<Boolean> = _resetPasswordResult
+    private val _resetPasswordResult = MutableStateFlow<Boolean?>(null)
+    val resetPasswordResult: StateFlow<Boolean?> = _resetPasswordResult
 
     val userId: String?
         get() = (_authState.value as? AuthState.Authenticated)?.user?.id
@@ -39,11 +39,16 @@ open class AuthViewModel(
     private var authToken: String? = null
 
     private val _registeredUserId = MutableStateFlow<String?>(null)
-    val registeredUserId: StateFlow<String?> = _registeredUserId
+    var registeredUserId: StateFlow<String?> = _registeredUserId
+
+    private val _forgotPasswordUserId = MutableStateFlow<String?>(null)
+    val forgotPasswordUserId: StateFlow<String?> = _forgotPasswordUserId
 
     private val _profileCreated = MutableStateFlow<Boolean>(false)
     val profileCreated: StateFlow<Boolean> = _profileCreated
 
+    private var temporaryEmail: String? = null
+    private var temporaryHashedPassword: String? = null
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
@@ -58,7 +63,15 @@ open class AuthViewModel(
         }
     }
 
-    fun register(email: String, password: String) {
+    fun register() {
+        val email = temporaryEmail
+        val password = temporaryHashedPassword
+
+        if (email == null || password == null) {
+            errorViewModel.showError("Email or password is missing")
+            return
+        }
+
         viewModelScope.launch {
             val result = userService.register(email, password)
             result.onSuccess {
@@ -80,12 +93,14 @@ open class AuthViewModel(
             val result = userService.forgotPassword(email)
             result.onSuccess {
                 _forgotPasswordResult.value = true
+                _forgotPasswordUserId.value = it
             }.onFailure {
                 errorViewModel.showError(it.message ?: "Unknown error occurred")
                 _forgotPasswordResult.value = false
+                _forgotPasswordUserId.value = null
             }
         }
-        return _forgotPasswordResult.value
+        return _forgotPasswordResult.value ?: false
     }
 
     fun verifyCode(userId: String, code: String) {
@@ -100,14 +115,16 @@ open class AuthViewModel(
         }
     }
 
-    fun resetPassword(email: String, newPassword: String) {
+    fun resetPassword(userId: String, newPassword: String) {
         viewModelScope.launch {
-            val result = userService.resetPassword(email, newPassword)
+            val result = userService.resetPassword(userId, newPassword)
             result.onSuccess {
                 _resetPasswordResult.value = true
+                _forgotPasswordUserId.value = null
             }.onFailure {
                 errorViewModel.showError(it.message ?: "Unknown error occurred")
                 _resetPasswordResult.value = false
+                _forgotPasswordUserId.value = null
             }
         }
     }
@@ -144,11 +161,35 @@ open class AuthViewModel(
                 _profileCreated.value = false
             }
         }
-
     }
 
     fun resetVerificationResult() {
         _verifyCodeResult.value = null
+    }
+
+    fun resetRegisteredUserId() {
+        _registeredUserId.value = null
+    }
+
+    fun resetForgotPasswordUserId() {
+        _forgotPasswordUserId.value = null
+    }
+
+    fun resetForgotPasswordResult() {
+        _forgotPasswordResult.value = null
+    }
+
+    fun resetPasswordResult() {
+        _resetPasswordResult.value = null
+    }
+
+    fun partialRegistration(email: String, password: String) {
+        temporaryEmail = email
+        temporaryHashedPassword = hashPassword(password)
+    }
+
+    private fun hashPassword(password: String): String {
+        return BCrypt.hashpw(password, BCrypt.gensalt())
     }
 }
 

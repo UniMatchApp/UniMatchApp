@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.screens.auth.forgot
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,14 +39,22 @@ import com.ulpgc.uniMatch.ui.screens.AuthRoutes
 @Composable
 fun ForgotPasswordScreen(
     authViewModel: AuthViewModel,
-    navController: NavController,
+    onSubmit: () -> Unit,
+    onBack: () -> Unit,
 ) {
     val forgotPasswordResult = authViewModel.forgotPasswordResult.collectAsState()
     var showErrorDialog by remember { mutableStateOf(false) }
 
-    if (!forgotPasswordResult.value) {
-        showErrorDialog = true
+    LaunchedEffect (forgotPasswordResult.value) {
+        if (forgotPasswordResult.value != null) {
+            if (forgotPasswordResult.value!!) {
+                onSubmit()
+            }
+            authViewModel.resetForgotPasswordResult()
+        }
     }
+
+    BackHandler { onBack() }
 
     ForgotPasswordContent(
         onSubmit = { email ->
@@ -52,14 +62,9 @@ fun ForgotPasswordScreen(
                 showErrorDialog = true
             } else{
                 authViewModel.forgotPassword(email)
-                if (forgotPasswordResult.value) {
-                    navController.navigate("forgotPassword/verifyCode/$email")
-                } else {
-                    showErrorDialog = true
-                }
             }
         },
-        onBack = { navController.navigate(AuthRoutes.LOGIN) },
+        onBack = { onBack() },
         showErrorDialog = showErrorDialog,
         onDismissErrorDialog = { showErrorDialog = false }
     )
