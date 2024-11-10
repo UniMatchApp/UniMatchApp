@@ -15,7 +15,8 @@ object ProfileMock {
 
     private val names = listOf("Alice", "Bob", "Charlie", "Diana", "Edward")
     private val jobs = listOf("engineer", "teacher", "artist", "doctor", "lawyer")
-    private val educationLevels = listOf("no education", "primary education", "secondary education", "high School diploma", "vocational training", "undergraduate degree")
+    private val educationLevels = listOf("accounting", "agriculture", "animal science", "architecture", "art", "biochemistry", "biology", "geography", "geology", "history", "hospitality management", "human resources", "industrial engineering", "information systems", "interior design", "international relations", "journalism", "law", "mechanical engineering", "nursing", "optometry", "pharmacy", "telecommunications engineering", "veterinary", "zoology")
+
     private val personalityTypes = listOf("introverted", "extroverted", "ambiverted")
     private val petPreferences = listOf("dog", "cat", "rodent", "fish")
     private val interests = listOf("music", "sports", "reading", "travel", "movies", "photography")
