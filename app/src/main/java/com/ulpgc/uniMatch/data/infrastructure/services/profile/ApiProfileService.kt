@@ -12,6 +12,8 @@ import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.controllers.ProfileController
 import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ApiProfileService (
     private val profileController: ProfileController,
@@ -168,6 +170,43 @@ class ApiProfileService (
             Result.success(Unit)
         } catch (e: Throwable) {
             Result.failure(e)
+        }
+    }
+
+    override suspend fun createProfile(
+        userId: String,
+        fullName: String,
+        age: Int,
+        aboutMe: String,
+        gender: Gender,
+        sexualOrientation: SexualOrientation,
+        relationshipType: RelationshipType,
+        birthday: String,
+        location: Pair<Double, Double>?,
+        profileImageUri: String?
+    ): Result<Profile> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = profileController.createProfile(
+                    userId,
+                    fullName,
+                    age,
+                    aboutMe,
+                    gender.toString(),
+                    sexualOrientation.toString(),
+                    relationshipType.toString(),
+                    birthday,
+                    location,
+                    profileImageUri
+                )
+                if (response.success) {
+                    Result.success(response.value!!)
+                } else {
+                    Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
+                }
+            } catch (e: Exception) {
+                Result.failure(Throwable("Failed to create profile: ${e.message}"))
+            }
         }
     }
 

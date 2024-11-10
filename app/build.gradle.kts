@@ -90,6 +90,7 @@ dependencies {
     implementation(libs.ui)
     implementation(libs.google.material)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -101,6 +102,7 @@ dependencies {
 
     // ImagePicker
     implementation("com.github.dhaval2404:imagepicker:2.1")
+
     // Retrofit 2
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
@@ -116,6 +118,8 @@ dependencies {
 
     // Secure Storage
     implementation(libs.androidx.security.crypto)
+
+    implementation(libs.kotlinx.coroutines.play.services)
 }
 
 

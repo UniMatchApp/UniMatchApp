@@ -1,4 +1,4 @@
-package com.ulpgc.uniMatch.ui.screens.auth
+package com.ulpgc.uniMatch.ui.screens.auth.forgot
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +42,12 @@ fun ResetPasswordScreen(
 
     val resultPasswordReset by authViewModel.resetPasswordResult.collectAsState()
 
+    LaunchedEffect (resultPasswordReset) {
+        if (resultPasswordReset){
+            navController.navigate(AuthRoutes.LOGIN)
+        }
+    }
+
     val onSubmitPassword = {
         if (newPassword.length < 6) {
             errorMessage = R.string.password_too_short
@@ -50,12 +57,6 @@ fun ResetPasswordScreen(
             showErrorDialog = true
         } else {
             authViewModel.resetPassword(email, newPassword)
-            if (resultPasswordReset) {
-                navController.navigate(AuthRoutes.LOGIN)
-            } else {
-                errorMessage = R.string.there_was_an_error_changing_password
-                showErrorDialog = true
-            }
         }
     }
 

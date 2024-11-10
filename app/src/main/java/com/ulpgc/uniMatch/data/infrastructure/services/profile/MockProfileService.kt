@@ -10,6 +10,8 @@ import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.mocks.ProfileMock
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MockProfileService: ProfileService {
     override suspend fun getProfile(userId: String): Result<Profile> {
@@ -125,5 +127,28 @@ class MockProfileService: ProfileService {
 
     override suspend fun removeImage(userId: String, image: String): Result<Unit> {
         return Result.success(Unit)
+    }
+
+    override suspend fun createProfile(
+        userId: String,
+        fullName: String,
+        age: Int,
+        aboutMe: String,
+        gender: Gender,
+        sexualOrientation: SexualOrientation,
+        relationshipType: RelationshipType,
+        birthday: String,
+        location: Pair<Double, Double>?,
+        profileImageUri: String?
+    ): Result<Profile> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Result.success(
+                    ProfileMock.createMockProfile()
+                )
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
     }
 }

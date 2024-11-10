@@ -10,6 +10,18 @@ import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 
 interface ProfileService {
+    suspend fun createProfile(
+        userId: String,
+        fullName: String,
+        age: Int,
+        aboutMe: String,
+        gender: Gender,
+        sexualOrientation: SexualOrientation,
+        relationshipType: RelationshipType,
+        birthday: String,
+        location: Pair<Double, Double>?,
+        profileImageUri: String?
+    ): Result<Profile>
     suspend fun getProfile(userId: String): Result<Profile>
     suspend fun updateAgeRange(userId: String, min: Int, max: Int): Result<Unit>
     suspend fun updateMaxDistance(userId: String, distance: Int): Result<Unit>

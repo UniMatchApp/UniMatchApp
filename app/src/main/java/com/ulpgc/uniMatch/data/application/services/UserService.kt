@@ -17,6 +17,6 @@ interface UserService {
     suspend fun reportUser(userId: String, reportedUserId: String): Result<Unit>
     suspend fun blockUser(userId: String, blockedUserId: String): Result<Unit>
     suspend fun forgotPassword(email: String): Result<Boolean>
-    suspend fun verifyCode(email: String, code: String): Result<Boolean>
-    suspend fun resetPassword(email: String, newPassword: String): Result<Boolean>
+    suspend fun verifyCode(userId: String, code: String): Result<Boolean>
+    suspend fun resetPassword(userId: String, newPassword: String): Result<Boolean>
 }

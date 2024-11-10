@@ -8,6 +8,10 @@ import com.ulpgc.uniMatch.data.application.services.LoginResponse
 import com.ulpgc.uniMatch.data.application.services.RegisterRequest
 import com.ulpgc.uniMatch.data.application.services.RegisterResponse
 import com.ulpgc.uniMatch.data.application.services.UserService
+import com.ulpgc.uniMatch.data.domain.enum.Gender
+import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.domain.models.User
 import com.ulpgc.uniMatch.data.infrastructure.controllers.UserController
 import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
@@ -129,10 +133,10 @@ class ApiUserService(
         }
     }
 
-    override suspend fun verifyCode(email: String, code: String): Result<Boolean> {
+    override suspend fun verifyCode(userId: String, code: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = userController.verifyCode(email, code)
+                val response = userController.verifyCode(userId, code)
                 if (response.success) {
                     Result.success(true)
                 } else {
@@ -144,10 +148,10 @@ class ApiUserService(
         }
     }
 
-    override suspend fun resetPassword(email: String, newPassword: String): Result<Boolean> {
+    override suspend fun resetPassword(userId: String, newPassword: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = userController.resetPassword(email, newPassword)
+                val response = userController.resetPassword(userId, newPassword)
                 if (response.success) {
                     Result.success(true)
                 } else {
@@ -158,4 +162,6 @@ class ApiUserService(
             }
         }
     }
+
+
 }

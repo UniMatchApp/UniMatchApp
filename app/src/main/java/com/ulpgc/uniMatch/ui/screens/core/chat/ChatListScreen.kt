@@ -161,12 +161,14 @@ fun PreviewChatDetailScreen() {
                 errorViewModel = ErrorViewModel(),
                 authViewModel = AuthViewModel(
                     userService = MockUserService(),
-                    errorViewModel = ErrorViewModel()
+                    errorViewModel = ErrorViewModel(),
+                    profileService = MockProfileService()
                 )
             ),
             authViewModel = AuthViewModel(
                 userService = MockUserService(),
                 errorViewModel = ErrorViewModel(),
+                profileService = MockProfileService()
             ),
             navController = NavController(
                 context = LocalContext.current
@@ -176,7 +178,8 @@ fun PreviewChatDetailScreen() {
                 errorViewModel = ErrorViewModel(),
                 authViewModel = AuthViewModel(
                     userService = MockUserService(),
-                    errorViewModel = ErrorViewModel()
+                    errorViewModel = ErrorViewModel(),
+                    profileService = MockProfileService()
                 )
             )
         )
