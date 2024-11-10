@@ -21,8 +21,10 @@ object AuthRoutes {
     const val LOGIN = "login"
     const val REGISTER = "register"
     const val REGISTER_PROFILE = "register/profile"
+    const val LOGIN_PROFILE = "login/completeProfile"
     const val FORGOT_PASSWORD = "forgotPassword"
     const val REGISTER_VERIFY_CODE = "register/verifyCode"
+    const val LOGIN_VERIFY_CODE = "login/verifyCode"
     const val FORGOT_VERIFY_CODE = "forgotPassword/verifyCode"
     const val RESET_PASSWORD = "resetPassword"
 }
@@ -36,6 +38,7 @@ fun AuthScreen(
 
     val registeredUserId = authViewModel.registeredUserId.collectAsState()
     val forgotPasswordUserId = authViewModel.forgotPasswordUserId.collectAsState()
+    val loginUserId = authViewModel.loginUserId.collectAsState()
 
 
 
@@ -55,6 +58,12 @@ fun AuthScreen(
                 onForgotPasswordClick = { navController.navigate(AuthRoutes.FORGOT_PASSWORD) },
                 onSignUpClick = { navController.navigate(AuthRoutes.REGISTER) }
             )
+
+            LaunchedEffect(loginUserId.value) {
+                if (loginUserId.value != null) {
+                    navController.navigate(AuthRoutes.LOGIN_VERIFY_CODE)
+                }
+            }
         }
 
         composable(AuthRoutes.REGISTER) {
@@ -85,6 +94,20 @@ fun AuthScreen(
                     onCompleteProfile = {
                         navController.navigate(AuthRoutes.OPTIONS)
                         authViewModel.resetRegisteredUserId()
+                    }
+                )
+            }
+        }
+
+        composable(AuthRoutes.LOGIN_PROFILE) {
+            if (loginUserId.value != null) {
+                RegisterProfileScreen(
+                    authViewModel = authViewModel,
+                    errorViewModel = errorViewModel,
+                    userId = loginUserId.value!!,
+                    onCompleteProfile = {
+                        navController.navigate(AuthRoutes.LOGIN_VERIFY_CODE)
+                        authViewModel.resetLoginUserId()
                     }
                 )
             }
@@ -135,6 +158,21 @@ fun AuthScreen(
                 )
             }
 
+        }
+
+        composable(AuthRoutes.LOGIN_VERIFY_CODE) {
+            if (loginUserId.value != null) {
+                VerifyCodeScreen(
+                    authViewModel = authViewModel,
+                    errorViewModel = errorViewModel,
+                    userId = loginUserId.value!!,
+                    onVerificationSuccess = { navController.navigate(AuthRoutes.LOGIN_PROFILE) },
+                    onBack = {
+                        navController.navigate(AuthRoutes.LOGIN)
+                        authViewModel.resetLoginUserId()
+                    }
+                )
+            }
         }
 
 

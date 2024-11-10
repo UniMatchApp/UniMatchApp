@@ -176,6 +176,10 @@ open class AuthViewModel(
         _verifyCodeResult.value = null
     }
 
+    fun resetLoginUserId() {
+        _loginUserId.value = null
+    }
+
     fun resetRegisteredUserId() {
         _registeredUserId.value = null
     }
