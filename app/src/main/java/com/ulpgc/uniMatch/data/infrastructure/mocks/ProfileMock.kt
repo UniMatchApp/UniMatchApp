@@ -3,7 +3,6 @@ package com.ulpgc.uniMatch.data.infrastructure.mocks
 import com.ulpgc.uniMatch.data.domain.enum.Gender
 import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
-import com.ulpgc.uniMatch.data.domain.enum.Jobs
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
@@ -15,11 +14,11 @@ import kotlin.random.Random
 object ProfileMock {
 
     private val names = listOf("Alice", "Bob", "Charlie", "Diana", "Edward")
-    private val jobs = listOf("Engineer", "Teacher", "Artist", "Doctor", "Lawyer")
-    private val educationLevels = listOf("No education", "Primary", "Secondary", "High School", "University")
-    private val personalityTypes = listOf("Introvert", "Extrovert", "Ambivert")
-    private val petPreferences = listOf("Dog", "Cat", "None")
-    private val interests = listOf("Reading", "Traveling", "Cooking", "Gaming", "Hiking", "Photography", "Music")
+    private val jobs = listOf("engineer", "teacher", "artist", "doctor", "lawyer")
+    private val educationLevels = listOf("no education", "primary education", "secondary education", "high School diploma", "vocational training", "undergraduate degree")
+    private val personalityTypes = listOf("introverted", "extroverted", "ambiverted")
+    private val petPreferences = listOf("dog", "cat", "rodent", "fish")
+    private val interests = listOf("music", "sports", "reading", "cooking", "traveling", "movies", "photography")
     private val imageUrls = listOf(
         "https://imagenes2.fotos.europapress.es/preview/5309176.jpg?s=1000",
         "https://www.eii.ulpgc.es/sites/default/files/styles/height/public/team/IMG-20230602-WA0007-B.jpg?itok=Xwradmzk",
@@ -50,7 +49,7 @@ object ProfileMock {
             horoscope = Horoscope.entries.toTypedArray().random(),
             height = Random.nextInt(150, 200),
             weight = Random.nextInt(50, 100),
-            job = Jobs.entries.toTypedArray().random(),
+            job = jobs.random(),
             education = educationLevels.random(),
             personalityType = personalityTypes.random(),
             pets = petPreferences.random(),
@@ -59,7 +58,7 @@ object ProfileMock {
             doesSports = Habits.entries.toTypedArray().random(),
             valuesAndBeliefs = Religion.entries.toTypedArray().random(),
             genderPriority = Gender.entries.toTypedArray().random(),
-            fact = "I once ${interests.random()} for a whole day!"
+            fact = "light travels faster than sound"
         )
     }
 
@@ -98,7 +97,7 @@ object ProfileMock {
                 horoscope = Horoscope.entries.toTypedArray().random(),
                 height = Random.nextInt(150, 200),
                 weight = Random.nextInt(50, 100),
-                job = Jobs.entries.toTypedArray().random(),
+                job = jobs.random(),
                 education = educationLevels.random(),
                 personalityType = personalityTypes.random(),
                 pets = petPreferences.random(),

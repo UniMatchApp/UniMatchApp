@@ -92,12 +92,15 @@
     <string name="block">Block</string>
 
     <!--Funny questions-->
-    <string-array name="funny_questions">
-        <item>I once read for a whole day!</item>
-        <item>I once traveled for a whole day!</item>
-        <item>I once cooked for a whole day!</item>
-        <item>I once gamed for a whole day!</item>
+    <string-array name="facts">
+        <item>The Earth is not a perfect sphere</item>
+        <item>Light travels faster than sound</item>
+        <item>Octopuses have three hearts</item>
+        <item>Water can boil and freeze at the same time</item>
+        <item>Sharks have been around longer than trees</item>
+        <item>A day on Venus is longer than a year on Venus</item>
     </string-array>
+
 
     <!--Gender-->
     <string-array name="genders">
@@ -210,6 +213,7 @@
         <item>Agnosticism</item>
         <item>Other</item>
     </string-array>
+
 
     <!--Interests-->
     <string-array name="interests">

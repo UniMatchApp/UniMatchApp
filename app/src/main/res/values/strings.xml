@@ -93,12 +93,15 @@
     <string name="block">Bloquear</string>
 
     <!--Funny questions-->
-    <string-array name="funny_questions">
-        <item>Una vez lei por todo un día</item>
-        <item>Una vez viaje por todo un dia</item>
-        <item>Una vez cocine por todo un dia</item>
-        <item>Una vez jugue por todo un dia</item>
+    <string-array name="facts">
+        <item>La Tierra no es una esfera perfecta</item>
+        <item>La luz viaja más rápido que el sonido</item>
+        <item>Los pulpos tienen tres corazones</item>
+        <item>El agua puede hervir y congelarse al mismo tiempo</item>
+        <item>Los tiburones han existido más tiempo que los árboles</item>
+        <item>Un día en Venus es más largo que un año en Venus</item>
     </string-array>
+
 
     <!--Género-->
     <string-array name="genders">
@@ -167,6 +170,7 @@
         <item>Pez</item>
         <item>Otro</item>
     </string-array>
+
 
     <!-- Beber -->
     <string-array name="drinks">

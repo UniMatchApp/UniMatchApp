@@ -17,3 +17,17 @@ enum class Interests {
     VOLUNTEERING,
     ENTREPRENEURSHIP
 }
+
+fun interestFromStringToEnum(interest: String?): Interests? {
+    if (interest.isNullOrBlank()) return null
+
+    return try {
+        Interests.valueOf(interest.uppercase())
+    } catch (e: IllegalArgumentException) {
+        null
+    }
+}
+
+fun fromEnumToString(interest: Interests?): String? {
+    return interest?.name?.lowercase()
+}

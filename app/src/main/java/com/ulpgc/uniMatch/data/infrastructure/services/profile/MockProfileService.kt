@@ -4,7 +4,6 @@ import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enum.Gender
 import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
-import com.ulpgc.uniMatch.data.domain.enum.Jobs
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
@@ -68,7 +67,7 @@ class MockProfileService: ProfileService {
         return Result.success(Unit)
     }
 
-    override suspend fun updateJob(userId: String, position: Jobs): Result<Unit> {
+    override suspend fun updateJob(userId: String, position: String): Result<Unit> {
         return Result.success(Unit)
     }
 
