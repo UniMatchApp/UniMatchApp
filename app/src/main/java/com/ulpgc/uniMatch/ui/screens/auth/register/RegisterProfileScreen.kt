@@ -51,6 +51,7 @@ import com.ulpgc.uniMatch.data.domain.enum.Gender
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.ui.components.DatePickerComponent
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
 import com.ulpgc.uniMatch.ui.components.InputField
@@ -62,6 +63,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun RegisterProfileScreen(
     authViewModel: AuthViewModel,
+    errorViewModel: ErrorViewModel,
     userId: String,
     onCompleteProfile: () -> Unit
 ) {
@@ -73,8 +75,6 @@ fun RegisterProfileScreen(
     var relationshipType by remember { mutableStateOf(RelationshipType.FRIENDSHIP) }
     var birthday by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableIntStateOf(0) }
     val PERMISSION_REQUEST_CODE = 1001
     var location by remember { mutableStateOf<Pair<Double, Double>?>(null) }
 
@@ -94,6 +94,9 @@ fun RegisterProfileScreen(
 
     val profileCreated by authViewModel.profileCreated.collectAsState()
 
+    val locationError = stringResource(R.string.location_error)
+    val fieldsEmptyError = stringResource(R.string.fields_empty_error)
+
     LaunchedEffect(Unit) {
         if (ContextCompat.checkSelfPermission(
                 context,
@@ -108,8 +111,7 @@ fun RegisterProfileScreen(
         } else {
             location = LocationHelper.getCurrentLocation(context)
             if (location == null) {
-                showErrorDialog = true
-                errorMessage = R.string.location_error
+                errorViewModel.showError(locationError)
             }
         }
     }
@@ -259,12 +261,10 @@ fun RegisterProfileScreen(
             Button(
                 onClick = {
                     if (location == null) {
-                        showErrorDialog = true
-                        errorMessage = R.string.location_error
+                        errorViewModel.showError(locationError)
                     }
                     else if (fullName.isEmpty() || aboutMe.isEmpty() || birthday.isEmpty() || selectedImageUri == null || age < 18) {
-                        showErrorDialog = true
-                        errorMessage = R.string.fields_empty_error
+                        errorViewModel.showError(fieldsEmptyError)
                     } else {
                         authViewModel.createProfile(
                             userId,
@@ -308,21 +308,6 @@ fun RegisterProfileScreen(
                 )
             }
         }
-    }
-
-    if (showErrorDialog) {
-        AlertDialog(
-            onDismissRequest = { showErrorDialog = false },
-            title = { Text(stringResource(R.string.error_title)) },
-            text = { Text(stringResource(errorMessage)) },
-            confirmButton = {
-                TextButton(
-                    onClick = { showErrorDialog = false }
-                ) {
-                    Text(stringResource(R.string.ok))
-                }
-            }
-        )
     }
 }
 

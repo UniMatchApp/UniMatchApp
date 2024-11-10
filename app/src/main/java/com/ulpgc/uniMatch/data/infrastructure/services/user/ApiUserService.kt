@@ -53,7 +53,8 @@ class ApiUserService(
                         response.value.user.id,
                         response.value.user.email,
                         response.value.user.registrationDate,
-                        response.value.user.blockedUsers
+                        response.value.user.blockedUsers,
+                        response.value.user.registered
                     )
                     Result.success(response.value)
                 } else {

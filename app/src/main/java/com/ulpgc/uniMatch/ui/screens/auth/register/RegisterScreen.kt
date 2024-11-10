@@ -15,13 +15,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,12 +32,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.ui.components.ButtonComponent
 import com.ulpgc.uniMatch.ui.components.InputField
 
 @Composable
 fun RegisterScreen(
     authViewModel: AuthViewModel,
+    errorViewModel: ErrorViewModel,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
     continueRegister: () -> Unit
@@ -48,8 +47,9 @@ fun RegisterScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableIntStateOf(0) }
+    val passwordsDoNotMatch = stringResource(R.string.passwords_do_not_match)
+    val fieldsEmptyError = stringResource(R.string.fields_empty_error)
+
 
     BackHandler { onBackClick() }
 
@@ -124,11 +124,9 @@ fun RegisterScreen(
                 ButtonComponent(
                     onClick = {
                         if (password != confirmPassword) {
-                            showErrorDialog = true
-                            errorMessage = R.string.passwords_do_not_match
+                            errorViewModel.showError(passwordsDoNotMatch)
                         } else if (password.isEmpty() || email.isEmpty()) {
-                            showErrorDialog = true
-                            errorMessage = R.string.fields_empty_error
+                            errorViewModel.showError(fieldsEmptyError)
                         } else {
                             authViewModel.partialRegistration(email, password)
                             continueRegister()
@@ -155,18 +153,5 @@ fun RegisterScreen(
                 )
             }
         }
-    }
-
-    if (showErrorDialog) {
-        AlertDialog(
-            onDismissRequest = { showErrorDialog = false },
-            title = { Text(text = stringResource(R.string.registration_failed)) },
-            text = { Text(text = stringResource(errorMessage)) },
-            confirmButton = {
-                TextButton(onClick = { showErrorDialog = false }) {
-                    Text(text = stringResource(R.string.ok))
-                }
-            }
-        )
     }
 }

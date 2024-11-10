@@ -9,7 +9,8 @@ object UserMock {
             id = "1",
             registrationDate = Date(),
             email = "loggeduser@email.com",
-            blockedUsers = listOf("blockedUser1", "blockedUser2")
+            blockedUsers = listOf("blockedUser1", "blockedUser2"),
+            registered = true
         )
     }
 
@@ -18,7 +19,8 @@ object UserMock {
             id = "user_id" + (0..100).random(),
             registrationDate = Date(),
             email = "mock@example.com",
-            blockedUsers = listOf("blockedUser1", "blockedUser2")
+            blockedUsers = listOf("blockedUser1", "blockedUser2"),
+            registered = true
         )
     }
 }

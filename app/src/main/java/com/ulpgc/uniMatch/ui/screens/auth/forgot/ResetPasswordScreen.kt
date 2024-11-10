@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,20 +24,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.ui.components.InputField
 
 @Composable
 fun ResetPasswordScreen(
     authViewModel: AuthViewModel,
+    errorViewModel: ErrorViewModel,
     userId: String,
     onPasswordReset: () -> Unit
 ) {
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf(0) }
 
     val resultPasswordReset by authViewModel.resetPasswordResult.collectAsState()
+
+    val passwordTooShort = stringResource(R.string.password_too_short)
+    val passwordsDoNotMatch = stringResource(R.string.passwords_do_not_match)
 
     LaunchedEffect(resultPasswordReset) {
         if (resultPasswordReset != null) {
@@ -51,11 +53,9 @@ fun ResetPasswordScreen(
 
     val onSubmitPassword = {
         if (newPassword.length < 6) {
-            errorMessage = R.string.password_too_short
-            showErrorDialog = true
+            errorViewModel.showError(passwordTooShort)
         } else if (newPassword != confirmPassword) {
-            errorMessage = R.string.passwords_do_not_match
-            showErrorDialog = true
+            errorViewModel.showError(passwordsDoNotMatch)
         } else {
             authViewModel.resetPassword(userId, newPassword)
         }
@@ -66,10 +66,7 @@ fun ResetPasswordScreen(
         confirmPassword = confirmPassword,
         onNewPasswordChange = { newPassword = it },
         onConfirmPasswordChange = { confirmPassword = it },
-        onSubmitPassword = onSubmitPassword,
-        showErrorDialog = showErrorDialog,
-        errorMessage = errorMessage,
-        onDismissErrorDialog = { showErrorDialog = false }
+        onSubmitPassword = onSubmitPassword
     )
 }
 
@@ -79,10 +76,7 @@ fun ResetPasswordContent(
     confirmPassword: String,
     onNewPasswordChange: (String) -> Unit,
     onConfirmPasswordChange: (String) -> Unit,
-    onSubmitPassword: () -> Unit,
-    showErrorDialog: Boolean,
-    errorMessage: Int,
-    onDismissErrorDialog: () -> Unit
+    onSubmitPassword: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -126,18 +120,5 @@ fun ResetPasswordContent(
         ) {
             Text(text = stringResource(R.string.submit), fontSize = 16.sp)
         }
-    }
-
-    if (showErrorDialog) {
-        AlertDialog(
-            onDismissRequest = { onDismissErrorDialog() },
-            title = { Text(stringResource(R.string.error_title)) },
-            text = { Text(stringResource(id = errorMessage)) },
-            confirmButton = {
-                Button(onClick = { onDismissErrorDialog() }) {
-                    Text(stringResource(R.string.ok))
-                }
-            }
-        )
     }
 }

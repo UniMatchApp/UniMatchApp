@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,21 +30,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
-import com.ulpgc.uniMatch.ui.screens.AuthRoutes
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 
 @Composable
 fun ForgotPasswordScreen(
     authViewModel: AuthViewModel,
+    errorViewModel: ErrorViewModel,
     onSubmit: () -> Unit,
     onBack: () -> Unit,
 ) {
     val forgotPasswordResult = authViewModel.forgotPasswordResult.collectAsState()
-    var showErrorDialog by remember { mutableStateOf(false) }
+    val resetPasswordFailed = stringResource(R.string.reset_password_failed)
 
-    LaunchedEffect (forgotPasswordResult.value) {
+    LaunchedEffect(forgotPasswordResult.value) {
         if (forgotPasswordResult.value != null) {
             if (forgotPasswordResult.value!!) {
                 onSubmit()
@@ -59,14 +58,12 @@ fun ForgotPasswordScreen(
     ForgotPasswordContent(
         onSubmit = { email ->
             if (email.isEmpty()) {
-                showErrorDialog = true
-            } else{
+                errorViewModel.showError(resetPasswordFailed)
+            } else {
                 authViewModel.forgotPassword(email)
             }
         },
-        onBack = { onBack() },
-        showErrorDialog = showErrorDialog,
-        onDismissErrorDialog = { showErrorDialog = false }
+        onBack = { onBack() }
     )
 }
 
@@ -74,9 +71,7 @@ fun ForgotPasswordScreen(
 @Composable
 fun ForgotPasswordContent(
     onSubmit: (String) -> Unit,
-    onBack: () -> Unit,
-    showErrorDialog: Boolean,
-    onDismissErrorDialog: () -> Unit
+    onBack: () -> Unit
 ) {
     var emailOrPhone by remember { mutableStateOf(TextFieldValue("")) }
 
@@ -154,18 +149,4 @@ fun ForgotPasswordContent(
             Text(text = stringResource(R.string.back), fontSize = 16.sp)
         }
     }
-
-    if (showErrorDialog) {
-        AlertDialog(
-            onDismissRequest = { onDismissErrorDialog() },
-            title = { Text(stringResource(R.string.error_title)) },
-            text = { Text(stringResource(R.string.reset_password_failed)) },
-            confirmButton = {
-                Button(onClick = { onDismissErrorDialog() }) {
-                    Text(stringResource(R.string.ok))
-                }
-            }
-        )
-    }
-
 }

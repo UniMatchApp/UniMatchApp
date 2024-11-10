@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
                         homeViewModel,
                         notificationsViewModel
                     )
-                    is AuthState.Unauthenticated -> AuthScreen(authViewModel)
+                    is AuthState.Unauthenticated -> AuthScreen(authViewModel, errorViewModel)
                 }
 
                 // Mostrar popup cuando hay un error en el estado de autenticación

@@ -9,6 +9,7 @@ data class User(
     val registrationDate: Date,
     var email: String,
     var blockedUsers: List<String> = emptyList(),
+    var registered: Boolean
 ) {
 
 }

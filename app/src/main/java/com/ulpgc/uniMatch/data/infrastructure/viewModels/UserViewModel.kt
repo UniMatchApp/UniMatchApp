@@ -1,7 +1,5 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
-
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.ProfileService
@@ -34,7 +32,10 @@ open class AuthViewModel(
     val resetPasswordResult: StateFlow<Boolean?> = _resetPasswordResult
 
     val userId: String?
-        get() = (_authState.value as? AuthState.Authenticated)?.user?.id
+        get() = (authState.value as? AuthState.Authenticated)?.user?.id
+
+    private val _loginUserId = MutableStateFlow<String?>(null)
+    val loginUserId: StateFlow<String?> = _loginUserId
 
     private var authToken: String? = null
 
@@ -55,7 +56,12 @@ open class AuthViewModel(
             val result = userService.login(email, password)
             result.onSuccess { loginResponse ->
                 authToken = loginResponse.token
-                _authState.value = AuthState.Authenticated(loginResponse.user)
+                if (loginResponse.user.registered) {
+                    _authState.value = AuthState.Authenticated(loginResponse.user)
+                } else {
+                    _authState.value = AuthState.Unauthenticated
+                    _loginUserId.value = loginResponse.user.id
+                }
             }.onFailure {
                 errorViewModel.showError(it.message ?: "Unknown error occurred")
                 _authState.value = AuthState.Unauthenticated
@@ -80,12 +86,15 @@ open class AuthViewModel(
                 errorViewModel.showError(it.message ?: "Unknown error occurred")
                 _registeredUserId.value = null
             }
+            temporaryEmail = null
+            temporaryHashedPassword = null
         }
     }
 
     fun logout() {
         authToken = null
         _authState.value = AuthState.Unauthenticated
+        _loginUserId.value = null
     }
 
     fun forgotPassword(email: String): Boolean {
