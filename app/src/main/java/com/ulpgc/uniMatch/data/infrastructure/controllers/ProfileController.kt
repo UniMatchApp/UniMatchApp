@@ -7,10 +7,26 @@ import com.ulpgc.uniMatch.data.domain.enum.Horoscope
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.models.Profile
 import kotlinx.coroutines.Job
 import retrofit2.http.*
 
 interface ProfileController {
+
+    // Crear perfil
+    @POST("users/createProfile")
+    suspend fun createProfile(
+        @Query("userId") userId: String,
+        @Query("fullName") fullName: String,
+        @Query("age") age: Int,
+        @Query("aboutMe") aboutMe: String,
+        @Query("gender") gender: String,
+        @Query("sexualOrientation") sexualOrientation: String,
+        @Query("relationshipType") relationshipType: String,
+        @Query("birthday") birthday: String,
+        @Query("location") location: Pair<Double, Double>?,
+        @Query("profileImageUri") profileImageUri: String?
+    ): ApiResponse<Profile>
 
     @PUT("profile/{id}/about")
     suspend fun updateAbout(@Path("id") userId: String, @Body about: String): ApiResponse<Unit>

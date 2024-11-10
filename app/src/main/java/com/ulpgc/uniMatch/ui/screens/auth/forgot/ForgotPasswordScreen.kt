@@ -1,4 +1,4 @@
-package com.ulpgc.uniMatch.ui.screens.auth
+package com.ulpgc.uniMatch.ui.screens.auth.forgot
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

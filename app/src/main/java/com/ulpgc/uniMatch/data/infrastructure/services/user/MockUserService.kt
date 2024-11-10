@@ -3,6 +3,10 @@ package com.ulpgc.uniMatch.data.infrastructure.services.user
 import com.ulpgc.uniMatch.data.application.services.LoginResponse
 import com.ulpgc.uniMatch.data.application.services.RegisterResponse
 import com.ulpgc.uniMatch.data.application.services.UserService
+import com.ulpgc.uniMatch.data.domain.enum.Gender
+import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.domain.models.User
 import com.ulpgc.uniMatch.data.infrastructure.mocks.UserMock
 import kotlinx.coroutines.Dispatchers
@@ -92,7 +96,7 @@ class MockUserService : UserService {
         }
     }
 
-    override suspend fun verifyCode(email: String, code: String): Result<Boolean> {
+    override suspend fun verifyCode(userId: String, code: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
                 Result.success(true)
@@ -102,7 +106,7 @@ class MockUserService : UserService {
         }
     }
 
-    override suspend fun resetPassword(email: String, newPassword: String): Result<Boolean> {
+    override suspend fun resetPassword(userId: String, newPassword: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
                 Result.success(true)

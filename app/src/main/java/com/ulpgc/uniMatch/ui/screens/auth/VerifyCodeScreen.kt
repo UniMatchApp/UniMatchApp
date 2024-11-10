@@ -17,8 +17,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,21 +35,28 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.ui.screens.AuthRoutes
 
 @Composable
 fun VerifyCodeScreen(
     authViewModel: AuthViewModel,
     navController: NavController,
-    email: String
+    userId: String,
+    onVerifyCode: () -> Unit
 ) {
 
     val verifyCodeResult = authViewModel.verifyCodeResult.collectAsState()
     var showErrorDialog by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf(0) }
+    var errorMessage by remember { mutableIntStateOf(0) }
 
-    if (!verifyCodeResult.value) {
-        showErrorDialog = true
+    LaunchedEffect (verifyCodeResult.value) {
+        if (verifyCodeResult.value != null) {
+            if (verifyCodeResult.value!!) {
+                onVerifyCode()
+            }
+            authViewModel.resetVerificationResult()
+        }
     }
 
     VerifyCodeContent(
@@ -60,14 +69,7 @@ fun VerifyCodeScreen(
                 errorMessage = R.string.please_enter_valid_code
                 showErrorDialog = true
             } else {
-                authViewModel.verifyCode(email, code)
-                if (verifyCodeResult.value) {
-                    showErrorDialog = false
-                    navController.navigate("resetPassword/{email}".replace("{email}", email))
-                } else {
-                    errorMessage = R.string.invalid_code
-                    showErrorDialog = true
-                }
+                authViewModel.verifyCode(userId, code)
             }
         },
         onBack = { navController.navigate(AuthRoutes.FORGOT_PASSWORD) },
@@ -122,7 +124,7 @@ fun VerifyCodeContent(
                     onValueChange = { input ->
                         if (input.length == 1 && input[0].isDigit()) {
                             code = code.toMutableList().apply { this[index] = input }
-                                if (index < 5) {
+                            if (index < 5) {
                                 focusRequesters[index + 1].requestFocus()
                             }
                         } else if (input.isEmpty()) {
@@ -186,4 +188,3 @@ fun VerifyCodeContent(
         )
     }
 }
-

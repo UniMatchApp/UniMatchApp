@@ -35,5 +35,5 @@ interface UserController {
 
     // Restablecer contraseña
     @POST("users/resetPassword")
-    suspend fun resetPassword(@Query("email") email: String, @Query("newPassword") newPassword: String): ApiResponse<Boolean>
+    suspend fun resetPassword(@Query("userId") userId: String, @Query("newPassword") newPassword: String): ApiResponse<Boolean>
 }

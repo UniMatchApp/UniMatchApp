@@ -1,7 +1,6 @@
-package com.ulpgc.uniMatch.ui.screens.auth
+package com.ulpgc.uniMatch.ui.screens.auth.login
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,12 +11,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.Checkbox
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,14 +32,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
 import com.ulpgc.uniMatch.ui.components.ButtonComponent
 import com.ulpgc.uniMatch.ui.components.InputField
-
 
 @Composable
 fun LoginScreen(
@@ -45,21 +48,19 @@ fun LoginScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var rememberMe by remember { mutableStateOf(false) }
-
+    var showPasswordErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableIntStateOf(0) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp, 30.dp)
+            .padding(30.dp, 30.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-
             Image(
                 painter = painterResource(id = R.drawable.unimatch_logo),
                 contentDescription = stringResource(R.string.app_name),
@@ -67,12 +68,16 @@ fun LoginScreen(
             )
             Text(
                 text = stringResource(R.string.sign_in_to_unimatch),
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier
+                    .wrapContentWidth(Alignment.CenterHorizontally)
+                    .wrapContentHeight(Alignment.CenterVertically),
+                textAlign = TextAlign.Center
             )
-
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
         Column {
             Text(
                 text = stringResource(R.string.enter_your_email_and_password_to_log_in),
@@ -107,7 +112,14 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 ButtonComponent(
-                    onClick = { authViewModel.login(email, password) },
+                    onClick = {
+                        if (password.isEmpty()) {
+                            showPasswordErrorDialog = true
+                            errorMessage = R.string.password_empty_error
+                        } else {
+                            authViewModel.login(email, password)
+                        }
+                    },
                     text = stringResource(R.string.login_button),
                     modifier = Modifier.weight(1f)
                 )
@@ -115,7 +127,6 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Forgot password link
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -129,6 +140,7 @@ fun LoginScreen(
                 )
             }
         }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
@@ -136,15 +148,29 @@ fun LoginScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "Don't have an account?", color = Color.Gray)
+            Text(text = stringResource(R.string.dont_have_an_account), color = Color.Gray)
             Spacer(modifier = Modifier.width(4.dp))
             ClickableText(
-                text = AnnotatedString("Sign Up"),
+                text = AnnotatedString(stringResource(R.string.register)),
                 onClick = { onSignUpClick() },
                 style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.primary)
             )
         }
+    }
 
-
+    if (showPasswordErrorDialog) {
+        AlertDialog(
+            onDismissRequest = { showPasswordErrorDialog = false },
+            title = { Text(text = stringResource(R.string.login_failed)) },
+            text = { Text(text = stringResource(errorMessage)) },
+            confirmButton = {
+                TextButton(onClick = { showPasswordErrorDialog = false }) {
+                    Text(text = stringResource(R.string.ok))
+                }
+            }
+        )
     }
 }
+
+
+

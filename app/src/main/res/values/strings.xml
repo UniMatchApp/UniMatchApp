@@ -37,6 +37,22 @@
     <string name="there_was_an_error_changing_password">Ha habido un error al cambiar la contraseña</string>
     <string name="reset_password">Restablecer contraseña</string>
     <string name="new_password">Nueva contraseña</string>
+    <string name="dont_have_an_account">¿No tienes una cuenta?</string>
+    <string name="password_required">La contraseña es obligatoria</string>
+    <string name="login_failed">Inicio de sesión fallido</string>
+    <string name="already_have_an_account">¿Ya tienes una cuenta?</string>
+    <string name="registration_failed">Registro fallido</string>
+    <string name="create_account">Crear cuenta</string>
+    <string name="enter_your_details_to_register">Introduce tus datos para registrarte</string>
+    <string name="password_empty_error">La contraseña no puede estar vacía</string>
+    <string name="fields_empty_error">Algunos campos están vacíos</string>
+    <string name="create_profile">Crear perfil</string>
+    <string name="full_name">Nombre completo</string>
+    <string name="complete_profile">Completa tu perfil</string>
+    <string name="selected_image">Imagen seleccionada</string>
+    <string name="full_name_and_age_required">El nombre y la edad son obligatorios</string>
+    <string name="selected_date">Fecha seleccionada</string>
+    <string name="select_date">Selecciona una fecha</string>
 
     <!--PROFILE-->
     <string name="horoscope">Horóscopo</string>
@@ -55,6 +71,9 @@
     <string name="height">Altura</string>
     <string name="gender">Sexo</string>
     <string name="questions">Preguntas</string>
+    <string name="age">Edad</string>
+    <string name="select_image">Seleccionar imagen</string>
+    <string name="birthday">Cumpleaños</string>
 
 
     <!--PREFERENCES SCREEN-->
@@ -259,6 +278,22 @@
         <item>Otro</item>
     </string-array>
 
+    <!-- Meses -->
+    <string-array name="months">
+        <item>Enero</item>
+        <item>Febrero</item>
+        <item>Marzo</item>
+        <item>Abril</item>
+        <item>Mayo</item>
+        <item>Junio</item>
+        <item>Julio</item>
+        <item>Agosto</item>
+        <item>Septiembre</item>
+        <item>Octubre</item>
+        <item>Noviembre</item>
+        <item>Diciembre</item>
+    </string-array>
+
 
     <!--REPORT-->
     <string name="report_title">Reportar Perfil</string>
@@ -333,5 +368,6 @@
     <string name="none">Ninguno</string>
     <string name="submit">Enviar</string>
     <string name="ok">Aceptar</string>
+    <string name="location_error">Ha habido un error al buscar su ubicación</string>
 
 </resources>

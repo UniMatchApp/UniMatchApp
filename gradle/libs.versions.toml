@@ -24,6 +24,8 @@ ui = "1.7.4"
 volley = "1.2.1"
 protoliteWellKnownTypes = "18.0.0"
 constraintlayout = "2.1.4"
+playServicesLocation = "21.3.0"
+coroutinesPlayServices = "1.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,6 +58,8 @@ ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 protolite-well-known-types = { group = "com.google.firebase", name = "protolite-well-known-types", version.ref = "protoliteWellKnownTypes" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutinesPlayServices" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
