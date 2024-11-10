@@ -5,7 +5,6 @@ import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enum.Gender
 import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
-import com.ulpgc.uniMatch.data.domain.enum.Jobs
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
@@ -305,7 +304,7 @@ open class ProfileViewModel(
         }
     }
 
-    fun updateJob(position: Jobs) {
+    fun updateJob(position: String) {
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.updateJob(authViewModel.userId!!, position)

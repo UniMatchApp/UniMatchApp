@@ -2,6 +2,7 @@ package com.ulpgc.uniMatch.data.infrastructure.controllers
 
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
 import com.ulpgc.uniMatch.data.application.services.*
+import com.ulpgc.uniMatch.data.domain.enum.Gender
 import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
@@ -31,6 +32,9 @@ interface ProfileController {
     @PUT("profile/{id}/about")
     suspend fun updateAbout(@Path("id") userId: String, @Body about: String): ApiResponse<Unit>
 
+    @PUT("profile/{id}/fact")
+    suspend fun updateFact(@Path("id") userId: String, @Body fact: String): ApiResponse<Unit>
+
     @PUT("profile/{id}/degree")
     suspend fun updateDegree(@Path("id") userId: String, @Body degree: String): ApiResponse<Unit>
 
@@ -46,6 +50,12 @@ interface ProfileController {
     @PUT("profile/{id}/weight")
     suspend fun updateWeight(@Path("id") userId: String, @Body weight: Int): ApiResponse<Unit>
 
+    @PUT("profile/{id}/education")
+    suspend fun updateEducation(@Path("id") userId: String, @Body education: String): ApiResponse<Unit>
+
+    @PUT("profile/{id}/gender")
+    suspend fun updateGender(@Path("id") userId: String, @Body gender: Gender): ApiResponse<Unit>
+
     @PUT("profile/{id}/horoscope")
     suspend fun updateHoroscope(@Path("id") userId: String, @Body horoscope: Horoscope): ApiResponse<Unit>
 
@@ -53,7 +63,7 @@ interface ProfileController {
     suspend fun updateInterests(@Path("id") userId: String, @Body interests: String): ApiResponse<Unit>
 
     @PUT("profile/{id}/job")
-    suspend fun updateJob(@Path("id") userId: String, @Body job: Job): ApiResponse<Unit>
+    suspend fun updateJob(@Path("id") userId: String, @Body job: String): ApiResponse<Unit>
 
     @PUT("profile/{id}/password")
     suspend fun updatePassword(@Path("id") userId: String, @Body password: String): ApiResponse<Unit>
@@ -79,9 +89,24 @@ interface ProfileController {
     @PUT("profile/{id}/values-and-beliefs")
     suspend fun updateValuesAndBeliefs(@Path("id") userId: String, @Body valuesAndBeliefs: Religion): ApiResponse<Unit>
 
+    @PUT("profile/{id}/gender-priority")
+    suspend fun updateGenderPriority(@Path("id") userId: String, @Body gender: Gender?): ApiResponse<Unit>
+
+    @PUT("profile/{id}/max-distance")
+    suspend fun updateMaxDistance(@Path("id") userId: String, @Body distance: Int): ApiResponse<Unit>
+
+    @PUT("profile/{id}/age-range")
+    suspend fun updateAgeRange(@Path("id") userId: String, @Body min: Int, @Body max: Int): ApiResponse<Unit>
+
     @DELETE("profile/{id}/deletePhoto/{photoUrl}")
     suspend fun deletePhoto(@Path("id") userId: String, @Path("photoUrl") photoUrl: String): ApiResponse<Unit>
 
     @POST("profile/{id}/photo")
     suspend fun uploadPhoto(@Path("id") userId: String, @Body photoRequest: String): ApiResponse<Unit>
+
+    @POST("profile/{id}/interest")
+    suspend fun addInterest(@Path("id") userId: String, @Body interest: String): ApiResponse<Unit>
+
+    @DELETE("profile/{id}/interest")
+    suspend fun removeInterest(@Path("id") userId: String, @Body interest: String): ApiResponse<Unit>
 }

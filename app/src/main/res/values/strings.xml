@@ -113,12 +113,15 @@
     <string name="block">Bloquear</string>
 
     <!--Funny questions-->
-    <string-array name="funny_questions">
-        <item>Una vez lei por todo un día</item>
-        <item>Una vez viaje por todo un dia</item>
-        <item>Una vez cocine por todo un dia</item>
-        <item>Una vez jugue por todo un dia</item>
+    <string-array name="facts">
+        <item>La Tierra no es una esfera perfecta</item>
+        <item>La luz viaja más rápido que el sonido</item>
+        <item>Los pulpos tienen tres corazones</item>
+        <item>El agua puede hervir y congelarse al mismo tiempo</item>
+        <item>Los tiburones han existido más tiempo que los árboles</item>
+        <item>Un día en Venus es más largo que un año en Venus</item>
     </string-array>
+
 
     <!--Género-->
     <string-array name="genders">
@@ -161,15 +164,59 @@
 
     <!-- Educación -->
     <string-array name="education">
-        <item>Sin estudios</item>
-        <item>Educación primaria</item>
-        <item>Educación secundaria</item>
-        <item>Bachillerato</item>
-        <item>Formación profesional</item>
-        <item>Grado universitario</item>
-        <item>Máster</item>
-        <item>Doctorado</item>
+        <item>Contabilidad</item>
+        <item>Agricultura</item>
+        <item>Ciencias Animales</item>
+        <item>Arquitectura</item>
+        <item>Arte</item>
+        <item>Bioquímica</item>
+        <item>Biología</item>
+        <item>Administración de Empresas</item>
+        <item>Ingeniería Química</item>
+        <item>Química</item>
+        <item>Ingeniería Civil</item>
+        <item>Ciencias de la Comunicación</item>
+        <item>Ciencias de la Computación</item>
+        <item>Criminología</item>
+        <item>Economía</item>
+        <item>Educación</item>
+        <item>Ingeniería Eléctrica</item>
+        <item>Inglés</item>
+        <item>Ciencias Ambientales</item>
+        <item>Finanzas</item>
+        <item>Bellas Artes</item>
+        <item>Geografía</item>
+        <item>Geología</item>
+        <item>Historia</item>
+        <item>Gestión Hotelera</item>
+        <item>Recursos Humanos</item>
+        <item>Ingeniería Industrial</item>
+        <item>Sistemas de Información</item>
+        <item>Diseño de Interiores</item>
+        <item>Relaciones Internacionales</item>
+        <item>Periodismo</item>
+        <item>Derecho</item>
+        <item>Lingüística</item>
+        <item>Marketing</item>
+        <item>Matemáticas</item>
+        <item>Medicina</item>
+        <item>Ingeniería Mecánica</item>
+        <item>Enfermería</item>
+        <item>Optometría</item>
+        <item>Farmacia</item>
+        <item>Filosofía</item>
+        <item>Física</item>
+        <item>Ciencias Políticas</item>
+        <item>Psicología</item>
+        <item>Relaciones Públicas</item>
+        <item>Radiología</item>
+        <item>Ciencias Sociales</item>
+        <item>Sociología</item>
+        <item>Ingeniería de Telecomunicaciones</item>
+        <item>Veterinaria</item>
+        <item>Zoología</item>
     </string-array>
+
 
     <!-- Tipo de personalidad -->
     <string-array name="personality_type">
@@ -187,6 +234,7 @@
         <item>Pez</item>
         <item>Otro</item>
     </string-array>
+
 
     <!-- Beber -->
     <string-array name="drinks">

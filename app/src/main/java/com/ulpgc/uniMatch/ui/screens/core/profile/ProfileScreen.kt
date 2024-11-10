@@ -45,13 +45,24 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.enum.Education
+import com.ulpgc.uniMatch.data.domain.enum.Facts
 import com.ulpgc.uniMatch.data.domain.enum.Gender
 import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
+import com.ulpgc.uniMatch.data.domain.enum.Interests
 import com.ulpgc.uniMatch.data.domain.enum.Jobs
+import com.ulpgc.uniMatch.data.domain.enum.Personality
+import com.ulpgc.uniMatch.data.domain.enum.Pets
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.enum.educationFromStringToEnum
+import com.ulpgc.uniMatch.data.domain.enum.factFromStringToEnum
+import com.ulpgc.uniMatch.data.domain.enum.fromEnumToString
+import com.ulpgc.uniMatch.data.domain.enum.fromStringToEnum
+import com.ulpgc.uniMatch.data.domain.enum.jobFromStringToEnum
+import com.ulpgc.uniMatch.data.domain.enum.personalitFromStringToEnum
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
 import com.ulpgc.uniMatch.ui.components.profile.LegalSection
@@ -86,6 +97,8 @@ fun ProfileScreen(
 
         var aboutMeText by remember { mutableStateOf(profile.aboutMe ?: "") }
 
+        Log.i("ProfileScreen", "Profile: $profile")
+
         val horoscopeMap = context.resources.getStringArray(R.array.horoscope).mapIndexed { index, name ->
             Horoscope.entries.getOrNull(index) to name
         }.toMap()
@@ -102,10 +115,6 @@ fun ProfileScreen(
             SexualOrientation.entries[index] to name
         }.toMap()
 
-        val jobMap = context.resources.getStringArray(R.array.jobs).mapIndexed { index, name ->
-            Jobs.entries.getOrNull(index) to name
-        }.toMap()
-
         val religionMap = context.resources.getStringArray(R.array.religion).mapIndexed { index, name ->
             Religion.entries.getOrNull(index) to name
         }.toMap()
@@ -114,13 +123,40 @@ fun ProfileScreen(
             Habits.entries.getOrNull(index) to name
         }.toMap()
 
-        val interestsMapping = context.resources.getStringArray(R.array.interests).toList()
-        val profileInterests = profile.interests.mapNotNull { interest ->
-            val index = profile.interests.indexOf(interest)
-            if (index >= 0 && index < interestsMapping.size) {
-                interestsMapping[index]
-            } else null
+        val jobsMap = context.resources.getStringArray(R.array.jobs).mapIndexed { index, name ->
+            Jobs.entries.getOrNull(index) to name
+        }.toMap()
+
+        val petsMap = context.resources.getStringArray(R.array.pets).mapIndexed { index, name ->
+            Pets.entries.getOrNull(index) to name
+        }.toMap()
+
+        val personalityMap = context.resources.getStringArray(R.array.personality_type).mapIndexed { index, name ->
+            Personality.entries.getOrNull(index) to name
+        }.toMap()
+
+        val educationMap = context.resources.getStringArray(R.array.education).mapIndexed { index, name ->
+            Education.entries.getOrNull(index) to name
+        }.toMap()
+
+        val factsMap = context.resources.getStringArray(R.array.facts).mapIndexed { index, name ->
+            Facts.entries.getOrNull(index) to name
+        }.toMap()
+
+        val interestsMap = context.resources.getStringArray(R.array.interests).mapIndexed { index, name ->
+            Interests.entries.getOrNull(index) to name
+        }.toMap()
+
+        var profileInterests = interestsMap.mapNotNull { entry ->
+            if (profile.interests.contains(fromEnumToString(entry.key))) {
+                entry.value
+            } else {
+                null
+            }
         }
+
+
+
 
         Column(
             modifier = Modifier
@@ -220,14 +256,17 @@ fun ProfileScreen(
                 modifier = Modifier.align(Alignment.Start)
             )
 
-            profile.fact?.let {
-                DropdownMenu(
-                    items = context.resources.getStringArray(R.array.funny_questions).toList(),
-                    selectedItem = it,
-                    onItemSelected = { newFact -> profile.fact = newFact },
-                    includeNullOption = true
-                )
-            }
+            DropdownMenu(
+                items = factsMap.values.toList(),
+                selectedItem = factsMap[factFromStringToEnum(profile.fact)],
+                onItemSelected = { newFact ->
+                    val newFact = factsMap.entries.find { it.value == newFact }?.key
+                    if (newFact != null) {
+                        profile.fact = fromEnumToString(newFact)
+                    }
+                },
+                includeNullOption = true
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -303,13 +342,10 @@ fun ProfileScreen(
 
             ProfileDropdownField(
                 label = stringResource(R.string.job),
-                options = jobMap.values.toList(),
-                selectedOption = jobMap[profile.job],
+                options = jobsMap.values.toList(),
+                selectedOption = jobsMap[jobFromStringToEnum(profile.job)],
                 onEditField = { selectedOption ->
-                    var jobOption = jobMap.entries.find { it.value == selectedOption }?.key
-                    if (jobOption != null) {
-                        profile.job = jobOption
-                    }
+                    profile.job = selectedOption
                 },
                 includeNullOption = true
             )
@@ -334,8 +370,8 @@ fun ProfileScreen(
                 title = stringResource(R.string.more_about_me),
                 rowTitles = listOf(
                     "horoscope" to horoscopeMap[profile.horoscope],
-                    "education" to profile.education,
-                    "personality_type" to profile.personalityType
+                    "education" to educationMap[educationFromStringToEnum(profile.education)],
+                    "personality_type" to personalityMap[personalitFromStringToEnum(profile.personalityType)]
                 ),
                 onSelectedItemChange = { field, selectedOption ->
                     when (field) {
@@ -345,8 +381,19 @@ fun ProfileScreen(
                                 profile.horoscope = horoscopeOption
                             }
                         }
-                        "education" -> profile.education = selectedOption
-                        "personality_type" -> profile.personalityType = selectedOption
+                        "education" -> {
+
+                            var educationOption = educationMap.entries.find { it.value == selectedOption }?.key
+                            if (educationOption != null) {
+                                profile.education = fromEnumToString(educationOption)
+                            }
+                        }
+                        "personality_type" -> {
+                            var personalityOption = personalityMap.entries.find { it.value == selectedOption }?.key
+                            if (personalityOption != null) {
+                                profile.personalityType = fromEnumToString(personalityOption)
+                            }
+                        }
                         else -> println("Campo desconocido: $field")
                     }
                 }
@@ -357,7 +404,7 @@ fun ProfileScreen(
             ProfileSection(
                 title = stringResource(R.string.lifestyle),
                 rowTitles = listOf(
-                    "pets" to profile.pets,
+                    "pets" to petsMap[fromStringToEnum(profile.pets)],
                     "drinks" to habitsMap[profile.drinks],
                     "smokes" to habitsMap[profile.smokes],
                     "sports" to habitsMap[profile.doesSports],
@@ -365,7 +412,12 @@ fun ProfileScreen(
                 ),
                 onSelectedItemChange = { field, selectedOption ->
                     when (field) {
-                        "pets" -> profile.pets = selectedOption
+                        "pets" -> {
+                            var petsOption = petsMap.entries.find { it.value == selectedOption }?.key
+                            if (petsOption != null) {
+                                profile.pets = fromEnumToString(petsOption)
+                            }
+                        }
                         "drinks" -> profile.drinks = habitsMap.entries.find { it.value == selectedOption }?.key
                         "smokes" -> profile.smokes = habitsMap.entries.find { it.value == selectedOption }?.key
                         "sports" -> profile.doesSports = habitsMap.entries.find { it.value == selectedOption }?.key
@@ -397,6 +449,4 @@ fun ProfileScreen(
             Text(stringResource(R.string.loading_error))
         }
     }
-
-
 }

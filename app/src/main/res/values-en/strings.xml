@@ -113,12 +113,15 @@
     <string name="block">Block</string>
 
     <!--Funny questions-->
-    <string-array name="funny_questions">
-        <item>I once read for a whole day!</item>
-        <item>I once traveled for a whole day!</item>
-        <item>I once cooked for a whole day!</item>
-        <item>I once gamed for a whole day!</item>
+    <string-array name="facts">
+        <item>The Earth is not a perfect sphere</item>
+        <item>Light travels faster than sound</item>
+        <item>Octopuses have three hearts</item>
+        <item>Water can boil and freeze at the same time</item>
+        <item>Sharks have been around longer than trees</item>
+        <item>A day on Venus is longer than a year on Venus</item>
     </string-array>
+
 
     <!--Gender-->
     <string-array name="genders">
@@ -159,17 +162,60 @@
         <item>Pisces</item>
     </string-array>
 
-    <!--Education-->
     <string-array name="education">
-        <item>No education</item>
-        <item>Primary education</item>
-        <item>Secondary education</item>
-        <item>High school diploma</item>
-        <item>Vocational training</item>
-        <item>Undergraduate degree</item>
-        <item>Master\'s degree</item>
-        <item>Doctorate</item>
+        <item>Accounting</item>
+        <item>Agriculture</item>
+        <item>Animal Science</item>
+        <item>Architecture</item>
+        <item>Art</item>
+        <item>Biochemistry</item>
+        <item>Biology</item>
+        <item>Business Administration</item>
+        <item>Chemical Engineering</item>
+        <item>Chemistry</item>
+        <item>Civil Engineering</item>
+        <item>Communication Studies</item>
+        <item>Computer Science</item>
+        <item>Criminology</item>
+        <item>Economics</item>
+        <item>Education</item>
+        <item>Electrical Engineering</item>
+        <item>English</item>
+        <item>Environmental Science</item>
+        <item>Finance</item>
+        <item>Fine Arts</item>
+        <item>Geography</item>
+        <item>Geology</item>
+        <item>History</item>
+        <item>Hospitality Management</item>
+        <item>Human Resources</item>
+        <item>Industrial Engineering</item>
+        <item>Information Systems</item>
+        <item>Interior Design</item>
+        <item>International Relations</item>
+        <item>Journalism</item>
+        <item>Law</item>
+        <item>Linguistics</item>
+        <item>Marketing</item>
+        <item>Mathematics</item>
+        <item>Medicine</item>
+        <item>Mechanical Engineering</item>
+        <item>Nursing</item>
+        <item>Optometry</item>
+        <item>Pharmacy</item>
+        <item>Philosophy</item>
+        <item>Physics</item>
+        <item>Political Science</item>
+        <item>Psychology</item>
+        <item>Public Relations</item>
+        <item>Radiology</item>
+        <item>Social Sciences</item>
+        <item>Sociology</item>
+        <item>Telecommunications Engineering</item>
+        <item>Veterinary</item>
+        <item>Zoology</item>
     </string-array>
+
 
     <!--Personality type-->
     <string-array name="personality_type">
@@ -231,6 +277,7 @@
         <item>Agnosticism</item>
         <item>Other</item>
     </string-array>
+
 
     <!--Interests-->
     <string-array name="interests">

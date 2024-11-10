@@ -3,7 +3,6 @@ package com.ulpgc.uniMatch.data.domain.models
 import com.ulpgc.uniMatch.data.domain.enum.Gender
 import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
-import com.ulpgc.uniMatch.data.domain.enum.Jobs
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
@@ -26,19 +25,19 @@ data class Profile(
     var preferredImage: String = wall.firstOrNull() ?: "",
     var maxDistance: Int = 50,
     var ageRange: Pair<Int, Int> = 18 to 100,
-    var horoscope: Horoscope? = null,
-    var height: Int? = null,
-    var weight: Int? = null,
-    var job: Jobs? = null,
-    var education: String? = null,
-    var personalityType: String? = null,
-    var pets: String? = null,
-    var drinks: Habits? = null,
-    var smokes: Habits? = null,
-    var doesSports: Habits? = null,
-    var valuesAndBeliefs: Religion? = null,
-    var genderPriority: Gender? = null,
-    var fact: String? = null
+    var horoscope: Horoscope?,
+    var height: Int?,
+    var weight: Int?,
+    var job: String?,
+    var education: String?,
+    var personalityType: String?,
+    var pets: String?,
+    var drinks: Habits?,
+    var smokes: Habits?,
+    var doesSports: Habits?,
+    var valuesAndBeliefs: Religion?,
+    var genderPriority: Gender?,
+    var fact: String?
 ) {
 
 }
