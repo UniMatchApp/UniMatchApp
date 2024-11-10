@@ -18,7 +18,7 @@ object ProfileMock {
     private val educationLevels = listOf("no education", "primary education", "secondary education", "high School diploma", "vocational training", "undergraduate degree")
     private val personalityTypes = listOf("introverted", "extroverted", "ambiverted")
     private val petPreferences = listOf("dog", "cat", "rodent", "fish")
-    private val interests = listOf("music", "sports", "reading", "cooking", "traveling", "movies", "photography")
+    private val interests = listOf("music", "sports", "reading", "travel", "movies", "photography")
     private val imageUrls = listOf(
         "https://imagenes2.fotos.europapress.es/preview/5309176.jpg?s=1000",
         "https://www.eii.ulpgc.es/sites/default/files/styles/height/public/team/IMG-20230602-WA0007-B.jpg?itok=Xwradmzk",
@@ -41,7 +41,7 @@ object ProfileMock {
             sexualOrientation = SexualOrientation.entries.toTypedArray().random(),
             relationshipType = RelationshipType.entries.toTypedArray().random(),
             birthday = Date(),
-            interests = List(Random.nextInt(1, 8)) { interests.random() },
+            interests = List(Random.nextInt(1, 8)) { interests.random() }.distinct(),
             wall = imageUrls.shuffled().take(Random.nextInt(3, 6)),
             preferredImage = imageUrls.random(),
             maxDistance = Random.nextInt(10, 100),
@@ -89,7 +89,7 @@ object ProfileMock {
                 sexualOrientation = SexualOrientation.entries.toTypedArray().random(),
                 relationshipType = RelationshipType.entries.toTypedArray().random(),
                 birthday = Date(),
-                interests = List(Random.nextInt(1, 8)) { interests.random() },
+                interests = List(Random.nextInt(1, 8)) { interests.random() }.distinct(),
                 wall = images[index],
                 preferredImage = images[index].first(),
                 maxDistance = Random.nextInt(10, 100),

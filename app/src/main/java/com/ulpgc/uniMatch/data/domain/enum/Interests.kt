@@ -22,12 +22,12 @@ fun interestFromStringToEnum(interest: String?): Interests? {
     if (interest.isNullOrBlank()) return null
 
     return try {
-        Interests.valueOf(interest.uppercase())
+        Interests.valueOf(interest.uppercase().replace(" ", "_"))
     } catch (e: IllegalArgumentException) {
         null
     }
 }
 
-fun fromEnumToString(interest: Interests?): String? {
-    return interest?.name?.lowercase()
+fun fromEnumToString(interest: Interests?): String {
+    return interest?.name?.lowercase()?.replace("_", " ")!!
 }

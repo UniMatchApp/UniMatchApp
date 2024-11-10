@@ -39,7 +39,6 @@ fun InterestGrid(
     ) {
         interests.forEach { interest ->
             val isSelected = selectedInterests.contains(interest)
-
             Box(
                 modifier = Modifier
                     .background(

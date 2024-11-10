@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,6 +50,7 @@ import com.ulpgc.uniMatch.data.domain.enum.Facts
 import com.ulpgc.uniMatch.data.domain.enum.Gender
 import com.ulpgc.uniMatch.data.domain.enum.Habits
 import com.ulpgc.uniMatch.data.domain.enum.Horoscope
+import com.ulpgc.uniMatch.data.domain.enum.Interests
 import com.ulpgc.uniMatch.data.domain.enum.Jobs
 import com.ulpgc.uniMatch.data.domain.enum.Personality
 import com.ulpgc.uniMatch.data.domain.enum.Pets
@@ -140,6 +142,20 @@ fun ProfileScreen(
         val factsMap = context.resources.getStringArray(R.array.facts).mapIndexed { index, name ->
             Facts.entries.getOrNull(index) to name
         }.toMap()
+
+        val interestsMap = context.resources.getStringArray(R.array.interests).mapIndexed { index, name ->
+            Interests.entries.getOrNull(index) to name
+        }.toMap()
+
+        var profileInterests = interestsMap.mapNotNull { entry ->
+            if (profile.interests.contains(fromEnumToString(entry.key))) {
+                entry.value
+            } else {
+                null
+            }
+        }
+
+
 
 
         Column(
@@ -260,18 +276,18 @@ fun ProfileScreen(
                 modifier = Modifier.align(Alignment.Start)
             )
 
-//            Box(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .clickable { profile.let { onEditInterestsClick(it.profileId) } }
-//                    .border(width = 1.dp, color = Color.Gray)
-//                    .padding(16.dp)
-//            ) {
-//                Text(
-//                    text = profileInterests.joinToString(", "),
-//                    modifier = Modifier.fillMaxWidth()
-//                )
-//            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { profile.let { onEditInterestsClick(it.profileId) } }
+                    .border(width = 1.dp, color = Color.Gray)
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = profileInterests.joinToString(", "),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
