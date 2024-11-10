@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.ui.screens.auth
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,41 +42,40 @@ import com.ulpgc.uniMatch.ui.screens.AuthRoutes
 @Composable
 fun VerifyCodeScreen(
     authViewModel: AuthViewModel,
-    navController: NavController,
+    errorViewModel: ErrorViewModel,
     userId: String,
-    onVerifyCode: () -> Unit
+    onVerificationSuccess: () -> Unit = {},
+    onBack: () -> Unit
 ) {
 
     val verifyCodeResult = authViewModel.verifyCodeResult.collectAsState()
-    var showErrorDialog by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableIntStateOf(0) }
+    val pleaseEnterValidCode = stringResource(R.string.please_enter_valid_code)
 
     LaunchedEffect (verifyCodeResult.value) {
         if (verifyCodeResult.value != null) {
             if (verifyCodeResult.value!!) {
-                onVerifyCode()
+                onVerificationSuccess()
             }
             authViewModel.resetVerificationResult()
         }
+    }
+
+    BackHandler {
+        onBack()
     }
 
     VerifyCodeContent(
         onCodeSubmit = { code ->
             Log.d("VerifyCodeScreen", "Code: $code")
             if (code.length != 6) {
-                errorMessage = R.string.please_enter_valid_code
-                showErrorDialog = true
+                errorViewModel.showError(pleaseEnterValidCode)
             } else if (code.any { !it.isDigit() }) {
-                errorMessage = R.string.please_enter_valid_code
-                showErrorDialog = true
+                errorViewModel.showError(pleaseEnterValidCode)
             } else {
                 authViewModel.verifyCode(userId, code)
             }
         },
-        onBack = { navController.navigate(AuthRoutes.FORGOT_PASSWORD) },
-        showErrorDialog = showErrorDialog,
-        errorMessage = errorMessage,
-        onDismissErrorDialog = { showErrorDialog = false }
+        onBack = { onBack() },
     )
 }
 
@@ -83,9 +83,6 @@ fun VerifyCodeScreen(
 fun VerifyCodeContent(
     onCodeSubmit: (String) -> Unit,
     onBack: () -> Unit,
-    showErrorDialog: Boolean,
-    errorMessage: Int,
-    onDismissErrorDialog: () -> Unit
 ) {
     var code by remember { mutableStateOf(List(6) { "" }) }
     val focusRequesters = List(6) { FocusRequester() }
@@ -173,18 +170,5 @@ fun VerifyCodeContent(
         ) {
             Text(text = stringResource(R.string.back), fontSize = 16.sp)
         }
-    }
-
-    if (showErrorDialog) {
-        AlertDialog(
-            onDismissRequest = { onDismissErrorDialog() },
-            title = { Text("Error") },
-            text = { Text(stringResource(id = errorMessage)) },
-            confirmButton = {
-                Button(onClick = { onDismissErrorDialog() }) {
-                    Text("OK")
-                }
-            }
-        )
     }
 }

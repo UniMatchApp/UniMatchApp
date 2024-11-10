@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.screens.auth.login
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,20 +37,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.ui.components.ButtonComponent
 import com.ulpgc.uniMatch.ui.components.InputField
 
 @Composable
 fun LoginScreen(
     authViewModel: AuthViewModel,
+    errorViewModel: ErrorViewModel,
     onBackClick: () -> Unit,
     onForgotPasswordClick: () -> Unit,
     onSignUpClick: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var showPasswordErrorDialog by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableIntStateOf(0) }
+    val passwordEmptyError = stringResource(R.string.password_empty_error)
+    val emailEmptyError = stringResource(R.string.email_empty_error)
+
+    BackHandler { onBackClick() }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -113,10 +118,12 @@ fun LoginScreen(
 
                 ButtonComponent(
                     onClick = {
-                        if (password.isEmpty()) {
-                            showPasswordErrorDialog = true
-                            errorMessage = R.string.password_empty_error
-                        } else {
+                        if (password.isEmpty() ) {
+                            errorViewModel.showError(passwordEmptyError)
+                        } else if (email.isEmpty()) {
+                            errorViewModel.showError(emailEmptyError)
+                        }
+                        else {
                             authViewModel.login(email, password)
                         }
                     },
@@ -156,19 +163,6 @@ fun LoginScreen(
                 style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.primary)
             )
         }
-    }
-
-    if (showPasswordErrorDialog) {
-        AlertDialog(
-            onDismissRequest = { showPasswordErrorDialog = false },
-            title = { Text(text = stringResource(R.string.login_failed)) },
-            text = { Text(text = stringResource(errorMessage)) },
-            confirmButton = {
-                TextButton(onClick = { showPasswordErrorDialog = false }) {
-                    Text(text = stringResource(R.string.ok))
-                }
-            }
-        )
     }
 }
 

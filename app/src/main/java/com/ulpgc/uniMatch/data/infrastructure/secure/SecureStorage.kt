@@ -23,13 +23,15 @@ class SecureStorage(context: Context) {
         userId: String,
         email: String,
         registrationDate: Date,
-        blockedUsers: List<String>
+        blockedUsers: List<String>,
+        registered: Boolean
     ) {
         with(sharedPreferences.edit()) {
             putString("userId", userId)
             putString("email", email)
             putString("registrationDate", DateFormat.getDateInstance().format(registrationDate))
             putStringSet("blockedUsers", blockedUsers.toSet())
+            putBoolean("registered", registered)
             apply()
         }
     }
@@ -40,6 +42,7 @@ class SecureStorage(context: Context) {
         val email = sharedPreferences.getString("email", null)
         val registrationDate = sharedPreferences.getString("registrationDate", null)
         val blockedUsers = sharedPreferences.getStringSet("blockedUsers", emptySet())
+        val registered = sharedPreferences.getBoolean("registered", false)
 
 
         return if (userId != null && email != null && registrationDate != null) {
@@ -47,7 +50,9 @@ class SecureStorage(context: Context) {
                 userId,
                 DateFormat.getDateInstance().parse(registrationDate),
                 email,
-                blockedUsers?.toList() ?: emptyList()
+                blockedUsers?.toList() ?: emptyList(),
+                registered
+
             )
         } else {
             null

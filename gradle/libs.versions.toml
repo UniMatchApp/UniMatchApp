@@ -26,6 +26,7 @@ protoliteWellKnownTypes = "18.0.0"
 constraintlayout = "2.1.4"
 playServicesLocation = "21.3.0"
 coroutinesPlayServices = "1.6.0"
+bcryptVersion = "0.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -60,6 +61,7 @@ protolite-well-known-types = { group = "com.google.firebase", name = "protolite-
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutinesPlayServices" }
+bcrypt = { module = "org.mindrot:jbcrypt", version.ref = "bcryptVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

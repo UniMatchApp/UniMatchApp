@@ -99,7 +99,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-
     // ImagePicker
     implementation("com.github.dhaval2404:imagepicker:2.1")
 
@@ -119,7 +118,11 @@ dependencies {
     // Secure Storage
     implementation(libs.androidx.security.crypto)
 
+    // Coroutines
     implementation(libs.kotlinx.coroutines.play.services)
+
+    // encryption
+    implementation(libs.bcrypt)
 }
 
 
