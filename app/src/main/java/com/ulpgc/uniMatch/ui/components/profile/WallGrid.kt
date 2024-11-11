@@ -2,6 +2,7 @@ package com.ulpgc.uniMatch.ui.components.profile
 
 import android.app.Activity
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -59,6 +60,7 @@ fun WallGrid(
             imageUri?.let {
                 if (profileImages.size < 9) {
                     profileImages.add(it.toString())
+                    Log.i("WallGrid", "Added image: $profileImages")
                     onAddImageClick(it.toString())
                 }
             }
@@ -96,6 +98,7 @@ fun WallGrid(
                         .clickable {
                             profileImages.remove(imageUri)
                             onDeleteImageClick(imageUri)
+                            Log.i("WallGrid", "Deleted image: $profileImages")
                         }
                         .padding(4.dp)
                 ) {

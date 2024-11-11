@@ -8,17 +8,3 @@ enum class Pets {
     FISH,
     OTHER
 }
-
-fun fromStringToEnum(pet: String?): Pets? {
-    if (pet.isNullOrBlank()) return null
-
-    return try {
-        Pets.valueOf(pet.uppercase())
-    } catch (e: IllegalArgumentException) {
-        null
-    }
-}
-
-fun fromEnumToString(pet: Pets?): String? {
-    return pet?.name?.lowercase()
-}

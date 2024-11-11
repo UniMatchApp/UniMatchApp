@@ -21,10 +21,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enum.Interests
-import com.ulpgc.uniMatch.data.domain.enum.fromEnumToString
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.profile.InterestGrid
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ProfileSettingsTopBar
+import com.ulpgc.uniMatch.ui.screens.utils.enumToString
+import com.ulpgc.uniMatch.ui.screens.utils.stringToEnum
 
 
 @Composable
@@ -55,7 +56,7 @@ fun ProfileInterests(
         }.toMap()
 
         var profileInterests = interestsMap.mapNotNull { entry ->
-            if (profile.interests.contains(fromEnumToString(entry.key))) {
+            if (profile.interests.contains(enumToString(entry.key))) {
                 entry.value
             } else {
                 null
@@ -78,9 +79,9 @@ fun ProfileInterests(
                 Log.i("ProfileInterests", "key: $key")
                 if (key != null) {
                     if (isAdded) {
-                        profileViewModel.addInterest(fromEnumToString(key))
+                        enumToString(key)?.let { profileViewModel.addInterest(it) }
                     } else {
-                        profileViewModel.removeInterest(fromEnumToString(key))
+                        enumToString(key)?.let { profileViewModel.removeInterest(it) }
                     }
                 }
             }

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enum.Gender
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
 
@@ -45,12 +46,13 @@ fun PreferencesScreen(
     var relationshipType by remember { mutableStateOf(RelationshipType.FRIENDSHIP) }
 
     val context = LocalContext.current
-    val relationshipTypeMap = context.resources.getStringArray(R.array.relationship_type).mapIndexed { index, name ->
-        RelationshipType.values().getOrNull(index) to name
-    }.toMap()
 
     val genderMap = context.resources.getStringArray(R.array.genders).mapIndexed { index, name ->
-        Gender.values().getOrNull(index) to name
+        Gender.entries[index] to name
+    }.toMap()
+
+    val relationshipTypeMap = context.resources.getStringArray(R.array.relationship_type).mapIndexed { index, name ->
+        RelationshipType.entries[index] to name
     }.toMap()
 
     LaunchedEffect(profile) {
@@ -112,14 +114,12 @@ fun PreferencesScreen(
                 }
 
                 DropdownMenu(
-                    items = Gender.entries.map { it.name },
-                    selectedItem = genderPriority?.name,
+                    items = genderMap.values.toList(),
+                    selectedItem = genderMap[genderPriority],
                     onItemSelected = { selectedGender ->
-
-                        genderPriority = if (selectedGender != null) {
-                            Gender.valueOf(selectedGender)
-                        } else {
-                            null
+                        var genderOption = genderMap.entries.find { it.value == selectedGender }?.key
+                        if (genderOption != null) {
+                            genderPriority = genderOption
                         }
 
                         profileViewModel.updateGenderPriority(genderPriority)
@@ -178,11 +178,13 @@ fun PreferencesScreen(
                     )
 
                     DropdownMenu(
-                        items = RelationshipType.entries.map { it.name },
-                        selectedItem = it.name,
+                        items = relationshipTypeMap.values.toList(),
+                        selectedItem = relationshipTypeMap[it],
                         onItemSelected = { selectedRelationship ->
-                            if (selectedRelationship != null) {
-                                relationshipType = RelationshipType.valueOf(selectedRelationship)
+
+                            var relationshipOption = relationshipTypeMap.entries.find { it.value == selectedRelationship }?.key
+                            if (relationshipOption != null) {
+                                relationshipType = relationshipOption
                                 profileViewModel.updateRelationshipType(relationshipType)
                             }
                         }

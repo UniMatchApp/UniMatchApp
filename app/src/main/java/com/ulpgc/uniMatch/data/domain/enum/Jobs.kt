@@ -24,16 +24,3 @@ enum class Jobs {
     OTHER
 }
 
-fun jobFromStringToEnum(job: String?): Jobs? {
-    if (job.isNullOrBlank()) return null
-
-    return try {
-        Jobs.valueOf(job.uppercase())
-    } catch (e: IllegalArgumentException) {
-        null
-    }
-}
-
-fun fromEnumToString(job: Jobs?): String? {
-    return job?.name
-}

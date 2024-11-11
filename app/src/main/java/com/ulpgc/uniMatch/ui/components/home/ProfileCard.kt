@@ -53,13 +53,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.enum.Interests
 import com.ulpgc.uniMatch.data.domain.models.Profile
+import com.ulpgc.uniMatch.ui.screens.utils.enumToString
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -97,6 +100,20 @@ fun ProfileCard(
 
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val clickAreaWidth = screenWidth / 2
+
+    val context = LocalContext.current
+
+    val interestsMap = context.resources.getStringArray(R.array.interests).mapIndexed { index, name ->
+        Interests.entries.getOrNull(index) to name
+    }.toMap()
+
+    var profileInterests = interestsMap.mapNotNull { entry ->
+        if (profile.interests.contains(enumToString(entry.key))) {
+            entry.value
+        } else {
+            null
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -285,7 +302,7 @@ fun ProfileCard(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
                 ) {
-                    profile.interests.forEachIndexed { index, interest ->
+                    profileInterests.forEachIndexed { index, interest ->
                         Box(
                             modifier = Modifier
                                 .background(

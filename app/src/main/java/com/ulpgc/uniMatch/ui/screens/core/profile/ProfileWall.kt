@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.ui.screens.core.profile
 
 
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
