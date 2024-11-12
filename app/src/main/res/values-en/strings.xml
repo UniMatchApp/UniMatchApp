@@ -371,6 +371,10 @@
         <item>Persistent messages</item>
     </string-array>
 
+    <string-array name="details_options_other">
+        <item>Other problem</item>
+    </string-array>
+
     <!--NOTIFICATIONS-->
     <string name="notifications_title">Notifications</string>
     <string name="delete_all_notifications">Delete All Notifications</string>

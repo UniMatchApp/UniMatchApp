@@ -174,11 +174,12 @@ fun ReasonScreen(onNext: (String) -> Unit, onDismiss: () -> Unit) {
 @Composable
 fun DetailsScreen(reason: String, onNext: (String) -> Unit, onBack: () -> Unit) {
     val context = LocalContext.current
+    val reasons = context.resources.getStringArray(R.array.report_reasons)
     val detailsOptions = when (reason) {
-        "Spam" -> context.resources.getStringArray(R.array.details_options_spam)
-        "Inappropriate Content" -> context.resources.getStringArray(R.array.details_options_inappropriate_content)
-        "Harassment" -> context.resources.getStringArray(R.array.details_options_harassment)
-        "Other" -> context.resources.getStringArray(R.array.details_options_other)
+        reasons[0] -> context.resources.getStringArray(R.array.details_options_spam)
+        reasons[1] -> context.resources.getStringArray(R.array.details_options_inappropriate_content)
+        reasons[2] -> context.resources.getStringArray(R.array.details_options_harassment)
+        reasons[3] -> context.resources.getStringArray(R.array.details_options_other)
         else -> emptyArray()
     }
 
@@ -317,9 +318,9 @@ fun ReportProgressBar(currentStep: Int) {
 
                     Text(
                         when (index) {
-                            0 -> "Razón"
-                            1 -> "Detalles"
-                            2 -> "Enviar"
+                            0 -> stringResource(R.string.reason_step)
+                            1 -> stringResource(R.string.details_step)
+                            2 -> stringResource(R.string.send_step)
                             else -> ""
                         },
                         color = if (currentStep == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
