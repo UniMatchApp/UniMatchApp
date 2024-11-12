@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.components.home
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -124,6 +125,7 @@ fun ProfileCard(
 
                         if (kotlin.math.abs(accumulatedDrag) > swipeThreshold) {
                             currentImageIndex = 0
+                            Log.i("ProfileCard", "Swipe anywhere from drag")
                             if (isLike) onSwipeRight() else onSwipeLeft()
                             isTracking = false
                             accumulatedDrag = 0f
@@ -314,7 +316,11 @@ fun ProfileCard(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = { currentImageIndex=0; onSwipeLeft() }) {
+                    IconButton(onClick = {
+                        currentImageIndex=0;
+                        Log.i("ProfileCard", "Swipe left from button")
+                        onSwipeLeft()
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Close,
                             contentDescription = stringResource(R.string.close),
@@ -334,7 +340,10 @@ fun ProfileCard(
                         )
                     }
 
-                    IconButton(onClick = { currentImageIndex=0; onSwipeRight() }) {
+                    IconButton(onClick = {
+                        currentImageIndex=0;
+                        Log.i("ProfileCard", "Swipe right from button")
+                        onSwipeRight() }) {
                         Icon(
                             imageVector = Icons.Filled.Favorite,
                             contentDescription = stringResource(R.string.like),
