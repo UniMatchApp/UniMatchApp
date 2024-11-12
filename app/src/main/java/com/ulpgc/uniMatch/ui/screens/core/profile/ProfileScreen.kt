@@ -57,18 +57,14 @@ import com.ulpgc.uniMatch.data.domain.enum.Pets
 import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enum.Religion
 import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
-import com.ulpgc.uniMatch.data.domain.enum.educationFromStringToEnum
-import com.ulpgc.uniMatch.data.domain.enum.factFromStringToEnum
-import com.ulpgc.uniMatch.data.domain.enum.fromEnumToString
-import com.ulpgc.uniMatch.data.domain.enum.fromStringToEnum
-import com.ulpgc.uniMatch.data.domain.enum.jobFromStringToEnum
-import com.ulpgc.uniMatch.data.domain.enum.personalitFromStringToEnum
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
 import com.ulpgc.uniMatch.ui.components.profile.LegalSection
 import com.ulpgc.uniMatch.ui.components.profile.ProfileDropdownField
 import com.ulpgc.uniMatch.ui.components.profile.ProfileInputField
 import com.ulpgc.uniMatch.ui.components.profile.ProfileSection
+import com.ulpgc.uniMatch.ui.screens.utils.enumToString
+import com.ulpgc.uniMatch.ui.screens.utils.stringToEnum
 
 @Composable
 fun ProfileScreen(
@@ -148,15 +144,12 @@ fun ProfileScreen(
         }.toMap()
 
         var profileInterests = interestsMap.mapNotNull { entry ->
-            if (profile.interests.contains(fromEnumToString(entry.key))) {
+            if (profile.interests.contains(enumToString(entry.key))) {
                 entry.value
             } else {
                 null
             }
         }
-
-
-
 
         Column(
             modifier = Modifier
@@ -170,7 +163,7 @@ fun ProfileScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Gray, RoundedCornerShape(8.dp)),
+                    .background( Color.Transparent, RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Column(
@@ -181,8 +174,7 @@ fun ProfileScreen(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(200.dp)
-                            .background(Color.Gray, CircleShape),
+                            .size(200.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         val painter = rememberAsyncImagePainter(
@@ -235,7 +227,7 @@ fun ProfileScreen(
             Text(
                 text = stringResource(R.string.about_me),
                 style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.align(Alignment.Start)
             )
             OutlinedTextField(
@@ -252,17 +244,17 @@ fun ProfileScreen(
             Text(
                 text = stringResource(R.string.questions),
                 style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.align(Alignment.Start)
             )
 
             DropdownMenu(
                 items = factsMap.values.toList(),
-                selectedItem = factsMap[factFromStringToEnum(profile.fact)],
+                selectedItem = factsMap[stringToEnum<Facts>(profile.fact)],
                 onItemSelected = { newFact ->
                     val newFact = factsMap.entries.find { it.value == newFact }?.key
                     if (newFact != null) {
-                        profile.fact = fromEnumToString(newFact)
+                        profile.fact = enumToString(newFact)
                     }
                 },
                 includeNullOption = true
@@ -272,7 +264,7 @@ fun ProfileScreen(
             Text(
                 text = stringResource(R.string.interests),
                 style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.align(Alignment.Start)
             )
 
@@ -343,9 +335,12 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.job),
                 options = jobsMap.values.toList(),
-                selectedOption = jobsMap[jobFromStringToEnum(profile.job)],
+                selectedOption = jobsMap[stringToEnum<Jobs>(profile.job)],
                 onEditField = { selectedOption ->
-                    profile.job = selectedOption
+                    var selectedJobOption = jobsMap.entries.find { it.value == selectedOption }?.key
+                    if (selectedJobOption != null) {
+                        profile.job = enumToString(selectedJobOption)
+                    }
                 },
                 includeNullOption = true
             )
@@ -370,8 +365,8 @@ fun ProfileScreen(
                 title = stringResource(R.string.more_about_me),
                 rowTitles = listOf(
                     "horoscope" to horoscopeMap[profile.horoscope],
-                    "education" to educationMap[educationFromStringToEnum(profile.education)],
-                    "personality_type" to personalityMap[personalitFromStringToEnum(profile.personalityType)]
+                    "education" to educationMap[stringToEnum<Education>(profile.education)],
+                    "personality_type" to personalityMap[stringToEnum<Personality>(profile.personalityType)]
                 ),
                 onSelectedItemChange = { field, selectedOption ->
                     when (field) {
@@ -385,13 +380,13 @@ fun ProfileScreen(
 
                             var educationOption = educationMap.entries.find { it.value == selectedOption }?.key
                             if (educationOption != null) {
-                                profile.education = fromEnumToString(educationOption)
+                                profile.education = enumToString(educationOption)
                             }
                         }
                         "personality_type" -> {
                             var personalityOption = personalityMap.entries.find { it.value == selectedOption }?.key
                             if (personalityOption != null) {
-                                profile.personalityType = fromEnumToString(personalityOption)
+                                profile.personalityType = enumToString(personalityOption)
                             }
                         }
                         else -> println("Campo desconocido: $field")
@@ -404,7 +399,7 @@ fun ProfileScreen(
             ProfileSection(
                 title = stringResource(R.string.lifestyle),
                 rowTitles = listOf(
-                    "pets" to petsMap[fromStringToEnum(profile.pets)],
+                    "pets" to petsMap[stringToEnum<Pets>(profile.pets)],
                     "drinks" to habitsMap[profile.drinks],
                     "smokes" to habitsMap[profile.smokes],
                     "sports" to habitsMap[profile.doesSports],
@@ -415,7 +410,7 @@ fun ProfileScreen(
                         "pets" -> {
                             var petsOption = petsMap.entries.find { it.value == selectedOption }?.key
                             if (petsOption != null) {
-                                profile.pets = fromEnumToString(petsOption)
+                                profile.pets = enumToString(petsOption)
                             }
                         }
                         "drinks" -> profile.drinks = habitsMap.entries.find { it.value == selectedOption }?.key

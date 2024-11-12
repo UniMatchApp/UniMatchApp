@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.screens.core.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,8 +34,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @Composable
 fun ReportModal(
@@ -47,19 +50,23 @@ fun ReportModal(
     val navController = rememberNavController()
     var extraDetails by remember { mutableStateOf("") }
 
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentStep = currentBackStackEntry?.destination?.route?.let {
+        Log.i("ReportModal", "currentStep: $it")
+        getCurrentStep(it)
+    } ?: 0
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
             .clip(RoundedCornerShape(8.dp))
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            ReportProgressBar(currentStep = navController.currentBackStackEntry?.destination?.route?.let {
-                getCurrentStep(it)
-            } ?: 0)
+            ReportProgressBar(currentStep = currentStep)
 
             NavHost(navController = navController, startDestination = "reason") {
                 composable("reason") {
@@ -116,7 +123,8 @@ fun ReasonScreen(onNext: (String) -> Unit, onDismiss: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             stringResource(R.string.reason_step),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         reasons.forEach { reason ->
@@ -131,7 +139,8 @@ fun ReasonScreen(onNext: (String) -> Unit, onDismiss: () -> Unit) {
                 )
                 Text(
                     reason,
-                    modifier = Modifier.align(Alignment.CenterVertically)
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
@@ -154,7 +163,7 @@ fun ReasonScreen(onNext: (String) -> Unit, onDismiss: () -> Unit) {
             Button(
                 onClick = { if (selectedReason.isNotEmpty()) onNext(selectedReason) },
                 enabled = selectedReason.isNotEmpty(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                colors = ButtonDefaults.buttonColors(containerColor = MainColor)
             ) {
                 Text(stringResource(R.string.next), color = MaterialTheme.colorScheme.onPrimary)
             }
@@ -165,11 +174,12 @@ fun ReasonScreen(onNext: (String) -> Unit, onDismiss: () -> Unit) {
 @Composable
 fun DetailsScreen(reason: String, onNext: (String) -> Unit, onBack: () -> Unit) {
     val context = LocalContext.current
+    val reasons = context.resources.getStringArray(R.array.report_reasons)
     val detailsOptions = when (reason) {
-        "Spam" -> context.resources.getStringArray(R.array.details_options_spam)
-        "Inappropriate Content" -> context.resources.getStringArray(R.array.details_options_inappropriate_content)
-        "Harassment" -> context.resources.getStringArray(R.array.details_options_harassment)
-        "Other" -> context.resources.getStringArray(R.array.details_options_other)
+        reasons[0] -> context.resources.getStringArray(R.array.details_options_spam)
+        reasons[1] -> context.resources.getStringArray(R.array.details_options_inappropriate_content)
+        reasons[2] -> context.resources.getStringArray(R.array.details_options_harassment)
+        reasons[3] -> context.resources.getStringArray(R.array.details_options_other)
         else -> emptyArray()
     }
 
@@ -178,7 +188,8 @@ fun DetailsScreen(reason: String, onNext: (String) -> Unit, onBack: () -> Unit) 
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             stringResource(R.string.details_step),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         detailsOptions.forEach { detail ->
@@ -194,7 +205,8 @@ fun DetailsScreen(reason: String, onNext: (String) -> Unit, onBack: () -> Unit) 
                 )
                 Text(
                     detail,
-                    modifier = Modifier.align(Alignment.CenterVertically)
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
@@ -217,7 +229,7 @@ fun DetailsScreen(reason: String, onNext: (String) -> Unit, onBack: () -> Unit) 
             Button(
                 onClick = { if (selectedDetail.isNotEmpty()) onNext(selectedDetail) },
                 enabled = selectedDetail.isNotEmpty(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                colors = ButtonDefaults.buttonColors(containerColor = MainColor)
             ) {
                 Text(stringResource(R.string.next), color = MaterialTheme.colorScheme.onPrimary)
             }
@@ -233,7 +245,10 @@ fun SendScreen(
     onBack: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Text(stringResource(R.string.send_step), style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.send_step),
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
 
         TextField(
             value = extraDetails,
@@ -241,7 +256,8 @@ fun SendScreen(
             label = { Text(stringResource(R.string.extra_details_label)) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
+                .padding(top = 16.dp),
+
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -261,8 +277,8 @@ fun SendScreen(
 
             Button(onClick = {
                 onSubmit()
-            }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) {
-                Text(stringResource(R.string.send), color = MaterialTheme.colorScheme.onPrimary)
+            }, colors = ButtonDefaults.buttonColors(containerColor = MainColor)) {
+                Text(stringResource(R.string.send), color = MaterialTheme.colorScheme.primary)
             }
         }
     }
@@ -302,9 +318,9 @@ fun ReportProgressBar(currentStep: Int) {
 
                     Text(
                         when (index) {
-                            0 -> "Razón"
-                            1 -> "Detalles"
-                            2 -> "Enviar"
+                            0 -> stringResource(R.string.reason_step)
+                            1 -> stringResource(R.string.details_step)
+                            2 -> stringResource(R.string.send_step)
                             else -> ""
                         },
                         color = if (currentStep == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
@@ -320,6 +336,7 @@ fun ReportProgressBar(currentStep: Int) {
 }
 
 fun getCurrentStep(route: String?): Int {
+    Log.i("ReportModal", "getCurrentStep: $route")
     return when (route) {
         "reason" -> 0
         "details/{reason}" -> 1

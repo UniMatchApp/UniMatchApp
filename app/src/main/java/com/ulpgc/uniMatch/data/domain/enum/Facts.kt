@@ -9,17 +9,3 @@ enum class Facts {
     A_DAY_ON_VENUS_IS_LONGER_THAN_A_YEAR_ON_VENUS
 }
 
-fun factFromStringToEnum(fact: String?): Facts? {
-    if (fact.isNullOrBlank()) return null
-    return try {
-        // Convierte los espacios a guiones bajos para que coincida con el nombre en el enum
-        Facts.valueOf(fact.uppercase().replace(" ", "_"))
-    } catch (e: IllegalArgumentException) {
-        null
-    }
-}
-
-fun fromEnumToString(fact: Facts?): String? {
-    // Convierte los guiones bajos a espacios al transformar a String
-    return fact?.name?.lowercase()?.replace("_", " ")
-}

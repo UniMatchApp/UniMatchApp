@@ -72,7 +72,7 @@ fun ProfileInfoModal(
         Habits.values().getOrNull(index) to name
     }.toMap()
 
-    Log.i("ProfileInfoModal", "Profile: $profile")
+//    Log.i("ProfileInfoModal", "Profile: $profile")
 
     if (profile != null && !showReportModal) {
         Box(
