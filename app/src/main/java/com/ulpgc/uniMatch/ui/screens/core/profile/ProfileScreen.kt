@@ -151,7 +151,6 @@ fun ProfileScreen(
             }
         }
 
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -164,7 +163,7 @@ fun ProfileScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Gray, RoundedCornerShape(8.dp)),
+                    .background( Color.Transparent, RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Column(
@@ -228,7 +227,7 @@ fun ProfileScreen(
             Text(
                 text = stringResource(R.string.about_me),
                 style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.align(Alignment.Start)
             )
             OutlinedTextField(
@@ -245,7 +244,7 @@ fun ProfileScreen(
             Text(
                 text = stringResource(R.string.questions),
                 style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.align(Alignment.Start)
             )
 
@@ -265,7 +264,7 @@ fun ProfileScreen(
             Text(
                 text = stringResource(R.string.interests),
                 style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.align(Alignment.Start)
             )
 
