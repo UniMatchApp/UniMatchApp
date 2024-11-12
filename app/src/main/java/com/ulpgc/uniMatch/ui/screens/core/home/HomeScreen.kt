@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,18 +52,22 @@ fun HomeScreen(
             } else {
                 val profileToDisplay = matchingProfiles.first()
 
-                ProfileCard(
-                    profile = profileToDisplay,
-                    onSwipeLeft = {
-                        Log.i("HomeScreen", "Dislike profile: $profileToDisplay")
-                        homeViewModel.dislikeUser(userId, profileToDisplay.userId)
-                    },
-                    onSwipeRight = {
-                        Log.i("HomeScreen", "Like profile: $profileToDisplay")
-                        homeViewModel.likeUser(userId, profileToDisplay.userId)
-                    },
-                    onOpenProfile = { selectedProfile = profileToDisplay; isModalOpen = true }
-                )
+                profileToDisplay.let { profile ->
+                    key(profile.userId) {
+                        ProfileCard(
+                            profile = profile,
+                            onSwipeLeft = {
+                                Log.i("HomeScreen", "Dislike profile: $profile")
+                                homeViewModel.dislikeUser(userId, profile.userId)
+                            },
+                            onSwipeRight = {
+                                Log.i("HomeScreen", "Like profile: $profile")
+                                homeViewModel.likeUser(userId, profile.userId)
+                            },
+                            onOpenProfile = { selectedProfile = profile; isModalOpen = true }
+                        )
+                    }
+                }
             }
         }
 
