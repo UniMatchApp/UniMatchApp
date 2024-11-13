@@ -146,6 +146,7 @@ fun ProfileCard(
                             if (isLike) onSwipeRight() else onSwipeLeft()
                             isTracking = false
                             accumulatedDrag = 0f
+
                         }
                     }
                 )
@@ -360,7 +361,8 @@ fun ProfileCard(
                     IconButton(onClick = {
                         currentImageIndex=0;
                         Log.i("ProfileCard", "Swipe right from button")
-                        onSwipeRight() }) {
+                        onSwipeRight()
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Favorite,
                             contentDescription = stringResource(R.string.like),

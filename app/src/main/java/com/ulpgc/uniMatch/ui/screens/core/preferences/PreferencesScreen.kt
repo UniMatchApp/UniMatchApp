@@ -55,12 +55,21 @@ fun PreferencesScreen(
         RelationshipType.entries[index] to name
     }.toMap()
 
+    val minAge = 18f
+    val maxAge = 100f
+
+    var ageMin by remember { mutableStateOf(ageRange.first.toFloat()) }
+    var ageMax by remember { mutableStateOf(ageRange.second.toFloat()) }
+
+
     LaunchedEffect(profile) {
         profile?.let {
             maxDistance = it.maxDistance
             genderPriority = it.genderPriority
             ageRange = it.ageRange
             relationshipType = it.relationshipType
+            ageMin = ageRange.first.toFloat()
+            ageMax = ageRange.second.toFloat()
         }
     }
 
@@ -139,18 +148,14 @@ fun PreferencesScreen(
                 color = MaterialTheme.colorScheme.onBackground
             )
 
-            val minAge = 18f
-            val maxAge = 100f
-
-            val ageMin = ageRange.first.coerceIn(minAge.toInt(), maxAge.toInt()).toFloat()
-            val ageMax = ageRange.second.coerceIn(minAge.toInt(), maxAge.toInt()).toFloat()
+            ageRange = ageMin.toInt() to ageMax.toInt()
 
             RangeSlider(
                 value = ageMin..ageMax,
                 onValueChange = { newValue ->
-                    val min = newValue.start.toInt()
-                    val max = newValue.endInclusive.toInt()
-                    ageRange = min to max
+                    ageMin = newValue.start
+                    ageMax = newValue.endInclusive
+                    ageRange = ageMin.toInt() to ageMax.toInt()
                 },
                 valueRange = minAge..maxAge,
                 onValueChangeFinished = {
@@ -160,7 +165,7 @@ fun PreferencesScreen(
                     thumbColor = MaterialTheme.colorScheme.primary,
                     activeTrackColor = MaterialTheme.colorScheme.primary,
                     inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                ),
+                )
             )
             Spacer(modifier = Modifier.height(16.dp))
 
