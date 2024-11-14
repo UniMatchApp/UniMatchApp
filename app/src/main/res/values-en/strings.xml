@@ -5,6 +5,7 @@
     <string name="search">Search</string>
     <string name="chat">Chat</string>
     <string name="profile">Profile</string>
+    <string name="edit_profile">Edit Profile</string>
     <string name="notifications">Notifications</string>
     <string name="user_filters">User Filters</string>
 
@@ -75,6 +76,11 @@
     <string name="questions">Questions</string>
     <string name="select_image">Select Image</string>
     <string name="birthday">Birthday</string>
+    <string name="cookies_policy">Cookies Policy</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="session_data">Session data</string>
+    <string name="change_email">Change email</string>
+    <string name="change_password">Change password</string>
 
 
     <!--PREFERENCES SCREEN-->

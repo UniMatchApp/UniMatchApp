@@ -5,6 +5,7 @@
     <string name="search">Búsqueda</string>
     <string name="chat">Chat</string>
     <string name="profile">Perfil</string>
+    <string name="edit_profile">Editar Perfil</string>
     <string name="notifications">Notificaciones</string>
     <string name="user_filters">user filters</string>
 
@@ -75,6 +76,11 @@
     <string name="age">Edad</string>
     <string name="select_image">Seleccionar imagen</string>
     <string name="birthday">Cumpleaños</string>
+    <string name="cookies_policy">Política de cookies</string>
+    <string name="privacy_policy">Política de privacidad</string>
+    <string name="session_data">Datos de sesión</string>
+    <string name="change_email">Modificar correo electrónico</string>
+    <string name="change_password">Cambiar contraseña</string>
 
 
     <!--PREFERENCES SCREEN-->

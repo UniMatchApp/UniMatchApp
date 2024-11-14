@@ -71,14 +71,14 @@ fun ProfileWall(
 
 
 
-            Text(text = "Datos de sesión", style = MaterialTheme.typography.titleLarge)
+            Text(text = stringResource(R.string.session_data), style = MaterialTheme.typography.titleLarge)
             Button(
                 onClick = { /* Modificar correo electrónico */ },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
             ) {
-                Text("Modificar correo electrónico")
+                Text(stringResource(R.string.change_email))
             }
 
             Button(
@@ -87,7 +87,7 @@ fun ProfileWall(
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
             ) {
-                Text("Modificar contraseña")
+                Text(stringResource(R.string.change_password))
             }
         }
     } else {

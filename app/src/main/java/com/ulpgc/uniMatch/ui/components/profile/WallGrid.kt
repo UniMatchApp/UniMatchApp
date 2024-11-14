@@ -2,6 +2,7 @@ package com.ulpgc.uniMatch.ui.components.profile
 
 import android.app.Activity
 import android.net.Uri
+import android.util.DisplayMetrics
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,10 +13,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -34,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -68,13 +73,18 @@ fun WallGrid(
     }
 
     FlowRow(
-        modifier = Modifier.fillMaxWidth().padding(4.dp),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),  // Espaciado entre imágenes
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        val configuration = LocalConfiguration.current
+        val screenWidth = configuration.screenWidthDp - 48 // Se le resta el padding para que el width que pueda ocupar sea el maximo que puede (padding externo 32, componentes 16,
+        val imgWidth = screenWidth/3
+        Log.i("WallGrid", "Screen width: $screenWidth, Image width: $imgWidth")
         profileImages.forEach { imageUri ->
             Box(
-                modifier = Modifier.size(width = 100.dp, height = 180.dp)
+                modifier = Modifier
+                    .size(width = imgWidth.dp, height = 180.dp)
             ) {
                 Surface(
                     shape = RoundedCornerShape(16.dp),
@@ -116,7 +126,7 @@ fun WallGrid(
             repeat(9 - profileImages.size) {
                 Surface(
                     modifier = Modifier
-                        .size(100.dp, 180.dp)
+                        .size(imgWidth.dp, 180.dp)
                         .clickable { showDialog = true },
                     shape = RoundedCornerShape(16.dp),
                     color = Color.LightGray

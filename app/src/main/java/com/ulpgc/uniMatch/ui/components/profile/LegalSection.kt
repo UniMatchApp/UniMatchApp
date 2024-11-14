@@ -11,7 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.ulpgc.uniMatch.R
 
 @Composable
 fun LegalSection(
@@ -23,8 +25,8 @@ fun LegalSection(
             .fillMaxWidth()
             .background(Color.Transparent, shape = RoundedCornerShape(8.dp))
     ) {
-        LegalOptionButton("Política de cookies", onCookiesClick)
-        LegalOptionButton("Política de privacidad", onPrivacyClick)
+        LegalOptionButton(stringResource(R.string.cookies_policy), onCookiesClick)
+        LegalOptionButton(stringResource(R.string.privacy_policy), onPrivacyClick)
     }
 }
 
