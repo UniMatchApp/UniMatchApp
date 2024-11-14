@@ -42,8 +42,8 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.chats.MessageBubble
+import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatDetailTopBar
 import com.ulpgc.uniMatch.ui.theme.UniMatchTheme
-import com.ulpgc.uniMatch.ui.screens.core.topBars.MessageTopBar
 
 @Composable
 fun ChatDetailScreen(
@@ -66,9 +66,9 @@ fun ChatDetailScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         // Top Bar con la foto del usuario, nombre y flecha de retroceso
-        MessageTopBar(
+        ChatDetailTopBar(
             userName = recipientProfile?.name ?: "User",
-            onBackPressed = { navController.popBackStack() },
+            navController = navController,
             userImage = recipientProfile?.preferredImage ?: "R.drawable.ic_profile"
         )
 
