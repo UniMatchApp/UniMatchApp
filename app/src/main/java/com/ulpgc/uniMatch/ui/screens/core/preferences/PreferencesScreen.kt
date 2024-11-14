@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.screens.core.preferences
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -68,11 +69,14 @@ fun PreferencesScreen(
             genderPriority = it.genderPriority
             ageRange = it.ageRange
             relationshipType = it.relationshipType
-            ageMin = ageRange.first.toFloat()
-            ageMax = ageRange.second.toFloat()
-            ageRange = ageMin.toInt() to ageMax.toInt()
+            // Inicializa ageMin y ageMax solo una vez
+            ageMin = it.ageRange.first.toFloat()
+            ageMax = it.ageRange.second.toFloat()
         }
     }
+    Log.i("Prefereces", "Age range: $ageRange")
+    Log.i("Prefereces","Age min: $ageMin")
+    Log.i("Prefereces","Age max: $ageMax")
 
     Column(modifier = Modifier.padding(16.dp)) {
 
