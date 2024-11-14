@@ -1,6 +1,8 @@
 package com.ulpgc.uniMatch.ui.screens.core.home
 
 import android.util.Log
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -68,7 +70,14 @@ fun ReportModal(
         ) {
             ReportProgressBar(currentStep = currentStep)
 
-            NavHost(navController = navController, startDestination = "reason") {
+            NavHost(
+                navController = navController,
+                startDestination = "reason",
+                enterTransition = { EnterTransition.None },
+                exitTransition = { ExitTransition.None },
+                popEnterTransition = { EnterTransition.None },
+                popExitTransition = { ExitTransition.None }
+            ) {
                 composable("reason") {
                     ReasonScreen(
                         onNext = { reason ->
@@ -163,9 +172,15 @@ fun ReasonScreen(onNext: (String) -> Unit, onDismiss: () -> Unit) {
             Button(
                 onClick = { if (selectedReason.isNotEmpty()) onNext(selectedReason) },
                 enabled = selectedReason.isNotEmpty(),
-                colors = ButtonDefaults.buttonColors(containerColor = MainColor)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MainColor,
+                    disabledContainerColor = MainColor.copy(alpha = 0.5f) // opcional para un color de fondo más claro cuando está deshabilitado
+                )
             ) {
-                Text(stringResource(R.string.next), color = MaterialTheme.colorScheme.onPrimary)
+                Text(
+                    text = stringResource(R.string.next),
+                    color = if (selectedReason.isNotEmpty()) Color.White else MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     }
@@ -229,9 +244,15 @@ fun DetailsScreen(reason: String, onNext: (String) -> Unit, onBack: () -> Unit) 
             Button(
                 onClick = { if (selectedDetail.isNotEmpty()) onNext(selectedDetail) },
                 enabled = selectedDetail.isNotEmpty(),
-                colors = ButtonDefaults.buttonColors(containerColor = MainColor)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MainColor,
+                    disabledContainerColor = MainColor.copy(alpha = 0.5f) // opcional para un color de fondo más claro cuando está deshabilitado
+                )
             ) {
-                Text(stringResource(R.string.next), color = MaterialTheme.colorScheme.onPrimary)
+                Text(
+                    stringResource(R.string.next),
+                    color = if (selectedDetail.isNotEmpty()) Color.White else MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     }
@@ -278,7 +299,7 @@ fun SendScreen(
             Button(onClick = {
                 onSubmit()
             }, colors = ButtonDefaults.buttonColors(containerColor = MainColor)) {
-                Text(stringResource(R.string.send), color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.send), color = Color.White)
             }
         }
     }
