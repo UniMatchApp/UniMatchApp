@@ -52,7 +52,8 @@ fun HomeTopBar(navController: NavHostController) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_bell),
                     contentDescription = "Notifications",
-                    modifier = Modifier.size(AppSize.iconSize)
+                    modifier = Modifier.size(AppSize.iconSize),
+                    tint = Color.White
                 )
 
             }
@@ -60,7 +61,8 @@ fun HomeTopBar(navController: NavHostController) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_filter),
                     contentDescription = "Filter",
-                    modifier = Modifier.size(AppSize.iconSize)
+                    modifier = Modifier.size(AppSize.iconSize),
+                    tint = Color.White
                 )
             }
         },

@@ -22,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.ui.screens.CoreRoutes
 import com.ulpgc.uniMatch.ui.theme.AppSize
+import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
@@ -45,7 +46,7 @@ fun BottomNavigationBar(navController: NavController) {
 
         if (items.any { it.route == currentRoute }) {
             NavigationBar(
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = MainColor,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 items.forEach { item ->

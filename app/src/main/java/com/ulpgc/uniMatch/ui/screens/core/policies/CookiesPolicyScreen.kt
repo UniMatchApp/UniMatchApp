@@ -6,57 +6,52 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.ui.components.policies.TextSection
 import com.ulpgc.uniMatch.ui.screens.core.topBars.PoliciesTopBar
 
 @Composable
-fun CookiesPolicyScreen(
-) {
-
+fun CookiesPolicyScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-
-
-
         Text(
-            text = "Cookies Policy",
+            text = stringResource(id = R.string.cookies_policy_title),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
         TextSection(
-            title = "1. What Are Cookies?",
-            content = "Cookies are small files that are stored on your device when you visit a website. They help us remember your preferences and enhance your experience on our site."
+            title = stringResource(id = R.string.what_are_cookies_title),
+            content = stringResource(id = R.string.what_are_cookies_content)
         )
 
         TextSection(
-            title = "2. Types of Cookies We Use",
-            content = "We use both session and persistent cookies. Session cookies are deleted when you close the browser, while persistent cookies remain until you delete them or they expire."
+            title = stringResource(id = R.string.types_of_cookies_title),
+            content = stringResource(id = R.string.types_of_cookies_content)
         )
 
         TextSection(
-            title = "3. Why We Use Cookies",
-            content = "Cookies help us improve our services by tracking your preferences, allowing us to provide personalized content, and understanding how you interact with our website."
+            title = stringResource(id = R.string.why_we_use_cookies_title),
+            content = stringResource(id = R.string.why_we_use_cookies_content)
         )
 
         TextSection(
-            title = "4. Managing Cookies",
-            content = "You can control or delete cookies through your browser settings. However, disabling cookies may affect your experience on our site."
+            title = stringResource(id = R.string.managing_cookies_title),
+            content = stringResource(id = R.string.managing_cookies_content)
         )
 
         TextSection(
-            title = "5. Changes to This Policy",
-            content = "We may update our cookies policy periodically. Any changes will be posted on this page."
+            title = stringResource(id = R.string.changes_to_cookies_policy_title),
+            content = stringResource(id = R.string.changes_to_cookies_policy_content)
         )
     }
-
 }
-

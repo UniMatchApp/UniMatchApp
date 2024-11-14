@@ -6,17 +6,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.ui.components.policies.TextSection
 import com.ulpgc.uniMatch.ui.screens.core.topBars.PoliciesTopBar
 
 @Composable
-fun PrivacyPolicyScreen(
-) {
-
-
+fun PrivacyPolicyScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -24,42 +23,40 @@ fun PrivacyPolicyScreen(
             .verticalScroll(rememberScrollState())
     ) {
         Text(
-            text = "Privacy Policy",
+            text = stringResource(id = R.string.privacy_policy_title),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
         TextSection(
-            title = "1. Information Collection",
-            content = "We collect personal information that you provide to us directly, such as name, email address, and other relevant information when you create an account or use our services."
+            title = stringResource(id = R.string.information_collection_title),
+            content = stringResource(id = R.string.information_collection_content)
         )
 
         TextSection(
-            title = "2. Use of Information",
-            content = "We use the information collected to provide, improve, and personalize our services, as well as to communicate with you about updates and promotional offers."
+            title = stringResource(id = R.string.use_of_information_title),
+            content = stringResource(id = R.string.use_of_information_content)
         )
 
         TextSection(
-            title = "3. Sharing of Information",
-            content = "We may share your information with third parties only as necessary to provide our services or as required by law."
+            title = stringResource(id = R.string.sharing_of_information_title),
+            content = stringResource(id = R.string.sharing_of_information_content)
         )
 
         TextSection(
-            title = "4. Data Security",
-            content = "We implement security measures to protect your data. However, we cannot guarantee complete security of your information."
+            title = stringResource(id = R.string.data_security_title),
+            content = stringResource(id = R.string.data_security_content)
         )
 
         TextSection(
-            title = "5. User Rights",
-            content = "You have the right to access, modify, or delete your personal information by contacting us at support@example.com."
+            title = stringResource(id = R.string.user_rights_title),
+            content = stringResource(id = R.string.user_rights_content)
         )
 
         TextSection(
-            title = "6. Changes to This Policy",
-            content = "We may update our privacy policy from time to time. We will notify you of any significant changes."
+            title = stringResource(id = R.string.changes_to_policy_title),
+            content = stringResource(id = R.string.changes_to_policy_content)
         )
     }
 }
-
-

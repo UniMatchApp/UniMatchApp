@@ -396,6 +396,34 @@
     <string name="friend_request_sended">te ha enviado una solicitud de amistad</string>
 
 
+    <!-- POLICIES -->
+    <string name="privacy_policy_title">Política de Privacidad</string>
+    <string name="information_collection_title">1. Recopilación de Información</string>
+    <string name="information_collection_content">Recopilamos información personal que nos proporcionas directamente, como nombre, dirección de correo electrónico y otra información relevante cuando creas una cuenta o usas nuestros servicios.</string>
+    <string name="use_of_information_title">2. Uso de la Información</string>
+    <string name="use_of_information_content">Utilizamos la información recopilada para proporcionar, mejorar y personalizar nuestros servicios, así como para comunicarte sobre actualizaciones y ofertas promocionales.</string>
+    <string name="sharing_of_information_title">3. Compartir Información</string>
+    <string name="sharing_of_information_content">Podemos compartir tu información con terceros solo cuando sea necesario para brindar nuestros servicios o según lo requiera la ley.</string>
+    <string name="data_security_title">4. Seguridad de los Datos</string>
+    <string name="data_security_content">Implementamos medidas de seguridad para proteger tus datos. Sin embargo, no podemos garantizar la seguridad completa de tu información.</string>
+    <string name="user_rights_title">5. Derechos del Usuario</string>
+    <string name="user_rights_content">Tienes el derecho de acceder, modificar o eliminar tu información personal contactándonos en support@example.com.</string>
+    <string name="changes_to_policy_title">6. Cambios en Esta Política</string>
+    <string name="changes_to_policy_content">Podemos actualizar nuestra política de privacidad de vez en cuando. Te notificaremos sobre cualquier cambio significativo.</string>
+
+    <string name="cookies_policy_title">Política de Cookies</string>
+    <string name="what_are_cookies_title">1. ¿Qué Son las Cookies?</string>
+    <string name="what_are_cookies_content">Las cookies son pequeños archivos que se almacenan en tu dispositivo cuando visitas un sitio web. Nos ayudan a recordar tus preferencias y mejorar tu experiencia en nuestro sitio.</string>
+    <string name="types_of_cookies_title">2. Tipos de Cookies que Usamos</string>
+    <string name="types_of_cookies_content">Usamos tanto cookies de sesión como persistentes. Las cookies de sesión se eliminan al cerrar el navegador, mientras que las cookies persistentes permanecen hasta que las elimines o expiren.</string>
+    <string name="why_we_use_cookies_title">3. Por Qué Usamos Cookies</string>
+    <string name="why_we_use_cookies_content">Las cookies nos ayudan a mejorar nuestros servicios al registrar tus preferencias, lo que nos permite ofrecer contenido personalizado y entender cómo interactúas con nuestro sitio web.</string>
+    <string name="managing_cookies_title">4. Gestión de Cookies</string>
+    <string name="managing_cookies_content">Puedes controlar o eliminar las cookies desde la configuración de tu navegador. Sin embargo, desactivar las cookies puede afectar tu experiencia en nuestro sitio.</string>
+    <string name="changes_to_cookies_policy_title">5. Cambios en Esta Política</string>
+    <string name="changes_to_cookies_policy_content">Podemos actualizar nuestra política de cookies periódicamente. Cualquier cambio se publicará en esta página.</string>
+
+
     <!--MISC-->
     <string name="error_title">Error</string>
     <string name="success_title">Éxito</string>
