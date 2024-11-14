@@ -51,7 +51,6 @@ fun HomeScreen(
                 LoadingIndicator()
             } else {
                 val profileToDisplay = matchingProfiles.first()
-
                 profileToDisplay.let { profile ->
                     key(profile.userId) {
                         ProfileCard(

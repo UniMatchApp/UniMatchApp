@@ -38,10 +38,10 @@ fun ProfileTopBar(navController : NavController) {
                 )
                 Text(
                     text = stringResource(id = R.string.profile),
-                    color = Color.Black,
+                    color = Color.White,
                     modifier = Modifier
                         .padding(start = 8.dp)
-                        .weight(1f) // Esto expande el texto ocupando el espacio disponible.
+                        .weight(1f)
                 )
 
             }

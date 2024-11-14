@@ -10,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +24,7 @@ import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.ui.screens.CoreRoutes
 import com.ulpgc.uniMatch.ui.theme.AppPadding
 import com.ulpgc.uniMatch.ui.theme.AppSize
+import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,9 +42,8 @@ fun HomeTopBar(navController: NavHostController) {
                     contentScale = ContentScale.Fit
                 )
                 Text(
-                    text = stringResource(id = R.string.profile),
-                    color = Color.Black,
-                    modifier = Modifier.padding(start = AppPadding.Small)
+                    text = stringResource(id = R.string.home),
+                    color = Color.White,
                 )
             }
         },
@@ -63,6 +64,9 @@ fun HomeTopBar(navController: NavHostController) {
                 )
             }
         },
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MainColor,
+        )
     )
 }

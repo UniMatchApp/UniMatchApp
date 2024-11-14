@@ -18,20 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enum.Interests
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.profile.InterestGrid
-import com.ulpgc.uniMatch.ui.screens.core.topBars.ProfileSettingsTopBar
 import com.ulpgc.uniMatch.ui.screens.utils.enumToString
-import com.ulpgc.uniMatch.ui.screens.utils.stringToEnum
 
 
 @Composable
 fun ProfileInterests(
     profileViewModel: ProfileViewModel,
-    navController: NavController,
 ) {
     val context = LocalContext.current
 
@@ -64,9 +60,8 @@ fun ProfileInterests(
         }
 
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxSize(),
         ) {
-            ProfileSettingsTopBar { navController.popBackStack() }
 
             Text(
                 text = stringResource(R.string.interests),

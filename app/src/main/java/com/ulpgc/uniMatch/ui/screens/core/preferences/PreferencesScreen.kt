@@ -70,16 +70,11 @@ fun PreferencesScreen(
             relationshipType = it.relationshipType
             ageMin = ageRange.first.toFloat()
             ageMax = ageRange.second.toFloat()
+            ageRange = ageMin.toInt() to ageMax.toInt()
         }
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = stringResource(id = R.string.preferences_title),
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         if (profile == null) {
             Text(
@@ -148,7 +143,7 @@ fun PreferencesScreen(
                 color = MaterialTheme.colorScheme.onBackground
             )
 
-            ageRange = ageMin.toInt() to ageMax.toInt()
+
 
             RangeSlider(
                 value = ageMin..ageMax,

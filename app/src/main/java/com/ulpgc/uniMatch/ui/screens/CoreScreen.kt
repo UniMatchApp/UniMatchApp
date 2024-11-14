@@ -75,7 +75,9 @@ fun CoreScreen(
     val currentRoute = navBackStackEntry?.destination?.route
 
     val isPaddingRequired = when (currentRoute) {
-        CoreRoutes.HOME, CoreRoutes.SEARCH, CoreRoutes.CHAT_LIST, CoreRoutes.PROFILE, CoreRoutes.PREFERENCES, CoreRoutes.NOTIFICATIONS -> true
+        CoreRoutes.HOME, CoreRoutes.SEARCH, CoreRoutes.CHAT_LIST, CoreRoutes.PROFILE,
+        CoreRoutes.PREFERENCES, CoreRoutes.NOTIFICATIONS, CoreRoutes.PRIVACYPOLICIES,
+        CoreRoutes.COOKIESPOLICIES, CoreRoutes.PROFILE_INTERESTS, CoreRoutes.PROFILE_WALL -> true
         else -> false
     }
 
@@ -164,47 +166,36 @@ fun CoreNavHost(
             )
         }
 
-        navigation(startDestination = "chatDetail/{chatId}", route = "chat_navigation") {
-            composable("chatDetail/{chatId}") { backStackEntry ->
-                val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
-                ChatDetailScreen(
-                    chatId = chatId,
-                    chatViewModel = chatViewModel,
-                    authViewModel = authViewModel,
-                    navController = navController,
-                    profileViewModel = profileViewModel
-                )
-            }
+        composable("chatDetail/{chatId}") { backStackEntry ->
+            val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+            ChatDetailScreen(
+                chatId = chatId,
+                chatViewModel = chatViewModel,
+                authViewModel = authViewModel,
+                navController = navController,
+                profileViewModel = profileViewModel
+            )
         }
 
-        navigation(startDestination = "profile-wall/{userId}", route = "wall") {
-            composable("profile-wall/{userId}") {
-                ProfileWall(
-                    profileViewModel = profileViewModel,
-                    navController = navController,
-                )
-            }
+
+        composable("profile-wall/{userId}") {
+            ProfileWall(
+                profileViewModel = profileViewModel,
+            )
         }
 
-        navigation(startDestination = "profile-interests", route = "interests") {
-            composable("profile-interests/{userId}") {
-                ProfileInterests(
-                    profileViewModel = profileViewModel,
-                    navController = navController
-                )
-            }
+        composable("profile-interests/{userId}") {
+            ProfileInterests(
+                profileViewModel = profileViewModel,
+            )
         }
 
-        navigation(startDestination = "privacy-policies", route = "privacy") {
-            composable("privacy-policies") {
-                PrivacyPolicyScreen { navController.popBackStack() }
-            }
+        composable("privacy-policies") {
+            PrivacyPolicyScreen()
         }
 
-        navigation(startDestination = "cookies-policies", route = "cookies") {
-            composable("cookies-policies") {
-                CookiesPolicyScreen { navController.popBackStack() }
-            }
+        composable("cookies-policies") {
+            CookiesPolicyScreen()
         }
     }
 }

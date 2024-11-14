@@ -1,11 +1,11 @@
 <resources>
     <!--GENERAL-->
     <string name="app_name">UniMatch</string>
-    <string name="home">Home</string>
-    <string name="search">Search</string>
+    <string name="home">Inicio</string>
+    <string name="search">Búsqueda</string>
     <string name="chat">Chat</string>
-    <string name="profile">Profile</string>
-    <string name="notifications">Notifications</string>
+    <string name="profile">Perfil</string>
+    <string name="notifications">Notificaciones</string>
     <string name="user_filters">user filters</string>
 
     <!--LOGIN SCREEN-->
@@ -382,9 +382,12 @@
     <string name="delete_notification_confirmation">¿Estás seguro de que deseas eliminar esta notificación?</string>
     <string name="liked_you">le ha dado me gusta a tu perfil</string>
     <string name="unliked_you">no le ha gustado tu perfil</string>
+    <string name="new_message">Nuevo mensaje</string>
     <string name="you_have_a_new_message_from">Tienes un nuevo mensaje de</string>
     <string name="thumbnail_available">Thumbnail disponible</string>"
     <string name="unknown_notification">Notificación desconocida</string>
+    <string name="friend_request">Petición de Amistad</string>
+    <string name="friend_request_sended">te ha enviado una solicitud de amistad</string>
 
 
     <!--MISC-->
