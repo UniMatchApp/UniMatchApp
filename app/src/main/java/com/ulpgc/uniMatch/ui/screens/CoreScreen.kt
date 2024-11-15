@@ -30,6 +30,7 @@ import com.ulpgc.uniMatch.ui.screens.core.BottomNavigationBar
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileScreen
 import com.ulpgc.uniMatch.ui.screens.core.SearchScreen
 import com.ulpgc.uniMatch.ui.screens.core.TopBar
+import com.ulpgc.uniMatch.ui.screens.core.account.AccountSettingsScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatListScreen
 import com.ulpgc.uniMatch.ui.screens.core.home.HomeScreen
@@ -52,6 +53,7 @@ object CoreRoutes {
     const val PREFERENCES = "home/preferences"
     const val PRIVACYPOLICIES = "privacy-policies"
     const val COOKIESPOLICIES = "cookies-policies"
+    const val ACCOUNT = "account"
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -77,7 +79,8 @@ fun CoreScreen(
     val isPaddingRequired = when (currentRoute) {
         CoreRoutes.HOME, CoreRoutes.SEARCH, CoreRoutes.CHAT_LIST, CoreRoutes.PROFILE,
         CoreRoutes.PREFERENCES, CoreRoutes.NOTIFICATIONS, CoreRoutes.PRIVACYPOLICIES,
-        CoreRoutes.COOKIESPOLICIES, CoreRoutes.PROFILE_INTERESTS, CoreRoutes.PROFILE_WALL -> true
+        CoreRoutes.COOKIESPOLICIES, CoreRoutes.PROFILE_INTERESTS, CoreRoutes.PROFILE_WALL,
+        CoreRoutes.ACCOUNT -> true
         else -> false
     }
 
@@ -196,6 +199,10 @@ fun CoreNavHost(
 
         composable("cookies-policies") {
             CookiesPolicyScreen()
+        }
+
+        composable("account") {
+            AccountSettingsScreen()
         }
     }
 }

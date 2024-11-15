@@ -8,6 +8,7 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="notifications">Notifications</string>
     <string name="user_filters">User Filters</string>
+    <string name="account">Account</string>
 
     <!--LOGIN SCREEN-->
     <string name="login">Log In</string>
@@ -421,6 +422,10 @@
     <string name="managing_cookies_content">You can control or delete cookies through your browser settings. However, disabling cookies may affect your experience on our site.</string>
     <string name="changes_to_cookies_policy_title">5. Changes to This Policy</string>
     <string name="changes_to_cookies_policy_content">We may update our cookies policy periodically. Any changes will be posted on this page.</string>
+
+    <!--ACCOUNT-->
+    <string name="log_out">Log Out</string>
+    <string name="delete_account">Delete Account</string>
 
 
     <!--MISC-->
