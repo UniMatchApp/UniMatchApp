@@ -8,6 +8,7 @@
     <string name="edit_profile">Editar Perfil</string>
     <string name="notifications">Notificaciones</string>
     <string name="user_filters">user filters</string>
+    <string name="account">Cuenta</string>
 
     <!--LOGIN SCREEN-->
     <string name="login">Iniciar sesión</string>
@@ -423,6 +424,9 @@
     <string name="changes_to_cookies_policy_title">5. Cambios en Esta Política</string>
     <string name="changes_to_cookies_policy_content">Podemos actualizar nuestra política de cookies periódicamente. Cualquier cambio se publicará en esta página.</string>
 
+    <!--ACCOUNT-->
+    <string name="log_out">Cerrar Sesión</string>
+    <string name="delete_account">Eliminar Cuenta</string>
 
     <!--MISC-->
     <string name="error_title">Error</string>

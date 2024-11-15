@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.ulpgc.uniMatch.ui.screens.CoreRoutes
+import com.ulpgc.uniMatch.ui.screens.core.topBars.AccountTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatListTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.HomeTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.NotificationTopBar
@@ -48,6 +49,9 @@ fun TopBar(currentRoute: String?, navController: NavHostController) {
             navController
         )
         CoreRoutes.PROFILE_WALL -> ProfileSettingsTopBar (
+            navController
+        )
+        CoreRoutes.ACCOUNT -> AccountTopBar (
             navController
         )
 
