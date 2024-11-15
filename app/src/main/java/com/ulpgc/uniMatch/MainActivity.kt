@@ -1,5 +1,7 @@
 package com.ulpgc.uniMatch
 
+import NotificationsSocket
+import UserStatusSocket
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,6 +41,7 @@ class MainActivity : ComponentActivity() {
 //            authController = ApiClient.retrofit.create(AuthController::class.java),
 //            secureStorage = SecureStorage(this)
 //        )
+
         val userService = MockUserService()
         val matchingService = MockMatchingService()
         val notificationService = MockNotificationService()
@@ -60,19 +63,22 @@ class MainActivity : ComponentActivity() {
                 val authState by authViewModel.authState.collectAsState()
                 val errorState by errorViewModel.errorState.collectAsState()
 
-                // Decidir si mostrar AuthScreen o CoreScreen basado en el estado
+
                 when (authState) {
-                    is AuthState.Authenticated -> CoreScreen(
-                        authViewModel,
-                        chatViewModel,
-                        profileViewModel,
-                        homeViewModel,
-                        notificationsViewModel
-                    )
+                    is AuthState.Authenticated -> {
+                        val userId = (authState as AuthState.Authenticated).user.id
+                        initializeWebSocket(userId)
+                        CoreScreen(
+                            authViewModel,
+                            chatViewModel,
+                            profileViewModel,
+                            homeViewModel,
+                            notificationsViewModel
+                        )
+                    }
                     is AuthState.Unauthenticated -> AuthScreen(authViewModel, errorViewModel)
                 }
 
-                // Mostrar popup cuando hay un error en el estado de autenticación
                 if (errorState is ErrorState.Error) {
                     ErrorDialog(
                         errorMessage = (errorState as ErrorState.Error).message,
@@ -85,22 +91,11 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun initializeWebSocket(userId: String) {
+        val userStatusSocket = UserStatusSocket("localhost", 8081, userId)
+        val notificationsSocket = NotificationsSocket("localhost", 8080, userId)
+        userStatusSocket.connect()
+        notificationsSocket.connect()
+    }
 }
-
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        // Manual DI: Crear instancias de las dependencias
-//        val authService = ApiClient.retrofit.create(AuthService::class.java)
-//        val inMemoryAuthRepository = InMemoryAuthRepository(authService)
-//        val authViewModel = AuthViewModel(inMemoryAuthRepository)
-//        enableEdgeToEdge()
-//
-//        setContent {
-//            UniMatchTheme {
-//                // Pasar el authViewModel manualmente a la pantalla
-//                AuthScreen(authViewModel = authViewModel)
-//            }
-//        }
-//    }

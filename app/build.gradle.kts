@@ -123,6 +123,9 @@ dependencies {
 
     // encryption
     implementation(libs.bcrypt)
+
+    // OkHttp
+    implementation(libs.okhttp)
 }
 
 
@@ -131,9 +134,13 @@ tasks.whenTaskAdded {
         dependsOn("generateDebugResources")
         println("Running adb reverse...")
         val adbCommand = "adb reverse tcp:3000 tcp:3000"
+        val adbCommand2 = "adb reverse tcp:8080 tcp:8080"
+        val adbCommand3 = "adb reverse tcp:8081 tcp:8081"
         doFirst {
             exec {
                 commandLine("cmd", "/c", adbCommand)
+                commandLine("cmd", "/c", adbCommand2)
+                commandLine("cmd", "/c", adbCommand3)
             }
         }
     }
