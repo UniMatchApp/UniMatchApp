@@ -1,9 +1,9 @@
 package com.ulpgc.uniMatch.data.infrastructure.mocks
 
-import com.ulpgc.uniMatch.data.domain.models.ChatPreviewData
+import com.ulpgc.uniMatch.data.domain.models.Chat
 
 object ChatPreviewDataMock {
-    fun createChatPreviewDataMocks(count: Int = 10): List<ChatPreviewData> {
+    fun createChatPreviewDataMocks(count: Int = 10): List<Chat> {
         val names = listOf(
             "Mike",
             "Sam Sulek",
@@ -44,20 +44,18 @@ object ChatPreviewDataMock {
             val unreadMessagesCount = (0..5).random()
             val profileImage = profileImages[index]
 
-            ChatPreviewData(
-                id = index.toString(),
-                userName = name,
-                lastMessage = message,
-                lastMessageTime = time,
-                unreadMessagesCount = unreadMessagesCount,
-                profileImageUrl = profileImage
+            Chat(
+                userId = name,
+                lastMessage = MessageMock.createMockMessages(1).first(),
+                profilePictureUrl = profileImage,
+                unreadMessagesCount = unreadMessagesCount
             )
         }
     }
 
-    fun searchChatPreviewDataMocks(query: String): List<ChatPreviewData> {
+    fun searchChatPreviewDataMocks(query: String): List<Chat> {
         return createChatPreviewDataMocks().filter {
-            it.userName.contains(query, ignoreCase = true)
+            it.userId.contains(query, ignoreCase = true)
         }
     }
 }

@@ -30,11 +30,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.ulpgc.uniMatch.data.domain.enums.MessageStatusType
 import com.ulpgc.uniMatch.data.domain.models.Message
-import com.ulpgc.uniMatch.data.infrastructure.entities.MessageStatus
+
 import com.ulpgc.uniMatch.ui.theme.Bone
-import com.ulpgc.uniMatch.ui.theme.LightGrey
-import com.ulpgc.uniMatch.ui.theme.MainColor
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -57,7 +56,7 @@ fun MessageBubble(message: Message, isCurrentUser: Boolean) {
                 .wrapContentWidth() // El ancho de la burbuja se ajusta al contenido
                 .widthIn(max = LocalConfiguration.current.screenWidthDp.dp * 0.8f) // Limita el ancho de la burbuja al 80% del ancho de la pantalla
                 .background(
-                    color = if (isCurrentUser) MainColor else LightGrey,
+                    color = if (isCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary,
                     shape = MaterialTheme.shapes.medium
                 )
                 .padding(8.dp)
@@ -67,7 +66,7 @@ fun MessageBubble(message: Message, isCurrentUser: Boolean) {
             ) {
                 Text(
                     text = message.content,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onTertiary,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
 
@@ -79,7 +78,7 @@ fun MessageBubble(message: Message, isCurrentUser: Boolean) {
                         text = formatTimestamp(message.timestamp),
                         style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.End,
-                        color = Bone
+                        color = MaterialTheme.colorScheme.onTertiary,
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     // Mostrar el ícono basado en el estado del mensaje
@@ -93,9 +92,9 @@ fun MessageBubble(message: Message, isCurrentUser: Boolean) {
 }
 
 @Composable
-fun MessageStatusIcon(status: MessageStatus) {
+fun MessageStatusIcon(status: MessageStatusType) {
     when (status) {
-        MessageStatus.SENDING -> {
+        MessageStatusType.SENDING -> {
             Icon(
                 imageVector = Icons.Default.Schedule, // Icono de "Enviando"
                 contentDescription = "Sending",
@@ -104,7 +103,7 @@ fun MessageStatusIcon(status: MessageStatus) {
             )
         }
 
-        MessageStatus.SENT -> {
+        MessageStatusType.SENT -> {
             Icon(
                 imageVector = Icons.Default.Check, // Icono de "Enviado"
                 contentDescription = "Sent",
@@ -113,7 +112,7 @@ fun MessageStatusIcon(status: MessageStatus) {
             )
         }
 
-        MessageStatus.RECEIVED -> {
+        MessageStatusType.RECEIVED -> {
             Icon(
                 imageVector = Icons.Default.DoneAll, // Icono de "Recibido"
                 contentDescription = "Received",
@@ -122,7 +121,7 @@ fun MessageStatusIcon(status: MessageStatus) {
             )
         }
 
-        MessageStatus.READ -> {
+        MessageStatusType.READ -> {
             Icon(
                 imageVector = Icons.Default.DoneAll, // Icono de "Leído"
                 contentDescription = "Read",
@@ -131,7 +130,7 @@ fun MessageStatusIcon(status: MessageStatus) {
             )
         }
 
-        MessageStatus.FAILED -> {
+        MessageStatusType.FAILED -> {
             Icon(
                 imageVector = Icons.Default.Close, // Icono de "Fallido"
                 contentDescription = "Failed",

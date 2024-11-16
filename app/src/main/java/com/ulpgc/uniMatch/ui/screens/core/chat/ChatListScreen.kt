@@ -4,10 +4,7 @@ package com.ulpgc.uniMatch.ui.screens.core.chat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -52,7 +49,7 @@ fun CustomStyledTextField(
             fontSize = 16.sp,
             fontWeight = FontWeight.Normal,
 
-        ),
+            ),
         shape = RoundedCornerShape(10.dp),
     )
 }
@@ -74,24 +71,8 @@ fun ChatListScreen(
     ) {
 
 
-        val chatList by viewModel.chatPreviewDataList.collectAsState()
+        val chatList by viewModel.chatList.collectAsState()
         val isLoading by viewModel.isLoading.collectAsState()
-        val search by viewModel.searchQuery.collectAsState()
-        var searchText by remember { mutableStateOf("") } // Estado local para el texto de búsqueda
-        val coroutineScope = rememberCoroutineScope() // Coroutine scope para manejar el debounce
-
-        CustomStyledTextField(
-            value = searchText,
-            onValueChange = {
-                searchText = it
-                viewModel.updateSearchQuery(searchText) // Actualiza el query
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         if (isLoading) {
             CircularProgressIndicator()
@@ -103,7 +84,7 @@ fun ChatListScreen(
                 chats = chatList,
                 onChatClick = { chat ->
                     // Navegar al detalle del chat al hacer clic en un chat
-                    onChatClick(chat.id)
+                    onChatClick(chat.userId)
                 }
             )
         }

@@ -1,7 +1,11 @@
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.events.Event
 import com.ulpgc.uniMatch.data.application.events.EventBus
-import com.ulpgc.uniMatch.data.domain.enum.*
+import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.EventStatus
+import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
+import com.ulpgc.uniMatch.data.domain.enums.NotificationTypeEnum
 import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
 import com.ulpgc.uniMatch.data.infrastructure.events.AppNotificationEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.EventNotificationEvent

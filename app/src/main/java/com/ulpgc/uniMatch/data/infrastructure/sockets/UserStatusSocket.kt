@@ -1,7 +1,6 @@
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.events.EventBus
 import com.ulpgc.uniMatch.data.application.services.UserStatusService
-import com.ulpgc.uniMatch.data.domain.enum.ChatStatusEnum
 import com.ulpgc.uniMatch.data.infrastructure.events.GetUserStatusEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.StoppedTypingEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.TypingEvent

@@ -33,10 +33,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
-import com.ulpgc.uniMatch.data.domain.enum.Habits
-import com.ulpgc.uniMatch.data.domain.enum.Horoscope
-import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
-import com.ulpgc.uniMatch.data.domain.enum.Religion
+import com.ulpgc.uniMatch.data.domain.enums.Habits
+import com.ulpgc.uniMatch.data.domain.enums.Horoscope
+import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.ui.components.InputField
 import com.ulpgc.uniMatch.ui.components.profile.ProfileSection

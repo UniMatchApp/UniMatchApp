@@ -4,16 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.application.services.UserService
-import com.ulpgc.uniMatch.data.domain.enum.Gender
-import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
-import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.enums.Gender
+import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.mindrot.jbcrypt.BCrypt
 
-open class AuthViewModel(
+open class UserViewModel(
     private val userService: UserService,
     private val profileService: ProfileService,
     private val errorViewModel: ErrorViewModel
@@ -52,8 +52,9 @@ open class AuthViewModel(
     private var temporaryHashedPassword: String? = null
 
     fun login(email: String, password: String) {
+
         viewModelScope.launch {
-            val result = userService.login(email, password)
+            val result = userService.login(email.trim(), password)
             result.onSuccess { loginResponse ->
                 authToken = loginResponse.token
                 if (loginResponse.user.registered) {

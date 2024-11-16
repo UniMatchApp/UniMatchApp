@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,22 +31,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.ulpgc.uniMatch.R
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
-import com.ulpgc.uniMatch.ui.screens.AuthRoutes
 
 @Composable
 fun VerifyCodeScreen(
-    authViewModel: AuthViewModel,
+    userViewModel: UserViewModel,
     errorViewModel: ErrorViewModel,
     userId: String,
     onVerificationSuccess: () -> Unit = {},
     onBack: () -> Unit
 ) {
 
-    val verifyCodeResult = authViewModel.verifyCodeResult.collectAsState()
+    val verifyCodeResult = userViewModel.verifyCodeResult.collectAsState()
     val pleaseEnterValidCode = stringResource(R.string.please_enter_valid_code)
 
     LaunchedEffect (verifyCodeResult.value) {
@@ -56,7 +52,7 @@ fun VerifyCodeScreen(
             if (verifyCodeResult.value!!) {
                 onVerificationSuccess()
             }
-            authViewModel.resetVerificationResult()
+            userViewModel.resetVerificationResult()
         }
     }
 
@@ -72,7 +68,7 @@ fun VerifyCodeScreen(
             } else if (code.any { !it.isDigit() }) {
                 errorViewModel.showError(pleaseEnterValidCode)
             } else {
-                authViewModel.verifyCode(userId, code)
+                userViewModel.verifyCode(userId, code)
             }
         },
         onBack = { onBack() },

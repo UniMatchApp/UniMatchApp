@@ -6,24 +6,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.ulpgc.uniMatch.data.domain.models.ChatPreviewData
+import com.ulpgc.uniMatch.data.domain.models.Chat
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun ChatList(
-    chats: List<ChatPreviewData>,
-    onChatClick: (ChatPreviewData) -> Unit
+    chats: List<Chat>,
+    onChatClick: (Chat) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
         items(chats) { chat ->
             ChatListItem(
-                profileImageUrl = chat.profileImageUrl,
-                userName = chat.userName,
-                lastMessage = chat.lastMessage,
-                lastMessageTime = formatDate(chat.lastMessageTime), // Formateo de la fecha
+                profileImageUrl = chat.profilePictureUrl,
+                userName = chat.userId,
+                lastMessage = chat.lastMessage?.content ?: "",
+                lastMessageTime = formatDate(chat.lastMessage?.timestamp ?: 0),
                 unreadMessagesCount = chat.unreadMessagesCount,
                 onChatClick = { onChatClick(chat) } // Llamar al callback con el chat seleccionado
             )

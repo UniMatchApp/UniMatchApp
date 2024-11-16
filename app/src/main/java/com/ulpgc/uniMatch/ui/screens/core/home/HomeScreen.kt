@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Profile
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
 import com.ulpgc.uniMatch.ui.components.home.ConfirmBlockDialog
 import com.ulpgc.uniMatch.ui.components.home.ProfileCard
@@ -28,10 +28,10 @@ import com.ulpgc.uniMatch.ui.components.home.ProfileCard
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel,
-    authViewModel: AuthViewModel
+    userViewModel: UserViewModel
 ) {
     val matchingProfiles by homeViewModel.matchingProfiles.collectAsState()
-    val userId = authViewModel.userId ?: return
+    val userId = userViewModel.userId ?: return
     var isModalOpen by remember { mutableStateOf(false) }
     var showBlockDialog by remember { mutableStateOf(false) }
     var selectedProfile: Profile? by remember { mutableStateOf(null) }

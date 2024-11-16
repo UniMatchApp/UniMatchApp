@@ -1,4 +1,4 @@
-package com.ulpgc.uniMatch.data.domain.enum
+package com.ulpgc.uniMatch.data.domain.enums
 
 enum class ChatStatusEnum(val status: String) {
     ONLINE("ONLINE"),

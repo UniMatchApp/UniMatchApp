@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp") version "1.9.20-1.0.14"
 }
 
 android {
@@ -17,6 +18,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments.putAll(mapOf("room.schemaLocation" to "$projectDir/schemas"))
+            }
         }
     }
 
@@ -44,11 +50,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -64,6 +70,7 @@ android {
 }
 
 dependencies {
+    ksp(libs.androidx.room.compiler.v261)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -77,8 +84,8 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.volley)
     implementation(libs.protolite.well.known.types)
-    implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation("com.google.accompanist:accompanist-flowlayout:0.20.0")
+    implementation(libs.coil.compose)
+    implementation(libs.accompanist.flowlayout)
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
@@ -90,6 +97,7 @@ dependencies {
     implementation(libs.ui)
     implementation(libs.google.material)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.room.ktx.v230)
     implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -100,7 +108,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // ImagePicker
-    implementation("com.github.dhaval2404:imagepicker:2.1")
+    implementation(libs.imagepicker)
 
     // Retrofit 2
     implementation(libs.retrofit)
@@ -139,10 +147,15 @@ tasks.whenTaskAdded {
         doFirst {
             exec {
                 commandLine("cmd", "/c", adbCommand)
+            }
+            exec {
                 commandLine("cmd", "/c", adbCommand2)
+            }
+            exec {
                 commandLine("cmd", "/c", adbCommand3)
             }
         }
     }
 }
+
 

@@ -1,8 +1,10 @@
 [versions]
-agp = "8.6.1"
+accompanistFlowlayout = "0.20.0"
+agp = "8.7.1"
 coilCompose = "2.0.0"
 converterGson = "2.9.0"
 gson = "2.10.1"
+imagepicker = "2.1"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -19,27 +21,36 @@ navigationCompose = "2.8.3"
 retrofit = "2.9.0"
 navigationRuntimeKtx = "2.8.2"
 roomCommon = "2.6.1"
+roomCompiler = "2.6.1"
+roomKtxVersion = "2.3.0"
 securityCrypto = "1.1.0-alpha06"
 ui = "1.7.4"
 volley = "1.2.1"
 protoliteWellKnownTypes = "18.0.0"
 constraintlayout = "2.1.4"
+media3Database = "1.4.1"
+roomKtx = "2.6.1"
 playServicesLocation = "21.3.0"
 coroutinesPlayServices = "1.6.0"
 bcryptVersion = "0.4"
 okhttp = "4.11.0"
 
 [libraries]
+accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanistFlowlayout" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-material3-icons = { module = "androidx.compose.material3:material3-icons", version.ref = "material3Icons" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtxVersion" }
+androidx-room-compiler-v261 = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
+androidx-room-ktx-v230 = { module = "androidx.room:room-ktx", version.ref = "roomKtxVersion" }
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 google-material = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+imagepicker = { module = "com.github.dhaval2404:imagepicker", version.ref = "imagepicker" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -60,6 +71,8 @@ ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 protolite-well-known-types = { group = "com.google.firebase", name = "protolite-well-known-types", version.ref = "protoliteWellKnownTypes" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-media3-database = { group = "androidx.media3", name = "media3-database", version.ref = "media3Database" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutinesPlayServices" }
 bcrypt = { module = "org.mindrot:jbcrypt", version.ref = "bcryptVersion" }

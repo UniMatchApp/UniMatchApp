@@ -1,10 +1,11 @@
-package com.ulpgc.uniMatch.data.infrastructure.entities
+package com.ulpgc.uniMatch.data.infrastructure.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.ulpgc.uniMatch.data.domain.enum.NotificationStatus
+import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
+import com.ulpgc.uniMatch.data.infrastructure.entities.NotificationEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

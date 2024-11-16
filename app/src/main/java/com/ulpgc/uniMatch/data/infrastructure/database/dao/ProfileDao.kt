@@ -1,7 +1,8 @@
-package com.ulpgc.uniMatch.data.infrastructure.entities
+package com.ulpgc.uniMatch.data.infrastructure.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
 
 @Dao
 interface ProfileDao {

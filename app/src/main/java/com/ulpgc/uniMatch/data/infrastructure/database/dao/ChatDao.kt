@@ -1,16 +1,17 @@
-package com.ulpgc.uniMatch.data.infrastructure.entities
+package com.ulpgc.uniMatch.data.infrastructure.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
 
 // DAO para manejar operaciones en la tabla de chats
 @Dao
 interface ChatDao {
 
-    @Query("SELECT * FROM chats ORDER BY lastMessageTime DESC")
+    @Query("SELECT * FROM chats ORDER BY 'lastMessageTime' DESC")
     fun getAllChats(): List<ChatEntity> // Devuelve todos los chats, ordenados por el último mensaje
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -32,5 +33,6 @@ interface ChatDao {
     fun getChatById(chatId: String): ChatEntity? // Obtiene un chat por su ID
 
 
-
+    @Query("SELECT * FROM chats WHERE id = :senderId")
+    fun getChatByUserId(senderId: String): ChatEntity? // Obtiene un chat por el ID del remitente
 }

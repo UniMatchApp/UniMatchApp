@@ -1,4 +1,4 @@
-package com.ulpgc.uniMatch.data.domain.enum
+package com.ulpgc.uniMatch.data.domain.enums
 
 enum class Facts {
     THE_EARTH_IS_NOT_A_PERFECT_SPHERE,

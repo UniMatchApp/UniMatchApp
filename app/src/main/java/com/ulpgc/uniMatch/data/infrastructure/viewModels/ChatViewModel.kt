@@ -3,10 +3,10 @@ package com.ulpgc.uniMatch.data.infrastructure.viewModels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ulpgc.uniMatch.data.domain.models.ChatPreviewData
-import com.ulpgc.uniMatch.data.domain.models.Message
-import com.ulpgc.uniMatch.data.infrastructure.entities.MessageStatus
 import com.ulpgc.uniMatch.data.application.services.ChatService
+import com.ulpgc.uniMatch.data.application.services.ProfileService
+import com.ulpgc.uniMatch.data.domain.models.Chat
+import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,15 +15,16 @@ import kotlinx.coroutines.launch
 
 open class ChatViewModel(
     private val chatService: ChatService,
-    private val errorViewModel: ErrorViewModel,
-    private val authViewModel: AuthViewModel
-) : ViewModel() {
+    private val profileService: ProfileService,
 
+    private val errorViewModel: ErrorViewModel,
+    private val userViewModel: UserViewModel
+) : ViewModel() {
     private val _searchQuery = MutableStateFlow("Buscar chats")
     val searchQuery: StateFlow<String> get() = _searchQuery
 
-    private val _chatPreviewDataList = MutableStateFlow<List<ChatPreviewData>>(emptyList())
-    val chatPreviewDataList: StateFlow<List<ChatPreviewData>> get() = _chatPreviewDataList
+    private val _chatList = MutableStateFlow<List<Chat>>(emptyList())
+    val chatList: StateFlow<List<Chat>> get() = _chatList
 
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages: StateFlow<List<Message>> get() = _messages
@@ -37,12 +38,14 @@ open class ChatViewModel(
     fun loadChats() {
         Log.i("ChatViewModel", "Loading chats")
         viewModelScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
             _isLoading.value = true
-            val result = chatService.getChats()
+            val result = chatService.getChats(userViewModel.userId!!)
             result.onSuccess { chats ->
-                // Ordenar los chats por la fecha del último mensaje
-                val sortedChats = chats.sortedByDescending { it.lastMessageTime }
-                _chatPreviewDataList.value = sortedChats
+                _chatList.value = chats
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -55,13 +58,17 @@ open class ChatViewModel(
 
     fun loadMessages(chatId: String) {
         viewModelScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
             _isLoading.value = true
             val result = chatService.getMessages(chatId)
             result.onSuccess { messages ->
                 _messages.value = messages
                 _isLoading.value = false
                 // Obtener el perfil del otro usuario y manejar el Result
-                val otherUserResult = chatService.getOtherUserByChatId(chatId)
+                val otherUserResult = profileService.getProfile(chatId)
                 otherUserResult.onSuccess { profile ->
                     _otherUser.value = profile
                 }.onFailure { error ->
@@ -78,27 +85,30 @@ open class ChatViewModel(
         }
     }
 
-    fun sendMessage(chatId: String, content: String) {
+
+
+    fun sendMessage(chatId: String, content: String, attachment: String?) {
         viewModelScope.launch {
-            val message = Message(
-                messageId = generateMessageId(),
-                chatId = chatId,
-                senderId = authViewModel.userId ?: "",
-                content = content,
-                timestamp = System.currentTimeMillis(),
-                status = MessageStatus.SENDING
-            )
-            _messages.value += message
-            // TODO: Llamar al servicio para enviar el mensaje y luego actualizar el estado
+            // Throw error if the authViewModel.userId is null
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
+            val result =
+                chatService.sendMessage(userViewModel.userId!!, chatId, content, attachment)
+            result.onFailure { error ->
+                Log.e("ChatViewModel", "Error sending message: ${error.message}")
+            }
+            _messages.value += result.getOrNull()!!
         }
     }
 
-    fun updateSearchQuery(recipientName: String) {
+    fun filterChats(recipientName: String) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = chatService.getChatByName(recipientName)
+            val result = chatService.getChatsByName(recipientName)
             result.onSuccess { chats ->
-                _chatPreviewDataList.value = chats
+                _chatList.value = chats
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -114,6 +124,7 @@ open class ChatViewModel(
         viewModelScope.launch {
             // Lógica para editar el mensaje (actualizar la base de datos local y notificar cambios al backend)
         }
+
     }
 
     fun deleteMessage(messageId: String) {
@@ -122,8 +133,4 @@ open class ChatViewModel(
         }
     }
 
-    private fun generateMessageId(): String {
-        // Genera un ID único para el mensaje
-        return System.currentTimeMillis().toString()
-    }
 }

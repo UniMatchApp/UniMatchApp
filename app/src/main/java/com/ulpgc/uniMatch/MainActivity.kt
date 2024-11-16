@@ -8,20 +8,23 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.ulpgc.uniMatch.data.application.api.ApiClient
+import com.ulpgc.uniMatch.data.infrastructure.controllers.UserController
 import com.ulpgc.uniMatch.data.infrastructure.events.WebSocketEventBus
-import com.ulpgc.uniMatch.data.infrastructure.services.user.MockUserService
+import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
 import com.ulpgc.uniMatch.data.infrastructure.services.matching.MockMatchingService
 import com.ulpgc.uniMatch.data.infrastructure.services.notification.MockNotificationService
 import com.ulpgc.uniMatch.data.infrastructure.services.profile.MockProfileService
+import com.ulpgc.uniMatch.data.infrastructure.services.user.ApiUserService
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.ui.components.ErrorDialog
 import com.ulpgc.uniMatch.ui.screens.AuthScreen
 import com.ulpgc.uniMatch.ui.screens.CoreScreen
@@ -43,24 +46,38 @@ class MainActivity : ComponentActivity() {
 //            secureStorage = SecureStorage(this)
 //        )
 
-        val userService = MockUserService()
+        val userService = ApiUserService(
+            userController = ApiClient.retrofit.create(UserController::class.java),
+            secureStorage = SecureStorage(this)
+        )
+
+//        val userService = MockUserService()
         val matchingService = MockMatchingService()
         val notificationService = MockNotificationService()
         val errorViewModel = ErrorViewModel()
         val profileService = MockProfileService()
-        val authViewModel = AuthViewModel(userService, profileService, errorViewModel)
-        val profileViewModel = ProfileViewModel(profileService, errorViewModel, authViewModel)
-        val homeViewModel = HomeViewModel(profileService, errorViewModel, authViewModel, matchingService, userService)
-        val notificationsViewModel = NotificationsViewModel(notificationService, errorViewModel, authViewModel)
+        val userViewModel = UserViewModel(userService, profileService, errorViewModel)
+        val profileViewModel = ProfileViewModel(profileService, errorViewModel, userViewModel)
+        val homeViewModel = HomeViewModel(
+            profileService,
+            errorViewModel,
+            userViewModel,
+            matchingService,
+            userService
+        )
+        val notificationsViewModel =
+            NotificationsViewModel(notificationService, errorViewModel, userViewModel)
 
         val chatService = MockChatService()
-        val chatViewModel = ChatViewModel(chatService, errorViewModel, authViewModel)
+        val chatViewModel =
+            ChatViewModel(chatService, profileService, errorViewModel, userViewModel)
 
         enableEdgeToEdge()
 
         setContent {
             UniMatchTheme {
-                val authState by authViewModel.authState.collectAsState()
+                // Observar el estado de autenticación usando collectAsState
+                val authState by userViewModel.authState.collectAsState()
                 val errorState by errorViewModel.errorState.collectAsState()
 
 
@@ -69,14 +86,15 @@ class MainActivity : ComponentActivity() {
                         val userId = (authState as AuthState.Authenticated).user.id
                         initializeWebSocket(userId)
                         CoreScreen(
-                            authViewModel,
+                            userViewModel,
                             chatViewModel,
                             profileViewModel,
                             homeViewModel,
                             notificationsViewModel
                         )
                     }
-                    is AuthState.Unauthenticated -> AuthScreen(authViewModel, errorViewModel)
+
+                    is AuthState.Unauthenticated -> AuthScreen(userViewModel, errorViewModel)
                 }
 
                 if (errorState is ErrorState.Error) {
@@ -84,7 +102,7 @@ class MainActivity : ComponentActivity() {
                         errorMessage = (errorState as ErrorState.Error).message,
                         onDismiss = {
                             errorViewModel.clearError()
-                            authViewModel.logout()
+                            userViewModel.logout()
                         }
                     )
                 }

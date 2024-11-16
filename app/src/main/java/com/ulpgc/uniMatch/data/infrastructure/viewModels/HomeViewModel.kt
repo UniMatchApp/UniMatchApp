@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel (
     private val profileService: ProfileService,
     private val errorViewModel: ErrorViewModel,
-    private val authViewModel: AuthViewModel,
+    private val userViewModel: UserViewModel,
     private val matchingService: MatchingService,
     private val userService: UserService
 ) : ViewModel() {
@@ -28,7 +28,7 @@ class HomeViewModel (
     fun loadMatchingUsers() {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = authViewModel.userId?.let { matchingService.getMatchingUsers(it, 10) }
+            val result = userViewModel.userId?.let { matchingService.getMatchingUsers(it, 10) }
             if (result != null) {
                 result.onSuccess { profiles ->
                     _matchingProfiles.value = profiles
@@ -46,7 +46,7 @@ class HomeViewModel (
     fun loadMoreMatchingUsers() {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = authViewModel.userId?.let { matchingService.getMatchingUsers(it, 10) }
+            val result = userViewModel.userId?.let { matchingService.getMatchingUsers(it, 10) }
             if (result != null) {
                 result.onSuccess { profiles ->
                     _matchingProfiles.value = _matchingProfiles.value + profiles
@@ -63,7 +63,7 @@ class HomeViewModel (
 
     fun dislikeUser(userId: String, targetId: String) {
         viewModelScope.launch {
-            authViewModel.userId?.let { userId ->
+            userViewModel.userId?.let { userId ->
                 matchingService.dislikeUser(userId, targetId)?.onSuccess {
                     // Eliminar el perfil de la lista
                     Log.i("DislikeUser", "Successfully disliked user: $targetId")
@@ -83,7 +83,7 @@ class HomeViewModel (
 
     fun likeUser(userId: String, targetId: String) {
         viewModelScope.launch {
-            authViewModel.userId?.let { userId ->
+            userViewModel.userId?.let { userId ->
                 matchingService.likeUser(userId, targetId)?.onSuccess {
                     // Eliminar el perfil de la lista
                     _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != targetId }
@@ -98,7 +98,7 @@ class HomeViewModel (
 
     fun reportUser(reportedUserId: String, reason: String, details: String, extra: String = "") {
         viewModelScope.launch {
-            authViewModel.userId?.let { userId ->
+            userViewModel.userId?.let { userId ->
                 userService.reportUser(userId, reportedUserId).onSuccess {
                     _matchingProfiles.value = matchingProfiles.value.filter { it.userId != reportedUserId }
                 }.onFailure { error ->
@@ -112,7 +112,7 @@ class HomeViewModel (
 
     fun blockUser(blockedUserId: String) {
         viewModelScope.launch {
-            authViewModel.userId?.let { userId ->
+            userViewModel.userId?.let { userId ->
                 userService.blockUser(userId, blockedUserId).onSuccess {
                     _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != blockedUserId }
                     Log.i("HomeViewModel", "User $blockedUserId has been blocked and profiles updated.")
