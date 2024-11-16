@@ -5,6 +5,7 @@ import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
 import com.ulpgc.uniMatch.data.domain.enums.EventStatus
 import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
+import com.ulpgc.uniMatch.data.domain.enums.NotificationType
 import com.ulpgc.uniMatch.data.domain.enums.NotificationTypeEnum
 import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
 import com.ulpgc.uniMatch.data.infrastructure.events.AppNotificationEvent
@@ -104,7 +105,7 @@ class NotificationSocket(
             val notification = statusEnum?.let {
                 Notifications(
                     id,
-                    NotificationTypeEnum.MESSAGE,
+                    NotificationType.MESSAGE,
                     it,
                     contentId,
                     payload = messagePayloadObject,
@@ -136,7 +137,7 @@ class NotificationSocket(
             val notification = statusEnum?.let {
                 Notifications(
                     id,
-                    NotificationTypeEnum.MATCH,
+                    NotificationType.MATCH,
                     it,
                     contentId,
                     payload = matchPayloadObject,
@@ -168,7 +169,7 @@ class NotificationSocket(
             val notification = statusEnum?.let {
                 Notifications(
                     id,
-                    NotificationTypeEnum.APP,
+                    NotificationType.APP,
                     it,
                     contentId,
                     payload = appPayloadObject,
@@ -205,7 +206,7 @@ class NotificationSocket(
             val notification = statusEnum?.let {
                 Notifications(
                     id,
-                    NotificationTypeEnum.EVENT,
+                    NotificationType.EVENT,
                     it,
                     contentId,
                     payload = eventPayloadObject,
