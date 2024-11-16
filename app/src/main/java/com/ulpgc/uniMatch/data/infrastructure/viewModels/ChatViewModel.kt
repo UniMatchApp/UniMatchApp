@@ -14,9 +14,13 @@ import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
 import com.ulpgc.uniMatch.data.infrastructure.events.MessageNotificationEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 
 open class ChatViewModel(
@@ -24,11 +28,13 @@ open class ChatViewModel(
     private val profileService: ProfileService,
     private val errorViewModel: ErrorViewModel,
     private val userViewModel: UserViewModel,
-    private val webSocketEventBus: EventBus
+    private val webSocketEventBus: EventBus,
 ) : ViewModel(), EventListener {
 
+    private val customScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     init {
-        viewModelScope.launch {
+        customScope.launch {
             webSocketEventBus.subscribeToEvents(this@ChatViewModel)
         }
     }
@@ -75,6 +81,8 @@ open class ChatViewModel(
             chatId = senderId
         )
         _messages.value += newMessage
+
+
     }
 
     fun loadChats() {

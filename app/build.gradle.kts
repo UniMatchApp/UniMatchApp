@@ -138,7 +138,7 @@ dependencies {
 
 
 tasks.whenTaskAdded {
-    if (name == "generateDebugBuildConfig") {
+    if (name == "compileDebugKotlin") {
         dependsOn("generateDebugResources")
         println("Running adb reverse...")
         val adbCommand = "adb reverse tcp:3000 tcp:3000"

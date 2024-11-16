@@ -12,6 +12,9 @@ import com.ulpgc.uniMatch.data.infrastructure.events.AppNotificationEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.EventNotificationEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.MatchNotificationEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.MessageNotificationEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,8 +26,10 @@ class NotificationsViewModel (
     private val userViewModel: UserViewModel
 ) : ViewModel(), EventListener {
 
+    private val customScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     init {
-        viewModelScope.launch {
+        customScope.launch {
             webSocketEventBus.subscribeToEvents(this@NotificationsViewModel)
         }
     }

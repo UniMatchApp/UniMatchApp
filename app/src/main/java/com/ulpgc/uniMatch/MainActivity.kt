@@ -17,6 +17,7 @@ import com.ulpgc.uniMatch.data.infrastructure.services.matching.MockMatchingServ
 import com.ulpgc.uniMatch.data.infrastructure.services.notification.MockNotificationService
 import com.ulpgc.uniMatch.data.infrastructure.services.profile.MockProfileService
 import com.ulpgc.uniMatch.data.infrastructure.services.user.ApiUserService
+import com.ulpgc.uniMatch.data.infrastructure.services.user.MockUserService
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorState
@@ -45,15 +46,10 @@ class MainActivity : ComponentActivity() {
 //            authController = ApiClient.retrofit.create(AuthController::class.java),
 //            secureStorage = SecureStorage(this)
 //        )
-
-        val userService = ApiUserService(
-            userController = ApiClient.retrofit.create(UserController::class.java),
-            secureStorage = SecureStorage(this)
-        )
-
+//
         val webSocketEventBus = WebSocketEventBus()
 
-//        val userService = MockUserService()
+        val userService = MockUserService()
         val matchingService = MockMatchingService()
         val notificationService = MockNotificationService()
         val errorViewModel = ErrorViewModel()
@@ -67,12 +63,10 @@ class MainActivity : ComponentActivity() {
             matchingService,
             userService
         )
-        val notificationsViewModel =
-            NotificationsViewModel(notificationService, errorViewModel, webSocketEventBus, userViewModel)
+        val notificationsViewModel = NotificationsViewModel(notificationService, errorViewModel, webSocketEventBus, userViewModel)
 
         val chatService = MockChatService()
-        val chatViewModel =
-            ChatViewModel(chatService, profileService, errorViewModel, userViewModel, webSocketEventBus)
+        val chatViewModel = ChatViewModel(chatService, profileService, errorViewModel, userViewModel, webSocketEventBus)
 
         enableEdgeToEdge()
 
