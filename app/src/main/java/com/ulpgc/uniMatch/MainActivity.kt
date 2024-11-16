@@ -42,14 +42,14 @@ class MainActivity : ComponentActivity() {
 //        ApiClient.retrofit.create(MessageController::class.java)
 //        ApiClient.retrofit.create(ProfileController::class.java)
 //        ApiClient.retrofit.create(UserController::class.java)
-//        val authService = ApiAuthService(
-//            authController = ApiClient.retrofit.create(AuthController::class.java),
-//            secureStorage = SecureStorage(this)
-//        )
-//
+        val userService = ApiUserService(
+            ApiClient.retrofit.create(UserController::class.java),
+            SecureStorage(this)
+        )
+
         val webSocketEventBus = WebSocketEventBus()
 
-        val userService = MockUserService()
+//        val userService = MockUserService()
         val matchingService = MockMatchingService()
         val notificationService = MockNotificationService()
         val errorViewModel = ErrorViewModel()

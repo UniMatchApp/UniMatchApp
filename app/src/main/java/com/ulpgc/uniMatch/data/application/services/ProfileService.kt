@@ -52,7 +52,6 @@ interface ProfileService {
     suspend fun updateDoesSports(userId: String, doesSports: Habits): Result<Unit>
     suspend fun updateValuesAndBeliefs(userId: String, valuesAndBeliefs: Religion): Result<Unit>
 
-    suspend fun addInterest(userId: String, interest: String): Result<Unit>
     suspend fun removeInterest(userId: String, interest: String): Result<Unit>
 
     suspend fun addImage(userId: String, image: String): Result<Unit>

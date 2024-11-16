@@ -448,38 +448,6 @@ open class ProfileViewModel(
         }
     }
 
-    fun addInterest(interest: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.addInterest(userViewModel.userId!!, interest)
-            result.onSuccess {
-                _profileData.value = _profileData.value?.copy(interests = _profileData.value?.interests.orEmpty() + interest)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error adding interest"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun removeInterest(interest: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.removeInterest(userViewModel.userId!!, interest)
-            result.onSuccess {
-                _profileData.value = _profileData.value?.copy(interests = _profileData.value?.interests.orEmpty() - interest)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error removing interest"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
     fun addImage(imageUrl: String) {
         viewModelScope.launch {
             _isLoading.value = true

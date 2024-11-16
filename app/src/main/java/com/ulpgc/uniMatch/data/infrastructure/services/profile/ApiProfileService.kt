@@ -1,6 +1,5 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.profile
 
-import android.net.http.HttpException
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
@@ -14,6 +13,19 @@ import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+
+data class ProfileRequest(
+    val fullName: String,
+    val age: Int,
+    val aboutMe: String,
+    val gender: String,
+    val sexualOrientation: String,
+    val relationshipType: String,
+    val birthday: String,
+    val location: Pair<Double, Double>?,
+    val profileImageUri: String?
+)
+
 
 class ApiProfileService (
     private val profileController: ProfileController,
@@ -59,7 +71,7 @@ class ApiProfileService (
 
     override suspend fun updateInterests(userId: String, interests: List<String>): Result<Unit> {
         return try {
-            // profileController.updateInterests(userId, interests) TODO
+            profileController.updateInterests(userId, interests)
             Result.success(Unit)
         } catch (e: Throwable) {
             Result.failure(e)
@@ -127,9 +139,6 @@ class ApiProfileService (
         return handleApiCall { profileController.updateValuesAndBeliefs(userId, valuesAndBeliefs) }
     }
 
-    override suspend fun addInterest(userId: String, interest: String): Result<Unit> {
-       return handleApiCall { profileController.addInterest(userId, interest) }
-    }
 
     override suspend fun removeInterest(userId: String, interest: String): Result<Unit> {
         return handleApiCall { profileController.removeInterest(userId, interest) }
@@ -157,8 +166,7 @@ class ApiProfileService (
     ): Result<Profile> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = profileController.createProfile(
-                    userId,
+                val profileRequest = ProfileRequest(
                     fullName,
                     age,
                     aboutMe,
@@ -168,6 +176,10 @@ class ApiProfileService (
                     birthday,
                     location,
                     profileImageUri
+                )
+                val response = profileController.createProfile(
+                    userId,
+                    profileRequest
                 )
                 if (response.success) {
                     Result.success(response.value!!)
