@@ -2,24 +2,28 @@ package com.ulpgc.uniMatch.ui.components.profile
 
 import android.app.Activity
 import android.net.Uri
-import android.util.DisplayMetrics
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
@@ -47,7 +51,7 @@ import coil.request.ImageRequest
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.ulpgc.uniMatch.R
 
-@OptIn(ExperimentalLayoutApi::class)
+
 @Composable
 fun WallGrid(
     activity: Activity,
@@ -72,65 +76,74 @@ fun WallGrid(
         }
     }
 
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),  // Espaciado entre imágenes
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp
+    val imgHeight = (screenHeight - 56 - 16 - 32 ).div(3).dp // 56dp = AppBar , 16dp = padding, 32dp = 2*16dp de padding entre ellos
+
+    val displayedImages = profileImages.toMutableList()
+    while (displayedImages.size < 9) {
+        displayedImages.add("") // Casillas vacías
+    }
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        modifier = Modifier.fillMaxSize(),
     ) {
-        val configuration = LocalConfiguration.current
-        val screenWidth = configuration.screenWidthDp - 48 // Se le resta el padding para que el width que pueda ocupar sea el maximo que puede (padding externo 32, componentes 16,
-        val imgWidth = screenWidth/3
-        Log.i("WallGrid", "Screen width: $screenWidth, Image width: $imgWidth")
-        profileImages.forEach { imageUri ->
+        items(displayedImages) { imageUri ->
             Box(
                 modifier = Modifier
-                    .size(width = imgWidth.dp, height = 180.dp)
+                    .height(imgHeight)
+                    .fillMaxSize()
+                    .padding(4.dp)
             ) {
-                Surface(
-                    shape = RoundedCornerShape(16.dp),
-                    modifier = Modifier.fillMaxSize().padding(4.dp)
-                ) {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(imageUri)
-                            .build(),
-                        contentDescription = "Imagen de perfil",
-                        contentScale = ContentScale.Crop,
+                if (imageUri.isNotEmpty()) {
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
                         modifier = Modifier.fillMaxSize()
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .background(Color.White, CircleShape)
-                        .border(2.dp, Color.Black, CircleShape)
-                        .align(Alignment.TopEnd)
-                        .clickable {
-                            profileImages.remove(imageUri)
-                            onDeleteImageClick(imageUri)
-                            Log.i("WallGrid", "Deleted image: $profileImages")
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(imageUri)
+                                .build(),
+                            contentDescription = "Imagen de perfil",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .background(Color.White, CircleShape)
+                            .border(2.dp, Color.Black, CircleShape)
+                            .align(Alignment.TopEnd)
+                            .clickable {
+                                profileImages.remove(imageUri)
+                                onDeleteImageClick(imageUri)
+                            }
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.icon_remove),
+                            contentDescription = "Eliminar imagen",
+                            tint = Color.Red,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                } else {
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable { showDialog = true }
+                    ) {
+                        Box(contentAlignment = Alignment.Center, modifier = Modifier.background(Color.Gray)) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.icon_add_photo),
+                                contentDescription = "Añadir imagen",
+                                tint = Color.LightGray,
+                                modifier = Modifier.size(32.dp)
+                            )
                         }
-                        .padding(4.dp)
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.icon_remove),
-                        contentDescription = "Eliminar imagen",
-                        tint = Color.Red,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            }
-        }
-
-        if (profileImages.size < 9) {
-            repeat(9 - profileImages.size) {
-                Surface(
-                    modifier = Modifier
-                        .size(imgWidth.dp, 180.dp)
-                        .clickable { showDialog = true },
-                    shape = RoundedCornerShape(16.dp),
-                    color = Color.LightGray
-                ) {
+                    }
                 }
             }
         }
@@ -168,3 +181,4 @@ fun WallGrid(
         )
     }
 }
+
