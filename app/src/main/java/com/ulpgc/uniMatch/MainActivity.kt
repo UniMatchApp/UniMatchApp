@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
 
         val chatService = MockChatService()
         val chatViewModel =
-            ChatViewModel(chatService, profileService, errorViewModel, userViewModel)
+            ChatViewModel(chatService, profileService, errorViewModel, userViewModel, webSocketEventBus)
 
         enableEdgeToEdge()
 
