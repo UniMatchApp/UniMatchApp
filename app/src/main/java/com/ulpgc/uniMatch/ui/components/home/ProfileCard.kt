@@ -61,7 +61,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ulpgc.uniMatch.R
-import com.ulpgc.uniMatch.data.domain.enum.Interests
+import com.ulpgc.uniMatch.data.domain.enums.Interests
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.ui.screens.utils.enumToString
 

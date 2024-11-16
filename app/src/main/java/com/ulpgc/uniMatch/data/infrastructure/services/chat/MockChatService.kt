@@ -1,17 +1,34 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.chat
 
 import com.ulpgc.uniMatch.data.application.services.ChatService
-import com.ulpgc.uniMatch.data.domain.models.ChatPreviewData
+import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
-import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.mocks.ChatPreviewDataMock
 import com.ulpgc.uniMatch.data.infrastructure.mocks.MessageMock
-import com.ulpgc.uniMatch.data.infrastructure.mocks.ProfileMock
+import java.util.UUID
 
-class MockChatService: ChatService {
-    override suspend fun getChats(): Result<List<ChatPreviewData>> {
+class MockChatService : ChatService {
+    override suspend fun sendMessage(
+        loggedUserId: String,
+        chatId: String,
+        content: String,
+        attachment: String?
+    ): Result<Message> {
         return Result.success(
-             ChatPreviewDataMock.createChatPreviewDataMocks()
+            Message(
+                UUID.randomUUID().toString(),
+                chatId,
+                content,
+                loggedUserId,
+                chatId,
+                attachment,
+            )
+        )
+    }
+
+    override suspend fun getChats(loggedUserId: String): Result<List<Chat>> {
+        return Result.success(
+            ChatPreviewDataMock.createChatPreviewDataMocks()
         )
     }
 
@@ -21,13 +38,7 @@ class MockChatService: ChatService {
         )
     }
 
-    override suspend fun getOtherUserByChatId(chatId: String): Result<Profile> {
-        return Result.success(
-            ProfileMock.createMockProfile()
-        )
-    }
-
-    override suspend fun getChatByName(chatName: String): Result<List<ChatPreviewData>> {
+    override suspend fun getChatsByName(chatName: String): Result<List<Chat>> {
         return Result.success(
             ChatPreviewDataMock.searchChatPreviewDataMocks(chatName)
         )

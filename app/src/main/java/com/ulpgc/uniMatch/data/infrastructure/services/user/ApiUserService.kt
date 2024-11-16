@@ -1,21 +1,15 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.user
 
+
 import android.util.Log
-
-
 import com.ulpgc.uniMatch.data.application.services.LoginRequest
 import com.ulpgc.uniMatch.data.application.services.LoginResponse
 import com.ulpgc.uniMatch.data.application.services.RegisterRequest
 import com.ulpgc.uniMatch.data.application.services.RegisterResponse
 import com.ulpgc.uniMatch.data.application.services.UserService
-import com.ulpgc.uniMatch.data.domain.enum.Gender
-import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
-import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
-import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.domain.models.User
 import com.ulpgc.uniMatch.data.infrastructure.controllers.UserController
 import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

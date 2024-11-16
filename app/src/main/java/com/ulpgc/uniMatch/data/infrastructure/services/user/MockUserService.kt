@@ -3,10 +3,6 @@ package com.ulpgc.uniMatch.data.infrastructure.services.user
 import com.ulpgc.uniMatch.data.application.services.LoginResponse
 import com.ulpgc.uniMatch.data.application.services.RegisterResponse
 import com.ulpgc.uniMatch.data.application.services.UserService
-import com.ulpgc.uniMatch.data.domain.enum.Gender
-import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
-import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
-import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.domain.models.User
 import com.ulpgc.uniMatch.data.infrastructure.mocks.UserMock
 import kotlinx.coroutines.Dispatchers

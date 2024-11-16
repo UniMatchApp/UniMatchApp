@@ -1,6 +1,6 @@
-import com.ulpgc.uniMatch.data.domain.enum.DeletedMessageStatus
-import com.ulpgc.uniMatch.data.domain.enum.EventStatus
-import com.ulpgc.uniMatch.data.domain.enum.MessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatusType
+import com.ulpgc.uniMatch.data.domain.enums.EventStatus
+import com.ulpgc.uniMatch.data.domain.enums.MessageStatusType
 
 abstract class NotificationPayload(
     val id: String
@@ -53,8 +53,8 @@ class MessageNotificationPayload(
     private val sender: String,
     private val content: String,
     private val thumbnail: String?,
-    private val status: MessageStatus,
-    private val deletedStatus: DeletedMessageStatus
+    private val status: MessageStatusType,
+    private val deletedStatus: DeletedMessageStatusType
 ) : NotificationPayload(id) {
     fun getSender(): String {
         return sender
@@ -68,11 +68,11 @@ class MessageNotificationPayload(
         return thumbnail
     }
 
-    fun getStatus(): MessageStatus {
+    fun getStatus(): MessageStatusType {
         return status
     }
 
-    fun getDeletedStatus(): DeletedMessageStatus {
+    fun getDeletedStatus(): DeletedMessageStatusType {
         return deletedStatus
     }
 }

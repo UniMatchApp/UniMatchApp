@@ -19,15 +19,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navigation
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.screens.core.BottomNavigationBar
-import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileScreen
 import com.ulpgc.uniMatch.ui.screens.core.SearchScreen
 import com.ulpgc.uniMatch.ui.screens.core.TopBar
 import com.ulpgc.uniMatch.ui.screens.core.account.AccountSettingsScreen
@@ -39,6 +37,7 @@ import com.ulpgc.uniMatch.ui.screens.core.policies.CookiesPolicyScreen
 import com.ulpgc.uniMatch.ui.screens.core.policies.PrivacyPolicyScreen
 import com.ulpgc.uniMatch.ui.screens.core.preferences.PreferencesScreen
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileInterests
+import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileScreen
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileWall
 
 object CoreRoutes {
@@ -59,13 +58,13 @@ object CoreRoutes {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CoreScreen(
-    authViewModel: AuthViewModel,
+    userViewModel: UserViewModel,
     chatViewModel: ChatViewModel,
     profileViewModel: ProfileViewModel,
     homeViewModel: HomeViewModel,
     notificationsViewModel: NotificationsViewModel
 ) {
-    val authState by authViewModel.authState.collectAsState()
+    val authState by userViewModel.authState.collectAsState()
 
     if (authState !is AuthState.Authenticated) {
         Log.e("CoreScreen", "User is not authenticated")
@@ -77,16 +76,21 @@ fun CoreScreen(
     val currentRoute = navBackStackEntry?.destination?.route
 
     val isPaddingRequired = when (currentRoute) {
-        CoreRoutes.HOME, CoreRoutes.SEARCH, CoreRoutes.CHAT_LIST, CoreRoutes.PROFILE,
+        CoreRoutes.HOME, CoreRoutes.SEARCH, CoreRoutes.CHAT_LIST, CoreRoutes.CHAT_DETAIL, CoreRoutes.PROFILE,
         CoreRoutes.PREFERENCES, CoreRoutes.NOTIFICATIONS, CoreRoutes.PRIVACYPOLICIES,
         CoreRoutes.COOKIESPOLICIES, CoreRoutes.PROFILE_INTERESTS, CoreRoutes.PROFILE_WALL,
         CoreRoutes.ACCOUNT -> true
+
         else -> false
     }
 
     Scaffold(
         topBar = {
-            TopBar(currentRoute = currentRoute, navController = navController)
+            TopBar(
+                currentRoute = currentRoute,
+                navController = navController,
+                chatViewModel = chatViewModel
+            )
         },
         bottomBar = { BottomNavigationBar(navController) }
     ) { innerPadding ->
@@ -96,10 +100,14 @@ fun CoreScreen(
             Modifier.padding(0.dp)
         }
 
-        Box(modifier = Modifier.fillMaxSize().then(paddingModifier)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .then(paddingModifier)
+        ) {
             CoreNavHost(
                 navController,
-                authViewModel,
+                userViewModel,
                 chatViewModel,
                 profileViewModel,
                 homeViewModel,
@@ -110,11 +118,10 @@ fun CoreScreen(
 }
 
 
-
 @Composable
 fun CoreNavHost(
     navController: NavHostController,
-    authViewModel: AuthViewModel,
+    userViewModel: UserViewModel,
     chatViewModel: ChatViewModel,
     profileViewModel: ProfileViewModel,
     homeViewModel: HomeViewModel,
@@ -126,10 +133,12 @@ fun CoreNavHost(
         enterTransition = { fadeIn(animationSpec = tween(0)) },
         exitTransition = { fadeOut(animationSpec = tween(0)) },
     ) {
-        composable(CoreRoutes.HOME) { HomeScreen(
-            homeViewModel = homeViewModel,
-            authViewModel = authViewModel
-        ) }
+        composable(CoreRoutes.HOME) {
+            HomeScreen(
+                homeViewModel = homeViewModel,
+                userViewModel = userViewModel
+            )
+        }
         composable(CoreRoutes.SEARCH) { SearchScreen() }
         composable(CoreRoutes.PROFILE) {
             ProfileScreen(
@@ -146,7 +155,8 @@ fun CoreNavHost(
                 onPrivacyClick = {
                     navController.navigate(CoreRoutes.PRIVACYPOLICIES)
                 }
-        ) }
+            )
+        }
         composable(CoreRoutes.CHAT_LIST) {
             ChatListScreen(
                 viewModel = chatViewModel,
@@ -174,7 +184,7 @@ fun CoreNavHost(
             ChatDetailScreen(
                 chatId = chatId,
                 chatViewModel = chatViewModel,
-                authViewModel = authViewModel,
+                userViewModel = userViewModel,
                 navController = navController,
                 profileViewModel = profileViewModel
             )

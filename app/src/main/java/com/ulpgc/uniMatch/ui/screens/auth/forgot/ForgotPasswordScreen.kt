@@ -31,17 +31,17 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 
 @Composable
 fun ForgotPasswordScreen(
-    authViewModel: AuthViewModel,
+    userViewModel: UserViewModel,
     errorViewModel: ErrorViewModel,
     onSubmit: () -> Unit,
     onBack: () -> Unit,
 ) {
-    val forgotPasswordResult = authViewModel.forgotPasswordResult.collectAsState()
+    val forgotPasswordResult = userViewModel.forgotPasswordResult.collectAsState()
     val resetPasswordFailed = stringResource(R.string.reset_password_failed)
 
     LaunchedEffect(forgotPasswordResult.value) {
@@ -49,7 +49,7 @@ fun ForgotPasswordScreen(
             if (forgotPasswordResult.value!!) {
                 onSubmit()
             }
-            authViewModel.resetForgotPasswordResult()
+            userViewModel.resetForgotPasswordResult()
         }
     }
 
@@ -60,7 +60,7 @@ fun ForgotPasswordScreen(
             if (email.isEmpty()) {
                 errorViewModel.showError(resetPasswordFailed)
             } else {
-                authViewModel.forgotPassword(email)
+                userViewModel.forgotPassword(email)
             }
         },
         onBack = { onBack() }

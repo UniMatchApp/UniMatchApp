@@ -6,7 +6,7 @@ import com.ulpgc.uniMatch.data.application.events.Event
 import com.ulpgc.uniMatch.data.application.events.EventBus
 import com.ulpgc.uniMatch.data.application.events.EventListener
 import com.ulpgc.uniMatch.data.application.services.UserStatusService
-import com.ulpgc.uniMatch.data.domain.enum.ChatStatusEnum
+import com.ulpgc.uniMatch.data.domain.enums.ChatStatusEnum
 import com.ulpgc.uniMatch.data.infrastructure.events.GetUserStatusEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.StoppedTypingEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.UserOnlineEvent
@@ -20,7 +20,7 @@ class UserStatusViewModel(
     private val userStatusService: UserStatusService,
     private val errorViewModel: ErrorViewModel,
     private val webSocketEventBus: EventBus,
-    private val authViewModel: AuthViewModel
+    private val userViewModel: UserViewModel
 ) : ViewModel(), EventListener {
 
     init {
@@ -82,19 +82,19 @@ class UserStatusViewModel(
 
     fun setUserTyping(targetUserId: String) {
         viewModelScope.launch {
-            userStatusService.setUserTyping(authViewModel.userId!!, targetUserId)
+            userStatusService.setUserTyping(userViewModel.userId!!, targetUserId)
         }
     }
 
     fun setUserStoppedTyping() {
         viewModelScope.launch {
-            userStatusService.setUserStoppedTyping(authViewModel.userId!!)
+            userStatusService.setUserStoppedTyping(userViewModel.userId!!)
         }
     }
 
     fun getUserStatus(targetUserId: String) {
         viewModelScope.launch {
-            userStatusService.getUserStatus(authViewModel.userId!!, targetUserId)
+            userStatusService.getUserStatus(userViewModel.userId!!, targetUserId)
         }
     }
 }

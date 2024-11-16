@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
-import com.ulpgc.uniMatch.data.domain.enum.Interests
+import com.ulpgc.uniMatch.data.domain.enums.Interests
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.profile.InterestGrid
 import com.ulpgc.uniMatch.ui.screens.utils.enumToString

@@ -1,10 +1,7 @@
 package com.ulpgc.uniMatch.ui.theme
 
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
@@ -12,9 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 
 // Define las formas (shapes) con esquinas redondeadas
 val shapes = Shapes(
@@ -28,27 +23,29 @@ val shapes = Shapes(
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFDB5FFF),   // Rosado fuerte
     onPrimary = Color.Black,
-    secondary= Color(0xFFCECECE),  // Gris oscuro
-    onSecondary = Color.Black,
+    secondary= Color(0xFFFFFFFF),  // Gris oscuro
+    onSecondary = Color.LightGray,
     tertiary = Color(0xFFF1C9FF), // Rosado pastel
     onTertiary = Color.White,
     background = Color(0xFF282828),
     onBackground = Color.White,
     surface = Color(0xFF343434),
-    onSurface = LightGrey
+    onSurface = LightGray,
+    inversePrimary = Color.Black
+
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFFDB5FFF),   // Rosado fuerte
     onPrimary = Color.White,
     secondary = Color(0xFF545454),  // Gris oscuro
-    onSecondary = Color.White,
-    tertiary = Color(0xFFE58FFF), // Rosado pastel
-    onTertiary = Color.Black,
+    onSecondary =  Color(0xFFABABAB), // Rosado pastel
+    tertiary = Color(0xFFDADADA), // Rosado pastel
+    onTertiary =  Color(0xFF424242), // Rosado pastel
     background = Color(0xFFFFFBFA),
     onBackground = Color.Black,
     surface = Color(0xFFFFFBFA),
-    onSurface = LightGrey
+    onSurface = LightGray
 )
 
 @Composable

@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,14 +27,16 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatDetailTopBar(
-    userName: String,
     navController: NavController,
-    userImage: String) {
+    chatViewModel: ChatViewModel,
+) {
+
     TopAppBar(
         title = {
             Row(
@@ -54,7 +57,7 @@ fun ChatDetailTopBar(
 
                 val painter = rememberAsyncImagePainter(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(userImage)
+                        .data(chatViewModel.otherUser.collectAsState().value?.preferredImage)
                         .build()
                 )
 
@@ -70,7 +73,7 @@ fun ChatDetailTopBar(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = userName,
+                    text = chatViewModel.otherUser.collectAsState().value?.name ?: "",
                     color = Color.White
                 )
             }

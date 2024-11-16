@@ -3,7 +3,7 @@ package com.ulpgc.uniMatch.data.infrastructure.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.NotificationsService
-import com.ulpgc.uniMatch.data.domain.enum.NotificationStatus
+import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
 import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 class NotificationsViewModel (
     private val notificationsService: NotificationsService,
     private val errorViewModel: ErrorViewModel,
-    private val authViewModel: AuthViewModel
+    private val userViewModel: UserViewModel
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
@@ -27,7 +27,7 @@ class NotificationsViewModel (
     fun loadNotifications() {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = authViewModel.userId?.let { notificationsService.getNotifications(it) }
+            val result = userViewModel.userId?.let { notificationsService.getNotifications(it) }
             if (result != null) {
                 result.onSuccess { notifications ->
                     _notifications.value = notifications
@@ -80,7 +80,7 @@ class NotificationsViewModel (
 
     fun deleteAllNotifications() {
         viewModelScope.launch {
-            authViewModel.userId?.let { notificationsService.deleteAllNotifications(it) }
+            userViewModel.userId?.let { notificationsService.deleteAllNotifications(it) }
                 ?.onSuccess {
                     _notifications.value = emptyList()
                 }

@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -21,11 +20,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -47,10 +44,10 @@ import androidx.core.content.ContextCompat
 import coil.compose.rememberAsyncImagePainter
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.ulpgc.uniMatch.R
-import com.ulpgc.uniMatch.data.domain.enum.Gender
-import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
-import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.domain.enums.Gender
+import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.ui.components.DatePickerComponent
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
@@ -62,7 +59,7 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun RegisterProfileScreen(
-    authViewModel: AuthViewModel,
+    userViewModel: UserViewModel,
     errorViewModel: ErrorViewModel,
     userId: String,
     onCompleteProfile: () -> Unit
@@ -92,7 +89,7 @@ fun RegisterProfileScreen(
 
     var showImageDialog by remember { mutableStateOf(false) }
 
-    val profileCreated by authViewModel.profileCreated.collectAsState()
+    val profileCreated by userViewModel.profileCreated.collectAsState()
 
     val locationError = stringResource(R.string.location_error)
     val fieldsEmptyError = stringResource(R.string.fields_empty_error)
@@ -266,7 +263,7 @@ fun RegisterProfileScreen(
                     else if (fullName.isEmpty() || aboutMe.isEmpty() || birthday.isEmpty() || selectedImageUri == null || age < 18) {
                         errorViewModel.showError(fieldsEmptyError)
                     } else {
-                        authViewModel.createProfile(
+                        userViewModel.createProfile(
                             userId,
                             fullName,
                             age,

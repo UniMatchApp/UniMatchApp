@@ -23,13 +23,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.ui.components.InputField
 
 @Composable
 fun ResetPasswordScreen(
-    authViewModel: AuthViewModel,
+    userViewModel: UserViewModel,
     errorViewModel: ErrorViewModel,
     userId: String,
     onPasswordReset: () -> Unit
@@ -37,7 +37,7 @@ fun ResetPasswordScreen(
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-    val resultPasswordReset by authViewModel.resetPasswordResult.collectAsState()
+    val resultPasswordReset by userViewModel.resetPasswordResult.collectAsState()
 
     val passwordTooShort = stringResource(R.string.password_too_short)
     val passwordsDoNotMatch = stringResource(R.string.passwords_do_not_match)
@@ -47,7 +47,7 @@ fun ResetPasswordScreen(
             if (resultPasswordReset!!) {
                 onPasswordReset()
             }
-            authViewModel.resetPasswordResult()
+            userViewModel.resetPasswordResult()
         }
     }
 
@@ -57,7 +57,7 @@ fun ResetPasswordScreen(
         } else if (newPassword != confirmPassword) {
             errorViewModel.showError(passwordsDoNotMatch)
         } else {
-            authViewModel.resetPassword(userId, newPassword)
+            userViewModel.resetPassword(userId, newPassword)
         }
     }
 

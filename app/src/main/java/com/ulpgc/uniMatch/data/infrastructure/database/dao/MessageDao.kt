@@ -1,9 +1,11 @@
-package com.ulpgc.uniMatch.data.infrastructure.entities
+package com.ulpgc.uniMatch.data.infrastructure.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.ulpgc.uniMatch.data.domain.enums.MessageStatusType
+import com.ulpgc.uniMatch.data.infrastructure.entities.MessageEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,7 +17,7 @@ interface MessageDao {
     suspend fun insertMessages(messages: List<MessageEntity>)
 
     @Query("UPDATE messages SET status = :status WHERE messageId = :messageId")
-    suspend fun updateMessageStatus(messageId: String, status: MessageStatus)
+    suspend fun updateMessageStatus(messageId: String, status: MessageStatusType)
 
     // Get latest message timestamp
     @Query("SELECT MAX(timestamp) FROM messages")

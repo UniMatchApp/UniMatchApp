@@ -31,14 +31,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.ui.components.ButtonComponent
 import com.ulpgc.uniMatch.ui.components.InputField
 
 @Composable
 fun RegisterScreen(
-    authViewModel: AuthViewModel,
+    userViewModel: UserViewModel,
     errorViewModel: ErrorViewModel,
     onBackClick: () -> Unit,
     onLoginClick: () -> Unit,
@@ -128,7 +128,7 @@ fun RegisterScreen(
                         } else if (password.isEmpty() || email.isEmpty()) {
                             errorViewModel.showError(fieldsEmptyError)
                         } else {
-                            authViewModel.partialRegistration(email, password)
+                            userViewModel.partialRegistration(email, password)
                             continueRegister()
                         }
                     },

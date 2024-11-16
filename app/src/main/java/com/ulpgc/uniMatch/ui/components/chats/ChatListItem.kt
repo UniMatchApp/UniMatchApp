@@ -75,9 +75,9 @@ fun ChatListItem(
             Text(
                 text = lastMessage,
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.SemiBold
                 ),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onTertiary,
                 maxLines = 1
             )
         }

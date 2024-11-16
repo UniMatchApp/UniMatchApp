@@ -1,12 +1,13 @@
 package com.ulpgc.uniMatch.ui.screens.core.chat
 
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -16,7 +17,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
@@ -34,22 +34,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.ulpgc.uniMatch.data.infrastructure.services.user.MockUserService
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
 import com.ulpgc.uniMatch.data.infrastructure.services.profile.MockProfileService
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
+import com.ulpgc.uniMatch.data.infrastructure.services.user.MockUserService
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.chats.MessageBubble
-import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatDetailTopBar
 import com.ulpgc.uniMatch.ui.theme.UniMatchTheme
 
 @Composable
 fun ChatDetailScreen(
     chatId: String,
     chatViewModel: ChatViewModel,
-    authViewModel: AuthViewModel,
+    userViewModel: UserViewModel,
     navController: NavController,
     profileViewModel: ProfileViewModel
 ) {
@@ -62,60 +61,44 @@ fun ChatDetailScreen(
     val isLoading by chatViewModel.isLoading.collectAsState()
     val recipientProfile by chatViewModel.otherUser.collectAsState()
 
+
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .imePadding() // padding for the bottom for the IME
     ) {
-        // Top Bar con la foto del usuario, nombre y flecha de retroceso
-        ChatDetailTopBar(
-            userName = recipientProfile?.name ?: "User",
-            navController = navController,
-            userImage = recipientProfile?.preferredImage ?: "R.drawable.ic_profile"
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))  // Espaciado entre el TopBar y el contenido de los mensajes
-
-        // Contenedor para mensajes y input con padding de 16
-        Column(
+        LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+                .padding(top=8.dp, bottom=4.dp, start=16.dp, end=16.dp)
+                .weight(1f)
         ) {
-            if (isLoading) {
-                CircularProgressIndicator()
-            } else {
-                // Mostrar los mensajes en una LazyColumn
-                LazyColumn(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    items(messages) { message ->
-                        MessageBubble(
-                            message = message,
-                            isCurrentUser = message.senderId == authViewModel.userId
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-                }
-
-                // Input para enviar mensajes
-                MessageInput(chatViewModel, chatId)
+            items(messages) { message ->
+                MessageBubble(
+                    message = message,
+                    isCurrentUser = message.senderId == userViewModel.userId
+                )
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
+        MessageInput(
+            viewModel = chatViewModel,
+            chatId = chatId,
+//            modifier= Modifier.weight(0.2f)
+        )
     }
 }
 
 @Composable
 private fun MessageInput(
     viewModel: ChatViewModel,
-    chatId: String
+    chatId: String,
+    modifier: Modifier = Modifier
 ) {
     var newMessage by remember { mutableStateOf("") }
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(vertical = 8.dp)
-            .height(56.dp)
+        modifier = modifier.padding(horizontal = 16.dp)
     ) {
         TextField(
             value = newMessage,
@@ -131,7 +114,7 @@ private fun MessageInput(
 
         Button(
             onClick = {
-                viewModel.sendMessage(chatId, newMessage)
+                viewModel.sendMessage(chatId, newMessage, null)
                 newMessage = ""
             },
             modifier = Modifier
@@ -149,23 +132,23 @@ private fun MessageInput(
 }
 
 
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewChatDetailScreen() {
     UniMatchTheme {
         ChatDetailScreen(
-            chatId = "sampleChatId",
+            chatId = "chat_1",
             chatViewModel = ChatViewModel(
+                profileService = MockProfileService(),
                 chatService = MockChatService(),
                 errorViewModel = ErrorViewModel(),
-                authViewModel = AuthViewModel(
+                userViewModel = UserViewModel(
                     userService = MockUserService(),
                     errorViewModel = ErrorViewModel(),
                     profileService = MockProfileService()
-                )
+                ),
             ),
-            authViewModel = AuthViewModel(
+            userViewModel = UserViewModel(
                 userService = MockUserService(),
                 errorViewModel = ErrorViewModel(),
                 profileService = MockProfileService()
@@ -176,7 +159,7 @@ fun PreviewChatDetailScreen() {
             profileViewModel = ProfileViewModel(
                 profileService = MockProfileService(),
                 errorViewModel = ErrorViewModel(),
-                authViewModel = AuthViewModel(
+                userViewModel = UserViewModel(
                     userService = MockUserService(),
                     errorViewModel = ErrorViewModel(),
                     profileService = MockProfileService()

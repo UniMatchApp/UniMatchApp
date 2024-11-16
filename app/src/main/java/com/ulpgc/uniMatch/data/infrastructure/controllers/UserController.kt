@@ -11,7 +11,7 @@ import retrofit2.http.Query
 
 interface UserController {
 
-    @POST("users/login")
+    @POST("users/auth/login")
     suspend fun login(@Body loginRequest: LoginRequest): ApiResponse<LoginResponse>
 
     @POST("users/register")

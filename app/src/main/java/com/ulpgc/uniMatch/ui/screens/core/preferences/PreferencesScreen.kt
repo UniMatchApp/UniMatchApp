@@ -25,9 +25,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
-import com.ulpgc.uniMatch.data.domain.enum.Gender
-import com.ulpgc.uniMatch.data.domain.enum.RelationshipType
-import com.ulpgc.uniMatch.data.domain.enum.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.enums.Gender
+import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
 
