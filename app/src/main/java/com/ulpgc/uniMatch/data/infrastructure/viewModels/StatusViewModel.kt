@@ -32,7 +32,6 @@ class UserStatusViewModel(
     private val _userStatuses = MutableStateFlow<Map<String, ChatStatusEnum>>(emptyMap())
     val userStatuses: StateFlow<Map<String, ChatStatusEnum>> get() = _userStatuses
 
-    // Handle events received from EventBus
     override suspend fun onEventReceived(event: Event) {
         when (event) {
             is UserOnlineEvent -> {

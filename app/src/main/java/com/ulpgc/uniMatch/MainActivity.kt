@@ -51,6 +51,8 @@ class MainActivity : ComponentActivity() {
             secureStorage = SecureStorage(this)
         )
 
+        val webSocketEventBus = WebSocketEventBus()
+
 //        val userService = MockUserService()
         val matchingService = MockMatchingService()
         val notificationService = MockNotificationService()
@@ -66,7 +68,7 @@ class MainActivity : ComponentActivity() {
             userService
         )
         val notificationsViewModel =
-            NotificationsViewModel(notificationService, errorViewModel, userViewModel)
+            NotificationsViewModel(notificationService, errorViewModel, webSocketEventBus, userViewModel)
 
         val chatService = MockChatService()
         val chatViewModel =
@@ -84,7 +86,7 @@ class MainActivity : ComponentActivity() {
                 when (authState) {
                     is AuthState.Authenticated -> {
                         val userId = (authState as AuthState.Authenticated).user.id
-                        initializeWebSocket(userId)
+                        initializeWebSocket(userId, webSocketEventBus)
                         CoreScreen(
                             userViewModel,
                             chatViewModel,
@@ -110,8 +112,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun initializeWebSocket(userId: String) {
-        val webSocketEventBus = WebSocketEventBus()
+    private fun initializeWebSocket(userId: String, webSocketEventBus: WebSocketEventBus) {
         val userStatusSocket = UserStatusSocket("localhost", 8081, userId, webSocketEventBus)
         val notificationsSocket = NotificationSocket("localhost", 8081, userId, webSocketEventBus)
         userStatusSocket.connect()
