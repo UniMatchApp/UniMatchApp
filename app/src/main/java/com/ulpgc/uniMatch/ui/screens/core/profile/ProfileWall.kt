@@ -50,11 +50,8 @@ fun ProfileWall(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
+                .padding(8.dp)
         ) {
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             WallGrid(
                 activity!!,
@@ -66,29 +63,6 @@ fun ProfileWall(
                     profileViewModel.deleteImage(imageUrl)
                 }
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-
-
-            Text(text = stringResource(R.string.session_data), style = MaterialTheme.typography.titleLarge)
-            Button(
-                onClick = { /* Modificar correo electrónico */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            ) {
-                Text(stringResource(R.string.change_email))
-            }
-
-            Button(
-                onClick = { /* Modificar contraseña */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            ) {
-                Text(stringResource(R.string.change_password))
-            }
         }
     } else {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
