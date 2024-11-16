@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.ulpgc.uniMatch.data.infrastructure.events.WebSocketEventBus
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
 import com.ulpgc.uniMatch.data.infrastructure.services.profile.MockProfileService
 import com.ulpgc.uniMatch.data.infrastructure.services.user.MockUserService
@@ -49,10 +50,7 @@ fun ChatDetailScreen(
     chatId: String,
     chatViewModel: ChatViewModel,
     userViewModel: UserViewModel,
-    navController: NavController,
-    profileViewModel: ProfileViewModel
 ) {
-    // Cargar los mensajes del chat cuando la pantalla se inicia
     LaunchedEffect(chatId) {
         chatViewModel.loadMessages(chatId)
     }
@@ -64,7 +62,7 @@ fun ChatDetailScreen(
 
     Column(
         modifier = Modifier
-            .imePadding() // padding for the bottom for the IME
+            .imePadding()
     ) {
         LazyColumn(
             modifier = Modifier
@@ -82,7 +80,6 @@ fun ChatDetailScreen(
         MessageInput(
             viewModel = chatViewModel,
             chatId = chatId,
-//            modifier= Modifier.weight(0.2f)
         )
     }
 }
@@ -130,42 +127,3 @@ private fun MessageInput(
         }
     }
 }
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewChatDetailScreen() {
-    UniMatchTheme {
-        ChatDetailScreen(
-            chatId = "chat_1",
-            chatViewModel = ChatViewModel(
-                profileService = MockProfileService(),
-                chatService = MockChatService(),
-                errorViewModel = ErrorViewModel(),
-                userViewModel = UserViewModel(
-                    userService = MockUserService(),
-                    errorViewModel = ErrorViewModel(),
-                    profileService = MockProfileService()
-                ),
-            ),
-            userViewModel = UserViewModel(
-                userService = MockUserService(),
-                errorViewModel = ErrorViewModel(),
-                profileService = MockProfileService()
-            ),
-            navController = NavController(
-                context = LocalContext.current
-            ),
-            profileViewModel = ProfileViewModel(
-                profileService = MockProfileService(),
-                errorViewModel = ErrorViewModel(),
-                userViewModel = UserViewModel(
-                    userService = MockUserService(),
-                    errorViewModel = ErrorViewModel(),
-                    profileService = MockProfileService()
-                )
-            )
-        )
-    }
-}
-
