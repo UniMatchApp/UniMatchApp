@@ -54,11 +54,19 @@ class UserStatusViewModel(
     }
 
     private fun handleUserOnline(userId: String) {
-        updateUserStatus(userId, ChatStatusEnum.ONLINE)
+        if (_userStatuses.value.containsKey(userId)) {
+            _userStatuses.value = _userStatuses.value.toMutableMap().apply {
+                this[userId] = ChatStatusEnum.ONLINE
+            }
+        }
     }
 
     private fun handleUserOffline(userId: String) {
-        updateUserStatus(userId, ChatStatusEnum.OFFLINE)
+        if (_userStatuses.value.containsKey(userId)) {
+            _userStatuses.value = _userStatuses.value.toMutableMap().apply {
+                remove(userId)
+            }
+        }
     }
 
     private fun handleUserTyping(userId: String) {

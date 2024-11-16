@@ -1,6 +1,6 @@
 package com.ulpgc.uniMatch
 
-import NotificationsSocket
+import NotificationSocket
 import UserStatusSocket
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -60,7 +60,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             UniMatchTheme {
-                // Observar el estado de autenticación usando collectAsState
                 val authState by authViewModel.authState.collectAsState()
                 val errorState by errorViewModel.errorState.collectAsState()
 
@@ -96,7 +95,7 @@ class MainActivity : ComponentActivity() {
     private fun initializeWebSocket(userId: String) {
         val webSocketEventBus = WebSocketEventBus()
         val userStatusSocket = UserStatusSocket("localhost", 8081, userId, webSocketEventBus)
-        val notificationsSocket = NotificationsSocket("localhost", 8080, userId)
+        val notificationsSocket = NotificationSocket("localhost", 8081, userId, webSocketEventBus)
         userStatusSocket.connect()
         notificationsSocket.connect()
     }
