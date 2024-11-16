@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.ulpgc.uniMatch.data.infrastructure.events.WebSocketEventBus
 import com.ulpgc.uniMatch.data.infrastructure.services.user.MockUserService
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
 import com.ulpgc.uniMatch.data.infrastructure.services.matching.MockMatchingService
@@ -93,7 +94,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun initializeWebSocket(userId: String) {
-        val userStatusSocket = UserStatusSocket("localhost", 8081, userId)
+        val webSocketEventBus = WebSocketEventBus()
+        val userStatusSocket = UserStatusSocket("localhost", 8081, userId, webSocketEventBus)
         val notificationsSocket = NotificationsSocket("localhost", 8080, userId)
         userStatusSocket.connect()
         notificationsSocket.connect()
