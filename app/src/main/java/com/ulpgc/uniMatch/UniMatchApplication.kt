@@ -9,6 +9,7 @@ import com.ulpgc.uniMatch.data.infrastructure.controllers.NotificationController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.ProfileController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.UserController
 import com.ulpgc.uniMatch.data.infrastructure.database.AppDatabase
+import com.ulpgc.uniMatch.data.infrastructure.events.WebSocketEventBus
 import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.ApiChatService
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
@@ -24,20 +25,20 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 
 class UniMatchApplication : Application() {
 
-    // Instancia de AppDatabase que se usará en toda la aplicación
     private val database by lazy { AppDatabase.getDatabase(this) }
     private val secureStorage: SecureStorage by lazy {
         SecureStorage(this)
     }
 
     // ----------------------------------- Services -----------------------------------
-    private val userService by lazy { mockUserService }
-    private val profileService by lazy { mockProfileService }
+    private val userService by lazy { apiUserService }
+    private val profileService by lazy { apiProfileService }
     private val matchingService by lazy { mockMatchingService }
     private val notificationService by lazy { mockNotificationService }
     private val chatService by lazy { apiChatService }
@@ -66,12 +67,20 @@ class UniMatchApplication : Application() {
         )
     }
 
+    val eventbus by lazy {
+        WebSocketEventBus()
+    }
+
+    val permissionsViewModel by lazy {
+        PermissionsViewModel()
+    }
+
     val notificationsViewModel: NotificationsViewModel by lazy {
-        NotificationsViewModel(notificationService, errorViewModel, userViewModel)
+        NotificationsViewModel(notificationService, errorViewModel, eventbus, userViewModel)
     }
 
     val chatViewModel: ChatViewModel by lazy {
-        ChatViewModel(chatService, profileService, errorViewModel, userViewModel)
+        ChatViewModel(chatService, profileService, errorViewModel, userViewModel, eventbus)
     }
 
     // ----------------------------------- Mock services -----------------------------------
@@ -101,7 +110,8 @@ class UniMatchApplication : Application() {
     private val apiProfileService by lazy {
         ApiProfileService(
             profileController = ApiClient.retrofit.create(ProfileController::class.java),
-            profileDao = database.profileDao()
+            profileDao = database.profileDao(),
+            contentResolver = contentResolver
         )
     }
 

@@ -3,7 +3,7 @@ package com.ulpgc.uniMatch.data.infrastructure.services.chat
 
 import com.ulpgc.uniMatch.data.application.services.ChatService
 import com.ulpgc.uniMatch.data.application.services.ProfileService
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatusType
+import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MessageController
@@ -45,7 +45,7 @@ class ApiChatService(
                 throw Throwable(response.errorMessage ?: "Unknown error occurred")
             }
 
-            chatMessageDao.setMessageStatus(message.messageId, MessageStatusType.SENT)
+            chatMessageDao.setMessageStatus(message.messageId, MessageStatus.SENT)
 
             Result.success(message)
 

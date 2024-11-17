@@ -4,8 +4,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatusType
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatusType
+import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.domain.models.Message
 
 @Entity(
@@ -27,8 +27,8 @@ data class MessageEntity(
     val senderId: String,
     val recipientId: String,
     val timestamp: Long,
-    val status: MessageStatusType,
-    val deletedStatus: DeletedMessageStatusType,
+    val status: MessageStatus,
+    val deletedStatus: DeletedMessageStatus,
     val attachment: String? = null
 ) {
     companion object {

@@ -2,9 +2,19 @@ package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ulpgc.uniMatch.data.application.events.Event
+import com.ulpgc.uniMatch.data.application.events.EventBus
+import com.ulpgc.uniMatch.data.application.events.EventListener
 import com.ulpgc.uniMatch.data.application.services.NotificationsService
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
 import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
+import com.ulpgc.uniMatch.data.infrastructure.events.AppNotificationEvent
+import com.ulpgc.uniMatch.data.infrastructure.events.EventNotificationEvent
+import com.ulpgc.uniMatch.data.infrastructure.events.MatchNotificationEvent
+import com.ulpgc.uniMatch.data.infrastructure.events.MessageNotificationEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -12,8 +22,17 @@ import kotlinx.coroutines.launch
 class NotificationsViewModel (
     private val notificationsService: NotificationsService,
     private val errorViewModel: ErrorViewModel,
+    private val webSocketEventBus: EventBus,
     private val userViewModel: UserViewModel
-) : ViewModel() {
+) : ViewModel(), EventListener {
+
+    private val customScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    init {
+        customScope.launch {
+            webSocketEventBus.subscribeToEvents(this@NotificationsViewModel)
+        }
+    }
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
@@ -23,6 +42,47 @@ class NotificationsViewModel (
 
     private val _notificationsEnabled = MutableStateFlow(true)
     val notificationsEnabled: StateFlow<Boolean> get() = _notificationsEnabled
+
+    override suspend fun onEventReceived(event: Event) {
+        when (event) {
+            is AppNotificationEvent -> {
+                handleAppNotification(event.notification)
+            }
+            is EventNotificationEvent -> {
+                handleEventNotification(event.notification)
+            }
+            is MatchNotificationEvent -> {
+                handleMatchNotification(event.notification)
+            }
+            is MessageNotificationEvent -> {
+                handleMessageNotification(event.notification)
+            }
+        }
+    }
+
+    private fun handleAppNotification(notification: Notifications) {
+        _notifications.value = _notifications.value.toMutableList().apply {
+            add(0, notification)
+        }
+    }
+
+    private fun handleEventNotification(notification: Notifications) {
+        _notifications.value = _notifications.value.toMutableList().apply {
+            add(0, notification)
+        }
+    }
+
+    private fun handleMatchNotification(notification: Notifications) {
+        _notifications.value = _notifications.value.toMutableList().apply {
+            add(0, notification)
+        }
+    }
+
+    private fun handleMessageNotification(notification: Notifications) {
+        _notifications.value = _notifications.value.toMutableList().apply {
+            add(0, notification)
+        }
+    }
 
     fun loadNotifications() {
         viewModelScope.launch {

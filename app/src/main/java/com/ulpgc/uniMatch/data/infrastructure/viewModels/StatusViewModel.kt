@@ -12,6 +12,9 @@ import com.ulpgc.uniMatch.data.infrastructure.events.StoppedTypingEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.UserOnlineEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.UserOfflineEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.TypingEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,8 +26,10 @@ class UserStatusViewModel(
     private val userViewModel: UserViewModel
 ) : ViewModel(), EventListener {
 
+    private val customScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
     init {
-        viewModelScope.launch {
+        customScope.launch {
             webSocketEventBus.subscribeToEvents(this@UserStatusViewModel)
         }
     }
@@ -32,7 +37,6 @@ class UserStatusViewModel(
     private val _userStatuses = MutableStateFlow<Map<String, ChatStatusEnum>>(emptyMap())
     val userStatuses: StateFlow<Map<String, ChatStatusEnum>> get() = _userStatuses
 
-    // Handle events received from EventBus
     override suspend fun onEventReceived(event: Event) {
         when (event) {
             is UserOnlineEvent -> {
@@ -54,11 +58,19 @@ class UserStatusViewModel(
     }
 
     private fun handleUserOnline(userId: String) {
-        updateUserStatus(userId, ChatStatusEnum.ONLINE)
+        if (_userStatuses.value.containsKey(userId)) {
+            _userStatuses.value = _userStatuses.value.toMutableMap().apply {
+                this[userId] = ChatStatusEnum.ONLINE
+            }
+        }
     }
 
     private fun handleUserOffline(userId: String) {
-        updateUserStatus(userId, ChatStatusEnum.OFFLINE)
+        if (_userStatuses.value.containsKey(userId)) {
+            _userStatuses.value = _userStatuses.value.toMutableMap().apply {
+                remove(userId)
+            }
+        }
     }
 
     private fun handleUserTyping(userId: String) {

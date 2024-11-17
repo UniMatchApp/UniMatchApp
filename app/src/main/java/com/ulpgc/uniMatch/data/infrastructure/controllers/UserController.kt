@@ -7,35 +7,28 @@ import com.ulpgc.uniMatch.data.application.services.RegisterRequest
 import com.ulpgc.uniMatch.data.application.services.RegisterResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface UserController {
 
     @POST("users/auth/login")
     suspend fun login(@Body loginRequest: LoginRequest): ApiResponse<LoginResponse>
 
-    @POST("users/register")
+    @POST("users")
     suspend fun register(@Body registerRequest: RegisterRequest): ApiResponse<RegisterResponse>
 
-    // Denunciar a un usuario
-    @POST("users/report")
-    suspend fun reportUser(@Query("userId") userId: String, @Query("reportedUserId") reportedUserId: String): ApiResponse<Unit>
+    @POST("users/{id}/report/{targetId}")
+    suspend fun reportUser(@Path("id") userId: String, @Path("targetId") reportedUserId: String): ApiResponse<Unit>
 
-    // Bloquear a un usuario
-    @POST("users/block")
-    suspend fun blockUser(@Query("userId") userId: String, @Query("blockedUserId") blockedUserId: String): ApiResponse<Unit>
+    @POST("users/{id}/block/{targetId}")
+    suspend fun blockUser(@Path("id") userId: String, @Path("targetId") blockedUserId: String): ApiResponse<Unit>
 
-    // Olvidar contraseña
-    @POST("users/auth/forgot-password")
-    suspend fun forgotPassword(@Query("email") email: String): ApiResponse<String>
+    @POST("users/auth/{email}/forgot-password")
+    suspend fun forgotPassword(@Path("email") email: String): ApiResponse<String>
 
-    // Verificar código
-    @POST("users/auth/verify-code")
-    suspend fun verifyCode(@Query("userId") userId: String, @Query("code") code: String): ApiResponse<Unit>
+    @POST("users/auth/{id}/verify-code/{code}")
+    suspend fun verifyCode(@Path("id") userId: String, @Path("code") code: String): ApiResponse<Boolean>
 
-    // Restablecer contraseña
-    @PUT("users/{id}/password")
-    suspend fun resetPassword(@Path("id") userId: String, @Query("newPassword") newPassword: String): ApiResponse<Boolean>
+    @POST("users/{id}/password")
+    suspend fun resetPassword(@Path("id") userId: String, @Body password: String): ApiResponse<Boolean>
 }

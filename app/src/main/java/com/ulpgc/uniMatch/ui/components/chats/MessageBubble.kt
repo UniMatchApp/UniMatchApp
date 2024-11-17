@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatusType
+import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.domain.models.Message
 
 import com.ulpgc.uniMatch.ui.theme.Bone
@@ -92,9 +92,9 @@ fun MessageBubble(message: Message, isCurrentUser: Boolean) {
 }
 
 @Composable
-fun MessageStatusIcon(status: MessageStatusType) {
+fun MessageStatusIcon(status: MessageStatus) {
     when (status) {
-        MessageStatusType.SENDING -> {
+        MessageStatus.SENDING -> {
             Icon(
                 imageVector = Icons.Default.Schedule, // Icono de "Enviando"
                 contentDescription = "Sending",
@@ -103,7 +103,7 @@ fun MessageStatusIcon(status: MessageStatusType) {
             )
         }
 
-        MessageStatusType.SENT -> {
+        MessageStatus.SENT -> {
             Icon(
                 imageVector = Icons.Default.Check, // Icono de "Enviado"
                 contentDescription = "Sent",
@@ -112,7 +112,7 @@ fun MessageStatusIcon(status: MessageStatusType) {
             )
         }
 
-        MessageStatusType.RECEIVED -> {
+        MessageStatus.RECEIVED -> {
             Icon(
                 imageVector = Icons.Default.DoneAll, // Icono de "Recibido"
                 contentDescription = "Received",
@@ -121,7 +121,7 @@ fun MessageStatusIcon(status: MessageStatusType) {
             )
         }
 
-        MessageStatusType.READ -> {
+        MessageStatus.READ -> {
             Icon(
                 imageVector = Icons.Default.DoneAll, // Icono de "Leído"
                 contentDescription = "Read",
@@ -130,7 +130,7 @@ fun MessageStatusIcon(status: MessageStatusType) {
             )
         }
 
-        MessageStatusType.FAILED -> {
+        MessageStatus.FAILED -> {
             Icon(
                 imageVector = Icons.Default.Close, // Icono de "Fallido"
                 contentDescription = "Failed",

@@ -1,6 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.mocks
 
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatusType
+import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.domain.models.Message
 
 
@@ -9,12 +9,12 @@ object MessageMock {
     fun createMockMessages(amount: Int = 10): List<Message> {
         val mockSenderIds = arrayOf("mock_user_id", "user_id_1", "user_id_2")
         val mockStatuses = arrayOf(
-            MessageStatusType.SENDING,
-            MessageStatusType.SENT,
-            MessageStatusType.RECEIVED,
-            MessageStatusType.READ,
-            MessageStatusType.SENDING,
-            MessageStatusType.FAILED
+            MessageStatus.SENDING,
+            MessageStatus.SENT,
+            MessageStatus.RECEIVED,
+            MessageStatus.READ,
+            MessageStatus.SENDING,
+            MessageStatus.FAILED
 
         )
 

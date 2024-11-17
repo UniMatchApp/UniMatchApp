@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatusType
+import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
 import com.ulpgc.uniMatch.data.infrastructure.entities.MessageEntity
 import kotlinx.coroutines.flow.Flow
@@ -53,7 +53,7 @@ interface ChatMessageDao {
     @Query("SELECT COUNT(*) FROM messages WHERE chatId = :chatId AND status = :status")
     suspend fun countUnreadMessages(
         chatId: String,
-        status: MessageStatusType = MessageStatusType.SENT
+        status: MessageStatus = MessageStatus.SENT
     ): Int
 
     // Obtiene los mensajes de un chat específico, con paginación
@@ -67,11 +67,11 @@ interface ChatMessageDao {
     // Marca todos los mensajes como leídos en un chat y actualiza el contador
     @Transaction
     suspend fun markMessagesAsRead(chatId: String) {
-        setMessageStatus(chatId, MessageStatusType.READ)
+        setMessageStatus(chatId, MessageStatus.READ)
     }
 
     @Query("UPDATE messages SET status = :status WHERE chatId = :chatId AND status != :status")
-    suspend fun setMessageStatus(chatId: String, status: MessageStatusType)
+    suspend fun setMessageStatus(chatId: String, status: MessageStatus)
 
     // Otras operaciones CRUD
     @Query("DELETE FROM messages WHERE chatId = :chatId")

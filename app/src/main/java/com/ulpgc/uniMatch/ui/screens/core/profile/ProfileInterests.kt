@@ -74,9 +74,9 @@ fun ProfileInterests(
                 Log.i("ProfileInterests", "key: $key")
                 if (key != null) {
                     if (isAdded) {
-                        enumToString(key)?.let { profileViewModel.addInterest(it) }
+                        enumToString(key)?.let { profileViewModel.updateInterests(profileInterests + it) }
                     } else {
-                        enumToString(key)?.let { profileViewModel.removeInterest(it) }
+                        enumToString(key)?.let { profileViewModel.updateInterests(profileInterests - it) }
                     }
                 }
             }

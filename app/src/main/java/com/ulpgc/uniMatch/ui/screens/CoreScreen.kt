@@ -184,9 +184,7 @@ fun CoreNavHost(
             ChatDetailScreen(
                 chatId = chatId,
                 chatViewModel = chatViewModel,
-                userViewModel = userViewModel,
-                navController = navController,
-                profileViewModel = profileViewModel
+                userViewModel = userViewModel
             )
         }
 

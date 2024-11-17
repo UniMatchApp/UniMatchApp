@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.profile
 
+import android.net.Uri
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
@@ -11,6 +12,7 @@ import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.mocks.ProfileMock
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 
 class MockProfileService: ProfileService {
     override suspend fun getProfile(userId: String): Result<Profile> {
@@ -112,10 +114,6 @@ class MockProfileService: ProfileService {
         return Result.success(Unit)
     }
 
-    override suspend fun addInterest(userId: String, interest: String): Result<Unit> {
-        return Result.success(Unit)
-    }
-
     override suspend fun removeInterest(userId: String, interest: String): Result<Unit> {
         return Result.success(Unit)
     }
@@ -138,7 +136,7 @@ class MockProfileService: ProfileService {
         relationshipType: RelationshipType,
         birthday: String,
         location: Pair<Double, Double>?,
-        profileImageUri: String?
+        profileImage: Uri
     ): Result<Profile> {
         return withContext(Dispatchers.IO) {
             try {

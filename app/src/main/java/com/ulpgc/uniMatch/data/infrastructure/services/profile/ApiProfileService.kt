@@ -1,5 +1,7 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.profile
 
+import android.content.ContentResolver
+import android.net.Uri
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
@@ -13,15 +15,32 @@ import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
-class ApiProfileService(
+data class ProfileRequest(
+    val name: RequestBody,
+    val age: RequestBody,
+    val aboutMe: RequestBody,
+    val gender: RequestBody,
+    val sexualOrientation: RequestBody,
+    val relationshipType: RequestBody,
+    val birthday: RequestBody,
+    val location: RequestBody?,
+)
+
+
+class ApiProfileService (
     private val profileController: ProfileController,
-    private val profileDao: ProfileDao
+    private val profileDao: ProfileDao,
+    private val contentResolver: ContentResolver
 ) : ProfileService {
 
     override suspend fun getProfile(userId: String): Result<Profile> {
         return try {
-
             val profileEntity = profileDao.getProfileById(userId)
             val profile = ProfileEntity.toDomain(profileEntity)
             Result.success(profile)
@@ -59,7 +78,7 @@ class ApiProfileService(
 
     override suspend fun updateInterests(userId: String, interests: List<String>): Result<Unit> {
         return try {
-            // profileController.updateInterests(userId, interests) TODO
+            profileController.updateInterests(userId, interests)
             Result.success(Unit)
         } catch (e: Throwable) {
             Result.failure(e)
@@ -127,9 +146,6 @@ class ApiProfileService(
         return handleApiCall { profileController.updateValuesAndBeliefs(userId, valuesAndBeliefs) }
     }
 
-    override suspend fun addInterest(userId: String, interest: String): Result<Unit> {
-        return handleApiCall { profileController.addInterest(userId, interest) }
-    }
 
     override suspend fun removeInterest(userId: String, interest: String): Result<Unit> {
         return handleApiCall { profileController.removeInterest(userId, interest) }
@@ -153,22 +169,44 @@ class ApiProfileService(
         relationshipType: RelationshipType,
         birthday: String,
         location: Pair<Double, Double>?,
-        profileImageUri: String?
+        profileImage: Uri
     ): Result<Profile> {
         return withContext(Dispatchers.IO) {
             try {
+                // Usamos ContentResolver para obtener el InputStream de la imagen
+                val inputStream = contentResolver.openInputStream(profileImage)
+                    ?: throw Exception("No se pudo abrir el flujo de entrada para la imagen")
+
+                // Convertir el InputStream a un RequestBody
+                val requestBody = inputStream.use { it.readBytes().toRequestBody("image/*".toMediaTypeOrNull()) }
+
+                // Crear el MultipartBody.Part para la imagen
+                val thumbnailPart = MultipartBody.Part.createFormData("thumbnail", profileImage.lastPathSegment, requestBody)
+
+                // Crear los otros RequestBody para los datos del perfil
+                val nameRequest = createRequestBody(fullName)
+                val ageRequest = createRequestBody(age.toString())
+                val aboutMeRequest = createRequestBody(aboutMe)
+                val genderRequest = createRequestBody(gender.toString())
+                val sexualOrientationRequest = createRequestBody(sexualOrientation.toString())
+                val relationshipTypeRequest = createRequestBody(relationshipType.toString())
+                val birthdayRequest = createRequestBody(birthday)
+                val locationRequest = location?.let { createRequestBody("${it.first},${it.second}") }
+
+                // Llamar al controlador para crear el perfil
                 val response = profileController.createProfile(
                     userId,
-                    fullName,
-                    age,
-                    aboutMe,
-                    gender.toString(),
-                    sexualOrientation.toString(),
-                    relationshipType.toString(),
-                    birthday,
-                    location,
-                    profileImageUri
+                    nameRequest,
+                    ageRequest,
+                    aboutMeRequest,
+                    genderRequest,
+                    sexualOrientationRequest,
+                    relationshipTypeRequest,
+                    birthdayRequest,
+                    locationRequest,
+                    thumbnailPart
                 )
+
                 if (response.success) {
                     Result.success(response.value!!)
                 } else {
@@ -192,6 +230,14 @@ class ApiProfileService(
                 else -> Result.failure(Throwable("Error desconocido: ${e.localizedMessage}"))
             }
         }
+    }
+
+    private fun createRequestBody(value: String): RequestBody {
+        return value.toRequestBody("text/plain".toMediaTypeOrNull())
+    }
+
+    private fun createRequestBody(value: Int): RequestBody {
+        return RequestBody.create("text/plain".toMediaTypeOrNull(), value.toString())
     }
 
 }

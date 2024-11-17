@@ -1,6 +1,6 @@
 package com.ulpgc.uniMatch
 
-import NotificationsSocket
+import NotificationSocket
 import UserStatusSocket
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             UniMatchTheme {
-                // Observar el estado de autenticación usando collectAsState
                 val authState by app.userViewModel.authState.collectAsState()
                 val errorState by app.errorViewModel.errorState.collectAsState()
 
@@ -32,7 +31,7 @@ class MainActivity : ComponentActivity() {
                 when (authState) {
                     is AuthState.Authenticated -> {
                         val userId = (authState as AuthState.Authenticated).user.id
-                        initializeWebSocket(userId)
+                        initializeWebSocket(userId, app.eventbus)
                         CoreScreen(
                             app.userViewModel,
                             app.chatViewModel,
@@ -44,7 +43,8 @@ class MainActivity : ComponentActivity() {
 
                     is AuthState.Unauthenticated -> AuthScreen(
                         app.userViewModel,
-                        app.errorViewModel
+                        app.errorViewModel,
+                        app.permissionsViewModel
                     )
                 }
 
@@ -53,7 +53,6 @@ class MainActivity : ComponentActivity() {
                         errorMessage = (errorState as ErrorState.Error).message,
                         onDismiss = {
                             app.errorViewModel.clearError()
-//                            app.userViewModel.logout()
                         }
                     )
                 }
@@ -61,10 +60,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun initializeWebSocket(userId: String) {
-        val webSocketEventBus = WebSocketEventBus()
-        val userStatusSocket = UserStatusSocket("localhost", 8081, userId, webSocketEventBus)
-        val notificationsSocket = NotificationsSocket("localhost", 8080, userId)
+    private fun initializeWebSocket(userId: String, eventbus: WebSocketEventBus) {
+        val userStatusSocket = UserStatusSocket("localhost", 8081, userId, eventbus)
+        val notificationsSocket = NotificationSocket("localhost", 8080, userId, eventbus)
         userStatusSocket.connect()
         notificationsSocket.connect()
     }
