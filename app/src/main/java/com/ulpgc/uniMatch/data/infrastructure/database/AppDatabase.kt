@@ -11,7 +11,7 @@ import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
 import com.ulpgc.uniMatch.data.infrastructure.entities.MessageEntity
 import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
 
-@Database(entities = [ProfileEntity::class, ChatEntity::class, MessageEntity::class], version = 1)
+@Database(entities = [ProfileEntity::class, ChatEntity::class, MessageEntity::class], version =2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun chatMessageDao(): ChatMessageDao
     abstract fun profileDao(): ProfileDao

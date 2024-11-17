@@ -8,13 +8,16 @@ import com.ulpgc.uniMatch.data.domain.models.Chat
 @Entity(tableName = "chats")
 data class ChatEntity(
     @PrimaryKey val id: String,                          // Nombre del usuario del chat
+    val name: String,
+    val profilePictureUrl: String,
 ) {
-
     // Companion object para convertir ChatPreviewData a ChatEntity
     companion object {
         fun fromDomain(chat: Chat): ChatEntity {
             return ChatEntity(
                 id = chat.userId,
+                name = chat.userName,
+                profilePictureUrl = chat.profilePictureUrl ?: ""
             )
         }
     }

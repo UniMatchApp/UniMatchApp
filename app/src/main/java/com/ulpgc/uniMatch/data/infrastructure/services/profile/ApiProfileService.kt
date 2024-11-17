@@ -144,6 +144,15 @@ class ApiProfileService(
         }
     }
 
+    private suspend fun <T> handleApiCall(apiCall: suspend () -> T): Result<T> {
+        return try {
+            val response = apiCall()
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(Exception("Failed to create profile: ${e.message}", e))
+        }
+    }
+
     private fun handleProfileCreationResult(request: Result<ApiResponse<Profile>>): Result<Profile> {
         return request.fold(
             onSuccess = { apiResponse ->
@@ -167,11 +176,6 @@ class ApiProfileService(
     private fun createRequestBody(value: String): RequestBody =
         value.toRequestBody("text/plain".toMediaTypeOrNull())
 
-    private suspend fun <T> handleApiCall(apiCall: suspend () -> T): Result<T> = try {
-        Result.success(apiCall())
-    } catch (e: Exception) {
-        Result.failure(mapException(e))
-    }
 
     private suspend fun <T> handleDatabaseCall(databaseCall: suspend () -> T): Result<T> = try {
         Result.success(databaseCall())

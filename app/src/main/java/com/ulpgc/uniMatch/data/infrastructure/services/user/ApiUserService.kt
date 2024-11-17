@@ -12,6 +12,7 @@ import com.ulpgc.uniMatch.data.infrastructure.controllers.UserController
 import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 
 class ApiUserService(
     private val userController: UserController, private val secureStorage: SecureStorage
@@ -28,6 +29,10 @@ class ApiUserService(
                 } else {
                     Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
                 }
+            } catch (e: HttpException) {
+                val errorMessage = e.response()?.errorBody()?.string() ?: "Unknown error occurred"
+                Log.e("ApiAuthService", "HTTP error: $errorMessage")
+                Result.failure(Throwable("Login failed: $errorMessage"))
             } catch (e: Exception) {
                 Log.e("ApiAuthService", "Login failed: ${e.message}")
                 Result.failure(Throwable("Login failed: ${e.message}"))
@@ -48,6 +53,7 @@ class ApiUserService(
                         response.value.user.email,
                         response.value.user.registrationDate,
                         response.value.user.blockedUsers,
+                        response.value.user.reportedUsers,
                         response.value.user.registered
                     )
                     Result.success(response.value)
@@ -132,12 +138,14 @@ class ApiUserService(
         return withContext(Dispatchers.IO) {
             try {
                 val response = userController.verifyCode(userId, code)
+                Log.i("ApiAuthService", "Verify code response: $response")
                 if (response.success) {
                     Result.success(true)
                 } else {
                     Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
                 }
             } catch (e: Exception) {
+                Log.e("ApiAuthService", "Failed to verify code: ${e.message}")
                 Result.failure(Throwable("Failed to verify code: ${e.message}"))
             }
         }

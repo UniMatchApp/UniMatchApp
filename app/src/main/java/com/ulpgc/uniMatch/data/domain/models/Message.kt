@@ -1,8 +1,8 @@
 package com.ulpgc.uniMatch.data.domain.models
 
 import com.google.gson.annotations.SerializedName
-import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatusType
+import com.ulpgc.uniMatch.data.domain.enums.MessageStatusType
 import java.util.Date
 import java.util.UUID
 
@@ -14,8 +14,8 @@ data class Message(
     @SerializedName("senderId") val senderId: String,
     @SerializedName("recipientId") val recipientId: String,
     @SerializedName("attachment") var attachment: String? = null,
-    @SerializedName("status") var status: MessageStatus = MessageStatus.SENDING,
-    @SerializedName("deleted_status") var deletedStatus: DeletedMessageStatus = DeletedMessageStatus.NOT_DELETED,
+    @SerializedName("status") var status: MessageStatusType = MessageStatusType.SENDING,
+    @SerializedName("deletedStatus") var deletedStatus: DeletedMessageStatusType = DeletedMessageStatusType.NOT_DELETED,
     @SerializedName("timestamp") var timestamp: Long = Date().time
 ){
     companion object {
