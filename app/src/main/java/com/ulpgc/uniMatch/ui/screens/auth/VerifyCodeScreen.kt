@@ -53,6 +53,7 @@ fun VerifyCodeScreen(
                 onVerificationSuccess()
             }
             userViewModel.resetVerificationResult()
+
         }
     }
 

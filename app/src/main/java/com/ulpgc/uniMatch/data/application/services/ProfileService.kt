@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.data.application.services
 
+import android.net.Uri
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
 import com.ulpgc.uniMatch.data.domain.enums.Horoscope
@@ -7,6 +8,7 @@ import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
+import java.io.File
 
 interface ProfileService {
     suspend fun createProfile(
@@ -19,7 +21,7 @@ interface ProfileService {
         relationshipType: RelationshipType,
         birthday: String,
         location: Pair<Double, Double>?,
-        profileImageUri: String?
+        profileImage: Uri
     ): Result<Profile>
 
     suspend fun getProfile(userId: String): Result<Profile>

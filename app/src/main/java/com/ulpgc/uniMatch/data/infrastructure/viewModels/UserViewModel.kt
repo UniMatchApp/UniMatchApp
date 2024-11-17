@@ -1,5 +1,7 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.ProfileService
@@ -12,6 +14,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.mindrot.jbcrypt.BCrypt
+import java.io.File
 
 open class UserViewModel(
     private val userService: UserService,
@@ -57,9 +60,12 @@ open class UserViewModel(
             val result = userService.login(email.trim(), password)
             result.onSuccess { loginResponse ->
                 authToken = loginResponse.token
+                Log.i(("Login response"), loginResponse.toString())
                 if (loginResponse.user.registered) {
+                    Log.i("UserViewModel", "User is registered")
                     _authState.value = AuthState.Authenticated(loginResponse.user)
                 } else {
+                    Log.i("UserViewModel", "User is not registered")
                     _authState.value = AuthState.Unauthenticated
                     _loginUserId.value = loginResponse.user.id
                 }
@@ -119,8 +125,8 @@ open class UserViewModel(
             result.onSuccess {
                 _verifyCodeResult.value = true
             }.onFailure {
-                errorViewModel.showError(it.message ?: "Unknown error occurred")
                 _verifyCodeResult.value = false
+                errorViewModel.showError(it.message ?: "Unknown error occurred")
             }
         }
     }
@@ -149,7 +155,7 @@ open class UserViewModel(
         relationshipType: RelationshipType,
         birthday: String,
         location: Pair<Double, Double>?,
-        profileImageUri: String?
+        profileImageUri: Uri
     ) {
         viewModelScope.launch {
             val result = profileService.createProfile(

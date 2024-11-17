@@ -47,12 +47,11 @@ import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.ui.components.DatePickerComponent
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
 import com.ulpgc.uniMatch.ui.components.InputField
-import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -62,7 +61,8 @@ fun RegisterProfileScreen(
     userViewModel: UserViewModel,
     errorViewModel: ErrorViewModel,
     userId: String,
-    onCompleteProfile: () -> Unit
+    onCompleteProfile: () -> Unit,
+    location: Pair<Double, Double>?,
 ) {
     var fullName by remember { mutableStateOf("") }
     var age by remember { mutableIntStateOf(0) }
@@ -72,8 +72,6 @@ fun RegisterProfileScreen(
     var relationshipType by remember { mutableStateOf(RelationshipType.FRIENDSHIP) }
     var birthday by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    val PERMISSION_REQUEST_CODE = 1001
-    var location by remember { mutableStateOf<Pair<Double, Double>?>(null) }
 
     val imagePickerLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -84,8 +82,10 @@ fun RegisterProfileScreen(
             }
         }
 
-    val context = LocalContext.current
     val activity = LocalContext.current as Activity
+    val context = LocalContext.current
+    val REQUEST_CODE_READ_STORAGE = 1
+    val permissionGranted = remember { mutableStateOf(false) }
 
     var showImageDialog by remember { mutableStateOf(false) }
 
@@ -93,31 +93,38 @@ fun RegisterProfileScreen(
 
     val locationError = stringResource(R.string.location_error)
     val fieldsEmptyError = stringResource(R.string.fields_empty_error)
-
-    LaunchedEffect(Unit) {
-        if (ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                PERMISSION_REQUEST_CODE
-            )
-        } else {
-            location = LocationHelper.getCurrentLocation(context)
-            if (location == null) {
-                errorViewModel.showError(locationError)
-            }
-        }
-    }
+    val ageError = stringResource(R.string.age_error)
 
     LaunchedEffect(profileCreated) {
         if (profileCreated) {
             onCompleteProfile()
         }
     }
+
+    LaunchedEffect(Unit) {
+        val permissionStatus = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+            permissionGranted.value = true
+        } else {
+            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_READ_STORAGE)
+        }
+    }
+
+    val permissionResultLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        permissionGranted.value = granted
+        if (!granted) {
+            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_READ_STORAGE)
+        }
+    }
+
+    LaunchedEffect(permissionGranted.value) {
+        if (!permissionGranted.value) {
+            permissionResultLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+    }
+
 
     fun calculateAge(birthday: String): Int {
         val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -257,11 +264,10 @@ fun RegisterProfileScreen(
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
-                    if (location == null) {
-                        errorViewModel.showError(locationError)
-                    }
-                    else if (fullName.isEmpty() || aboutMe.isEmpty() || birthday.isEmpty() || selectedImageUri == null || age < 18) {
+                    if (fullName.isEmpty() || aboutMe.isEmpty() || birthday.isEmpty() || selectedImageUri == null) {
                         errorViewModel.showError(fieldsEmptyError)
+                    } else if (age < 18 || age > 100) {
+                        errorViewModel.showError(ageError)
                     } else {
                         userViewModel.createProfile(
                             userId,
@@ -273,7 +279,7 @@ fun RegisterProfileScreen(
                             relationshipType,
                             birthday,
                             location,
-                            selectedImageUri.toString()
+                            selectedImageUri!!
                         )
                     }
                 },

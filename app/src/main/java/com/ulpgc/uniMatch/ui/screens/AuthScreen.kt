@@ -1,20 +1,32 @@
 package com.ulpgc.uniMatch.ui.screens
 
+import android.Manifest
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.ui.screens.auth.AuthOptionsScreen
-import com.ulpgc.uniMatch.ui.screens.auth.forgot.ForgotPasswordScreen
-import com.ulpgc.uniMatch.ui.screens.auth.login.LoginScreen
-import com.ulpgc.uniMatch.ui.screens.auth.register.RegisterScreen
-import com.ulpgc.uniMatch.ui.screens.auth.forgot.ResetPasswordScreen
 import com.ulpgc.uniMatch.ui.screens.auth.VerifyCodeScreen
+import com.ulpgc.uniMatch.ui.screens.auth.forgot.ForgotPasswordScreen
+import com.ulpgc.uniMatch.ui.screens.auth.forgot.ResetPasswordScreen
+import com.ulpgc.uniMatch.ui.screens.auth.login.LoginScreen
 import com.ulpgc.uniMatch.ui.screens.auth.register.RegisterProfileScreen
+import com.ulpgc.uniMatch.ui.screens.auth.register.RegisterScreen
+import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 
 object AuthRoutes {
     const val OPTIONS = "options"
@@ -32,7 +44,8 @@ object AuthRoutes {
 @Composable
 fun AuthScreen(
     userViewModel: UserViewModel,
-    errorViewModel: ErrorViewModel
+    errorViewModel: ErrorViewModel,
+    permissionsViewModel: PermissionsViewModel
 ) {
     val navController = rememberNavController()
 
@@ -40,13 +53,56 @@ fun AuthScreen(
     val forgotPasswordUserId = userViewModel.forgotPasswordUserId.collectAsState()
     val loginUserId = userViewModel.loginUserId.collectAsState()
 
+    var location by remember { mutableStateOf<Pair<Double, Double>?>(null) }
+    val activity = LocalContext.current as Activity
 
+    val hasPermission = permissionsViewModel.hasLocationPermission.collectAsState()
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        permissionsViewModel.updateLocationPermissionStatus(isGranted)
+    }
+
+    suspend fun askForPermission() {
+        if (!hasPermission.value) {
+            val canRequestAgain = shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)
+            if (canRequestAgain) {
+                permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
+        } else {
+            LocationHelper.getCurrentLocation(activity)?.let { userLocation ->
+                val latitude = userLocation.first
+                val longitude = userLocation.second
+                location = Pair(latitude, longitude)
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        askForPermission()
+    }
+
+    LaunchedEffect (hasPermission.value) {
+        if (hasPermission.value) {
+            LocationHelper.getCurrentLocation(activity)?.let { userLocation ->
+                val latitude = userLocation.first
+                val longitude = userLocation.second
+                location = Pair(latitude, longitude)
+            }
+        }
+    }
 
     NavHost(navController = navController, startDestination = AuthRoutes.OPTIONS) {
         composable(AuthRoutes.OPTIONS) {
+
             AuthOptionsScreen(
-                onLoginClick = { navController.navigate(AuthRoutes.LOGIN) },
-                onRegisterClick = { navController.navigate(AuthRoutes.REGISTER) }
+                onLoginClick = {
+                    navController.navigate(AuthRoutes.LOGIN)
+                },
+                onRegisterClick = {
+                    navController.navigate(AuthRoutes.REGISTER)
+                }
             )
         }
 
@@ -60,55 +116,47 @@ fun AuthScreen(
             )
 
             LaunchedEffect(loginUserId.value) {
-                if (loginUserId.value != null) {
+                loginUserId.value?.let {
                     navController.navigate(AuthRoutes.LOGIN_VERIFY_CODE)
                 }
             }
         }
 
         composable(AuthRoutes.REGISTER) {
-
             RegisterScreen(
                 userViewModel = userViewModel,
                 errorViewModel = errorViewModel,
                 onBackClick = { navController.navigate(AuthRoutes.OPTIONS) },
                 onLoginClick = { navController.navigate(AuthRoutes.LOGIN) },
-                continueRegister = {
-                    userViewModel.register()
-                }
+                continueRegister = { userViewModel.register() }
             )
-
-            LaunchedEffect(registeredUserId.value) {
-                if (registeredUserId.value != null) {
-                    navController.navigate(AuthRoutes.REGISTER_VERIFY_CODE)
-                }
-            }
         }
-
         composable(AuthRoutes.REGISTER_PROFILE) {
-            if (registeredUserId.value != null) {
+            registeredUserId.value?.let { userId ->
                 RegisterProfileScreen(
                     userViewModel = userViewModel,
                     errorViewModel = errorViewModel,
-                    userId = registeredUserId.value!!,
+                    userId = userId,
                     onCompleteProfile = {
                         navController.navigate(AuthRoutes.OPTIONS)
                         userViewModel.resetRegisteredUserId()
-                    }
+                    },
+                    location = location
                 )
-            }
+                }
         }
 
         composable(AuthRoutes.LOGIN_PROFILE) {
-            if (loginUserId.value != null) {
+            loginUserId.value?.let { userId ->
                 RegisterProfileScreen(
                     userViewModel = userViewModel,
                     errorViewModel = errorViewModel,
-                    userId = loginUserId.value!!,
+                    userId = userId,
                     onCompleteProfile = {
-                        navController.navigate(AuthRoutes.LOGIN_VERIFY_CODE)
+                        navController.navigate(AuthRoutes.OPTIONS)
                         userViewModel.resetLoginUserId()
-                    }
+                    },
+                    location = location
                 )
             }
         }
@@ -122,18 +170,18 @@ fun AuthScreen(
             )
 
             LaunchedEffect(forgotPasswordUserId.value) {
-                if (forgotPasswordUserId.value != null) {
+                forgotPasswordUserId.value?.let {
                     navController.navigate(AuthRoutes.FORGOT_VERIFY_CODE)
                 }
             }
         }
 
         composable(AuthRoutes.FORGOT_VERIFY_CODE) {
-            if (forgotPasswordUserId.value != null) {
+            forgotPasswordUserId.value?.let {
                 VerifyCodeScreen(
                     userViewModel = userViewModel,
                     errorViewModel = errorViewModel,
-                    userId = forgotPasswordUserId.value!!,
+                    userId = it,
                     onVerificationSuccess = { navController.navigate(AuthRoutes.RESET_PASSWORD) },
                     onBack = {
                         navController.navigate(AuthRoutes.FORGOT_PASSWORD)
@@ -141,15 +189,14 @@ fun AuthScreen(
                     }
                 )
             }
-
         }
 
         composable(AuthRoutes.REGISTER_VERIFY_CODE) {
-            if (registeredUserId.value != null) {
+            registeredUserId.value?.let {
                 VerifyCodeScreen(
                     userViewModel = userViewModel,
                     errorViewModel = errorViewModel,
-                    userId = registeredUserId.value!!,
+                    userId = it,
                     onVerificationSuccess = { navController.navigate(AuthRoutes.REGISTER_PROFILE) },
                     onBack = {
                         navController.navigate(AuthRoutes.REGISTER)
@@ -157,15 +204,14 @@ fun AuthScreen(
                     }
                 )
             }
-
         }
 
         composable(AuthRoutes.LOGIN_VERIFY_CODE) {
-            if (loginUserId.value != null) {
+            loginUserId.value?.let {
                 VerifyCodeScreen(
                     userViewModel = userViewModel,
                     errorViewModel = errorViewModel,
-                    userId = loginUserId.value!!,
+                    userId = it,
                     onVerificationSuccess = { navController.navigate(AuthRoutes.LOGIN_PROFILE) },
                     onBack = {
                         navController.navigate(AuthRoutes.LOGIN)
@@ -175,13 +221,12 @@ fun AuthScreen(
             }
         }
 
-
         composable(AuthRoutes.RESET_PASSWORD) {
-            if (forgotPasswordUserId.value != null) {
+            forgotPasswordUserId.value?.let {
                 ResetPasswordScreen(
                     userViewModel = userViewModel,
                     errorViewModel = errorViewModel,
-                    userId = forgotPasswordUserId.value!!,
+                    userId = it,
                     onPasswordReset = {
                         navController.navigate(AuthRoutes.LOGIN)
                         userViewModel.resetForgotPasswordUserId()
@@ -189,6 +234,5 @@ fun AuthScreen(
                 )
             }
         }
-
     }
 }

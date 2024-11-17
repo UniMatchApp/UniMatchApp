@@ -57,6 +57,7 @@
     <string name="selected_date">Selected Date</string>
     <string name="select_date">Select Date</string>
     <string name="email_empty_error">Email cannot be empty</string>
+    <string name="age_error">Age must be between 18 and 100</string>
 
     <!--PROFILE-->
     <string name="horoscope">Horoscope</string>

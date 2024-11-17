@@ -15,19 +15,33 @@ import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.services.profile.ProfileRequest
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.io.File
 
 interface ProfileController {
 
+    @Multipart
     @POST("users/{id}")
     suspend fun createProfile(
         @Path("id") userId: String,
-        @Body profileRequest: ProfileRequest
+        @Part("name") name: RequestBody,
+        @Part("age") age: RequestBody,
+        @Part("aboutMe") aboutMe: RequestBody,
+        @Part("gender") gender: RequestBody,
+        @Part("sexualOrientation") sexualOrientation: RequestBody,
+        @Part("relationshipType") relationshipType: RequestBody,
+        @Part("birthday") birthday: RequestBody,
+        @Part("location") location: RequestBody?,
+        @Part thumbnail: MultipartBody.Part
     ): ApiResponse<Profile>
 
     @PUT("users/{id}/about")
