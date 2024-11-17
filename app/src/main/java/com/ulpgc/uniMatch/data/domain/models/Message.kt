@@ -15,7 +15,7 @@ data class Message(
     @SerializedName("recipientId") val recipientId: String,
     @SerializedName("attachment") var attachment: String? = null,
     @SerializedName("status") var status: MessageStatusType = MessageStatusType.SENDING,
-    @SerializedName("deleted_status") var deletedStatus: DeletedMessageStatusType = DeletedMessageStatusType.NOT_DELETED,
+    @SerializedName("deletedStatus") var deletedStatus: DeletedMessageStatusType = DeletedMessageStatusType.NOT_DELETED,
     @SerializedName("timestamp") var timestamp: Long = Date().time
 ){
     companion object {

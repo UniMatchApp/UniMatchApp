@@ -166,7 +166,9 @@ fun AuthScreen(
                     userViewModel = userViewModel,
                     errorViewModel = errorViewModel,
                     userId = loginUserId.value!!,
-                    onVerificationSuccess = { navController.navigate(AuthRoutes.LOGIN_PROFILE) },
+                    onVerificationSuccess = {
+                        navController.navigate(AuthRoutes.LOGIN_PROFILE)
+                    },
                     onBack = {
                         navController.navigate(AuthRoutes.LOGIN)
                         userViewModel.resetLoginUserId()

@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -21,7 +22,7 @@ fun ChatList(
         items(chats) { chat ->
             ChatListItem(
                 profileImageUrl = chat.profilePictureUrl,
-                userName = chat.userId,
+                userName = chat.userName,
                 lastMessage = chat.lastMessage?.content ?: "",
                 lastMessageTime = formatDate(chat.lastMessage?.timestamp ?: 0),
                 unreadMessagesCount = chat.unreadMessagesCount,

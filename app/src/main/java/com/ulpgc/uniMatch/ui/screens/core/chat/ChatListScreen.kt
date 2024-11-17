@@ -30,32 +30,6 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.ui.components.chats.ChatList
 
 @Composable
-fun CustomStyledTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier
-            .background(Color.Transparent)
-            .padding(10.dp)
-
-            .then(Modifier.padding(10.dp)),
-        textStyle = TextStyle(
-            color = Color.White,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Normal,
-
-            ),
-        shape = RoundedCornerShape(10.dp),
-    )
-}
-
-
-@Composable
 fun ChatListScreen(
     viewModel: ChatViewModel,
     onChatClick: (String) -> Unit
@@ -79,7 +53,6 @@ fun ChatListScreen(
         } else if (chatList.isEmpty()) {
             Text(text = "No chats available", style = MaterialTheme.typography.titleLarge)
         } else {
-
             ChatList(
                 chats = chatList,
                 onChatClick = { chat ->

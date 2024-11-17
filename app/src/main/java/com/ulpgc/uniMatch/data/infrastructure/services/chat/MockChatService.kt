@@ -27,6 +27,8 @@ class MockChatService : ChatService {
     }
 
     override suspend fun getChats(loggedUserId: String): Result<List<Chat>> {
+        val chats = emptyList<Chat>()
+
         return Result.success(
             ChatPreviewDataMock.createChatPreviewDataMocks()
         )

@@ -48,6 +48,7 @@ open class ChatViewModel(
                 _chatList.value = chats
                 _isLoading.value = false
             }.onFailure { error ->
+                Log.e("ChatViewModel", "Error loading chats: ${error.message}")
                 errorViewModel.showError(
                     error.message ?: "Error loading chats"
                 )

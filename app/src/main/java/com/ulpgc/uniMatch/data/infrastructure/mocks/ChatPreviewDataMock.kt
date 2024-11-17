@@ -34,6 +34,7 @@ object ChatPreviewDataMock {
 
         val availableIndices = (names.indices).shuffled().take(count)
         return availableIndices.map { index ->
+            val id = (0..1000).random()
             val name = names[index]
             val message = messages.random()
 
@@ -45,7 +46,8 @@ object ChatPreviewDataMock {
             val profileImage = profileImages[index]
 
             Chat(
-                userId = name,
+                userId = id.toString(),
+                userName = name,
                 lastMessage = MessageMock.createMockMessages(1).first(),
                 profilePictureUrl = profileImage,
                 unreadMessagesCount = unreadMessagesCount

@@ -6,7 +6,8 @@ import java.util.Date
 object UserMock {
     fun createMockLoggedUser(): User {
         return User(
-            id = "mock_user_id",
+            id = "d449400b-1716-4474-b8aa-2d058542270c",
+//            id = "mock_user_id",
             registrationDate = Date(),
             email = "loggeduser@email.com",
             blockedUsers = listOf("blockedUser1", "blockedUser2"),

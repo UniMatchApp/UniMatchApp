@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Optimization
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -33,12 +35,18 @@ android {
 
     buildTypes {
         debug {
+            isDebuggable = true
+            enableAndroidTestCoverage = false
             isMinifyEnabled = false
+
             buildConfigField("String", "BASE_URL", "\"http://localhost:3000/\"")
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro"
             )
+            kotlinOptions {
+                freeCompilerArgs = listOf("-Xdebug")
+            }
         }
         release {
             isMinifyEnabled = false
@@ -138,7 +146,7 @@ dependencies {
 
 
 tasks.whenTaskAdded {
-    if (name == "generateDebugBuildConfig") {
+    if (name == "compileDebugKotlin") {
         dependsOn("generateDebugResources")
         println("Running adb reverse...")
         val adbCommand = "adb reverse tcp:3000 tcp:3000"
@@ -158,4 +166,24 @@ tasks.whenTaskAdded {
     }
 }
 
-
+//gradle.taskGraph.whenReady {
+//    allTasks.forEach { task ->
+//        val adbCommand = "adb reverse tcp:3000 tcp:3000"
+//        val adbCommand2 = "adb reverse tcp:8080 tcp:8080"
+//        val adbCommand3 = "adb reverse tcp:8081 tcp:8081"
+//        task.doFirst {
+//            println("Running adb reverse...")
+//            exec {
+//                commandLine("cmd", "/c", adbCommand)
+//            }
+//            exec {
+//                commandLine("cmd", "/c", adbCommand2)
+//            }
+//            exec {
+//                commandLine("cmd", "/c", adbCommand3)
+//            }
+//        }
+//    }
+//}
+//
+//

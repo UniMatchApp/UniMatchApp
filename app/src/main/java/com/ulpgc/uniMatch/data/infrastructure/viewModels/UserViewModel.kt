@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.ProfileService
@@ -57,6 +58,8 @@ open class UserViewModel(
             val result = userService.login(email.trim(), password)
             result.onSuccess { loginResponse ->
                 authToken = loginResponse.token
+                Log.i("UserViewModel", "Login Response: ${loginResponse.user}")
+
                 if (loginResponse.user.registered) {
                     _authState.value = AuthState.Authenticated(loginResponse.user)
                 } else {

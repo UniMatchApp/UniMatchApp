@@ -1,6 +1,5 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.profile
 
-import android.net.http.HttpException
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
@@ -15,13 +14,14 @@ import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class ApiProfileService (
+class ApiProfileService(
     private val profileController: ProfileController,
     private val profileDao: ProfileDao
 ) : ProfileService {
 
     override suspend fun getProfile(userId: String): Result<Profile> {
         return try {
+
             val profileEntity = profileDao.getProfileById(userId)
             val profile = ProfileEntity.toDomain(profileEntity)
             Result.success(profile)
@@ -128,7 +128,7 @@ class ApiProfileService (
     }
 
     override suspend fun addInterest(userId: String, interest: String): Result<Unit> {
-       return handleApiCall { profileController.addInterest(userId, interest) }
+        return handleApiCall { profileController.addInterest(userId, interest) }
     }
 
     override suspend fun removeInterest(userId: String, interest: String): Result<Unit> {

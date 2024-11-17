@@ -7,6 +7,8 @@ import com.ulpgc.uniMatch.data.application.services.RegisterRequest
 import com.ulpgc.uniMatch.data.application.services.RegisterResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserController {
@@ -26,14 +28,14 @@ interface UserController {
     suspend fun blockUser(@Query("userId") userId: String, @Query("blockedUserId") blockedUserId: String): ApiResponse<Unit>
 
     // Olvidar contraseña
-    @POST("users/forgotPassword")
+    @POST("users/auth/forgot-password")
     suspend fun forgotPassword(@Query("email") email: String): ApiResponse<String>
 
     // Verificar código
-    @POST("users/verifyCode")
-    suspend fun verifyCode(@Query("userId") userId: String, @Query("code") code: String): ApiResponse<Boolean>
+    @POST("users/auth/verify-code")
+    suspend fun verifyCode(@Query("userId") userId: String, @Query("code") code: String): ApiResponse<Unit>
 
     // Restablecer contraseña
-    @POST("users/resetPassword")
-    suspend fun resetPassword(@Query("userId") userId: String, @Query("newPassword") newPassword: String): ApiResponse<Boolean>
+    @PUT("users/{id}/password")
+    suspend fun resetPassword(@Path("id") userId: String, @Query("newPassword") newPassword: String): ApiResponse<Boolean>
 }
