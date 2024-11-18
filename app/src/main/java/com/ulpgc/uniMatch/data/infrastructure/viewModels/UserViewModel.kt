@@ -31,28 +31,34 @@ open class UserViewModel(
     private val _forgotPasswordResult = MutableStateFlow<Boolean?>(null)
     val forgotPasswordResult: StateFlow<Boolean?> = _forgotPasswordResult
 
+    private val _forgotPasswordUserId = MutableStateFlow<String?>(null)
+    val forgotPasswordUserId: StateFlow<String?> = _forgotPasswordUserId
+
     private val _resetPasswordResult = MutableStateFlow<Boolean?>(null)
     val resetPasswordResult: StateFlow<Boolean?> = _resetPasswordResult
 
     val userId: String?
         get() = (authState.value as? AuthState.Authenticated)?.user?.id
 
-    private val _loginUserId = MutableStateFlow<String?>(null)
-    val loginUserId: StateFlow<String?> = _loginUserId
-
     private var authToken: String? = null
-
-    private val _registeredUserId = MutableStateFlow<String?>(null)
-    var registeredUserId: StateFlow<String?> = _registeredUserId
-
-    private val _forgotPasswordUserId = MutableStateFlow<String?>(null)
-    val forgotPasswordUserId: StateFlow<String?> = _forgotPasswordUserId
 
     private val _profileCreated = MutableStateFlow<Boolean>(false)
     val profileCreated: StateFlow<Boolean> = _profileCreated
 
-    private var temporaryEmail: String? = null
-    private var temporaryHashedPassword: String? = null
+    private var _temporaryEmail = MutableStateFlow<String?>(null)
+    val temporaryEmail: StateFlow<String?> = _temporaryEmail
+
+    private var _temporaryPassword = MutableStateFlow<String?>(null)
+    val temporaryPassword: StateFlow<String?> = _temporaryPassword
+
+    private var _email = MutableStateFlow<String?>(null)
+    val email: StateFlow<String?> = _email
+
+    private var _registeredUserId = MutableStateFlow<String?>(null)
+    val registeredUserId: StateFlow<String?> = _registeredUserId
+
+    private var _loginUserId = MutableStateFlow<String?>(null)
+    val loginUserId: StateFlow<String?> = _loginUserId
 
     fun login(email: String, password: String) {
 
@@ -69,6 +75,7 @@ open class UserViewModel(
                     _authState.value = AuthState.Unauthenticated
                     _loginUserId.value = loginResponse.user.id
                 }
+                _email.value = email
             }.onFailure {
                 errorViewModel.showError(it.message ?: "Unknown error occurred")
                 _authState.value = AuthState.Unauthenticated
@@ -77,8 +84,8 @@ open class UserViewModel(
     }
 
     fun register() {
-        val email = temporaryEmail
-        val password = temporaryHashedPassword
+        val email = _temporaryEmail.value
+        val password = _temporaryPassword.value
 
         if (email == null || password == null) {
             errorViewModel.showError("Email or password is missing")
@@ -88,20 +95,20 @@ open class UserViewModel(
         viewModelScope.launch {
             val result = userService.register(email, password)
             result.onSuccess {
+                _email.value = email
                 _registeredUserId.value = it.user.id
             }.onFailure {
                 errorViewModel.showError(it.message ?: "Unknown error occurred")
-                _registeredUserId.value = null
             }
-            temporaryEmail = null
-            temporaryHashedPassword = null
+            _temporaryEmail.value = null
+            _temporaryPassword.value = null
         }
     }
 
     fun logout() {
         authToken = null
         _authState.value = AuthState.Unauthenticated
-        _loginUserId.value = null
+        _email.value = null
     }
 
     fun forgotPassword(email: String): Boolean {
@@ -109,19 +116,19 @@ open class UserViewModel(
             val result = userService.forgotPassword(email)
             result.onSuccess {
                 _forgotPasswordResult.value = true
+                _temporaryEmail.value = email
                 _forgotPasswordUserId.value = it
             }.onFailure {
                 errorViewModel.showError(it.message ?: "Unknown error occurred")
                 _forgotPasswordResult.value = false
-                _forgotPasswordUserId.value = null
             }
         }
         return _forgotPasswordResult.value ?: false
     }
 
-    fun verifyCode(userId: String, code: String) {
+    fun verifyCode(email: String, code: String) {
         viewModelScope.launch {
-            val result = userService.verifyCode(userId, code)
+            val result = userService.verifyCode(email, code)
             result.onSuccess {
                 _verifyCodeResult.value = true
             }.onFailure {
@@ -136,11 +143,21 @@ open class UserViewModel(
             val result = userService.resetPassword(userId, newPassword)
             result.onSuccess {
                 _resetPasswordResult.value = true
-                _forgotPasswordUserId.value = null
             }.onFailure {
                 errorViewModel.showError(it.message ?: "Unknown error occurred")
                 _resetPasswordResult.value = false
-                _forgotPasswordUserId.value = null
+            }
+        }
+    }
+
+    fun resendCode(email: String) {
+        viewModelScope.launch {
+            val result = userService.forgotPassword(email)
+            result.onSuccess {
+                _forgotPasswordResult.value = true
+            }.onFailure {
+                errorViewModel.showError(it.message ?: "Unknown error occurred")
+                _forgotPasswordResult.value = false
             }
         }
     }
@@ -183,20 +200,28 @@ open class UserViewModel(
         _verifyCodeResult.value = null
     }
 
-    fun resetLoginUserId() {
-        _loginUserId.value = null
-    }
-
     fun resetRegisteredUserId() {
         _registeredUserId.value = null
     }
 
-    fun resetForgotPasswordUserId() {
-        _forgotPasswordUserId.value = null
+    fun resetLoginUserId() {
+        _loginUserId.value = null
+    }
+
+    fun resetTemporaryEmail() {
+        _temporaryEmail.value = null
+    }
+
+    fun resetEmail() {
+        _email.value = null
     }
 
     fun resetForgotPasswordResult() {
         _forgotPasswordResult.value = null
+    }
+
+    fun resetForgotPasswordUserId() {
+        _forgotPasswordUserId.value = null
     }
 
     fun resetPasswordResult() {
@@ -204,8 +229,8 @@ open class UserViewModel(
     }
 
     fun partialRegistration(email: String, password: String) {
-        temporaryEmail = email
-        temporaryHashedPassword = hashPassword(password)
+        _temporaryEmail.value = email
+        _temporaryPassword.value = password
     }
 
     private fun hashPassword(password: String): String {

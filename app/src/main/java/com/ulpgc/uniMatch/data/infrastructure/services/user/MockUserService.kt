@@ -92,7 +92,7 @@ class MockUserService : UserService {
         }
     }
 
-    override suspend fun verifyCode(userId: String, code: String): Result<Boolean> {
+    override suspend fun verifyCode(email: String, code: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
                 Result.success(true)
@@ -103,6 +103,16 @@ class MockUserService : UserService {
     }
 
     override suspend fun resetPassword(userId: String, newPassword: String): Result<Boolean> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Result.success(true)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    override suspend fun resendCode(email: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
                 Result.success(true)

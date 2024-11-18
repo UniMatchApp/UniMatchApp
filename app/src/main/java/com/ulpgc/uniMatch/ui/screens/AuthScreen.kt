@@ -49,14 +49,18 @@ fun AuthScreen(
 ) {
     val navController = rememberNavController()
 
-    val registeredUserId = userViewModel.registeredUserId.collectAsState()
     val forgotPasswordUserId = userViewModel.forgotPasswordUserId.collectAsState()
+    val resetPasswordResult = userViewModel.resetPasswordResult.collectAsState()
+    val registeredUserId = userViewModel.registeredUserId.collectAsState()
     val loginUserId = userViewModel.loginUserId.collectAsState()
 
     var location by remember { mutableStateOf<Pair<Double, Double>?>(null) }
     val activity = LocalContext.current as Activity
 
     val hasPermission = permissionsViewModel.hasLocationPermission.collectAsState()
+
+    val temporaryEmail = userViewModel.temporaryEmail.collectAsState()
+    val email = userViewModel.email.collectAsState()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -130,6 +134,12 @@ fun AuthScreen(
                 onLoginClick = { navController.navigate(AuthRoutes.LOGIN) },
                 continueRegister = { userViewModel.register() }
             )
+
+            LaunchedEffect(registeredUserId.value) {
+                registeredUserId.value?.let {
+                    navController.navigate(AuthRoutes.REGISTER_VERIFY_CODE)
+                }
+            }
         }
         composable(AuthRoutes.REGISTER_PROFILE) {
             registeredUserId.value?.let { userId ->
@@ -139,6 +149,10 @@ fun AuthScreen(
                     userId = userId,
                     onCompleteProfile = {
                         navController.navigate(AuthRoutes.OPTIONS)
+                        userViewModel.resetRegisteredUserId()
+                    },
+                    onBack = {
+                        navController.navigate(AuthRoutes.REGISTER)
                         userViewModel.resetRegisteredUserId()
                     },
                     location = location
@@ -156,6 +170,10 @@ fun AuthScreen(
                         navController.navigate(AuthRoutes.OPTIONS)
                         userViewModel.resetLoginUserId()
                     },
+                    onBack = {
+                        navController.navigate(AuthRoutes.LOGIN)
+                        userViewModel.resetLoginUserId()
+                    },
                     location = location
                 )
             }
@@ -165,8 +183,13 @@ fun AuthScreen(
             ForgotPasswordScreen(
                 userViewModel = userViewModel,
                 errorViewModel = errorViewModel,
-                onSubmit = { navController.navigate(AuthRoutes.FORGOT_VERIFY_CODE) },
-                onBack = { navController.navigate(AuthRoutes.LOGIN) }
+                onSubmit = {
+                    navController.navigate(AuthRoutes.FORGOT_VERIFY_CODE)
+                    userViewModel.resetForgotPasswordResult()
+                           },
+                onBack = {
+                    navController.navigate(AuthRoutes.LOGIN)
+                }
             )
 
             LaunchedEffect(forgotPasswordUserId.value) {
@@ -177,14 +200,15 @@ fun AuthScreen(
         }
 
         composable(AuthRoutes.FORGOT_VERIFY_CODE) {
-            forgotPasswordUserId.value?.let {
+            temporaryEmail.value?.let {
                 VerifyCodeScreen(
                     userViewModel = userViewModel,
                     errorViewModel = errorViewModel,
-                    userId = it,
+                    email = it,
                     onVerificationSuccess = { navController.navigate(AuthRoutes.RESET_PASSWORD) },
                     onBack = {
                         navController.navigate(AuthRoutes.FORGOT_PASSWORD)
+                        userViewModel.resetTemporaryEmail()
                         userViewModel.resetForgotPasswordUserId()
                     }
                 )
@@ -192,14 +216,15 @@ fun AuthScreen(
         }
 
         composable(AuthRoutes.REGISTER_VERIFY_CODE) {
-            registeredUserId.value?.let {
+            temporaryEmail.value?.let {
                 VerifyCodeScreen(
                     userViewModel = userViewModel,
                     errorViewModel = errorViewModel,
-                    userId = it,
+                    email = it,
                     onVerificationSuccess = { navController.navigate(AuthRoutes.REGISTER_PROFILE) },
                     onBack = {
                         navController.navigate(AuthRoutes.REGISTER)
+                        userViewModel.resetTemporaryEmail()
                         userViewModel.resetRegisteredUserId()
                     }
                 )
@@ -207,14 +232,15 @@ fun AuthScreen(
         }
 
         composable(AuthRoutes.LOGIN_VERIFY_CODE) {
-            loginUserId.value?.let {
+            email.value?.let {
                 VerifyCodeScreen(
                     userViewModel = userViewModel,
                     errorViewModel = errorViewModel,
-                    userId = it,
+                    email = it,
                     onVerificationSuccess = { navController.navigate(AuthRoutes.LOGIN_PROFILE) },
                     onBack = {
                         navController.navigate(AuthRoutes.LOGIN)
+                        userViewModel.resetEmail()
                         userViewModel.resetLoginUserId()
                     }
                 )
@@ -229,6 +255,12 @@ fun AuthScreen(
                     userId = it,
                     onPasswordReset = {
                         navController.navigate(AuthRoutes.LOGIN)
+                        userViewModel.resetTemporaryEmail()
+                        userViewModel.resetForgotPasswordUserId()
+                    },
+                    onBack = {
+                        navController.navigate(AuthRoutes.LOGIN)
+                        userViewModel.resetTemporaryEmail()
                         userViewModel.resetForgotPasswordUserId()
                     }
                 )

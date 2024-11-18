@@ -1,5 +1,7 @@
 package com.ulpgc.uniMatch.ui.screens.auth.forgot
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,7 +34,8 @@ fun ResetPasswordScreen(
     userViewModel: UserViewModel,
     errorViewModel: ErrorViewModel,
     userId: String,
-    onPasswordReset: () -> Unit
+    onPasswordReset: () -> Unit,
+    onBack: () -> Unit
 ) {
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -45,11 +48,14 @@ fun ResetPasswordScreen(
     LaunchedEffect(resultPasswordReset) {
         if (resultPasswordReset != null) {
             if (resultPasswordReset!!) {
+                Log.i("ResetPasswordScreen", "Password reset successful")
                 onPasswordReset()
+                userViewModel.resetPasswordResult()
             }
-            userViewModel.resetPasswordResult()
         }
     }
+
+    BackHandler { onBack() }
 
     val onSubmitPassword = {
         if (newPassword.length < 6) {

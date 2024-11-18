@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -62,6 +63,7 @@ fun RegisterProfileScreen(
     errorViewModel: ErrorViewModel,
     userId: String,
     onCompleteProfile: () -> Unit,
+    onBack: () -> Unit,
     location: Pair<Double, Double>?,
 ) {
     var fullName by remember { mutableStateOf("") }
@@ -100,6 +102,8 @@ fun RegisterProfileScreen(
             onCompleteProfile()
         }
     }
+
+    BackHandler { onBack() }
 
     LaunchedEffect(Unit) {
         val permissionStatus = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)

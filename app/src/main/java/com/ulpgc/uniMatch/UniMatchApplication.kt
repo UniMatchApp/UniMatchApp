@@ -37,7 +37,7 @@ class UniMatchApplication : Application() {
     }
 
     // ----------------------------------- Services -----------------------------------
-    private val userService by lazy { mockUserService }
+    private val userService by lazy { apiUserService }
     private val profileService by lazy { apiProfileService }
     private val matchingService by lazy { mockMatchingService }
     private val notificationService by lazy { mockNotificationService }
