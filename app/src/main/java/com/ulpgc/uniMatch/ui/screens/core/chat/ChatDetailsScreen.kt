@@ -30,20 +30,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.ulpgc.uniMatch.data.infrastructure.events.WebSocketEventBus
-import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
-import com.ulpgc.uniMatch.data.infrastructure.services.profile.MockProfileService
-import com.ulpgc.uniMatch.data.infrastructure.services.user.MockUserService
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.chats.MessageBubble
-import com.ulpgc.uniMatch.ui.theme.UniMatchTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun ChatDetailScreen(
@@ -51,14 +43,12 @@ fun ChatDetailScreen(
     chatViewModel: ChatViewModel,
     userViewModel: UserViewModel,
 ) {
-    LaunchedEffect(chatId) {
-        chatViewModel.loadMessages(chatId)
-    }
-
     val messages by chatViewModel.messages.collectAsState()
-    val isLoading by chatViewModel.isLoading.collectAsState()
-    val recipientProfile by chatViewModel.otherUser.collectAsState()
-
+    LaunchedEffect(chatId) {
+        withContext(Dispatchers.IO) {
+            chatViewModel.loadMessages(chatId, messages.size)
+        }
+    }
 
     Column(
         modifier = Modifier

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NotificationsDao {
     @Query("SELECT * FROM notifications WHERE recipient = :userId ORDER BY date DESC LIMIT :limit OFFSET :offset")
-    fun getNotifications(userId: String, limit: Int, offset: Int): Flow<List<NotificationEntity>>
+    suspend fun getNotifications(userId: String, limit: Int, offset: Int): Flow<List<NotificationEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNotifications(notifications: List<NotificationEntity>)

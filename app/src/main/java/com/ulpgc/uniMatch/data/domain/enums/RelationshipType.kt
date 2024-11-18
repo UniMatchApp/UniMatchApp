@@ -1,5 +1,5 @@
 package com.ulpgc.uniMatch.data.domain.enums
 
 enum class RelationshipType {
-    FRIENDSHIP, DATING, LONG_TERM, OTHER
+    FRIENDSHIP, CASUAL, LONG_TERM, OPEN, OTHER
 }

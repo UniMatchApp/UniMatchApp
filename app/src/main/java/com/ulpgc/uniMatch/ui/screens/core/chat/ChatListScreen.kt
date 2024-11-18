@@ -37,14 +37,10 @@ fun ChatListScreen(
     LaunchedEffect(Unit) {
         viewModel.loadChats()
     }
-
-
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-
         val chatList by viewModel.chatList.collectAsState()
         val isLoading by viewModel.isLoading.collectAsState()
 

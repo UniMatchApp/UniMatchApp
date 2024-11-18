@@ -14,11 +14,13 @@ import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
+import com.ulpgc.uniMatch.data.domain.models.ProfileDTO
 import com.ulpgc.uniMatch.data.infrastructure.services.profile.ProfileRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
+import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -28,6 +30,9 @@ import retrofit2.http.Query
 import java.io.File
 
 interface ProfileController {
+
+    @GET("users/{id}")
+    suspend fun getProfile(@Path("id") userId: String): ApiResponse<ProfileDTO>
 
     @Multipart
     @POST("users/{id}")

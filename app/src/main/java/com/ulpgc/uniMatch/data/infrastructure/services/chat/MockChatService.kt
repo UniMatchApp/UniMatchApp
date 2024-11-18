@@ -34,7 +34,7 @@ class MockChatService : ChatService {
         )
     }
 
-    override suspend fun getMessages(chatId: String): Result<List<Message>> {
+    override suspend fun getMessages(chatId: String, offset: Int, limit: Int): Result<List<Message>> {
         return Result.success(
             MessageMock.createMockMessages(10)
         )

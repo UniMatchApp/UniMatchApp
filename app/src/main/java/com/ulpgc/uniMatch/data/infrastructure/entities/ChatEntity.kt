@@ -9,7 +9,7 @@ import com.ulpgc.uniMatch.data.domain.models.Chat
 data class ChatEntity(
     @PrimaryKey val id: String,                          // Nombre del usuario del chat
     val name: String,
-    val profilePictureUrl: String,
+    val profilePictureUrl: String? = null
 ) {
     // Companion object para convertir ChatPreviewData a ChatEntity
     companion object {

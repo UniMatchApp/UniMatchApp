@@ -20,7 +20,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 
 open class ChatViewModel(
@@ -107,26 +106,27 @@ open class ChatViewModel(
         }
     }
 
-    fun loadMessages(chatId: String) {
+    fun loadMessages(chatId: String, offset: Int, limit: Int = 100) {
         viewModelScope.launch {
             if (userViewModel.userId.isNullOrEmpty()) {
                 errorViewModel.showError("User is not authenticated")
                 return@launch
             }
             _isLoading.value = true
-            val result = chatService.getMessages(chatId)
+            // Obtener el perfil del otro usuario y manejar el Result
+            val otherUserResult = profileService.getProfile(chatId)
+            otherUserResult.onSuccess { profile ->
+                _otherUser.value = profile
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error loading other user profile"
+                )
+            }
+            val result = chatService.getMessages(chatId, offset, limit)
             result.onSuccess { messages ->
                 _messages.value = messages
                 _isLoading.value = false
-                // Obtener el perfil del otro usuario y manejar el Result
-                val otherUserResult = profileService.getProfile(chatId)
-                otherUserResult.onSuccess { profile ->
-                    _otherUser.value = profile
-                }.onFailure { error ->
-                    errorViewModel.showError(
-                        error.message ?: "Error loading other user profile"
-                    )
-                }
+
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error loading messages"

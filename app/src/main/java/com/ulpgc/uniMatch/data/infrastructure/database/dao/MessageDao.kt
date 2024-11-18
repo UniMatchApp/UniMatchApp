@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MessageDao {
     @Query("SELECT * FROM messages WHERE chatId = :chatId ORDER BY timestamp DESC LIMIT :limit OFFSET :offset")
-    fun getMessages(chatId: String, limit: Int, offset: Int): Flow<List<MessageEntity>> // Usar Flow para actualizaciones automáticas
+    suspend fun getMessages(chatId: String, limit: Int, offset: Int): List<MessageEntity> // Usar Flow para actualizaciones automáticas
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMessages(messages: List<MessageEntity>)

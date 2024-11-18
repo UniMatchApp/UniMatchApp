@@ -13,7 +13,7 @@ interface ChatService {
 
     suspend fun getChats(loggedUserId: String): Result<List<Chat>>
 
-    suspend fun getMessages(chatId: String): Result<List<Message>>
+    suspend fun getMessages(chatId: String, offset: Int, limit: Int): Result<List<Message>>
 
     suspend fun getChatsByName(chatName: String): Result<List<Chat>>
 }

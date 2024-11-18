@@ -6,6 +6,7 @@ import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
+import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MessageController
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ChatMessageDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
@@ -92,8 +93,9 @@ class ApiChatService(
             // TODO: Create new empty chats for matching users from endpoint in backend
             val matchingUsers = messageController.getMatchingUserIds(loggedUserId);
 
-            matchingUsers.value?.forEach { profile ->
-                if (dbChats.none { it.userId == profile.userId }) {
+            matchingUsers.value?.forEach { dto ->
+                val profile = Profile.fromDTO(dto)
+                if (dbChats.none { it.userId == dto.userId }) {
                     chatMessageDao.insertChat(
                         ChatEntity(
                             id = profile.userId,
@@ -164,8 +166,26 @@ class ApiChatService(
 
     }
 
-    override suspend fun getMessages(chatId: String): Result<List<Message>> {
-        TODO("Not yet implemented")
+    override suspend fun getMessages(chatId: String, offset: Int, limit: Int): Result<List<Message>> {
+        return try {
+            val messages = chatMessageDao.getMessages(chatId, limit, offset).first().map { messageEntity ->
+                Message(
+                    messageId = messageEntity.messageId,
+                    chatId = messageEntity.chatId,
+                    content = messageEntity.content,
+                    senderId = messageEntity.senderId,
+                    recipientId = messageEntity.recipientId,
+                    timestamp = messageEntity.timestamp,
+                    status = messageEntity.status,
+                    deletedStatus = messageEntity.deletedStatus,
+                    attachment = messageEntity.attachment
+                )
+            }
+            Result.success(messages)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+
     }
 
     override suspend fun getChatsByName(chatName: String): Result<List<Chat>> {

@@ -3,6 +3,7 @@ package com.ulpgc.uniMatch.data.infrastructure.controllers
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
 import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.domain.models.Profile
+import com.ulpgc.uniMatch.data.domain.models.ProfileDTO
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -29,6 +30,6 @@ interface MessageController {
     @GET("matching/mutual-likes/{userId}")
     suspend fun getMatchingUserIds(
         @Path("userId") userId: String
-    ): ApiResponse<List<Profile>>
+    ): ApiResponse<List<ProfileDTO>>
 
 }

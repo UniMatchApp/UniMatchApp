@@ -2,6 +2,7 @@ package com.ulpgc.uniMatch.data.infrastructure.services.profile
 
 import android.content.ContentResolver
 import android.net.Uri
+import android.util.Log
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
@@ -18,7 +19,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
 data class ProfileRequest(
@@ -33,7 +33,7 @@ data class ProfileRequest(
 )
 
 
-class ApiProfileService (
+class ApiProfileService(
     private val profileController: ProfileController,
     private val profileDao: ProfileDao,
     private val contentResolver: ContentResolver
@@ -41,9 +41,20 @@ class ApiProfileService (
 
     override suspend fun getProfile(userId: String): Result<Profile> {
         return try {
-            val profileEntity = profileDao.getProfileById(userId)
-            val profile = ProfileEntity.toDomain(profileEntity)
-            Result.success(profile)
+            var profileEntity = profileDao.getProfileById(userId)
+            val updatedProfileEntity = profileController.getProfile(userId)
+
+
+            if (updatedProfileEntity.success && updatedProfileEntity.value != null) {
+                profileEntity = ProfileEntity.fromDomain(Profile.fromDTO(updatedProfileEntity.value))
+                profileDao.insertProfile(profileEntity)
+            }
+
+            if (profileEntity == null) {
+                return Result.failure(Throwable("Profile for user $userId not found"))
+            }
+
+            Result.success(ProfileEntity.toDomain(profileEntity))
         } catch (e: Throwable) {
             Result.failure(e)
         }
@@ -178,10 +189,15 @@ class ApiProfileService (
                     ?: throw Exception("No se pudo abrir el flujo de entrada para la imagen")
 
                 // Convertir el InputStream a un RequestBody
-                val requestBody = inputStream.use { it.readBytes().toRequestBody("image/*".toMediaTypeOrNull()) }
+                val requestBody =
+                    inputStream.use { it.readBytes().toRequestBody("image/*".toMediaTypeOrNull()) }
 
                 // Crear el MultipartBody.Part para la imagen
-                val thumbnailPart = MultipartBody.Part.createFormData("thumbnail", profileImage.lastPathSegment, requestBody)
+                val thumbnailPart = MultipartBody.Part.createFormData(
+                    "thumbnail",
+                    profileImage.lastPathSegment,
+                    requestBody
+                )
 
                 // Crear los otros RequestBody para los datos del perfil
                 val nameRequest = createRequestBody(fullName)
@@ -191,7 +207,8 @@ class ApiProfileService (
                 val sexualOrientationRequest = createRequestBody(sexualOrientation.toString())
                 val relationshipTypeRequest = createRequestBody(relationshipType.toString())
                 val birthdayRequest = createRequestBody(birthday)
-                val locationRequest = location?.let { createRequestBody("${it.first},${it.second}") }
+                val locationRequest =
+                    location?.let { createRequestBody("${it.first},${it.second}") }
 
                 // Llamar al controlador para crear el perfil
                 val response = profileController.createProfile(

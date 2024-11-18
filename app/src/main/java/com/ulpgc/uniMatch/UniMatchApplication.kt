@@ -37,7 +37,7 @@ class UniMatchApplication : Application() {
     }
 
     // ----------------------------------- Services -----------------------------------
-    private val userService by lazy { apiUserService }
+    private val userService by lazy { mockUserService }
     private val profileService by lazy { apiProfileService }
     private val matchingService by lazy { mockMatchingService }
     private val notificationService by lazy { mockNotificationService }
@@ -128,7 +128,7 @@ class UniMatchApplication : Application() {
         Log.i("UniMatchApplication", "Application initialized")
 
         // Eliminar manualmente el archivo de la base de datos
-//        val db = applicationContext.getDatabasePath("item_database")
+//        val db= applicationContext.getDatabasePath("uniMatch_database")
 //        if (db.exists()) {
 //            db.delete()
 //        }
