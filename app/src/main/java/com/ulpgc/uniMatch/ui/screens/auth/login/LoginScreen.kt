@@ -87,7 +87,7 @@ fun LoginScreen(
             InputField(
                 value = email,
                 onValueChange = { email = it },
-                label = stringResource(R.string.enter_email)
+                label = stringResource(R.string.enter_email),
             )
             Spacer(modifier = Modifier.height(8.dp))
             InputField(
