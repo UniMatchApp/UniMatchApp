@@ -303,11 +303,11 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.gender),
                 options = context.resources.getStringArray(R.array.genders).toList(),
-                selectedOption = genderMap[profile.gender]!!,
+                selectedOption = genderMap[profile.genderEnum]!!,
                 onEditField = { selectedOption ->
                     var genderOption = genderMap.entries.find { it.value == selectedOption }?.key
                     if (genderOption != null) {
-                        profile.gender = genderOption
+                        profile.gender = genderOption.toString()
                     }
                 }
             )
@@ -337,12 +337,12 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.sexual_orientation),
                 options = context.resources.getStringArray(R.array.sexual_orientation).toList(),
-                selectedOption = sexualOrientationMap[profile.sexualOrientation]!!,
+                selectedOption = sexualOrientationMap[profile.sexualOrientationEnum]!!,
                 onEditField = { selectedOption ->
                     val sexualOrientationOption =
                         sexualOrientationMap.entries.find { it.value == selectedOption }?.key
                     if (sexualOrientationOption != null) {
-                        profile.sexualOrientation = sexualOrientationOption
+                        profile.sexualOrientation = sexualOrientationOption.toString()
                     }
                 },
                 includeNullOption = true
@@ -368,12 +368,12 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.what_type_of_relationship),
                 options = relationshipTypeMap.values.toList(),
-                selectedOption = relationshipTypeMap[profile.relationshipType]!!,
+                selectedOption = relationshipTypeMap[profile.relationshipTypeEnum]!!,
                 onEditField = { selectedOption ->
                     val relationshipTypeOption =
                         relationshipTypeMap.entries.find { it.value == selectedOption }?.key
                     if (relationshipTypeOption != null) {
-                        profile.relationshipType = relationshipTypeOption
+                        profile.relationshipType = relationshipTypeOption.toString()
                     }
                 },
             )
@@ -383,7 +383,7 @@ fun ProfileScreen(
             ProfileSection(
                 title = stringResource(R.string.more_about_me),
                 rowTitles = listOf(
-                    "horoscope" to horoscopeMap[profile.horoscope],
+                    "horoscope" to horoscopeMap[profile.horoscopeEnum],
                     "education" to educationMap[stringToEnum<Education>(profile.education)],
                     "personality_type" to personalityMap[stringToEnum<Personality>(profile.personalityType)]
                 ),
@@ -393,7 +393,7 @@ fun ProfileScreen(
                             val horoscopeOption =
                                 horoscopeMap.entries.find { it.value == selectedOption }?.key
                             if (horoscopeOption != null) {
-                                profile.horoscope = horoscopeOption
+                                profile.horoscope = horoscopeOption.toString()
                             }
                         }
 
@@ -425,10 +425,10 @@ fun ProfileScreen(
                 title = stringResource(R.string.lifestyle),
                 rowTitles = listOf(
                     "pets" to petsMap[stringToEnum<Pets>(profile.pets)],
-                    "drinks" to habitsMap[profile.drinks],
-                    "smokes" to habitsMap[profile.smokes],
-                    "sports" to habitsMap[profile.doesSports],
-                    "religion" to religionMap[profile.valuesAndBeliefs]
+                    "drinks" to habitsMap[profile.drinksEnum],
+                    "smokes" to habitsMap[profile.smokesEnum],
+                    "sports" to habitsMap[profile.doesSportsEnum],
+                    "religion" to religionMap[profile.valuesAndBeliefsEnum]
                 ),
                 onSelectedItemChange = { field, selectedOption ->
                     when (field) {
@@ -441,16 +441,16 @@ fun ProfileScreen(
                         }
 
                         "drinks" -> profile.drinks =
-                            habitsMap.entries.find { it.value == selectedOption }?.key
+                            habitsMap.entries.find { it.value == selectedOption }?.key.toString()
 
                         "smokes" -> profile.smokes =
-                            habitsMap.entries.find { it.value == selectedOption }?.key
+                            habitsMap.entries.find { it.value == selectedOption }?.key.toString()
 
                         "sports" -> profile.doesSports =
-                            habitsMap.entries.find { it.value == selectedOption }?.key
+                            habitsMap.entries.find { it.value == selectedOption }?.key.toString()
 
                         "religion" -> profile.valuesAndBeliefs =
-                            religionMap.entries.find { it.value == selectedOption }?.key
+                            religionMap.entries.find { it.value == selectedOption }?.key.toString()
 
                         else -> println("Campo desconocido: $field")
                     }
