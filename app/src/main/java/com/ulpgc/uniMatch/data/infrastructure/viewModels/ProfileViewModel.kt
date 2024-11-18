@@ -1,4 +1,5 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.ProfileService
@@ -66,7 +67,7 @@ open class ProfileViewModel(
                     val updateMap = mapOf(
                         profile.aboutMe to { updateAboutMe(profile.aboutMe) },
                         profile.fact to { profile.fact?.let { updateFact(it) } },
-                        profile.interests to { updateInterests(profile.interests) },
+                        profile.interests to { updateInterests(profile.interestsList) },
                         profile.height to { profile.height?.let { updateHeight(it) } },
                         profile.weight to { profile.weight?.let { updateWeight(it) } },
                         profile.gender to { updateGender(profile.gender) },
@@ -75,12 +76,24 @@ open class ProfileViewModel(
                         profile.relationshipType to { updateRelationshipType(profile.relationshipType) },
                         profile.horoscope to { profile.horoscope?.let { updateHoroscope(it) } },
                         profile.education to { profile.education?.let { updateEducation(it) } },
-                        profile.personalityType to { profile.personalityType?.let { updatePersonalityType(it) } },
+                        profile.personalityType to {
+                            profile.personalityType?.let {
+                                updatePersonalityType(
+                                    it
+                                )
+                            }
+                        },
                         profile.pets to { profile.pets?.let { updatePets(it) } },
                         profile.drinks to { profile.drinks?.let { updateDrinks(it) } },
                         profile.smokes to { profile.smokes?.let { updateSmokes(it) } },
                         profile.doesSports to { profile.doesSports?.let { updateDoesSports(it) } },
-                        profile.valuesAndBeliefs to { profile.valuesAndBeliefs?.let { updateValuesAndBeliefs(it) } }
+                        profile.valuesAndBeliefs to {
+                            profile.valuesAndBeliefs?.let {
+                                updateValuesAndBeliefs(
+                                    it
+                                )
+                            }
+                        }
                     )
 
                     // Itera sobre el mapa y ejecuta la actualización si el valor es diferente
@@ -121,14 +134,12 @@ open class ProfileViewModel(
     }
 
 
-
-
     fun updateAgeRange(min: Int, max: Int) {
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.updateAgeRange(userViewModel.userId!!, min, max)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(ageRange = min to max)
+                _profileData.value = _profileData.value?.copy(ageRange = Profile.AgeRange(min, max))
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -177,7 +188,8 @@ open class ProfileViewModel(
     fun updateRelationshipType(relationshipType: RelationshipType) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateRelationshipType(userViewModel.userId!!, relationshipType)
+            val result =
+                profileService.updateRelationshipType(userViewModel.userId!!, relationshipType)
 
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(relationshipType = relationshipType)
@@ -229,7 +241,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateInterests(userViewModel.userId!!, interest)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(interests = interest)
+                _profileData.value =
+                    _profileData.value?.copy(interests = interest.joinToString(","))
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -355,7 +368,8 @@ open class ProfileViewModel(
     fun updatePersonalityType(personalityType: String) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updatePersonalityType(userViewModel.userId!!, personalityType)
+            val result =
+                profileService.updatePersonalityType(userViewModel.userId!!, personalityType)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(personalityType = personalityType)
                 _isLoading.value = false
@@ -435,7 +449,8 @@ open class ProfileViewModel(
     fun updateValuesAndBeliefs(valuesAndBeliefs: Religion) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateValuesAndBeliefs(userViewModel.userId!!, valuesAndBeliefs)
+            val result =
+                profileService.updateValuesAndBeliefs(userViewModel.userId!!, valuesAndBeliefs)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(valuesAndBeliefs = valuesAndBeliefs)
                 _isLoading.value = false
@@ -453,7 +468,8 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.addImage(userViewModel.userId!!, imageUrl)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(wall = _profileData.value?.wall.orEmpty() + imageUrl)
+                _profileData.value =
+                    _profileData.value?.copy(wall = _profileData.value?.wall.orEmpty() + imageUrl)
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -469,7 +485,9 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.removeImage(userViewModel.userId!!, imageUrl)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(wall = _profileData.value?.wall.orEmpty() - imageUrl)
+                _profileData.value = _profileData.value?.copy(
+                    wall = (_profileData.value?.wallList.orEmpty() - imageUrl).joinToString(", ")
+                )
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(

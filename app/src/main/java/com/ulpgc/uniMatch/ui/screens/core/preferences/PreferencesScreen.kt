@@ -67,11 +67,11 @@ fun PreferencesScreen(
         profile?.let {
             maxDistance = it.maxDistance
             genderPriority = it.genderPriority
-            ageRange = it.ageRange
+            ageRange = it.ageRange.min to it.ageRange.max
             relationshipType = it.relationshipType
             // Inicializa ageMin y ageMax solo una vez
-            ageMin = it.ageRange.first.toFloat()
-            ageMax = it.ageRange.second.toFloat()
+            ageMin = it.ageRange.min.toFloat()
+            ageMax = it.ageRange.max.toFloat()
         }
     }
     Log.i("Prefereces", "Age range: $ageRange")

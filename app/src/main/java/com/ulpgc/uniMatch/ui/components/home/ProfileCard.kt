@@ -104,12 +104,13 @@ fun ProfileCard(
 
     val context = LocalContext.current
 
-    val interestsMap = context.resources.getStringArray(R.array.interests).mapIndexed { index, name ->
-        Interests.entries.getOrNull(index) to name
-    }.toMap()
+    val interestsMap =
+        context.resources.getStringArray(R.array.interests).mapIndexed { index, name ->
+            Interests.entries.getOrNull(index) to name
+        }.toMap()
 
     var profileInterests = interestsMap.mapNotNull { entry ->
-        if (profile.interests.contains(enumToString(entry.key))) {
+        if (profile.interestsList.contains(enumToString(entry.key))) {
             entry.value
         } else {
             null
@@ -160,7 +161,7 @@ fun ProfileCard(
                             currentImageIndex--
                         }
 
-                        x > clickAreaWidth && currentImageIndex < profile.wall.size - 1 -> {
+                        x > clickAreaWidth && currentImageIndex < profile.wallList.size - 1 -> {
                             currentImageIndex++
                         }
                     }
@@ -321,7 +322,7 @@ fun ProfileCard(
                             )
                         }
 
-                        if (index < profile.interests.size - 1) {
+                        if (index < profile.interestsList.size - 1) {
                             Spacer(modifier = Modifier.width(8.dp))
                         }
                     }
@@ -335,7 +336,7 @@ fun ProfileCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = {
-                        currentImageIndex=0;
+                        currentImageIndex = 0;
                         Log.i("ProfileCard", "Swipe left from button")
                         onSwipeLeft()
                     }) {
@@ -348,7 +349,7 @@ fun ProfileCard(
 
                     IconButton(
                         onClick = {
-                            currentImageIndex = (currentImageIndex + 1) % profile.wall.size
+                            currentImageIndex = (currentImageIndex + 1) % profile.wallList.size
                         }
                     ) {
                         Icon(
@@ -359,7 +360,7 @@ fun ProfileCard(
                     }
 
                     IconButton(onClick = {
-                        currentImageIndex=0;
+                        currentImageIndex = 0;
                         Log.i("ProfileCard", "Swipe right from button")
                         onSwipeRight()
                     }) {
