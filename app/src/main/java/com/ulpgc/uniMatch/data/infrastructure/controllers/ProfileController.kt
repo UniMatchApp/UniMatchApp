@@ -8,7 +8,6 @@ import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
-import com.ulpgc.uniMatch.data.domain.models.ProfileDTO
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -23,7 +22,7 @@ import retrofit2.http.Path
 interface ProfileController {
 
     @GET("users/{id}")
-    suspend fun getProfile(@Path("id") userId: String): ApiResponse<ProfileDTO>
+    suspend fun getProfile(@Path("id") userId: String): ApiResponse<Profile>
 
     @Multipart
     @POST("users/{id}")

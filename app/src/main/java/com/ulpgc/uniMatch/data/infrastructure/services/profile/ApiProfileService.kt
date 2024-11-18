@@ -4,7 +4,12 @@ import android.content.ContentResolver
 import android.net.Uri
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
 import com.ulpgc.uniMatch.data.application.services.ProfileService
-import com.ulpgc.uniMatch.data.domain.enums.*
+import com.ulpgc.uniMatch.data.domain.enums.Gender
+import com.ulpgc.uniMatch.data.domain.enums.Habits
+import com.ulpgc.uniMatch.data.domain.enums.Horoscope
+import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enums.Religion
+import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.controllers.ProfileController
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
@@ -17,7 +22,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
 
-class ApiProfileService (
+class ApiProfileService(
     private val profileController: ProfileController,
     private val profileDao: ProfileDao,
     private val contentResolver: ContentResolver
@@ -30,7 +35,7 @@ class ApiProfileService (
 
 
             if (updatedProfileEntity.success && updatedProfileEntity.value != null) {
-                profileEntity = ProfileEntity.fromDomain(Profile.fromDTO(updatedProfileEntity.value))
+                profileEntity = ProfileEntity.fromDomain(updatedProfileEntity.value)
                 profileDao.insertProfile(profileEntity)
             }
 
@@ -53,7 +58,10 @@ class ApiProfileService (
     override suspend fun updateGenderPriority(userId: String, gender: Gender?): Result<Unit> =
         handleApiCall { profileController.updateGenderPriority(userId, gender) }
 
-    override suspend fun updateRelationshipType(userId: String, relationshipType: RelationshipType): Result<Unit> =
+    override suspend fun updateRelationshipType(
+        userId: String,
+        relationshipType: RelationshipType
+    ): Result<Unit> =
         handleApiCall { profileController.updateRelationshipType(userId, relationshipType) }
 
     override suspend fun updateAboutMe(userId: String, aboutMe: String): Result<Unit> =
@@ -74,7 +82,10 @@ class ApiProfileService (
     override suspend fun updateGender(userId: String, gender: Gender): Result<Unit> =
         handleApiCall { profileController.updateGender(userId, gender) }
 
-    override suspend fun updateSexualOrientation(userId: String, orientation: SexualOrientation): Result<Unit> =
+    override suspend fun updateSexualOrientation(
+        userId: String,
+        orientation: SexualOrientation
+    ): Result<Unit> =
         handleApiCall { profileController.updateSexualOrientation(userId, orientation) }
 
     override suspend fun updateJob(userId: String, position: String): Result<Unit> =
@@ -86,7 +97,10 @@ class ApiProfileService (
     override suspend fun updateEducation(userId: String, education: String): Result<Unit> =
         handleApiCall { profileController.updateDegree(userId, education) }
 
-    override suspend fun updatePersonalityType(userId: String, personalityType: String): Result<Unit> =
+    override suspend fun updatePersonalityType(
+        userId: String,
+        personalityType: String
+    ): Result<Unit> =
         handleApiCall { profileController.updatePersonality(userId, personalityType) }
 
     override suspend fun updatePets(userId: String, pets: String): Result<Unit> =
@@ -101,7 +115,10 @@ class ApiProfileService (
     override suspend fun updateDoesSports(userId: String, doesSports: Habits): Result<Unit> =
         handleApiCall { profileController.updateSports(userId, doesSports) }
 
-    override suspend fun updateValuesAndBeliefs(userId: String, valuesAndBeliefs: Religion): Result<Unit> =
+    override suspend fun updateValuesAndBeliefs(
+        userId: String,
+        valuesAndBeliefs: Religion
+    ): Result<Unit> =
         handleApiCall { profileController.updateValuesAndBeliefs(userId, valuesAndBeliefs) }
 
     override suspend fun removeInterest(userId: String, interest: String): Result<Unit> =
@@ -175,7 +192,12 @@ class ApiProfileService (
                 } ?: Result.failure(Exception("Profile creation failed: null response"))
             },
             onFailure = { throwable ->
-                Result.failure(Exception("Profile creation failed: ${throwable.message}", throwable))
+                Result.failure(
+                    Exception(
+                        "Profile creation failed: ${throwable.message}",
+                        throwable
+                    )
+                )
             }
         )
     }
@@ -183,7 +205,8 @@ class ApiProfileService (
     private fun createImagePart(uri: Uri): MultipartBody.Part {
         val inputStream = contentResolver.openInputStream(uri)
             ?: throw IllegalArgumentException("Cannot open image input stream")
-        val requestBody = inputStream.use { it.readBytes().toRequestBody("image/*".toMediaTypeOrNull()) }
+        val requestBody =
+            inputStream.use { it.readBytes().toRequestBody("image/*".toMediaTypeOrNull()) }
         return MultipartBody.Part.createFormData("thumbnail", uri.lastPathSegment, requestBody)
     }
 

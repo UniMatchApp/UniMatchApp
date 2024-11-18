@@ -47,13 +47,13 @@ import coil.request.ImageRequest
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enums.Education
 import com.ulpgc.uniMatch.data.domain.enums.Facts
-import com.ulpgc.uniMatch.data.domain.enums.Personality
-import com.ulpgc.uniMatch.data.domain.enums.Pets
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
 import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.Interests
 import com.ulpgc.uniMatch.data.domain.enums.Jobs
+import com.ulpgc.uniMatch.data.domain.enums.Personality
+import com.ulpgc.uniMatch.data.domain.enums.Pets
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
@@ -71,8 +71,8 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel,
     onEditClick: (String) -> Unit,
     onEditInterestsClick: (String) -> Unit,
-    onCookiesClick : () -> Unit,
-    onPrivacyClick : () -> Unit,
+    onCookiesClick: () -> Unit,
+    onPrivacyClick: () -> Unit,
 ) {
 
     LaunchedEffect(Unit) {
@@ -81,7 +81,7 @@ fun ProfileScreen(
 
     val context = LocalContext.current
 
-    var profile = profileViewModel.profileData.collectAsState().value
+    val profile = profileViewModel.profileData.collectAsState().value
 
     val isLoading by profileViewModel.isLoading.collectAsState()
 
@@ -89,31 +89,36 @@ fun ProfileScreen(
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
-    } else if( profile != null) {
+    } else if (profile != null) {
 
         var aboutMeText by remember { mutableStateOf(profile.aboutMe ?: "") }
 
         Log.i("ProfileScreen", "Profile: $profile")
 
-        val horoscopeMap = context.resources.getStringArray(R.array.horoscope).mapIndexed { index, name ->
-            Horoscope.entries.getOrNull(index) to name
-        }.toMap()
+        val horoscopeMap =
+            context.resources.getStringArray(R.array.horoscope).mapIndexed { index, name ->
+                Horoscope.entries.getOrNull(index) to name
+            }.toMap()
 
-        val relationshipTypeMap = context.resources.getStringArray(R.array.relationship_type).mapIndexed { index, name ->
-            RelationshipType.entries[index] to name
-        }.toMap()
+        val relationshipTypeMap =
+            context.resources.getStringArray(R.array.relationship_type).mapIndexed { index, name ->
+                RelationshipType.entries[index] to name
+            }.toMap()
 
-        val genderMap = context.resources.getStringArray(R.array.genders).mapIndexed { index, name ->
-            Gender.entries[index] to name
-        }.toMap()
+        val genderMap =
+            context.resources.getStringArray(R.array.genders).mapIndexed { index, name ->
+                Gender.entries[index] to name
+            }.toMap()
 
-        val sexualOrientationMap = context.resources.getStringArray(R.array.sexual_orientation).mapIndexed { index, name ->
-            SexualOrientation.entries[index] to name
-        }.toMap()
+        val sexualOrientationMap =
+            context.resources.getStringArray(R.array.sexual_orientation).mapIndexed { index, name ->
+                SexualOrientation.entries[index] to name
+            }.toMap()
 
-        val religionMap = context.resources.getStringArray(R.array.religion).mapIndexed { index, name ->
-            Religion.entries.getOrNull(index) to name
-        }.toMap()
+        val religionMap =
+            context.resources.getStringArray(R.array.religion).mapIndexed { index, name ->
+                Religion.entries.getOrNull(index) to name
+            }.toMap()
 
         val habitsMap = context.resources.getStringArray(R.array.habits).mapIndexed { index, name ->
             Habits.entries.getOrNull(index) to name
@@ -127,24 +132,27 @@ fun ProfileScreen(
             Pets.entries.getOrNull(index) to name
         }.toMap()
 
-        val personalityMap = context.resources.getStringArray(R.array.personality_type).mapIndexed { index, name ->
-            Personality.entries.getOrNull(index) to name
-        }.toMap()
+        val personalityMap =
+            context.resources.getStringArray(R.array.personality_type).mapIndexed { index, name ->
+                Personality.entries.getOrNull(index) to name
+            }.toMap()
 
-        val educationMap = context.resources.getStringArray(R.array.education).mapIndexed { index, name ->
-            Education.entries.getOrNull(index) to name
-        }.toMap()
+        val educationMap =
+            context.resources.getStringArray(R.array.education).mapIndexed { index, name ->
+                Education.entries.getOrNull(index) to name
+            }.toMap()
 
         val factsMap = context.resources.getStringArray(R.array.facts).mapIndexed { index, name ->
             Facts.entries.getOrNull(index) to name
         }.toMap()
 
-        val interestsMap = context.resources.getStringArray(R.array.interests).mapIndexed { index, name ->
-            Interests.entries.getOrNull(index) to name
-        }.toMap()
+        val interestsMap =
+            context.resources.getStringArray(R.array.interests).mapIndexed { index, name ->
+                Interests.entries.getOrNull(index) to name
+            }.toMap()
 
         var profileInterests = interestsMap.mapNotNull { entry ->
-            if (profile.interests.contains(enumToString(entry.key))) {
+            if (profile.interestsList.contains(enumToString(entry.key))) {
                 entry.value
             } else {
                 null
@@ -163,7 +171,7 @@ fun ProfileScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background( Color.Transparent, RoundedCornerShape(8.dp)),
+                    .background(Color.Transparent, RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Column(
@@ -226,7 +234,10 @@ fun ProfileScreen(
 
             Text(
                 text = stringResource(R.string.about_me),
-                style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                ),
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.align(Alignment.Start)
             )
@@ -243,7 +254,10 @@ fun ProfileScreen(
 
             Text(
                 text = stringResource(R.string.questions),
-                style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                ),
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.align(Alignment.Start)
             )
@@ -263,7 +277,10 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.interests),
-                style = MaterialTheme.typography.labelLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                ),
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.align(Alignment.Start)
             )
@@ -286,11 +303,11 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.gender),
                 options = context.resources.getStringArray(R.array.genders).toList(),
-                selectedOption = genderMap[profile.gender]!!,
+                selectedOption = genderMap[profile.genderEnum]!!,
                 onEditField = { selectedOption ->
                     var genderOption = genderMap.entries.find { it.value == selectedOption }?.key
                     if (genderOption != null) {
-                        profile.gender = genderOption
+                        profile.gender = genderOption.toString()
                     }
                 }
             )
@@ -320,11 +337,12 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.sexual_orientation),
                 options = context.resources.getStringArray(R.array.sexual_orientation).toList(),
-                selectedOption = sexualOrientationMap[profile.sexualOrientation]!!,
+                selectedOption = sexualOrientationMap[profile.sexualOrientationEnum]!!,
                 onEditField = { selectedOption ->
-                    var sexualOrientationOption = sexualOrientationMap.entries.find { it.value == selectedOption }?.key
+                    val sexualOrientationOption =
+                        sexualOrientationMap.entries.find { it.value == selectedOption }?.key
                     if (sexualOrientationOption != null) {
-                        profile.sexualOrientation = sexualOrientationOption
+                        profile.sexualOrientation = sexualOrientationOption.toString()
                     }
                 },
                 includeNullOption = true
@@ -337,7 +355,7 @@ fun ProfileScreen(
                 options = jobsMap.values.toList(),
                 selectedOption = jobsMap[stringToEnum<Jobs>(profile.job)],
                 onEditField = { selectedOption ->
-                    var selectedJobOption = jobsMap.entries.find { it.value == selectedOption }?.key
+                    val selectedJobOption = jobsMap.entries.find { it.value == selectedOption }?.key
                     if (selectedJobOption != null) {
                         profile.job = enumToString(selectedJobOption)
                     }
@@ -350,11 +368,12 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.what_type_of_relationship),
                 options = relationshipTypeMap.values.toList(),
-                selectedOption = relationshipTypeMap[profile.relationshipType]!!,
+                selectedOption = relationshipTypeMap[profile.relationshipTypeEnum]!!,
                 onEditField = { selectedOption ->
-                    var relationshipTypeOption = relationshipTypeMap.entries.find { it.value == selectedOption }?.key
+                    val relationshipTypeOption =
+                        relationshipTypeMap.entries.find { it.value == selectedOption }?.key
                     if (relationshipTypeOption != null) {
-                        profile.relationshipType = relationshipTypeOption
+                        profile.relationshipType = relationshipTypeOption.toString()
                     }
                 },
             )
@@ -364,31 +383,37 @@ fun ProfileScreen(
             ProfileSection(
                 title = stringResource(R.string.more_about_me),
                 rowTitles = listOf(
-                    "horoscope" to horoscopeMap[profile.horoscope],
+                    "horoscope" to horoscopeMap[profile.horoscopeEnum],
                     "education" to educationMap[stringToEnum<Education>(profile.education)],
                     "personality_type" to personalityMap[stringToEnum<Personality>(profile.personalityType)]
                 ),
                 onSelectedItemChange = { field, selectedOption ->
                     when (field) {
                         "horoscope" -> {
-                            var horoscopeOption = horoscopeMap.entries.find { it.value == selectedOption }?.key
+                            val horoscopeOption =
+                                horoscopeMap.entries.find { it.value == selectedOption }?.key
                             if (horoscopeOption != null) {
-                                profile.horoscope = horoscopeOption
+                                profile.horoscope = horoscopeOption.toString()
                             }
                         }
+
                         "education" -> {
 
-                            var educationOption = educationMap.entries.find { it.value == selectedOption }?.key
+                            val educationOption =
+                                educationMap.entries.find { it.value == selectedOption }?.key
                             if (educationOption != null) {
                                 profile.education = enumToString(educationOption)
                             }
                         }
+
                         "personality_type" -> {
-                            var personalityOption = personalityMap.entries.find { it.value == selectedOption }?.key
+                            var personalityOption =
+                                personalityMap.entries.find { it.value == selectedOption }?.key
                             if (personalityOption != null) {
                                 profile.personalityType = enumToString(personalityOption)
                             }
                         }
+
                         else -> println("Campo desconocido: $field")
                     }
                 }
@@ -400,23 +425,33 @@ fun ProfileScreen(
                 title = stringResource(R.string.lifestyle),
                 rowTitles = listOf(
                     "pets" to petsMap[stringToEnum<Pets>(profile.pets)],
-                    "drinks" to habitsMap[profile.drinks],
-                    "smokes" to habitsMap[profile.smokes],
-                    "sports" to habitsMap[profile.doesSports],
-                    "religion" to religionMap[profile.valuesAndBeliefs]
+                    "drinks" to habitsMap[profile.drinksEnum],
+                    "smokes" to habitsMap[profile.smokesEnum],
+                    "sports" to habitsMap[profile.doesSportsEnum],
+                    "religion" to religionMap[profile.valuesAndBeliefsEnum]
                 ),
                 onSelectedItemChange = { field, selectedOption ->
                     when (field) {
                         "pets" -> {
-                            var petsOption = petsMap.entries.find { it.value == selectedOption }?.key
+                            val petsOption =
+                                petsMap.entries.find { it.value == selectedOption }?.key
                             if (petsOption != null) {
                                 profile.pets = enumToString(petsOption)
                             }
                         }
-                        "drinks" -> profile.drinks = habitsMap.entries.find { it.value == selectedOption }?.key
-                        "smokes" -> profile.smokes = habitsMap.entries.find { it.value == selectedOption }?.key
-                        "sports" -> profile.doesSports = habitsMap.entries.find { it.value == selectedOption }?.key
-                        "religion" -> profile.valuesAndBeliefs = religionMap.entries.find { it.value == selectedOption }?.key
+
+                        "drinks" -> profile.drinks =
+                            habitsMap.entries.find { it.value == selectedOption }?.key.toString()
+
+                        "smokes" -> profile.smokes =
+                            habitsMap.entries.find { it.value == selectedOption }?.key.toString()
+
+                        "sports" -> profile.doesSports =
+                            habitsMap.entries.find { it.value == selectedOption }?.key.toString()
+
+                        "religion" -> profile.valuesAndBeliefs =
+                            religionMap.entries.find { it.value == selectedOption }?.key.toString()
+
                         else -> println("Campo desconocido: $field")
                     }
                 }

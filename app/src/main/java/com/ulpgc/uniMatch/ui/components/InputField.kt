@@ -32,7 +32,7 @@ fun InputField(
     label: String,
     isPassword: Boolean = false,
     isValid: (String) -> Boolean = { true },
-    textColor: Color = MaterialTheme.colorScheme.onTertiary,
+    textColor: Color = Color.Black,
     isEditable: Boolean = true,
     backgroundColor: Color = Color.White,
     isRound: Boolean = false,

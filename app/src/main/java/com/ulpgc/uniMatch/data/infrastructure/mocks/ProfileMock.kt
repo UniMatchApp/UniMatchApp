@@ -7,8 +7,6 @@ import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
-import com.ulpgc.uniMatch.data.domain.valueObjects.Location
-import java.util.Date
 import kotlin.random.Random
 
 object ProfileMock {
@@ -34,31 +32,32 @@ object ProfileMock {
             name = names.random(),
             age = Random.nextInt(18, 60),
             aboutMe = "I am ${names.random()}, a ${jobs.random()} who loves ${interests.random()}.",
-            location = Location(
+            location = Profile.Location(
                 Random.nextDouble(27.0, 29.0),
-                Random.nextDouble(14.0, 16.0)
+                Random.nextDouble(14.0, 16.0),
+                null
             ),
-            gender = Gender.entries.toTypedArray().random(),
-            sexualOrientation = SexualOrientation.entries.toTypedArray().random(),
-            relationshipType = RelationshipType.entries.toTypedArray().random(),
-            birthday = Date(),
-            interests = List(Random.nextInt(1, 8)) { interests.random() }.distinct(),
-            wall = imageUrls.shuffled().take(Random.nextInt(3, 6)),
+            gender = Gender.entries.toTypedArray().random().toString(),
+            sexualOrientation = SexualOrientation.entries.toTypedArray().random().toString(),
+            relationshipType = RelationshipType.entries.toTypedArray().random().toString(),
+            birthday = "2009-01-01T00:00:00.000Z",
+            interests = List(Random.nextInt(1, 8)) { interests.random() }.distinct().joinToString(", "),
+            wall = imageUrls.shuffled().take(Random.nextInt(3, 6)).joinToString(", "),
             preferredImage = imageUrls.random(),
             maxDistance = Random.nextInt(10, 100),
-            ageRange = Random.nextInt(18, 40) to Random.nextInt(41, 100),
-            horoscope = Horoscope.entries.toTypedArray().random(),
+            ageRange = Profile.AgeRange(Random.nextInt(18, 40), Random.nextInt(41, 100)),
+            horoscope = Horoscope.entries.toTypedArray().random().toString(),
             height = Random.nextInt(150, 200),
             weight = Random.nextInt(50, 100),
             job = jobs.random(),
             education = educationLevels.random(),
             personalityType = personalityTypes.random(),
             pets = petPreferences.random(),
-            drinks = Habits.entries.toTypedArray().random(),
-            smokes = Habits.entries.toTypedArray().random(),
-            doesSports = Habits.entries.toTypedArray().random(),
-            valuesAndBeliefs = Religion.entries.toTypedArray().random(),
-            genderPriority = Gender.entries.toTypedArray().random(),
+            drinks = Habits.entries.toTypedArray().random().toString(),
+            smokes = Habits.entries.toTypedArray().random().toString(),
+            doesSports = Habits.entries.toTypedArray().random().toString(),
+            valuesAndBeliefs = Religion.entries.toTypedArray().random().toString(),
+            genderPriority = Gender.entries.toTypedArray().random().toString(),
             fact = "light travels faster than sound"
         )
     }
@@ -82,31 +81,32 @@ object ProfileMock {
                 name = name,
                 age = Random.nextInt(18, 60),
                 aboutMe = "I am $name, a ${jobs.random()} who loves ${interests.random()}.",
-                location = Location(
+                location = Profile.Location(
                     Random.nextDouble(27.0, 29.0),
-                    Random.nextDouble(14.0, 16.0)
+                    Random.nextDouble(14.0, 16.0),
+                    null
                 ),
-                gender = Gender.entries.toTypedArray().random(),
-                sexualOrientation = SexualOrientation.entries.toTypedArray().random(),
-                relationshipType = RelationshipType.entries.toTypedArray().random(),
-                birthday = Date(),
-                interests = List(Random.nextInt(1, 8)) { interests.random() }.distinct(),
-                wall = images[index],
+                gender = Gender.entries.toTypedArray().random().toString(),
+                sexualOrientation = SexualOrientation.entries.toTypedArray().random().toString(),
+                relationshipType = RelationshipType.entries.toTypedArray().random().toString(),
+                birthday = "2002-01-01T00:00:00.000Z",
+                interests = List(Random.nextInt(1, 8)) { interests.random() }.distinct().joinToString(", "),
+                wall = images[index].shuffled().take(Random.nextInt(3, 6)).joinToString(", "),
                 preferredImage = images[index].first(),
                 maxDistance = Random.nextInt(10, 100),
-                ageRange = Random.nextInt(18, 40) to Random.nextInt(41, 100),
-                horoscope = Horoscope.entries.toTypedArray().random(),
+                ageRange = Profile.AgeRange(Random.nextInt(18, 40), Random.nextInt(41, 100)),
+                horoscope = Horoscope.entries.toTypedArray().random().toString(),
                 height = Random.nextInt(150, 200),
                 weight = Random.nextInt(50, 100),
                 job = jobs.random(),
                 education = educationLevels.random(),
                 personalityType = personalityTypes.random(),
                 pets = petPreferences.random(),
-                drinks = Habits.entries.toTypedArray().random(),
-                smokes = Habits.entries.toTypedArray().random(),
-                doesSports = Habits.entries.toTypedArray().random(),
-                valuesAndBeliefs = Religion.entries.toTypedArray().random(),
-                genderPriority = Gender.entries.toTypedArray().random(),
+                drinks = Habits.entries.toTypedArray().random().toString(),
+                smokes = Habits.entries.toTypedArray().random().toString(),
+                doesSports = Habits.entries.toTypedArray().random().toString(),
+                valuesAndBeliefs = Religion.entries.toTypedArray().random().toString(),
+                genderPriority = Gender.entries.toTypedArray().random().toString(),
                 fact = "I once ${interests.random()} for a whole day!"
             )
         }
