@@ -145,14 +145,34 @@ dependencies {
 }
 
 
-tasks.whenTaskAdded {
-    if (name == "compileDebugKotlin") {
-        dependsOn("generateDebugResources")
-        println("Running adb reverse...")
+//tasks.whenTaskAdded {
+//    if (name == "compileDebugKotlin") {
+//        dependsOn("generateDebugResources")
+//        println("Running adb reverse...")
+//        val adbCommand = "adb reverse tcp:3000 tcp:3000"
+//        val adbCommand2 = "adb reverse tcp:8080 tcp:8080"
+//        val adbCommand3 = "adb reverse tcp:8081 tcp:8081"
+//        doFirst {
+//            exec {
+//                commandLine("cmd", "/c", adbCommand)
+//            }
+//            exec {
+//                commandLine("cmd", "/c", adbCommand2)
+//            }
+//            exec {
+//                commandLine("cmd", "/c", adbCommand3)
+//            }
+//        }
+//    }
+//}
+
+gradle.taskGraph.whenReady {
+    allTasks.forEach { task ->
         val adbCommand = "adb reverse tcp:3000 tcp:3000"
         val adbCommand2 = "adb reverse tcp:8080 tcp:8080"
         val adbCommand3 = "adb reverse tcp:8081 tcp:8081"
-        doFirst {
+        task.doFirst {
+            println("Running adb reverse...")
             exec {
                 commandLine("cmd", "/c", adbCommand)
             }
@@ -166,24 +186,4 @@ tasks.whenTaskAdded {
     }
 }
 
-//gradle.taskGraph.whenReady {
-//    allTasks.forEach { task ->
-//        val adbCommand = "adb reverse tcp:3000 tcp:3000"
-//        val adbCommand2 = "adb reverse tcp:8080 tcp:8080"
-//        val adbCommand3 = "adb reverse tcp:8081 tcp:8081"
-//        task.doFirst {
-//            println("Running adb reverse...")
-//            exec {
-//                commandLine("cmd", "/c", adbCommand)
-//            }
-//            exec {
-//                commandLine("cmd", "/c", adbCommand2)
-//            }
-//            exec {
-//                commandLine("cmd", "/c", adbCommand3)
-//            }
-//        }
-//    }
-//}
-//
-//
+

@@ -2,6 +2,7 @@ package com.ulpgc.uniMatch.data.infrastructure.services.profile
 
 import android.content.ContentResolver
 import android.net.Uri
+import android.util.Log
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.*
@@ -28,7 +29,8 @@ class ApiProfileService (
             var profileEntity = profileDao.getProfileById(userId)
             val updatedProfileEntity = profileController.getProfile(userId)
 
-
+            Log.i("ApiProfileService", "Profile: $updatedProfileEntity.value)")
+            Log.i("ApiProfileService", "Profile updated: $profileEntity")
             if (updatedProfileEntity.success && updatedProfileEntity.value != null) {
                 profileEntity = ProfileEntity.fromDomain(Profile.fromDTO(updatedProfileEntity.value))
                 profileDao.insertProfile(profileEntity)
