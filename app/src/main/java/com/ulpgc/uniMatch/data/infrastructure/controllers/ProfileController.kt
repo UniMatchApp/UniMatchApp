@@ -1,21 +1,14 @@
 package com.ulpgc.uniMatch.data.infrastructure.controllers
 
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
-import com.ulpgc.uniMatch.data.domain.enums.Education
-import com.ulpgc.uniMatch.data.domain.enums.Facts
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
 import com.ulpgc.uniMatch.data.domain.enums.Horoscope
-import com.ulpgc.uniMatch.data.domain.enums.Interests
-import com.ulpgc.uniMatch.data.domain.enums.Jobs
-import com.ulpgc.uniMatch.data.domain.enums.Personality
-import com.ulpgc.uniMatch.data.domain.enums.Pets
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.domain.models.ProfileDTO
-import com.ulpgc.uniMatch.data.infrastructure.services.profile.ProfileRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -26,8 +19,6 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
-import retrofit2.http.Query
-import java.io.File
 
 interface ProfileController {
 
