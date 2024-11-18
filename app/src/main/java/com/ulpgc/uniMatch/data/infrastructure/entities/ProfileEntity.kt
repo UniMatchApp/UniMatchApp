@@ -9,8 +9,6 @@ import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
-import com.ulpgc.uniMatch.data.domain.valueObjects.Location
-import java.util.Date
 
 @Entity(tableName = "profiles")
 data class ProfileEntity(
@@ -24,7 +22,7 @@ data class ProfileEntity(
     val gender: Gender,
     val sexualOrientation: SexualOrientation,
     val relationshipType: RelationshipType,
-    val birthday: Long,
+    val birthday: String,
     val interests: String,
     val wall: String,
     val preferredImage: String,
@@ -53,16 +51,16 @@ data class ProfileEntity(
                 name = profileEntity.name,
                 age = profileEntity.age,
                 aboutMe = profileEntity.aboutMe,
-                location = Location(profileEntity.latitude, profileEntity.longitude),
+                location = Profile.Location(profileEntity.latitude, profileEntity.longitude, null),
                 gender = profileEntity.gender,
                 sexualOrientation = profileEntity.sexualOrientation,
                 relationshipType = profileEntity.relationshipType,
-                birthday = Date(profileEntity.birthday),
-                interests = profileEntity.interests.split(","),
-                wall = profileEntity.wall.split(","),
+                birthday = profileEntity.birthday,
+                interests = profileEntity.interests,
+                wall = profileEntity.wall,
                 preferredImage = profileEntity.preferredImage,
                 maxDistance = profileEntity.maxDistance,
-                ageRange = profileEntity.ageRangeMin to profileEntity.ageRangeMax,
+                ageRange = Profile.AgeRange(profileEntity.ageRangeMin, profileEntity.ageRangeMax),
                 horoscope = profileEntity.horoscope,
                 height = profileEntity.height,
                 weight = profileEntity.weight,
@@ -92,13 +90,13 @@ data class ProfileEntity(
                 gender = profile.gender,
                 sexualOrientation = profile.sexualOrientation,
                 relationshipType = profile.relationshipType,
-                birthday = profile.birthday.time,
-                interests = profile.interests.joinToString(","),
-                wall = profile.wall.joinToString(","),
+                birthday = profile.birthday,
+                interests = profile.interests,
+                wall = profile.wall,
                 preferredImage = profile.preferredImage,
                 maxDistance = profile.maxDistance,
-                ageRangeMin = profile.ageRange.first,
-                ageRangeMax = profile.ageRange.second,
+                ageRangeMin = profile.ageRange.min,
+                ageRangeMax = profile.ageRange.max,
                 horoscope = profile.horoscope,
                 height = profile.height,
                 weight = profile.weight,

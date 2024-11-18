@@ -38,7 +38,7 @@ fun ProfileWall(
     }
 
     val profile = profileViewModel.profileData.collectAsState().value
-    val profileImages = profile?.wall ?: emptyList()
+    val profileImages = profile?.wallList ?: emptyList()
     val activity = LocalContext.current as? ComponentActivity
     val isLoading by profileViewModel.isLoading.collectAsState()
 

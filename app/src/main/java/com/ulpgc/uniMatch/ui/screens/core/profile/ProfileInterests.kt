@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -45,14 +44,15 @@ fun ProfileInterests(
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
-    } else if( profile != null) {
+    } else if (profile != null) {
         Log.i("ProfileInterests", "profile interests: ${profile.interests}")
-        val interestsMap = context.resources.getStringArray(R.array.interests).mapIndexed { index, name ->
-            Interests.entries.getOrNull(index) to name
-        }.toMap()
+        val interestsMap =
+            context.resources.getStringArray(R.array.interests).mapIndexed { index, name ->
+                Interests.entries.getOrNull(index) to name
+            }.toMap()
 
         var profileInterests = interestsMap.mapNotNull { entry ->
-            if (profile.interests.contains(enumToString(entry.key))) {
+            if (profile.interestsList.contains(enumToString(entry.key))) {
                 entry.value
             } else {
                 null
