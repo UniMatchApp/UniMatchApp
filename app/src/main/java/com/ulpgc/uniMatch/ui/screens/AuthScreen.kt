@@ -50,7 +50,6 @@ fun AuthScreen(
     val navController = rememberNavController()
 
     val forgotPasswordUserId = userViewModel.forgotPasswordUserId.collectAsState()
-    val resetPasswordResult = userViewModel.resetPasswordResult.collectAsState()
     val registeredUserId = userViewModel.registeredUserId.collectAsState()
     val loginUserId = userViewModel.loginUserId.collectAsState()
 
@@ -132,7 +131,6 @@ fun AuthScreen(
                 errorViewModel = errorViewModel,
                 onBackClick = { navController.navigate(AuthRoutes.OPTIONS) },
                 onLoginClick = { navController.navigate(AuthRoutes.LOGIN) },
-                continueRegister = { userViewModel.register() }
             )
 
             LaunchedEffect(registeredUserId.value) {
@@ -216,7 +214,7 @@ fun AuthScreen(
         }
 
         composable(AuthRoutes.REGISTER_VERIFY_CODE) {
-            temporaryEmail.value?.let {
+            email.value?.let {
                 VerifyCodeScreen(
                     userViewModel = userViewModel,
                     errorViewModel = errorViewModel,

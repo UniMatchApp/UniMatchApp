@@ -41,8 +41,7 @@ fun RegisterScreen(
     userViewModel: UserViewModel,
     errorViewModel: ErrorViewModel,
     onBackClick: () -> Unit,
-    onLoginClick: () -> Unit,
-    continueRegister: () -> Unit
+    onLoginClick: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -128,8 +127,7 @@ fun RegisterScreen(
                         } else if (password.isEmpty() || email.isEmpty()) {
                             errorViewModel.showError(fieldsEmptyError)
                         } else {
-                            userViewModel.partialRegistration(email, password)
-                            continueRegister()
+                            userViewModel.register(email, password)
                         }
                     },
                     text = stringResource(R.string.register_button),
