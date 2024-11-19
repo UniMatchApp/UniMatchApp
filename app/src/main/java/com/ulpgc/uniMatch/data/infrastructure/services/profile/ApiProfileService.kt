@@ -4,7 +4,9 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
+import com.ulpgc.uniMatch.data.application.services.HabitsRequest
 import com.ulpgc.uniMatch.data.application.services.ProfileService
+import com.ulpgc.uniMatch.data.application.services.StringRequest
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
 import com.ulpgc.uniMatch.data.domain.enums.Horoscope
@@ -105,10 +107,11 @@ class ApiProfileService(
         handleApiCall { profileController.updatePersonality(userId, personalityType) }
 
     override suspend fun updatePets(userId: String, pets: String): Result<Unit> =
-        handleApiCall { profileController.updatePets(userId, pets) }
+        handleApiCall { Log.i("TuMadre", "Pets: $pets");
+            profileController.updatePets(userId, StringRequest(pets)) }
 
     override suspend fun updateDrinks(userId: String, drinks: Habits): Result<Unit> =
-        handleApiCall { profileController.updateDrinks(userId, drinks) }
+        handleApiCall { profileController.updateDrinks(userId, HabitsRequest(drinks)) }
 
     override suspend fun updateSmokes(userId: String, smokes: Habits): Result<Unit> =
         handleApiCall { profileController.updateSmokes(userId, smokes) }

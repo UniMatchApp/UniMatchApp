@@ -22,7 +22,9 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ProfileInputField(label: String, initialValue: String, onValueChange: (String) -> Unit) {
-    var value by remember { mutableStateOf(initialValue) }
+
+    var value by remember { mutableStateOf(if (initialValue.isEmpty()) "0" else initialValue) }
+
 
     Column(
         modifier = Modifier
@@ -38,15 +40,15 @@ fun ProfileInputField(label: String, initialValue: String, onValueChange: (Strin
         TextField(
             value = value,
             onValueChange = { newValue ->
-                // Filtramos la entrada para permitir solo números
                 if ((newValue.isEmpty() || newValue.all { it.isDigit() }) && newValue.length <= 3) {
                     value = newValue
                     onValueChange(newValue)
                 }
             },
             modifier = Modifier.fillMaxWidth(),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number) // Teclado numérico
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
     }
 }

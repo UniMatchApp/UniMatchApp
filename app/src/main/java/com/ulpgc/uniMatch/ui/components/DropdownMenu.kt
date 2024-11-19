@@ -7,6 +7,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.ulpgc.uniMatch.R
 
@@ -45,8 +47,9 @@ fun DropdownMenu(
                     readOnly = true,
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-                    }
-                )
+                    },
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
+                    )
             }
 
 
@@ -65,13 +68,14 @@ fun DropdownMenu(
 
                 items.forEach { text ->
                     DropdownMenuItem(
-                        text = { Text(text = text) },
+                        text = { Text(text = text, color = MaterialTheme.colorScheme.onBackground  ) },
                         onClick = {
                             selectedText = text
                             isExpanded = false
                             onItemSelected(text)
                         },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+
                     )
                 }
             }

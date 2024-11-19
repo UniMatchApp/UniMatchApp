@@ -245,7 +245,7 @@
     <!--Drinks-->
     <string-array name="drinks">
         <item>Never</item>
-        <item>Socially</item>
+        <item>Occasionally</item>
         <item>Frequently</item>
         <item>Daily</item>
     </string-array>
@@ -253,7 +253,7 @@
     <!--Do you smoke?-->
     <string-array name="smokes">
         <item>Never</item>
-        <item>Socially</item>
+        <item>Occasionally</item>
         <item>Frequently</item>
         <item>Daily</item>
     </string-array>

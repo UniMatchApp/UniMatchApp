@@ -1,6 +1,8 @@
 package com.ulpgc.uniMatch.data.infrastructure.controllers
 
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
+import com.ulpgc.uniMatch.data.application.services.HabitsRequest
+import com.ulpgc.uniMatch.data.application.services.StringRequest
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
 import com.ulpgc.uniMatch.data.domain.enums.Horoscope
@@ -49,7 +51,7 @@ interface ProfileController {
     suspend fun updateDegree(@Path("id") userId: String, @Body degree: String): ApiResponse<Unit>
 
     @PUT("users/{id}/drinks")
-    suspend fun updateDrinks(@Path("id") userId: String, @Body drinks: Habits): ApiResponse<Unit>
+    suspend fun updateDrinks(@Path("id") userId: String, @Body drinks: HabitsRequest): ApiResponse<Unit>
 
     @PUT("users/{id}/height")
     suspend fun updateHeight(@Path("id") userId: String, @Body height: Int): ApiResponse<Unit>
@@ -64,7 +66,7 @@ interface ProfileController {
     ): ApiResponse<Unit>
 
     @PUT("users/{id}/gender")
-    suspend fun updateGender(@Path("id") userId: String, @Body gender: Gender): ApiResponse<Unit>
+    suspend fun updateGender(@Path("id") id: String, @Body gender: Gender): ApiResponse<Unit>
 
     @PUT("users/{id}/horoscope")
     suspend fun updateHoroscope(
@@ -88,7 +90,7 @@ interface ProfileController {
     ): ApiResponse<Unit>
 
     @PUT("users/{id}/pets")
-    suspend fun updatePets(@Path("id") userId: String, @Body pets: String): ApiResponse<Unit>
+    suspend fun updatePets(@Path("id") userId: String, @Body pets: StringRequest): ApiResponse<Unit>
 
     @PUT("users/{id}/relationship-type")
     suspend fun updateRelationshipType(

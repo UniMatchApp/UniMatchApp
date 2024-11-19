@@ -81,7 +81,8 @@ fun ProfileScreen(
 
     val context = LocalContext.current
 
-    val profile = profileViewModel.profileData.collectAsState().value
+    val profile = profileViewModel.profileData.collectAsState().value?.copy()
+
 
     val isLoading by profileViewModel.isLoading.collectAsState()
 
@@ -158,6 +159,9 @@ fun ProfileScreen(
                 null
             }
         }
+
+        Log.i("ProfileScreen", "profile interests: ${profile.interests}")
+        Log.i("ProfileScreen", "profileInterests: $profileInterests")
 
         Column(
             modifier = Modifier
@@ -248,6 +252,7 @@ fun ProfileScreen(
                     profile.aboutMe = newText
                 },
                 modifier = Modifier.fillMaxWidth(),
+                textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -318,7 +323,7 @@ fun ProfileScreen(
                 label = stringResource(R.string.height),
                 initialValue = profile.height.toString(),
                 onValueChange = { newHeight ->
-                    profile.height = newHeight.toIntOrNull() ?: 170
+                    profile.height = newHeight.toIntOrNull() ?: 0
                 }
             )
 
@@ -328,7 +333,7 @@ fun ProfileScreen(
                 label = stringResource(R.string.weight),
                 initialValue = profile.weight.toString(),
                 onValueChange = { newWeight ->
-                    profile.weight = newWeight.toIntOrNull() ?: 70
+                    profile.weight = newWeight.toIntOrNull() ?: 0
                 }
             )
 
@@ -443,6 +448,7 @@ fun ProfileScreen(
                         "drinks" -> profile.drinks =
                             habitsMap.entries.find { it.value == selectedOption }?.key.toString()
 
+
                         "smokes" -> profile.smokes =
                             habitsMap.entries.find { it.value == selectedOption }?.key.toString()
 
@@ -454,6 +460,7 @@ fun ProfileScreen(
 
                         else -> println("Campo desconocido: $field")
                     }
+                    Log.i("ProfileScreen", "Drinks: ${profile.drinks}")
                 }
             )
 

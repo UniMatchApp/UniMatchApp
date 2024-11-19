@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.ProfileService
@@ -25,6 +26,10 @@ open class ProfileViewModel(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
+
+    fun getProfileData(): Profile? {
+        return _profileData.value
+    }
 
     fun loadProfile() {
         viewModelScope.launch {
@@ -61,76 +66,70 @@ open class ProfileViewModel(
     fun updateProfile(profile: Profile) {
         viewModelScope.launch {
             _isLoading.value = true
-            _profileData.value?.let { currentProfile ->
-                runCatching {
-                    // Mapa que asocia cada propiedad con su función de actualización
-                    val updateMap = mapOf(
-                        profile.aboutMe to { updateAboutMe(profile.aboutMe) },
-                        profile.fact to { profile.fact?.let { updateFact(it) } },
-                        profile.interests to { updateInterests(profile.interestsList) },
-                        profile.height to { profile.height?.let { updateHeight(it) } },
-                        profile.weight to { profile.weight?.let { updateWeight(it) } },
-                        profile.genderEnum to { updateGender(profile.genderEnum) },
-                        profile.sexualOrientationEnum to { updateSexualOrientation(profile.sexualOrientationEnum) },
-                        profile.job to { profile.job?.let { updateJob(it) } },
-                        profile.relationshipTypeEnum to { updateRelationshipType(profile.relationshipTypeEnum) },
-                        profile.horoscopeEnum to { profile.horoscopeEnum?.let { updateHoroscope(it) } },
-                        profile.education to { profile.education?.let { updateEducation(it) } },
-                        profile.personalityType to {
-                            profile.personalityType?.let {
-                                updatePersonalityType(
-                                    it
-                                )
-                            }
-                        },
-                        profile.pets to { profile.pets?.let { updatePets(it) } },
-                        profile.drinksEnum to { profile.drinksEnum?.let { updateDrinks(it) } },
-                        profile.smokesEnum to { profile.smokesEnum?.let { updateSmokes(it) } },
-                        profile.doesSportsEnum to { profile.doesSportsEnum?.let { updateDoesSports(it) } },
-                        profile.valuesAndBeliefsEnum to {
-                            profile.valuesAndBeliefsEnum?.let {
-                                updateValuesAndBeliefs(
-                                    it
-                                )
-                            }
-                        }
-                    )
-
-                    // Itera sobre el mapa y ejecuta la actualización si el valor es diferente
-                    updateMap.forEach { (newValue, updateFunction) ->
-                        val currentValue = when (newValue) {
-                            profile.aboutMe -> currentProfile.aboutMe
-                            profile.fact -> currentProfile.fact
-                            profile.interests -> currentProfile.interests
-                            profile.height -> currentProfile.height
-                            profile.weight -> currentProfile.weight
-                            profile.genderEnum -> currentProfile.genderEnum
-                            profile.sexualOrientationEnum -> currentProfile.sexualOrientationEnum
-                            profile.job -> currentProfile.job
-                            profile.relationshipTypeEnum -> currentProfile.relationshipTypeEnum
-                            profile.horoscopeEnum -> currentProfile.horoscopeEnum
-                            profile.education -> currentProfile.education
-                            profile.personalityType -> currentProfile.personalityType
-                            profile.pets -> currentProfile.pets
-                            profile.drinksEnum -> currentProfile.drinksEnum
-                            profile.smokesEnum -> currentProfile.smokesEnum
-                            profile.doesSportsEnum -> currentProfile.doesSportsEnum
-                            profile.valuesAndBeliefsEnum -> currentProfile.valuesAndBeliefsEnum
-                            else -> null
-                        }
-
-                        if (newValue != currentValue) {
-                            updateFunction()
-                        }
+            Log.i("ProfileViewModel", "Updating profile: $profile")
+            Log.i("ProfileViewModel", "Current profile: ${profileData.value}")
+            val updateMap = mapOf(
+                profile.aboutMe to { updateAboutMe(profile.aboutMe) },
+                profile.fact to { profile.fact?.let { updateFact(it) } },
+                profile.interests to { updateInterests(profile.interestsList) },
+                profile.height to { profile.height?.let { updateHeight(it) } },
+                profile.weight to { profile.weight?.let { updateWeight(it) } },
+                profile.genderEnum to { updateGender(profile.genderEnum) },
+                profile.sexualOrientationEnum to { updateSexualOrientation(profile.sexualOrientationEnum) },
+                profile.job to { profile.job?.let { updateJob(it) } },
+                profile.relationshipTypeEnum to { updateRelationshipType(profile.relationshipTypeEnum) },
+                profile.horoscopeEnum to { profile.horoscopeEnum?.let { updateHoroscope(it) } },
+                profile.education to { profile.education?.let { updateEducation(it) } },
+                profile.personalityType to {
+                    profile.personalityType?.let {
+                        updatePersonalityType(
+                            it
+                        )
                     }
-                }.onFailure { error ->
-                    errorViewModel.showError(error.message ?: "Error updating profile")
+                },
+                profile.pets to { profile.pets?.let { updatePets(it) } },
+                profile.drinksEnum to { profile.drinksEnum?.let { updateDrinks(it) } },
+                profile.smokesEnum to { profile.smokesEnum?.let { updateSmokes(it) } },
+                profile.doesSportsEnum to { profile.doesSportsEnum?.let { updateDoesSports(it) } },
+                profile.valuesAndBeliefsEnum to {
+                    profile.valuesAndBeliefsEnum?.let {
+                        updateValuesAndBeliefs(
+                            it
+                        )
+                    }
                 }
-                // Recarga el perfil una vez finalizadas las actualizaciones.
-                loadProfile()
-                _isLoading.value = false
+            )
+
+            updateMap.forEach { (newValue, updateFunction) ->
+                val currentValue = when (newValue) {
+                    profile.aboutMe -> profileData.value?.aboutMe
+                    profile.fact -> profileData.value?.fact
+                    profile.interests -> profileData.value?.interests
+                    profile.height -> profileData.value?.height
+                    profile.weight -> profileData.value?.weight
+                    profile.genderEnum -> profileData.value?.genderEnum
+                    profile.sexualOrientationEnum -> profileData.value?.sexualOrientationEnum
+                    profile.job -> profileData.value?.job
+                    profile.relationshipTypeEnum -> profileData.value?.relationshipTypeEnum
+                    profile.horoscopeEnum -> profileData.value?.horoscopeEnum
+                    profile.education -> profileData.value?.education
+                    profile.personalityType -> profileData.value?.personalityType
+                    profile.pets -> profileData.value?.pets
+                    profile.drinksEnum -> profileData.value?.drinksEnum
+                    profile.smokesEnum -> profileData.value?.smokesEnum
+                    profile.doesSportsEnum -> profileData.value?.doesSportsEnum
+                    profile.valuesAndBeliefsEnum -> profileData.value?.valuesAndBeliefsEnum
+                    else -> null
+                }
+                if (newValue != currentValue) {
+                    Log.i("TuMadre", "Updating")
+                    updateFunction()
+                }
             }
+
         }
+        _isLoading.value = false
+        loadProfile()
     }
 
 
