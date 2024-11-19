@@ -18,37 +18,84 @@ data class Profile(
     val age: Int,
     var aboutMe: String,
     val location: Location,
-    var gender: Gender,
-    var sexualOrientation: SexualOrientation,
-    var relationshipType: RelationshipType,
+    var gender: String,
+    var sexualOrientation: String,
+    var relationshipType: String,
     val birthday: String,
     val interests: String,
     val wall: String,
     val preferredImage: String,
     val maxDistance: Int,
     val ageRange: AgeRange,
-    var horoscope: Horoscope?,
+    var horoscope: String?,
     var height: Int?,
     var weight: Int?,
     var job: String?,
     var education: String?,
     var personalityType: String?,
     var pets: String?,
-    var drinks: Habits?,
-    var smokes: Habits?,
-    var doesSports: Habits?,
-    var valuesAndBeliefs: Religion?,
-    val genderPriority: Gender?,
+    var drinks: String?,
+    var smokes: String?,
+    var doesSports: String?,
+    var valuesAndBeliefs: String?,
+    val genderPriority: String?,
     var fact: String?
 ) {
 
+    val sexualOrientationEnum: SexualOrientation
+        get() {
+            return SexualOrientation.valueOf(sexualOrientation)
+        }
+
+    val relationshipTypeEnum: RelationshipType
+        get() {
+            return RelationshipType.valueOf(relationshipType)
+        }
+
+    val drinksEnum: Habits?
+        get() {
+            return drinks?.let { Habits.valueOf(it) }
+        }
+
+    val smokesEnum: Habits?
+        get() {
+            return smokes?.let { Habits.valueOf(it) }
+        }
+
+    val doesSportsEnum: Habits?
+        get() {
+            return doesSports?.let { Habits.valueOf(it) }
+        }
+
+    val valuesAndBeliefsEnum: Religion?
+        get() {
+            return valuesAndBeliefs?.let { Religion.valueOf(it) }
+        }
+
+
+    val genderEnum: Gender
+        get() {
+            return Gender.valueOf(gender.uppercase(Locale.getDefault()))
+        }
+
+
+    val genderPriorityEnum: Gender?
+        get() {
+            return genderPriority?.let { Gender.valueOf(it) }
+        }
+
+    val horoscopeEnum: Horoscope?
+        get() {
+            return horoscope?.let { Horoscope.valueOf(it) }
+        }
 
     // Getter for date as Date object
     val birthdayDate: Date
         get() {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).apply {
-                timeZone = TimeZone.getTimeZone("UTC")
-            }
+            val dateFormat =
+                SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).apply {
+                    timeZone = TimeZone.getTimeZone("UTC")
+                }
             return dateFormat.parse(birthday) ?: Date()
         }
 

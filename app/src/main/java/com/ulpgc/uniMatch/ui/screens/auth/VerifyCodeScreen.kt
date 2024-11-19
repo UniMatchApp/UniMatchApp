@@ -39,7 +39,7 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 fun VerifyCodeScreen(
     userViewModel: UserViewModel,
     errorViewModel: ErrorViewModel,
-    userId: String,
+    email: String,
     onVerificationSuccess: () -> Unit = {},
     onBack: () -> Unit
 ) {
@@ -69,7 +69,7 @@ fun VerifyCodeScreen(
             } else if (code.any { !it.isDigit() }) {
                 errorViewModel.showError(pleaseEnterValidCode)
             } else {
-                userViewModel.verifyCode(userId, code)
+                userViewModel.verifyCode(email, code)
             }
         },
         onBack = { onBack() },

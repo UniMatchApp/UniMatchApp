@@ -70,11 +70,11 @@ open class ProfileViewModel(
                         profile.interests to { updateInterests(profile.interestsList) },
                         profile.height to { profile.height?.let { updateHeight(it) } },
                         profile.weight to { profile.weight?.let { updateWeight(it) } },
-                        profile.gender to { updateGender(profile.gender) },
-                        profile.sexualOrientation to { updateSexualOrientation(profile.sexualOrientation) },
+                        profile.genderEnum to { updateGender(profile.genderEnum) },
+                        profile.sexualOrientationEnum to { updateSexualOrientation(profile.sexualOrientationEnum) },
                         profile.job to { profile.job?.let { updateJob(it) } },
-                        profile.relationshipType to { updateRelationshipType(profile.relationshipType) },
-                        profile.horoscope to { profile.horoscope?.let { updateHoroscope(it) } },
+                        profile.relationshipTypeEnum to { updateRelationshipType(profile.relationshipTypeEnum) },
+                        profile.horoscopeEnum to { profile.horoscopeEnum?.let { updateHoroscope(it) } },
                         profile.education to { profile.education?.let { updateEducation(it) } },
                         profile.personalityType to {
                             profile.personalityType?.let {
@@ -84,11 +84,11 @@ open class ProfileViewModel(
                             }
                         },
                         profile.pets to { profile.pets?.let { updatePets(it) } },
-                        profile.drinks to { profile.drinks?.let { updateDrinks(it) } },
-                        profile.smokes to { profile.smokes?.let { updateSmokes(it) } },
-                        profile.doesSports to { profile.doesSports?.let { updateDoesSports(it) } },
-                        profile.valuesAndBeliefs to {
-                            profile.valuesAndBeliefs?.let {
+                        profile.drinksEnum to { profile.drinksEnum?.let { updateDrinks(it) } },
+                        profile.smokesEnum to { profile.smokesEnum?.let { updateSmokes(it) } },
+                        profile.doesSportsEnum to { profile.doesSportsEnum?.let { updateDoesSports(it) } },
+                        profile.valuesAndBeliefsEnum to {
+                            profile.valuesAndBeliefsEnum?.let {
                                 updateValuesAndBeliefs(
                                     it
                                 )
@@ -104,18 +104,18 @@ open class ProfileViewModel(
                             profile.interests -> currentProfile.interests
                             profile.height -> currentProfile.height
                             profile.weight -> currentProfile.weight
-                            profile.gender -> currentProfile.gender
-                            profile.sexualOrientation -> currentProfile.sexualOrientation
+                            profile.genderEnum -> currentProfile.genderEnum
+                            profile.sexualOrientationEnum -> currentProfile.sexualOrientationEnum
                             profile.job -> currentProfile.job
-                            profile.relationshipType -> currentProfile.relationshipType
-                            profile.horoscope -> currentProfile.horoscope
+                            profile.relationshipTypeEnum -> currentProfile.relationshipTypeEnum
+                            profile.horoscopeEnum -> currentProfile.horoscopeEnum
                             profile.education -> currentProfile.education
                             profile.personalityType -> currentProfile.personalityType
                             profile.pets -> currentProfile.pets
-                            profile.drinks -> currentProfile.drinks
-                            profile.smokes -> currentProfile.smokes
-                            profile.doesSports -> currentProfile.doesSports
-                            profile.valuesAndBeliefs -> currentProfile.valuesAndBeliefs
+                            profile.drinksEnum -> currentProfile.drinksEnum
+                            profile.smokesEnum -> currentProfile.smokesEnum
+                            profile.doesSportsEnum -> currentProfile.doesSportsEnum
+                            profile.valuesAndBeliefsEnum -> currentProfile.valuesAndBeliefsEnum
                             else -> null
                         }
 
@@ -173,7 +173,7 @@ open class ProfileViewModel(
             val result = profileService.updateGenderPriority(userViewModel.userId!!, gender)
 
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(genderPriority = gender)
+                _profileData.value = _profileData.value?.copy(genderPriority = gender.toString())
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -192,7 +192,7 @@ open class ProfileViewModel(
                 profileService.updateRelationshipType(userViewModel.userId!!, relationshipType)
 
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(relationshipType = relationshipType)
+                _profileData.value = _profileData.value?.copy(relationshipType = relationshipType.toString())
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -290,7 +290,7 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateGender(userViewModel.userId!!, gender)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(gender = gender)
+                _profileData.value = _profileData.value?.copy(gender = gender.toString())
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -306,7 +306,7 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateSexualOrientation(userViewModel.userId!!, orientation)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(sexualOrientation = orientation)
+                _profileData.value = _profileData.value?.copy(sexualOrientation = orientation.toString())
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -338,7 +338,7 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateHoroscope(userViewModel.userId!!, horoscope)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(horoscope = horoscope)
+                _profileData.value = _profileData.value?.copy(horoscope = horoscope.toString())
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -403,7 +403,7 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateDrinks(userViewModel.userId!!, drinks)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(drinks = drinks)
+                _profileData.value = _profileData.value?.copy(drinks = drinks.toString())
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -419,7 +419,7 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateSmokes(userViewModel.userId!!, smokes)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(smokes = smokes)
+                _profileData.value = _profileData.value?.copy(smokes = smokes.toString())
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -435,7 +435,7 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.updateDoesSports(userViewModel.userId!!, doesSports)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(doesSports = doesSports)
+                _profileData.value = _profileData.value?.copy(doesSports = doesSports.toString())
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -452,7 +452,7 @@ open class ProfileViewModel(
             val result =
                 profileService.updateValuesAndBeliefs(userViewModel.userId!!, valuesAndBeliefs)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(valuesAndBeliefs = valuesAndBeliefs)
+                _profileData.value = _profileData.value?.copy(valuesAndBeliefs = valuesAndBeliefs.toString())
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(

@@ -1,4 +1,3 @@
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -162,7 +161,7 @@ fun ProfileInfoModal(
                 item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         InputField(
-                            value = relationshipTypeMap[profile.relationshipType].toString(),
+                            value = relationshipTypeMap[profile.relationshipTypeEnum].toString(),
                             onValueChange = {},
                             label = stringResource(R.string.relationship),
                             textColor = MaterialTheme.colorScheme.onBackground,
@@ -179,7 +178,7 @@ fun ProfileInfoModal(
                     ProfileSection(
                         title = stringResource(R.string.more_about_me),
                         rowTitles = listOf(
-                            "horoscope" to horoscopeMap[profile.horoscope],
+                            "horoscope" to horoscopeMap[profile.horoscopeEnum],
                             "education" to profile.education,
                             "personality_type" to profile.personalityType
                         ),
@@ -194,10 +193,10 @@ fun ProfileInfoModal(
                         title = stringResource(R.string.lifestyle),
                         rowTitles = listOf(
                             "pets" to profile.pets,
-                            "drinks" to habitsMap[profile.drinks],
-                            "smokes" to habitsMap[profile.smokes],
-                            "sports" to habitsMap[profile.doesSports],
-                            "religion" to religionMap[profile.valuesAndBeliefs]
+                            "drinks" to habitsMap[profile.drinksEnum],
+                            "smokes" to habitsMap[profile.smokesEnum],
+                            "sports" to habitsMap[profile.doesSportsEnum],
+                            "religion" to religionMap[profile.valuesAndBeliefsEnum]
                         ),
                         isSelectable = false
                     )

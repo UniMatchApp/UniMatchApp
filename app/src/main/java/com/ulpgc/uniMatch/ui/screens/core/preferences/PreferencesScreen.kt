@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
-import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
 
@@ -66,9 +65,9 @@ fun PreferencesScreen(
     LaunchedEffect(profile) {
         profile?.let {
             maxDistance = it.maxDistance
-            genderPriority = it.genderPriority
+            genderPriority = it.genderPriorityEnum
             ageRange = it.ageRange.min to it.ageRange.max
-            relationshipType = it.relationshipType
+            relationshipType = it.relationshipTypeEnum
             // Inicializa ageMin y ageMax solo una vez
             ageMin = it.ageRange.min.toFloat()
             ageMax = it.ageRange.max.toFloat()

@@ -8,6 +8,8 @@ data class RegisterRequest(val email: String, val password: String)
 data class LoginResponse(val token: String, val user: User)
 data class RegisterResponse(val token: String, val user: User)
 
+data class PasswordRequest(val password: String)
+
 
 interface UserService {
     suspend fun login(email: String, password: String): Result<LoginResponse>
@@ -17,6 +19,7 @@ interface UserService {
     suspend fun reportUser(userId: String, reportedUserId: String): Result<Unit>
     suspend fun blockUser(userId: String, blockedUserId: String): Result<Unit>
     suspend fun forgotPassword(email: String): Result<String>
-    suspend fun verifyCode(userId: String, code: String): Result<Boolean>
+    suspend fun verifyCode(email: String, code: String): Result<Boolean>
     suspend fun resetPassword(userId: String, newPassword: String): Result<Boolean>
+    suspend fun resendCode(email: String): Result<Boolean>
 }

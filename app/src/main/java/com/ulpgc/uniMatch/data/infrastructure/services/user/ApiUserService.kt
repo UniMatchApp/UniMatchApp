@@ -4,6 +4,7 @@ package com.ulpgc.uniMatch.data.infrastructure.services.user
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.services.LoginRequest
 import com.ulpgc.uniMatch.data.application.services.LoginResponse
+import com.ulpgc.uniMatch.data.application.services.PasswordRequest
 import com.ulpgc.uniMatch.data.application.services.RegisterRequest
 import com.ulpgc.uniMatch.data.application.services.RegisterResponse
 import com.ulpgc.uniMatch.data.application.services.UserService
@@ -154,7 +155,7 @@ class ApiUserService(
     override suspend fun resetPassword(userId: String, newPassword: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = userController.resetPassword(userId, newPassword)
+                val response = userController.resetPassword(userId, PasswordRequest(newPassword))
                 if (response.success) {
                     Result.success(true)
                 } else {
@@ -162,6 +163,21 @@ class ApiUserService(
                 }
             } catch (e: Exception) {
                 Result.failure(Throwable("Failed to reset password: ${e.message}"))
+            }
+        }
+    }
+
+    override suspend fun resendCode(email: String): Result<Boolean> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = userController.resendCode(email)
+                if (response.success) {
+                    Result.success(true)
+                } else {
+                    Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
+                }
+            } catch (e: Exception) {
+                Result.failure(Throwable("Failed to resend code: ${e.message}"))
             }
         }
     }

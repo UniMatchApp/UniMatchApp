@@ -7,7 +7,6 @@ import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
-import java.util.Date
 import kotlin.random.Random
 
 object ProfileMock {
@@ -38,27 +37,27 @@ object ProfileMock {
                 Random.nextDouble(14.0, 16.0),
                 null
             ),
-            gender = Gender.entries.toTypedArray().random(),
-            sexualOrientation = SexualOrientation.entries.toTypedArray().random(),
-            relationshipType = RelationshipType.entries.toTypedArray().random(),
+            gender = Gender.entries.toTypedArray().random().toString(),
+            sexualOrientation = SexualOrientation.entries.toTypedArray().random().toString(),
+            relationshipType = RelationshipType.entries.toTypedArray().random().toString(),
             birthday = "2009-01-01T00:00:00.000Z",
             interests = List(Random.nextInt(1, 8)) { interests.random() }.distinct().joinToString(", "),
             wall = imageUrls.shuffled().take(Random.nextInt(3, 6)).joinToString(", "),
             preferredImage = imageUrls.random(),
             maxDistance = Random.nextInt(10, 100),
             ageRange = Profile.AgeRange(Random.nextInt(18, 40), Random.nextInt(41, 100)),
-            horoscope = Horoscope.entries.toTypedArray().random(),
+            horoscope = Horoscope.entries.toTypedArray().random().toString(),
             height = Random.nextInt(150, 200),
             weight = Random.nextInt(50, 100),
             job = jobs.random(),
             education = educationLevels.random(),
             personalityType = personalityTypes.random(),
             pets = petPreferences.random(),
-            drinks = Habits.entries.toTypedArray().random(),
-            smokes = Habits.entries.toTypedArray().random(),
-            doesSports = Habits.entries.toTypedArray().random(),
-            valuesAndBeliefs = Religion.entries.toTypedArray().random(),
-            genderPriority = Gender.entries.toTypedArray().random(),
+            drinks = Habits.entries.toTypedArray().random().toString(),
+            smokes = Habits.entries.toTypedArray().random().toString(),
+            doesSports = Habits.entries.toTypedArray().random().toString(),
+            valuesAndBeliefs = Religion.entries.toTypedArray().random().toString(),
+            genderPriority = Gender.entries.toTypedArray().random().toString(),
             fact = "light travels faster than sound"
         )
     }
@@ -87,27 +86,27 @@ object ProfileMock {
                     Random.nextDouble(14.0, 16.0),
                     null
                 ),
-                gender = Gender.entries.toTypedArray().random(),
-                sexualOrientation = SexualOrientation.entries.toTypedArray().random(),
-                relationshipType = RelationshipType.entries.toTypedArray().random(),
+                gender = Gender.entries.toTypedArray().random().toString(),
+                sexualOrientation = SexualOrientation.entries.toTypedArray().random().toString(),
+                relationshipType = RelationshipType.entries.toTypedArray().random().toString(),
                 birthday = "2002-01-01T00:00:00.000Z",
                 interests = List(Random.nextInt(1, 8)) { interests.random() }.distinct().joinToString(", "),
                 wall = images[index].shuffled().take(Random.nextInt(3, 6)).joinToString(", "),
                 preferredImage = images[index].first(),
                 maxDistance = Random.nextInt(10, 100),
                 ageRange = Profile.AgeRange(Random.nextInt(18, 40), Random.nextInt(41, 100)),
-                horoscope = Horoscope.entries.toTypedArray().random(),
+                horoscope = Horoscope.entries.toTypedArray().random().toString(),
                 height = Random.nextInt(150, 200),
                 weight = Random.nextInt(50, 100),
                 job = jobs.random(),
                 education = educationLevels.random(),
                 personalityType = personalityTypes.random(),
                 pets = petPreferences.random(),
-                drinks = Habits.entries.toTypedArray().random(),
-                smokes = Habits.entries.toTypedArray().random(),
-                doesSports = Habits.entries.toTypedArray().random(),
-                valuesAndBeliefs = Religion.entries.toTypedArray().random(),
-                genderPriority = Gender.entries.toTypedArray().random(),
+                drinks = Habits.entries.toTypedArray().random().toString(),
+                smokes = Habits.entries.toTypedArray().random().toString(),
+                doesSports = Habits.entries.toTypedArray().random().toString(),
+                valuesAndBeliefs = Religion.entries.toTypedArray().random().toString(),
+                genderPriority = Gender.entries.toTypedArray().random().toString(),
                 fact = "I once ${interests.random()} for a whole day!"
             )
         }

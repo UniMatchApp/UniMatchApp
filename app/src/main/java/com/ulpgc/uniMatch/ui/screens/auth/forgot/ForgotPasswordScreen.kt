@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.screens.auth.forgot
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,8 +32,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 
 @Composable
 fun ForgotPasswordScreen(
@@ -49,7 +50,6 @@ fun ForgotPasswordScreen(
             if (forgotPasswordResult.value!!) {
                 onSubmit()
             }
-            userViewModel.resetForgotPasswordResult()
         }
     }
 
