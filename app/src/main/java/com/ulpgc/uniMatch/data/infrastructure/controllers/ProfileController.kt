@@ -22,7 +22,7 @@ import retrofit2.http.Path
 interface ProfileController {
 
     @GET("users/{id}")
-    suspend fun getProfile(@Path("id") userId: String): ApiResponse<Profile>
+    suspend fun getProfile(@Path("id") id: String): ApiResponse<Profile>
 
     @Multipart
     @POST("users/{id}")
