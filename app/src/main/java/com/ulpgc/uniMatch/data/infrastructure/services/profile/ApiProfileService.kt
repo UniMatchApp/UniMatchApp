@@ -34,8 +34,6 @@ class ApiProfileService(
             var profileEntity = profileDao.getProfileById(userId)
             val updatedProfileEntity = profileController.getProfile(userId)
 
-            Log.i("ApiProfileService", "Profile: $updatedProfileEntity.value)")
-            Log.i("ApiProfileService", "Profile updated: $profileEntity")
             if (updatedProfileEntity.success && updatedProfileEntity.value != null) {
                 profileEntity = ProfileEntity.fromDomain(updatedProfileEntity.value)
                 profileDao.insertProfile(profileEntity)
@@ -45,6 +43,7 @@ class ApiProfileService(
                 return Result.failure(Throwable("Profile for user $userId not found"))
             }
 
+            Log.i("ApiProfileService", "ProfileEntity: $profileEntity")
             Result.success(ProfileEntity.toDomain(profileEntity))
         } catch (e: Throwable) {
             Result.failure(e)

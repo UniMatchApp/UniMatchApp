@@ -2,6 +2,7 @@ package com.ulpgc.uniMatch.data.infrastructure.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
 
@@ -12,6 +13,7 @@ interface ProfileDao {
     suspend fun getProfileById(profileId: String): ProfileEntity?
 
     // Insert un perfil
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProfile(profile: ProfileEntity)
+
 }

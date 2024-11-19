@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.entities
 
+import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.ulpgc.uniMatch.data.domain.enums.Gender
@@ -46,6 +47,7 @@ data class ProfileEntity(
     companion object {
         // Método para mapear un ProfileEntity a un Profile de dominio
         fun toDomain(profileEntity: ProfileEntity): Profile {
+            Log.i("ApiProfileService", "toDomain: $profileEntity")
             return Profile(
                 userId = profileEntity.userId,
                 name = profileEntity.name,
@@ -61,18 +63,18 @@ data class ProfileEntity(
                 preferredImage = profileEntity.preferredImage,
                 maxDistance = profileEntity.maxDistance,
                 ageRange = Profile.AgeRange(profileEntity.ageRangeMin, profileEntity.ageRangeMax),
-                horoscope = profileEntity.horoscope.toString(),
+                horoscope = profileEntity.horoscope?.toString(),
                 height = profileEntity.height,
                 weight = profileEntity.weight,
                 job = profileEntity.job,
                 education = profileEntity.education,
                 personalityType = profileEntity.personalityType,
                 pets = profileEntity.pets,
-                drinks = profileEntity.drinks.toString(),
-                smokes = profileEntity.smokes.toString(),
-                doesSports = profileEntity.doesSports.toString(),
-                valuesAndBeliefs = profileEntity.valuesAndBeliefs.toString(),
-                genderPriority = profileEntity.genderPriority.toString(),
+                drinks = profileEntity.drinks?.toString(),
+                smokes = profileEntity.smokes?.toString(),
+                doesSports = profileEntity.doesSports?.toString(),
+                valuesAndBeliefs = profileEntity.valuesAndBeliefs?.toString(),
+                genderPriority = profileEntity.genderPriority?.toString(),
                 fact = profileEntity.fact
             )
         }
