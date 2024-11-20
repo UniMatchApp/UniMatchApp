@@ -210,7 +210,7 @@ fun CoreNavHost(
         }
 
         composable("account") {
-            AccountSettingsScreen()
+            AccountSettingsScreen(userViewModel)
         }
     }
 }

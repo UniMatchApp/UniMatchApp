@@ -11,5 +11,8 @@ inline fun <reified T : Enum<T>> stringToEnum(value: String?): T? {
 }
 
 fun <T : Enum<T>> enumToString(enumValue: T?): String? {
-    return enumValue?.name?.lowercase()?.replace("_", " ")
+    return enumValue?.name
+        ?.lowercase()
+        ?.replace("_", " ")
 }
+

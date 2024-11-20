@@ -83,7 +83,6 @@ fun ProfileScreen(
 
     val profile = profileViewModel.profileData.collectAsState().value?.copy()
 
-
     val isLoading by profileViewModel.isLoading.collectAsState()
 
     if (isLoading) {
@@ -159,9 +158,6 @@ fun ProfileScreen(
                 null
             }
         }
-
-        Log.i("ProfileScreen", "profile interests: ${profile.interests}")
-        Log.i("ProfileScreen", "profileInterests: $profileInterests")
 
         Column(
             modifier = Modifier
@@ -249,8 +245,6 @@ fun ProfileScreen(
                 value = aboutMeText,
                 onValueChange = { newText ->
                     aboutMeText = newText
-                    profile.aboutMe = newText
-
                 },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
@@ -322,7 +316,7 @@ fun ProfileScreen(
 
             ProfileInputField(
                 label = stringResource(R.string.height),
-                initialValue = profile.height.toString(),
+                initialValue = profile.height ?: 0,
                 onValueChange = { newHeight ->
                     profile.height = newHeight.toIntOrNull() ?: 0
                 }
@@ -332,7 +326,7 @@ fun ProfileScreen(
 
             ProfileInputField(
                 label = stringResource(R.string.weight),
-                initialValue = profile.weight.toString(),
+                initialValue = profile.weight ?: 0 ,
                 onValueChange = { newWeight ->
                     profile.weight = newWeight.toIntOrNull() ?: 0
                 }
@@ -472,11 +466,11 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    Log.i("ProfileScreen", "About me1: ${profile.aboutMe}")
                     profile.let {
-                        Log.i("ProfileScreen", "About me2: ${it.aboutMe}")
+                        if(it.aboutMe != aboutMeText) {
+                            it.aboutMe = aboutMeText
+                        }
                         Log.i("ProfileScreen", "Updating profile: $it")
-
                         profileViewModel.updateProfile(it)
                     }
                 },

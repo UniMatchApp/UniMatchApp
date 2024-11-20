@@ -21,9 +21,9 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun ProfileInputField(label: String, initialValue: String, onValueChange: (String) -> Unit) {
+fun ProfileInputField(label: String, initialValue: Int, onValueChange: (String) -> Unit) {
 
-    var value by remember { mutableStateOf(if (initialValue.isEmpty()) "0" else initialValue) }
+    var value by remember { mutableStateOf(initialValue.toString()) }
 
 
     Column(

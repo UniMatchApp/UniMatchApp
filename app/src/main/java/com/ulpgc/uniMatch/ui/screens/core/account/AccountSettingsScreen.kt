@@ -13,28 +13,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 
 @Composable
-fun AccountSettingsScreen() {
+fun AccountSettingsScreen(userViewModel: UserViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(vertical = 16.dp)
     ) {
-        AccountOptionItem(iconId = R.drawable.ic_email, title = stringResource(R.string.change_email))
-        AccountOptionItem(iconId = R.drawable.ic_password, title = stringResource(R.string.change_password))
-        AccountOptionItem(iconId = R.drawable.ic_arrow_back, title = stringResource(R.string.log_out))
-        AccountOptionItem(iconId = R.drawable.ic_delete_account, title = stringResource(R.string.delete_account))
+        AccountOptionItem(iconId = R.drawable.ic_email, title = stringResource(R.string.change_email), onClick = {})
+        AccountOptionItem(iconId = R.drawable.ic_password, title = stringResource(R.string.change_password), onClick = {})
+        AccountOptionItem(iconId = R.drawable.ic_arrow_back, title = stringResource(R.string.log_out), onClick = {userViewModel.logout()})
+        AccountOptionItem(iconId = R.drawable.ic_delete_account, title = stringResource(R.string.delete_account), onClick = {userViewModel.deleteAccount()})
     }
 }
 
 @Composable
-fun AccountOptionItem(iconId: Int, title: String) {
+fun AccountOptionItem(iconId: Int, title: String, onClick : () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Acción al hacer clic en la opción */ }
+            .clickable {
+
+            }
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -36,7 +36,7 @@ fun ProfileInterests(
     }
 
 
-    val profile = profileViewModel.profileData.collectAsState().value
+    val profile = profileViewModel.profileData.collectAsState().value?.copy()
 
     val isLoading by profileViewModel.isLoading.collectAsState()
 
@@ -71,12 +71,14 @@ fun ProfileInterests(
 
             InterestGrid(profileInterests) { interest, isAdded ->
                 val key = interestsMap.entries.find { it.value == interest }?.key
-                Log.i("ProfileInterests", "key: $key")
+                Log.i("ProfileInterests", "profileInterests: $profileInterests")
                 if (key != null) {
                     if (isAdded) {
-                        enumToString(key)?.let { profileViewModel.updateInterests(profileInterests + it) }
+                        enumToString(key)?.let { profile.interests += it }
+                        profileViewModel.updateProfile(profile)
                     } else {
-                        enumToString(key)?.let { profileViewModel.updateInterests(profileInterests - it) }
+                        enumToString(key)?.let { profile.interests -= it }
+                        profileViewModel.updateProfile(profile)
                     }
                 }
             }

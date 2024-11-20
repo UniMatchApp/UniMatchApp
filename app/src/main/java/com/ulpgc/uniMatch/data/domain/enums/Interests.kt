@@ -4,7 +4,7 @@ enum class Interests {
     SPORTS,
     MUSIC,
     MOVIES,
-    TRAVEL,
+    TRAVELING,
     READING,
     CUISINE,
     TECHNOLOGY,

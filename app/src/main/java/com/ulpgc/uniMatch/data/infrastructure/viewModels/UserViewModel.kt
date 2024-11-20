@@ -98,6 +98,10 @@ open class UserViewModel(
         _email.value = null
     }
 
+    fun deleteAccount() {
+        //TODO: Implement delete account
+    }
+
     fun forgotPassword(email: String): Boolean {
         viewModelScope.launch {
             val result = userService.forgotPassword(email)

@@ -1,14 +1,9 @@
 package com.ulpgc.uniMatch.data.infrastructure.controllers
 
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
-import com.ulpgc.uniMatch.data.application.services.HabitsRequest
+import com.ulpgc.uniMatch.data.application.services.IntRequest
 import com.ulpgc.uniMatch.data.application.services.StringRequest
 import com.ulpgc.uniMatch.data.domain.enums.Gender
-import com.ulpgc.uniMatch.data.domain.enums.Habits
-import com.ulpgc.uniMatch.data.domain.enums.Horoscope
-import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
-import com.ulpgc.uniMatch.data.domain.enums.Religion
-import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -54,10 +49,10 @@ interface ProfileController {
     suspend fun updateDrinks(@Path("id") userId: String, @Body drinks: StringRequest): ApiResponse<String>
 
     @PUT("users/{id}/height")
-    suspend fun updateHeight(@Path("id") userId: String, @Body height: Int): ApiResponse<Unit>
+    suspend fun updateHeight(@Path("id") userId: String, @Body height: IntRequest): ApiResponse<Int>
 
     @PUT("users/{id}/weight")
-    suspend fun updateWeight(@Path("id") userId: String, @Body weight: Int): ApiResponse<Unit>
+    suspend fun updateWeight(@Path("id") userId: String, @Body weight: IntRequest): ApiResponse<Int>
 
     @PUT("users/{id}/education")
     suspend fun updateEducation(
