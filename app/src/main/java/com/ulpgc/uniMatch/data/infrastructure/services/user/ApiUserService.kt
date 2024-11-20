@@ -26,7 +26,18 @@ class ApiUserService(
                 val response = userController.login(LoginRequest(email, password))
                 Log.i("ApiAuthService", "Login response: $response")
                 if (response.success) {
-                    Result.success(response.value!!)
+                    if (response.value == null) {
+                        return@withContext Result.failure(Throwable("Login failed: response value is null"))
+                    }
+                    secureStorage.saveUser(
+                        response.value.user.id,
+                        response.value.user.email,
+                        response.value.user.registrationDate,
+                        response.value.user.blockedUsers,
+                        response.value.user.reportedUsers,
+                        response.value.user.registered
+                    )
+                    Result.success(response.value)
                 } else {
                     Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
                 }
@@ -135,10 +146,10 @@ class ApiUserService(
         }
     }
 
-    override suspend fun verifyCode(userId: String, code: String): Result<Boolean> {
+    override suspend fun verifyCode(email: String, code: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = userController.verifyCode(userId, code)
+                val response = userController.verifyCode(email, code)
                 Log.i("ApiAuthService", "Verify code response: $response")
                 if (response.success) {
                     Result.success(true)

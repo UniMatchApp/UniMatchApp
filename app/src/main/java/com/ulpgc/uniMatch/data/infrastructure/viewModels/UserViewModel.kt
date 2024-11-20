@@ -48,9 +48,6 @@ open class UserViewModel(
     private var _temporaryEmail = MutableStateFlow<String?>(null)
     val temporaryEmail: StateFlow<String?> = _temporaryEmail
 
-    private var _temporaryPassword = MutableStateFlow<String?>(null)
-    val temporaryPassword: StateFlow<String?> = _temporaryPassword
-
     private var _email = MutableStateFlow<String?>(null)
     val email: StateFlow<String?> = _email
 
@@ -83,15 +80,7 @@ open class UserViewModel(
         }
     }
 
-    fun register() {
-        val email = _temporaryEmail.value
-        val password = _temporaryPassword.value
-
-        if (email == null || password == null) {
-            errorViewModel.showError("Email or password is missing")
-            return
-        }
-
+    fun register(email: String, password: String) {
         viewModelScope.launch {
             val result = userService.register(email, password)
             result.onSuccess {
@@ -100,8 +89,6 @@ open class UserViewModel(
             }.onFailure {
                 errorViewModel.showError(it.message ?: "Unknown error occurred")
             }
-            _temporaryEmail.value = null
-            _temporaryPassword.value = null
         }
     }
 
@@ -226,11 +213,6 @@ open class UserViewModel(
 
     fun resetPasswordResult() {
         _resetPasswordResult.value = null
-    }
-
-    fun partialRegistration(email: String, password: String) {
-        _temporaryEmail.value = email
-        _temporaryPassword.value = password
     }
 
     private fun hashPassword(password: String): String {
