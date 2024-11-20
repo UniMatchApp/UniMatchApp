@@ -5,6 +5,7 @@ enum class Jobs {
     ENGINEER,
     DOCTOR,
     TEACHER,
+    DESIGNER,
     ARTIST,
     PHOTOGRAPHER,
     MUSICIAN,
@@ -23,4 +24,3 @@ enum class Jobs {
     TRADER,
     OTHER
 }
-

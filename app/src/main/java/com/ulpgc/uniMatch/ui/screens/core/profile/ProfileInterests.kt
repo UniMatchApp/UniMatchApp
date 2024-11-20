@@ -52,7 +52,7 @@ fun ProfileInterests(
             }.toMap()
 
         var profileInterests = interestsMap.mapNotNull { entry ->
-            if (profile.interestsList.contains(enumToString(entry.key))) {
+            if (profile.interests.contains(enumToString(entry.key))) {
                 entry.value
             } else {
                 null

@@ -1,12 +1,15 @@
 package com.ulpgc.uniMatch.data.domain.enums
 
 enum class Religion {
-    CHRISTIANITY,
-    PROTESTANTISM,
+    AGNOSTIC,
+    ATHEIST,
+    BUDDHIST,
+    CATHOLIC,
+    CHRISTIAN,
     ISLAM,
-    JUDAISM,
-    BUDDHISM,
-    ATHEISM,
-    AGNOSTICISM,
+    HINDU,
+    JEWISH,
+    MUSLIM,
+    PROTESTANT,
     OTHER
 }

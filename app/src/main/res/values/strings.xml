@@ -277,14 +277,17 @@
 
     <!-- Valores y creencias -->
     <string-array name="religion">
-        <item>Catolicismo</item>
-        <item>Protestantismo</item>
+        <item>Agnostico</item>
+        <item>Ateo</item>
+        <item>Budista</item>
+        <item>Católico</item>
+        <item>Cristiano</item>
         <item>Islam</item>
-        <item>Judaísmo</item>
-        <item>Budismo</item>
-        <item>Ateísmo</item>
-        <item>Agnosticismo</item>
-        <item>Otra</item>
+        <item>Hindú</item>
+        <item>Judío</item>
+        <item>Musulmán</item>
+        <item>Protestante</item>
+        <item>Otro</item>
     </string-array>
 
     <!-- Intereses -->

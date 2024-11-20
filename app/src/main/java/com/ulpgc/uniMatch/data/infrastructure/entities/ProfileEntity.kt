@@ -24,7 +24,7 @@ data class ProfileEntity(
     val sexualOrientation: SexualOrientation,
     val relationshipType: RelationshipType,
     val birthday: String,
-    val interests: String,
+    val interests: List<String>,
     val wall: String,
     val preferredImage: String,
     val maxDistance: Int,

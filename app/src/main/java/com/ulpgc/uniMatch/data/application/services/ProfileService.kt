@@ -10,8 +10,8 @@ import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import java.io.File
 
-data class HabitsRequest(val habit: Habits)
-data class StringRequest(val value: String)
+data class HabitsRequest(val newHabit: String)
+data class StringRequest(val newContent: String)
 
 interface ProfileService {
     suspend fun createProfile(
@@ -56,8 +56,6 @@ interface ProfileService {
     suspend fun updateSmokes(userId: String, smokes: Habits): Result<Unit>
     suspend fun updateDoesSports(userId: String, doesSports: Habits): Result<Unit>
     suspend fun updateValuesAndBeliefs(userId: String, valuesAndBeliefs: Religion): Result<Unit>
-
-    suspend fun removeInterest(userId: String, interest: String): Result<Unit>
 
     suspend fun addImage(userId: String, image: String): Result<Unit>
     suspend fun removeImage(userId: String, image: String): Result<Unit>

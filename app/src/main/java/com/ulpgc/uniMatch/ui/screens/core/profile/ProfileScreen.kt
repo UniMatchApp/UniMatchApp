@@ -153,7 +153,7 @@ fun ProfileScreen(
             }.toMap()
 
         var profileInterests = interestsMap.mapNotNull { entry ->
-            if (profile.interestsList.contains(enumToString(entry.key))) {
+            if (profile.interests.contains(enumToString(entry.key))) {
                 entry.value
             } else {
                 null
@@ -250,6 +250,7 @@ fun ProfileScreen(
                 onValueChange = { newText ->
                     aboutMeText = newText
                     profile.aboutMe = newText
+
                 },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
@@ -471,8 +472,11 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
+                    Log.i("ProfileScreen", "About me1: ${profile.aboutMe}")
                     profile.let {
+                        Log.i("ProfileScreen", "About me2: ${it.aboutMe}")
                         Log.i("ProfileScreen", "Updating profile: $it")
+
                         profileViewModel.updateProfile(it)
                     }
                 },

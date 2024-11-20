@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ChatMessageDao
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.MessageDao
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
@@ -12,6 +13,7 @@ import com.ulpgc.uniMatch.data.infrastructure.entities.MessageEntity
 import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
 
 @Database(entities = [ProfileEntity::class, ChatEntity::class, MessageEntity::class], version = 1)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun chatMessageDao(): ChatMessageDao
     abstract fun profileDao(): ProfileDao

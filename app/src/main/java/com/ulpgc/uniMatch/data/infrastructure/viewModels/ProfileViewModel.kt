@@ -71,7 +71,6 @@ open class ProfileViewModel(
             val updateMap = mapOf(
                 profile.aboutMe to { updateAboutMe(profile.aboutMe) },
                 profile.fact to { profile.fact?.let { updateFact(it) } },
-                profile.interests to { updateInterests(profile.interestsList) },
                 profile.height to { profile.height?.let { updateHeight(it) } },
                 profile.weight to { profile.weight?.let { updateWeight(it) } },
                 profile.genderEnum to { updateGender(profile.genderEnum) },
@@ -235,23 +234,22 @@ open class ProfileViewModel(
         }
     }
 
-    fun updateInterests(interest: List<String>) {
+    fun updateInterests(interests: List<String>) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateInterests(userViewModel.userId!!, interest)
+            val result = profileService.updateInterests(userViewModel.userId!!, interests)
             result.onSuccess {
-                _profileData.value =
-                    _profileData.value?.copy(interests = interest.joinToString(","))
+                _profileData.value = _profileData.value?.copy(interests = interests)
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
-                    error.message ?: "Error updating interest"
+                    error.message ?: "Error updating interests"
                 )
                 _isLoading.value = false
             }
         }
-    }
 
+    }
     fun updateHeight(height: Int) {
         viewModelScope.launch {
             _isLoading.value = true

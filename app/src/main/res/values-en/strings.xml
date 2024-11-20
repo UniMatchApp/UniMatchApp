@@ -276,16 +276,18 @@
 
     <!--Values and beliefs-->
     <string-array name="religion">
-        <item>Christianity</item>
-        <item>Protestantism</item>
+        <item>Agnostic</item>
+        <item>Atheist</item>
+        <item>Buddhist</item>
+        <item>Catholic</item>
+        <item>Christian</item>
         <item>Islam</item>
-        <item>Judaism</item>
-        <item>Buddhism</item>
-        <item>Atheism</item>
-        <item>Agnosticism</item>
+        <item>Hindu</item>
+        <item>Jewish</item>
+        <item>Muslim</item>
+        <item>Protestant</item>
         <item>Other</item>
     </string-array>
-
 
     <!--Interests-->
     <string-array name="interests">

@@ -114,10 +114,6 @@ class MockProfileService: ProfileService {
         return Result.success(Unit)
     }
 
-    override suspend fun removeInterest(userId: String, interest: String): Result<Unit> {
-        return Result.success(Unit)
-    }
-
     override suspend fun addImage(userId: String, image: String): Result<Unit> {
         return Result.success(Unit)
     }

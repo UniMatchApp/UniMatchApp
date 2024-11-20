@@ -22,7 +22,7 @@ data class Profile(
     var sexualOrientation: String,
     var relationshipType: String,
     val birthday: String,
-    val interests: String,
+    val interests: List<String>,
     val wall: String,
     val preferredImage: String,
     val maxDistance: Int,
@@ -103,9 +103,6 @@ data class Profile(
     val wallList: List<String>
         get() = wall.split(", ")
 
-    // Getter for interests as List
-    val interestsList: List<String>
-        get() = interests.split(", ")
 
 
     data class Location(

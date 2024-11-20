@@ -110,7 +110,7 @@ fun ProfileCard(
         }.toMap()
 
     var profileInterests = interestsMap.mapNotNull { entry ->
-        if (profile.interestsList.contains(enumToString(entry.key))) {
+        if (profile.interests.contains(enumToString(entry.key))) {
             entry.value
         } else {
             null
@@ -322,7 +322,7 @@ fun ProfileCard(
                             )
                         }
 
-                        if (index < profile.interestsList.size - 1) {
+                        if (index < profile.interests.size - 1) {
                             Spacer(modifier = Modifier.width(8.dp))
                         }
                     }
