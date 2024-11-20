@@ -36,7 +36,7 @@ fun ProfileInterests(
     }
 
 
-    val profile = profileViewModel.profileData.collectAsState().value?.copy()
+    val profile = profileViewModel.profileData.collectAsState().value
 
     val isLoading by profileViewModel.isLoading.collectAsState()
 
@@ -77,12 +77,12 @@ fun ProfileInterests(
                 if (key != null) {
                     if (isAdded) {
                         enumToString(key)?.let { addedInterests.add(it) }
-                        profile.interests = addedInterests
-                        profileViewModel.updateProfile(profile)
+                        profileViewModel.updateInterests(addedInterests)
+                        profileViewModel.updateProfile()
                     } else {
                         enumToString(key)?.let { addedInterests.remove(it) }
-                        profile.interests = addedInterests
-                        profileViewModel.updateProfile(profile)
+                        profileViewModel.updateInterests(addedInterests)
+                        profileViewModel.updateProfile()
                     }
                 }
             }

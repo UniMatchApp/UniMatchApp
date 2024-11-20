@@ -40,13 +40,13 @@ fun ProfileDropdownField(
         )
 
         DropdownMenu(
-            options,
-            currentSelection,
+            items = options,
+            selectedItem = currentSelection,
             onItemSelected = { selected ->
                 currentSelection = selected ?: options.first()
                 onEditField(currentSelection)
             },
-            includeNullOption
+            includeNullOption = true
         )
     }
 }

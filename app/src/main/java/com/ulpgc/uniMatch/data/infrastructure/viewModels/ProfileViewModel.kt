@@ -27,6 +27,9 @@ open class ProfileViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
 
+    private var _editedProfile = MutableStateFlow<Profile?>(null)
+    val editedProfile: StateFlow<Profile?> get() = _editedProfile
+
     fun getProfileData(): Profile? {
         return _profileData.value
     }
@@ -37,6 +40,7 @@ open class ProfileViewModel(
             val result = profileService.getProfile(userViewModel.userId!!)
             result.onSuccess { profileData ->
                 _profileData.value = profileData
+                _editedProfile.value = profileData.copy() // Copia profunda
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -45,6 +49,72 @@ open class ProfileViewModel(
                 _isLoading.value = false
             }
         }
+    }
+
+    fun changeAboutMe(aboutMe: String) {
+        _editedProfile.value?.aboutMe = aboutMe
+    }
+
+    fun changeFact(fact: String) {
+        _editedProfile.value?.fact = fact
+    }
+
+    fun changeHeight(height: Int) {
+        _editedProfile.value?.height = height
+    }
+
+    fun changeWeight(weight: Int) {
+        _editedProfile.value?.weight = weight
+    }
+
+    fun changeJob(job: String) {
+        _editedProfile.value?.job = job
+    }
+
+    fun changeHoroscope(horoscope: String) {
+        _editedProfile.value?.horoscope = horoscope
+    }
+
+    fun changeEducation(education: String) {
+        _editedProfile.value?.education = education
+    }
+
+    fun changePersonalityType(personalityType: String) {
+        _editedProfile.value?.personalityType = personalityType
+    }
+
+    fun changePets(pets: String) {
+        _editedProfile.value?.pets = pets
+    }
+
+    fun changeDrinks(drinks: String) {
+        _editedProfile.value?.drinks = drinks
+    }
+
+    fun changeSmokes(smokes: String) {
+        _editedProfile.value?.smokes = smokes
+    }
+
+    fun changeDoesSports(doesSports: String) {
+        _editedProfile.value?.doesSports = doesSports
+    }
+
+    fun changeValuesAndBeliefs(valuesAndBeliefs: String) {
+        _editedProfile.value?.valuesAndBeliefs = valuesAndBeliefs
+    }
+
+
+
+    fun changeGender(gender: String) {
+        _editedProfile.value?.gender = gender
+    }
+
+    fun changeSexualOrientation(orientation: String) {
+        _editedProfile.value?.sexualOrientation = orientation
+    }
+
+    fun changeRelationshipType(relationshipType: String) {
+        _editedProfile.value?.relationshipType = relationshipType
     }
 
     fun loadProfile(userId: String) {
@@ -63,74 +133,80 @@ open class ProfileViewModel(
         }
     }
 
-    fun updateProfile(profile: Profile) {
+    fun updateProfile() {
         viewModelScope.launch {
             _isLoading.value = true
-            Log.i("ProfileViewModel", "Updating profile: ${profile.interests}")
-            Log.i("ProfileViewModel", "Current profile: ${profileData.value?.interests}")
+            Log.i("ProfileViewModel", "Updating profile: ${_editedProfile.value}")
+            Log.i("ProfileViewModel", "Current profile: ${profileData.value}")
             val updateMap = mapOf(
-                profile.aboutMe to { updateAboutMe(profile.aboutMe) },
-                profile.fact to { profile.fact?.let { updateFact(it) } },
-                profile.height to { profile.height?.let { updateHeight(it) } },
-                profile.weight to { profile.weight?.let { updateWeight(it) } },
-                profile.genderEnum to { updateGender(profile.genderEnum) },
-                profile.sexualOrientationEnum to { updateSexualOrientation(profile.sexualOrientationEnum) },
-                profile.job to { profile.job?.let { updateJob(it) } },
-                profile.relationshipTypeEnum to { updateRelationshipType(profile.relationshipTypeEnum) },
-                profile.horoscopeEnum to { profile.horoscopeEnum?.let { updateHoroscope(it) } },
-                profile.education to { profile.education?.let { updateEducation(it) } },
-                profile.personalityType to {
-                    profile.personalityType?.let {
-                        updatePersonalityType(
-                            it
-                        )
-                    }
-                },
-                profile.pets to { profile.pets?.let { updatePets(it) } },
-                profile.drinksEnum to { profile.drinksEnum?.let { updateDrinks(it) } },
-                profile.smokesEnum to { profile.smokesEnum?.let { updateSmokes(it) } },
-                profile.doesSportsEnum to { profile.doesSportsEnum?.let { updateDoesSports(it) } },
-                profile.valuesAndBeliefsEnum to {
-                    profile.valuesAndBeliefsEnum?.let {
-                        updateValuesAndBeliefs(
-                            it
-                        )
-                    }
-                },
-                profile.interests to { profile.interests?.let { updateInterests(it)} }
+                _editedProfile.value?.aboutMe to { _editedProfile.value?.aboutMe?.let {
+                    updateAboutMe(
+                        it
+                    )
+                } },
+                _editedProfile.value?.fact to { _editedProfile.value?.fact?.let { updateFact(it) } },
+                _editedProfile.value?.height to { _editedProfile.value?.height?.let { updateHeight(it) } },
+                _editedProfile.value?.weight to { _editedProfile.value?.weight?.let { updateWeight(it) } },
+                _editedProfile.value?.genderEnum to { _editedProfile.value?.genderEnum?.let {
+                    updateGender(
+                        it
+                    )
+                } },
+                _editedProfile.value?.sexualOrientationEnum to { _editedProfile.value?.sexualOrientationEnum?.let {
+                    updateSexualOrientation(
+                        it
+                    )
+                } },
+                _editedProfile.value?.job to { _editedProfile.value?.job?.let { updateJob(it) } },
+                _editedProfile.value?.relationshipTypeEnum to { _editedProfile.value?.relationshipTypeEnum?.let {
+                    updateRelationshipType(
+                        it
+                    )
+                } },
+                _editedProfile.value?.horoscopeEnum to { _editedProfile.value?.horoscopeEnum?.let { updateHoroscope(it) } },
+                _editedProfile.value?.education to { _editedProfile.value?.education?.let { updateEducation(it) } },
+                _editedProfile.value?.personalityType to { _editedProfile.value?.personalityType?.let { updatePersonalityType(it) } },
+                _editedProfile.value?.pets to { _editedProfile.value?.pets?.let { updatePets(it) } },
+                _editedProfile.value?.drinksEnum to { _editedProfile.value?.drinksEnum?.let { updateDrinks(it) } },
+                _editedProfile.value?.smokesEnum to { _editedProfile.value?.smokesEnum?.let { updateSmokes(it) } },
+                _editedProfile.value?.doesSportsEnum to { _editedProfile.value?.doesSportsEnum?.let { updateDoesSports(it) } },
+                _editedProfile.value?.valuesAndBeliefsEnum to { _editedProfile.value?.valuesAndBeliefsEnum?.let { updateValuesAndBeliefs(it) } },
+                _editedProfile.value?.interests to { _editedProfile.value?.interests?.let { updateInterests(it) } }
             )
 
             updateMap.forEach { (newValue, updateFunction) ->
                 val currentValue = when (newValue) {
-                    profile.aboutMe -> profileData.value?.aboutMe
-                    profile.fact -> profileData.value?.fact
-                    profile.interests -> profileData.value?.interests
-                    profile.height -> profileData.value?.height
-                    profile.weight -> profileData.value?.weight
-                    profile.genderEnum -> profileData.value?.genderEnum
-                    profile.sexualOrientationEnum -> profileData.value?.sexualOrientationEnum
-                    profile.job -> profileData.value?.job
-                    profile.relationshipTypeEnum -> profileData.value?.relationshipTypeEnum
-                    profile.horoscopeEnum -> profileData.value?.horoscopeEnum
-                    profile.education -> profileData.value?.education
-                    profile.personalityType -> profileData.value?.personalityType
-                    profile.pets -> profileData.value?.pets
-                    profile.drinksEnum -> profileData.value?.drinksEnum
-                    profile.smokesEnum -> profileData.value?.smokesEnum
-                    profile.doesSportsEnum -> profileData.value?.doesSportsEnum
-                    profile.valuesAndBeliefsEnum -> profileData.value?.valuesAndBeliefsEnum
+                    _editedProfile.value?.aboutMe -> profileData.value?.aboutMe
+                    _editedProfile.value?.fact -> profileData.value?.fact
+                    _editedProfile.value?.interests -> profileData.value?.interests
+                    _editedProfile.value?.height -> profileData.value?.height
+                    _editedProfile.value?.weight -> profileData.value?.weight
+                    _editedProfile.value?.genderEnum -> profileData.value?.genderEnum
+                    _editedProfile.value?.sexualOrientationEnum -> profileData.value?.sexualOrientationEnum
+                    _editedProfile.value?.job -> profileData.value?.job
+                    _editedProfile.value?.relationshipTypeEnum -> profileData.value?.relationshipTypeEnum
+                    _editedProfile.value?.horoscopeEnum -> profileData.value?.horoscopeEnum
+                    _editedProfile.value?.education -> profileData.value?.education
+                    _editedProfile.value?.personalityType -> profileData.value?.personalityType
+                    _editedProfile.value?.pets -> profileData.value?.pets
+                    _editedProfile.value?.drinksEnum -> profileData.value?.drinksEnum
+                    _editedProfile.value?.smokesEnum -> profileData.value?.smokesEnum
+                    _editedProfile.value?.doesSportsEnum -> profileData.value?.doesSportsEnum
+                    _editedProfile.value?.valuesAndBeliefsEnum -> profileData.value?.valuesAndBeliefsEnum
                     else -> null
                 }
+
                 if (newValue != currentValue) {
                     Log.i("TuMadre", "Updating")
                     updateFunction()
                 }
             }
 
+            _isLoading.value = false
+            loadProfile()
         }
-        _isLoading.value = false
-        loadProfile()
     }
+
 
 
     fun updateAgeRange(min: Int, max: Int) {
