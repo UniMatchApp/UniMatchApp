@@ -36,7 +36,7 @@ fun AccountOptionItem(iconId: Int, title: String, onClick : () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-
+                onClick()
             }
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically

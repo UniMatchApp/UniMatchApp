@@ -66,8 +66,8 @@ open class ProfileViewModel(
     fun updateProfile(profile: Profile) {
         viewModelScope.launch {
             _isLoading.value = true
-            Log.i("ProfileViewModel", "Updating profile: $profile")
-            Log.i("ProfileViewModel", "Current profile: ${profileData.value}")
+            Log.i("ProfileViewModel", "Updating profile: ${profile.interests}")
+            Log.i("ProfileViewModel", "Current profile: ${profileData.value?.interests}")
             val updateMap = mapOf(
                 profile.aboutMe to { updateAboutMe(profile.aboutMe) },
                 profile.fact to { profile.fact?.let { updateFact(it) } },
@@ -96,7 +96,8 @@ open class ProfileViewModel(
                             it
                         )
                     }
-                }
+                },
+                profile.interests to { profile.interests?.let { updateInterests(it)} }
             )
 
             updateMap.forEach { (newValue, updateFunction) ->

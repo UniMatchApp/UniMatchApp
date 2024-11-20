@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
 import com.ulpgc.uniMatch.data.application.services.IntRequest
+import com.ulpgc.uniMatch.data.application.services.ListRequest
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.application.services.StringRequest
 import com.ulpgc.uniMatch.data.domain.enums.Gender
@@ -74,7 +75,7 @@ class ApiProfileService(
         handleApiCall { profileController.updateFact(userId, StringRequest(fact)) }
 
     override suspend fun updateInterests(userId: String, interests: List<String>): Result<Unit> =
-        handleApiCall { profileController.updateInterests(userId, interests) }
+        handleApiCall { profileController.updateInterests(userId, ListRequest(interests)) }
 
     override suspend fun updateHeight(userId: String, height: Int): Result<Unit> =
         handleApiCall { profileController.updateHeight(userId, IntRequest(height)) }

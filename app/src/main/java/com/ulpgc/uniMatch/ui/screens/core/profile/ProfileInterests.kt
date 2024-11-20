@@ -59,6 +59,8 @@ fun ProfileInterests(
             }
         }
 
+        val addedInterests = profile.interests.toMutableList()
+
         Column(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -74,10 +76,12 @@ fun ProfileInterests(
                 Log.i("ProfileInterests", "profileInterests: $profileInterests")
                 if (key != null) {
                     if (isAdded) {
-                        enumToString(key)?.let { profile.interests += it }
+                        enumToString(key)?.let { addedInterests.add(it) }
+                        profile.interests = addedInterests
                         profileViewModel.updateProfile(profile)
                     } else {
-                        enumToString(key)?.let { profile.interests -= it }
+                        enumToString(key)?.let { addedInterests.remove(it) }
+                        profile.interests = addedInterests
                         profileViewModel.updateProfile(profile)
                     }
                 }

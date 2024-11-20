@@ -2,6 +2,7 @@ package com.ulpgc.uniMatch.data.infrastructure.controllers
 
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
 import com.ulpgc.uniMatch.data.application.services.IntRequest
+import com.ulpgc.uniMatch.data.application.services.ListRequest
 import com.ulpgc.uniMatch.data.application.services.StringRequest
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.models.Profile
@@ -72,8 +73,8 @@ interface ProfileController {
     @PUT("users/{id}/interests")
     suspend fun updateInterests(
         @Path("id") userId: String,
-        @Body interests: List<String>
-    ): ApiResponse<Unit>
+        @Body interests: ListRequest
+    ): ApiResponse<List<String>>
 
     @PUT("users/{id}/job")
     suspend fun updateJob(@Path("id") userId: String, @Body job: StringRequest): ApiResponse<String>

@@ -12,6 +12,7 @@ import java.io.File
 
 data class StringRequest(val newContent: String)
 data class IntRequest(val newContent: Int)
+data class ListRequest(val newContent: List<String>)
 
 interface ProfileService {
     suspend fun createProfile(
