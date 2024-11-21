@@ -16,7 +16,11 @@ import com.ulpgc.uniMatch.ui.screens.utils.enumToString
 import com.ulpgc.uniMatch.ui.screens.utils.stringToEnum
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+
 
 open class ProfileViewModel(
     private val profileService: ProfileService,
@@ -33,9 +37,11 @@ open class ProfileViewModel(
     private var _editedProfile = MutableStateFlow<Profile?>(null)
     val editedProfile: StateFlow<Profile?> get() = _editedProfile
 
+
     fun getProfileData(): Profile? {
         return _profileData.value
     }
+
 
     fun loadProfile() {
         viewModelScope.launch {
