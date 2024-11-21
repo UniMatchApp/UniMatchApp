@@ -46,6 +46,7 @@ class ApiChatService(
             }
 
             chatMessageDao.setMessageStatus(message.messageId, MessageStatus.SENT)
+            message.status = MessageStatus.SENT
 
             Result.success(message)
 

@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                 when (authState) {
                     is AuthState.Authenticated -> {
                         val userId = (authState as AuthState.Authenticated).user.id
-                        initializeWebSocket(userId, app.eventbus)
+                        app.initializeWebSocket(userId, app.eventbus)
                         CoreScreen(
                             app.userViewModel,
                             app.chatViewModel,
@@ -60,10 +60,5 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun initializeWebSocket(userId: String, eventbus: WebSocketEventBus) {
-        val userStatusSocket = UserStatusSocket("localhost", 8081, userId, eventbus)
-        val notificationsSocket = NotificationSocket("localhost", 8080, userId, eventbus)
-        userStatusSocket.connect()
-        notificationsSocket.connect()
-    }
+
 }
