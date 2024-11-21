@@ -55,12 +55,6 @@ interface ProfileController {
     @PUT("users/{id}/weight")
     suspend fun updateWeight(@Path("id") userId: String, @Body weight: IntRequest): ApiResponse<Int>
 
-    @PUT("users/{id}/education")
-    suspend fun updateEducation(
-        @Path("id") userId: String,
-        @Body education: StringRequest
-    ): ApiResponse<String>
-
     @PUT("users/{id}/gender")
     suspend fun updateGender(@Path("id") id: String, @Body gender: StringRequest): ApiResponse<String>
 
