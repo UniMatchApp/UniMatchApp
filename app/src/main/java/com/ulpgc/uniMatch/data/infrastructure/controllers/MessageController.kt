@@ -24,7 +24,7 @@ interface MessageController {
     suspend fun sendMessage(
         @Header("Authorization") authToken: String,
         @Body message: Message
-    ): ApiResponse<Unit>
+    ): ApiResponse<Message>
 
     @GET("matching/mutual-likes/{userId}")
     suspend fun getMatchingUserIds(

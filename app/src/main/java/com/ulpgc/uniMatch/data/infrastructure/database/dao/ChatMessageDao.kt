@@ -24,6 +24,9 @@ interface ChatMessageDao {
     @Query("SELECT * FROM chats WHERE id = :senderId")
     suspend fun getChatByUserId(senderId: String): ChatEntity?
 
+    @Query("SELECT * FROM chats WHERE LOWER(name) LIKE '%' || LOWER(:userName) || '%'")
+    suspend fun getChatsByUserName(userName: String): List<ChatEntity>
+
     // Obtiene todos los chats, ordenados por la hora del último mensaje
     @Query(
         """
@@ -57,7 +60,7 @@ interface ChatMessageDao {
     ): Int
 
     // Obtiene los mensajes de un chat específico, con paginación
-    @Query("SELECT * FROM messages WHERE chatId = :chatId ORDER BY timestamp DESC LIMIT :limit OFFSET :offset")
+    @Query("SELECT * FROM messages WHERE chatId = :chatId ORDER BY timestamp ASC LIMIT :limit OFFSET :offset")
     fun getMessages(chatId: String, limit: Int, offset: Int): Flow<List<MessageEntity>>
 
     // Obtiene el último mensaje de un chat
@@ -70,7 +73,7 @@ interface ChatMessageDao {
         setMessageStatus(chatId, MessageStatus.READ)
     }
 
-    @Query("UPDATE messages SET status = :status WHERE chatId = :chatId AND status != :status")
+    @Query("UPDATE messages SET status = :status WHERE messageId = :chatId AND status != :status")
     suspend fun setMessageStatus(chatId: String, status: MessageStatus)
 
     // Otras operaciones CRUD

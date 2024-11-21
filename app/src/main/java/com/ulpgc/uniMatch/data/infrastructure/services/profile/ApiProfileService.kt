@@ -18,6 +18,7 @@ import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.controllers.ProfileController
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
+import com.ulpgc.uniMatch.ui.screens.utils.enumToString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -72,20 +73,20 @@ class ApiProfileService(
     override suspend fun updateAboutMe(userId: String, aboutMe: String): Result<Unit> =
         handleApiCall { profileController.updateAbout(userId, StringRequest(aboutMe)) }
 
-    override suspend fun updateFact(userId: String, fact: String): Result<Unit> =
+    override suspend fun updateFact(userId: String, fact: String?): Result<Unit> =
         handleApiCall { profileController.updateFact(userId, StringRequest(fact)) }
 
     override suspend fun updateInterests(userId: String, interests: List<String>): Result<Unit> =
         handleApiCall { profileController.updateInterests(userId, ListRequest(interests)) }
 
-    override suspend fun updateHeight(userId: String, height: Int): Result<Unit> =
+    override suspend fun updateHeight(userId: String, height: Int?): Result<Unit> =
         handleApiCall { profileController.updateHeight(userId, IntRequest(height)) }
 
-    override suspend fun updateWeight(userId: String, weight: Int): Result<Unit> =
+    override suspend fun updateWeight(userId: String, weight: Int?): Result<Unit> =
         handleApiCall { profileController.updateWeight(userId, IntRequest(weight)) }
 
     override suspend fun updateGender(userId: String, gender: Gender): Result<Unit> =
-        handleApiCall { profileController.updateGender(userId, StringRequest(gender.toString())) }
+        handleApiCall { profileController.updateGender(userId, StringRequest(enumToString(gender))) }
 
     override suspend fun updateSexualOrientation(
         userId: String,
@@ -93,45 +94,59 @@ class ApiProfileService(
     ): Result<Unit> =
         handleApiCall { profileController.updateSexualOrientation(userId, StringRequest(orientation.toString())) }
 
-    override suspend fun updateJob(userId: String, position: String): Result<Unit> =
-        handleApiCall { profileController.updateJob(userId, StringRequest(position)) }
+    override suspend fun updateJob(userId: String, position: String?): Result<Unit> =
+        handleApiCall {
+            Log.i("TuMadre", "Position: $position");
+            profileController.updateJob(userId, StringRequest(position))
+        }
 
-    override suspend fun updateHoroscope(userId: String, horoscope: Horoscope): Result<Unit> =
-        handleApiCall { profileController.updateHoroscope(userId, StringRequest(horoscope.toString())) }
+    override suspend fun updateHoroscope(userId: String, horoscope: Horoscope?): Result<Unit> =
+        handleApiCall { profileController.updateHoroscope(userId, StringRequest(enumToString(horoscope))) }
 
-    override suspend fun updateEducation(userId: String, education: String): Result<Unit> =
-        handleApiCall { profileController.updateDegree(userId, StringRequest(education)) }
+    override suspend fun updateEducation(userId: String, education: String?): Result<Unit> =
+        handleApiCall {
+            Log.i("TuMadre", "Education: $education");
+            profileController.updateDegree(userId, StringRequest(education))
+        }
 
     override suspend fun updatePersonalityType(
         userId: String,
-        personalityType: String
+        personalityType: String?
     ): Result<Unit> =
-        handleApiCall { profileController.updatePersonality(userId, StringRequest(personalityType.toString())) }
+        handleApiCall { profileController.updatePersonality(userId, StringRequest(personalityType)) }
 
-    override suspend fun updatePets(userId: String, pets: String): Result<Unit> =
-        handleApiCall { Log.i("TuMadre", "Pets: $pets");
+    override suspend fun updatePets(userId: String, pets: String?): Result<Unit> =
+        handleApiCall {
             profileController.updatePets(userId, StringRequest(pets)) }
 
-    override suspend fun updateDrinks(userId: String, drinks: Habits): Result<Unit> =
-        handleApiCall { profileController.updateDrinks(userId, StringRequest(drinks.toString())) }
+    override suspend fun updateDrinks(userId: String, drinks: Habits?): Result<Unit> =
+        handleApiCall { profileController.updateDrinks(userId, StringRequest(enumToString(drinks))) }
 
-    override suspend fun updateSmokes(userId: String, smokes: Habits): Result<Unit> =
-        handleApiCall { profileController.updateSmokes(userId, StringRequest(smokes.toString())) }
+    override suspend fun updateSmokes(userId: String, smokes: Habits?): Result<Unit> =
+        handleApiCall {
+            profileController.updateSmokes(userId, StringRequest(enumToString(smokes))) }
 
-    override suspend fun updateDoesSports(userId: String, doesSports: Habits): Result<Unit> =
-        handleApiCall { profileController.updateSports(userId, StringRequest(doesSports.toString())) }
+    override suspend fun updateDoesSports(userId: String, doesSports: Habits?): Result<Unit> =
+        handleApiCall { profileController.updateSports(userId, StringRequest(enumToString(doesSports))) }
 
     override suspend fun updateValuesAndBeliefs(
         userId: String,
-        valuesAndBeliefs: Religion
+        valuesAndBeliefs: Religion?
     ): Result<Unit> =
-        handleApiCall { profileController.updateValuesAndBeliefs(userId, StringRequest(valuesAndBeliefs.toString())) }
+        handleApiCall { profileController.updateValuesAndBeliefs(userId, StringRequest(enumToString(valuesAndBeliefs))) }
 
-    override suspend fun addImage(userId: String, image: String): Result<Unit> =
-        handleApiCall { profileController.uploadPhoto(userId, image) }
+    override suspend fun addImage(userId: String, imageURI: Uri): Result<String> {
+        return try {
+            val response = profileController.uploadPhoto(userId, createImagePart(imageURI))
+            Result.success(response.value ?: "")
+        } catch (e: Exception) {
+            Result.failure(mapException(e))
+        }
+    }
 
-    override suspend fun removeImage(userId: String, image: String): Result<Unit> =
-        handleApiCall { profileController.deletePhoto(userId, image) }
+    override suspend fun removeImage(userId: String, imageURL: String): Result<Unit> =
+        handleApiCall { Log.i("TuMadre", "Deleting image: $imageURL")
+            profileController.deletePhoto(userId, imageURL) }
 
     override suspend fun createProfile(
         userId: String,
@@ -183,7 +198,7 @@ class ApiProfileService(
             val response = apiCall()
             Result.success(response)
         } catch (e: Exception) {
-            Result.failure(Exception("Failed to create profile: ${e.message}", e))
+            Result.failure(Exception("${e.message}", e))
         }
     }
 
@@ -212,6 +227,8 @@ class ApiProfileService(
             inputStream.use { it.readBytes().toRequestBody("image/*".toMediaTypeOrNull()) }
         return MultipartBody.Part.createFormData("thumbnail", uri.lastPathSegment, requestBody)
     }
+
+
 
     private fun createRequestBody(value: String): RequestBody =
         value.toRequestBody("text/plain".toMediaTypeOrNull())

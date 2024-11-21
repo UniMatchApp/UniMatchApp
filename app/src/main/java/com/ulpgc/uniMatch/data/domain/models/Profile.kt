@@ -44,32 +44,32 @@ data class Profile(
 
     val sexualOrientationEnum: SexualOrientation
         get() {
-            return SexualOrientation.valueOf(sexualOrientation)
+            return SexualOrientation.valueOf(sexualOrientation.uppercase())
         }
 
     val relationshipTypeEnum: RelationshipType
         get() {
-            return RelationshipType.valueOf(relationshipType)
+            return RelationshipType.valueOf(relationshipType.uppercase())
         }
 
     val drinksEnum: Habits?
         get() {
-            return drinks?.let { Habits.valueOf(it) }
+            return drinks?.let { Habits.valueOf(it.uppercase()) }
         }
 
     val smokesEnum: Habits?
         get() {
-            return smokes?.let { Habits.valueOf(it) }
+            return smokes?.let { Habits.valueOf(it.uppercase()) }
         }
 
     val doesSportsEnum: Habits?
         get() {
-            return doesSports?.let { Habits.valueOf(it) }
+            return doesSports?.let { Habits.valueOf(it.uppercase()) }
         }
 
     val valuesAndBeliefsEnum: Religion?
         get() {
-            return valuesAndBeliefs?.let { Religion.valueOf(it) }
+            return valuesAndBeliefs?.let { Religion.valueOf(it.uppercase()) }
         }
 
 
@@ -81,12 +81,12 @@ data class Profile(
 
     val genderPriorityEnum: Gender?
         get() {
-            return genderPriority?.let { Gender.valueOf(it) }
+            return genderPriority?.let { Gender.valueOf(it.uppercase()) }
         }
 
     val horoscopeEnum: Horoscope?
         get() {
-            return horoscope?.let { Horoscope.valueOf(it) }
+            return horoscope?.let { Horoscope.valueOf(it.uppercase()) }
         }
 
     // Getter for date as Date object
@@ -98,8 +98,6 @@ data class Profile(
                 }
             return dateFormat.parse(birthday) ?: Date()
         }
-
-
 
     data class Location(
         val latitude: Double,

@@ -21,10 +21,8 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun ProfileInputField(label: String, initialValue: Int, onValueChange: (String) -> Unit) {
-
-    var value by remember { mutableStateOf(initialValue.toString()) }
-
+fun ProfileInputField(label: String, initialValue: Int?, onValueChange: (Int?) -> Unit) {
+    var value by remember { mutableStateOf(initialValue?.toString() ?: "") }
 
     Column(
         modifier = Modifier
@@ -40,11 +38,12 @@ fun ProfileInputField(label: String, initialValue: Int, onValueChange: (String) 
         TextField(
             value = value,
             onValueChange = { newValue ->
-                if ((newValue.isEmpty() || newValue.all { it.isDigit() }) && newValue.length <= 3) {
+                if (newValue.isEmpty() || newValue.all { it.isDigit() } && newValue.length <= 3) {
                     value = newValue
-                    onValueChange(newValue)
+                    onValueChange(newValue.toIntOrNull())
                 }
             },
+            label = { Text(text = label) },
             modifier = Modifier.fillMaxWidth(),
             textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
             singleLine = true,

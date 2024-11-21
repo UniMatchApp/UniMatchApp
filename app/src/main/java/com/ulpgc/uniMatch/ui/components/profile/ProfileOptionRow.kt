@@ -25,7 +25,7 @@ fun ProfileOptionRow(
     type: String,
     option: String,
     isSelectable: Boolean = true,
-    onSelectedItemChange: (String) -> Unit
+    onSelectedItemChange: (String?) -> Unit
 ) {
 
     val context = LocalContext.current
@@ -82,7 +82,8 @@ fun ProfileOptionRow(
             isSelectable = isSelectable,
             onSelectedItemChange = { selectedItem ->
                 onSelectedItemChange(selectedItem)
-            }
+            },
+            includeNullOption = true
         )
     }
 }

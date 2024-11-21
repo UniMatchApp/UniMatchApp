@@ -1,5 +1,7 @@
 package com.ulpgc.uniMatch
 
+import NotificationSocket
+import UserStatusSocket
 import android.app.Application
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.api.ApiClient
@@ -136,6 +138,13 @@ class UniMatchApplication : Application() {
     private val apiNotificationService = ApiNotificationService(
         notificationController = ApiClient.retrofit.create(NotificationController::class.java)
     )
+
+    public fun initializeWebSocket(userId: String, eventbus: WebSocketEventBus) {
+        val userStatusSocket = UserStatusSocket("localhost", 8081, userId, eventbus)
+        val notificationsSocket = NotificationSocket("localhost", 8080, userId, eventbus)
+        userStatusSocket.connect()
+        notificationsSocket.connect()
+    }
 
     override fun onCreate() {
         super.onCreate()

@@ -5,6 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -17,17 +21,97 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 
 @Composable
 fun AccountSettingsScreen(userViewModel: UserViewModel) {
+
+    var showLogoutDialog by remember { mutableStateOf(false) }
+    var showDeleteAccountDialog by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(vertical = 16.dp)
     ) {
-        AccountOptionItem(iconId = R.drawable.ic_email, title = stringResource(R.string.change_email), onClick = {})
-        AccountOptionItem(iconId = R.drawable.ic_password, title = stringResource(R.string.change_password), onClick = {})
-        AccountOptionItem(iconId = R.drawable.ic_arrow_back, title = stringResource(R.string.log_out), onClick = {userViewModel.logout()})
-        AccountOptionItem(iconId = R.drawable.ic_delete_account, title = stringResource(R.string.delete_account), onClick = {userViewModel.deleteAccount()})
+        AccountOptionItem(
+            iconId = R.drawable.ic_email,
+            title = stringResource(R.string.change_email),
+            onClick = {}
+        )
+        AccountOptionItem(
+            iconId = R.drawable.ic_password,
+            title = stringResource(R.string.change_password),
+            onClick = {}
+        )
+        AccountOptionItem(
+            iconId = R.drawable.ic_arrow_back,
+            title = stringResource(R.string.log_out),
+            onClick = { showLogoutDialog = true }
+        )
+        AccountOptionItem(
+            iconId = R.drawable.ic_delete_account,
+            title = stringResource(R.string.delete_account),
+            onClick = { showDeleteAccountDialog = true }
+        )
     }
+
+    if (showLogoutDialog) {
+        ConfirmationDialog(
+            title = stringResource(R.string.log_out),
+            message = stringResource(R.string.log_out_confirmation),
+            onConfirm = {
+                showLogoutDialog = false
+                userViewModel.logout() // Ejecutar acción de cerrar sesión
+            },
+            onDismiss = { showLogoutDialog = false }
+        )
+    }
+
+    // Diálogo de confirmación para eliminar cuenta
+    if (showDeleteAccountDialog) {
+        ConfirmationDialog(
+            title = stringResource(R.string.delete_account),
+            message = stringResource(R.string.delete_account_confirmation),
+            onConfirm = {
+                showDeleteAccountDialog = false
+                userViewModel.deleteAccount() // Ejecutar acción de eliminar cuenta
+            },
+            onDismiss = { showDeleteAccountDialog = false }
+        )
+    }
+}
+
+@Composable
+fun ConfirmationDialog(
+    title: String,
+    message: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = stringResource(R.string.confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.cancel))
+            }
+        }
+    )
 }
 
 @Composable
