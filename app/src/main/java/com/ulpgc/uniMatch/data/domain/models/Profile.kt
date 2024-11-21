@@ -23,7 +23,7 @@ data class Profile(
     var relationshipType: String,
     val birthday: String,
     var interests: List<String>,
-    var wall: String,
+    var wall: List<String>,
     var preferredImage: String,
     var maxDistance: Int,
     var ageRange: AgeRange,
@@ -98,12 +98,6 @@ data class Profile(
                 }
             return dateFormat.parse(birthday) ?: Date()
         }
-
-    // Getter for wall as List
-    val wallList: List<String>
-        get() = wall.split(", ")
-
-
 
     data class Location(
         val latitude: Double,

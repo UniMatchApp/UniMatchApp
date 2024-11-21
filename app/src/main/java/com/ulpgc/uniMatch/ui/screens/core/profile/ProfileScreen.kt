@@ -317,9 +317,9 @@ fun ProfileScreen(
 
             ProfileInputField(
                 label = stringResource(R.string.height),
-                initialValue = profile.height ?: 0,
+                initialValue = profile.height,
                 onValueChange = { newHeight ->
-                    newHeight.toIntOrNull()?.let { profileViewModel.changeHeight(it) }
+                    profileViewModel.changeHeight(newHeight)
                 }
             )
 
@@ -327,9 +327,9 @@ fun ProfileScreen(
 
             ProfileInputField(
                 label = stringResource(R.string.weight),
-                initialValue = profile.weight ?: 0 ,
+                initialValue = profile.weight,
                 onValueChange = { newWeight ->
-                    newWeight.toIntOrNull()?.let { profileViewModel.changeWeight(it) }
+                    profileViewModel.changeWeight(newWeight)
                 }
             )
 

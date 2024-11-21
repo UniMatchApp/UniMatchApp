@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.ui.screens.core.profile
 
 
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,9 +39,11 @@ fun ProfileWall(
     }
 
     val profile = profileViewModel.profileData.collectAsState().value
-    val profileImages = profile?.wallList ?: emptyList()
+    val profileImages = profile?.wall ?: emptyList()
     val activity = LocalContext.current as? ComponentActivity
     val isLoading by profileViewModel.isLoading.collectAsState()
+
+    Log.i("TuMadre", "Images: $profileImages")
 
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

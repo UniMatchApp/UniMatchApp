@@ -56,7 +56,7 @@ import com.ulpgc.uniMatch.R
 fun WallGrid(
     activity: Activity,
     initialProfileImages: List<String>,
-    onAddImageClick: (String) -> Unit,
+    onAddImageClick: (Uri) -> Unit,
     onDeleteImageClick: (String) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
@@ -70,7 +70,7 @@ fun WallGrid(
                 if (profileImages.size < 9) {
                     profileImages.add(it.toString())
                     Log.i("WallGrid", "Added image: $profileImages")
-                    onAddImageClick(it.toString())
+                    onAddImageClick(it)
                 }
             }
         }
