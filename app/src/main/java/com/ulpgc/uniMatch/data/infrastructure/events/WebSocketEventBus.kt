@@ -10,7 +10,7 @@ import kotlinx.coroutines.runBlocking
 class WebSocketEventBus : EventBus {
 
     private val _eventFlow = MutableSharedFlow<Event>(replay = 0)
-    val eventFlow: SharedFlow<Event> = _eventFlow
+    private val eventFlow: SharedFlow<Event> = _eventFlow
 
     override fun subscribeToEvents(eventListener: EventListener) {
         runBlocking {
