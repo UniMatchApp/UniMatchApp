@@ -207,6 +207,7 @@ fun ProfileCard(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Top,
         ) {
+            Log.i("ProfileCard", "Profile wall size: ${profile.wall}")
             profile.wall.forEachIndexed { index, _ ->
                 Box(
                     modifier = Modifier

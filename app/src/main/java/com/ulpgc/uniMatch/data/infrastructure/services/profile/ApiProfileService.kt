@@ -50,6 +50,7 @@ class ApiProfileService(
             Log.i("ApiProfileService", "ProfileEntity: $profileEntity")
             Result.success(ProfileEntity.toDomain(profileEntity))
         } catch (e: Throwable) {
+            Log.e("ApiProfileService", "Error getting profile", e)
             Result.failure(e)
         }
     }

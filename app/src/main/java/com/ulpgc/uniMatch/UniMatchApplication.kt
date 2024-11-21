@@ -1,5 +1,7 @@
 package com.ulpgc.uniMatch
 
+import NotificationSocket
+import UserStatusSocket
 import android.app.Application
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.api.ApiClient
@@ -39,7 +41,7 @@ class UniMatchApplication : Application() {
     // ----------------------------------- Services -----------------------------------
     private val userService by lazy { apiUserService }
     private val profileService by lazy { apiProfileService }
-    private val matchingService by lazy { mockMatchingService }
+    private val matchingService by lazy { apiMatchingService }
     private val notificationService by lazy { mockNotificationService }
     private val chatService by lazy { apiChatService }
 
@@ -58,6 +60,7 @@ class UniMatchApplication : Application() {
     }
 
     val homeViewModel: HomeViewModel by lazy {
+        val matchingService = matchingService ?: throw IllegalStateException("Matching service is not available")
         HomeViewModel(
             profileService,
             errorViewModel,
@@ -66,6 +69,7 @@ class UniMatchApplication : Application() {
             userService
         )
     }
+
 
     val eventbus by lazy {
         WebSocketEventBus()
@@ -115,13 +119,32 @@ class UniMatchApplication : Application() {
         )
     }
 
-    private val apiMatchingService = ApiMatchingService(
-        matchingController = ApiClient.retrofit.create(MatchingController::class.java)
-    )
+    private val apiMatchingService: ApiMatchingService? by lazy {
+        try {
+            val matchingController = ApiClient.retrofit.create(MatchingController::class.java)
+            val profileService = apiProfileService
+
+            ApiMatchingService(
+                matchingController = matchingController,
+                profileService = profileService,
+                profileDao = database.profileDao()
+            )
+        } catch (e: Exception) {
+            Log.e("UniMatchApplication", "Error initializing ApiMatchingService: ${e.message}")
+            null
+        }
+    }
 
     private val apiNotificationService = ApiNotificationService(
         notificationController = ApiClient.retrofit.create(NotificationController::class.java)
     )
+
+    public fun initializeWebSocket(userId: String, eventbus: WebSocketEventBus) {
+        val userStatusSocket = UserStatusSocket("localhost", 8081, userId, eventbus)
+        val notificationsSocket = NotificationSocket("localhost", 8080, userId, eventbus)
+        userStatusSocket.connect()
+        notificationsSocket.connect()
+    }
 
     override fun onCreate() {
         super.onCreate()

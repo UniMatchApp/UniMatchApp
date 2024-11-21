@@ -14,10 +14,16 @@ import com.ulpgc.uniMatch.data.infrastructure.events.MatchNotificationEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.MessageNotificationEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import org.json.JSONException
 import org.json.JSONObject
+import java.util.concurrent.atomic.AtomicBoolean
 
 class NotificationSocket(
     private val backendUrl: String,
@@ -29,6 +35,8 @@ class NotificationSocket(
 
     private val client = OkHttpClient()
     private var notificationSocket: WebSocket? = null
+    private var isReconnecting = AtomicBoolean(false)
+    private val RECONNECT_DELAY_MS = 5000L // 5 segundos
 
     fun connect() {
         val notificationRequest = Request.Builder()
@@ -38,6 +46,7 @@ class NotificationSocket(
         notificationSocket = client.newWebSocket(notificationRequest, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 Log.i("NotificationSocket", "Notification WebSocket connected for user $userId")
+                isReconnecting.set(false) // Reconexión exitosa
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
@@ -46,13 +55,31 @@ class NotificationSocket(
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 Log.e("NotificationSocket", "Notification WebSocket error: ${t.message}")
+                attemptReconnect() // Intentar reconectar
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 Log.i("NotificationSocket", "Notification WebSocket closed: $reason")
+                attemptReconnect() // Intentar reconectar
             }
         })
     }
+
+
+    private fun attemptReconnect() {
+        if (isReconnecting.get()) return
+
+        isReconnecting.set(true)
+        coroutineScope.launch {
+            while (isReconnecting.get()) {
+                Log.i("NotificationSocket", "Attempting to reconnect...")
+                notificationSocket?.cancel()
+                connect()
+                delay(RECONNECT_DELAY_MS) // Espera antes de volver a intentar
+            }
+        }
+    }
+
 
     private fun parseNotificationMessage(text: String) {
         try {
@@ -71,10 +98,41 @@ class NotificationSocket(
 
             typeEnum?.let {
                 when (it) {
-                    NotificationTypeEnum.MESSAGE -> handleMessageNotification(id, contentId, recipient, payload, statusEnum, convertedDate)
-                    NotificationTypeEnum.MATCH -> handleMatchNotification(id, contentId, recipient, payload, statusEnum, convertedDate)
-                    NotificationTypeEnum.APP -> handleAppNotification(id, contentId, recipient, payload, statusEnum, convertedDate)
-                    NotificationTypeEnum.EVENT -> handleEventNotification(id, contentId, recipient, payload, statusEnum, convertedDate)
+                    NotificationTypeEnum.MESSAGE -> handleMessageNotification(
+                        id,
+                        contentId,
+                        recipient,
+                        payload,
+                        statusEnum,
+                        convertedDate
+                    )
+
+                    NotificationTypeEnum.MATCH -> handleMatchNotification(
+                        id,
+                        contentId,
+                        recipient,
+                        payload,
+                        statusEnum,
+                        convertedDate
+                    )
+
+                    NotificationTypeEnum.APP -> handleAppNotification(
+                        id,
+                        contentId,
+                        recipient,
+                        payload,
+                        statusEnum,
+                        convertedDate
+                    )
+
+                    NotificationTypeEnum.EVENT -> handleEventNotification(
+                        id,
+                        contentId,
+                        recipient,
+                        payload,
+                        statusEnum,
+                        convertedDate
+                    )
                 }
             } ?: Log.e("NotificationSocket", "Unknown notification type: $type")
         } catch (e: JSONException) {
@@ -82,11 +140,20 @@ class NotificationSocket(
         }
     }
 
-    private fun handleMessageNotification(id: String, contentId: String, recipient: String, payload: String, statusEnum: NotificationStatus?, date: Long) {
+    private fun handleMessageNotification(
+        id: String,
+        contentId: String,
+        recipient: String,
+        payload: String,
+        statusEnum: NotificationStatus?,
+        date: Long
+    ) {
         try {
             val messagePayload = JSONObject(payload)
-            val messageStatusEnum = MessageStatus.entries.find { it.status == messagePayload.getString("status") }
-            val deletedStatus = DeletedMessageStatus.entries.find { it.status == messagePayload.getString("deletedStatus") }
+            val messageStatusEnum =
+                MessageStatus.entries.find { it.status == messagePayload.getString("status") }
+            val deletedStatus =
+                DeletedMessageStatus.entries.find { it.status == messagePayload.getString("deletedStatus") }
 
             if (messageStatusEnum == null || deletedStatus == null) {
                 Log.e("NotificationSocket", "Error parsing message status")
@@ -122,7 +189,14 @@ class NotificationSocket(
         }
     }
 
-    private fun handleMatchNotification(id: String, contentId: String, recipient: String, payload: String, statusEnum: NotificationStatus?, date: Long) {
+    private fun handleMatchNotification(
+        id: String,
+        contentId: String,
+        recipient: String,
+        payload: String,
+        statusEnum: NotificationStatus?,
+        date: Long
+    ) {
         try {
             val matchPayload = JSONObject(payload)
             val userMatched = matchPayload.getString("userMatched")
@@ -154,7 +228,14 @@ class NotificationSocket(
         }
     }
 
-    private fun handleAppNotification(id: String, contentId: String, recipient: String, payload: String, statusEnum: NotificationStatus?, date: Long) {
+    private fun handleAppNotification(
+        id: String,
+        contentId: String,
+        recipient: String,
+        payload: String,
+        statusEnum: NotificationStatus?,
+        date: Long
+    ) {
         try {
             val appPayload = JSONObject(payload)
             val title = appPayload.getString("title")
@@ -186,7 +267,14 @@ class NotificationSocket(
         }
     }
 
-    private fun handleEventNotification(id: String, contentId: String, recipient: String, payload: String, statusEnum: NotificationStatus?, date: Long) {
+    private fun handleEventNotification(
+        id: String,
+        contentId: String,
+        recipient: String,
+        payload: String,
+        statusEnum: NotificationStatus?,
+        date: Long
+    ) {
         try {
             val eventPayload = JSONObject(payload)
             val title = eventPayload.getString("title")

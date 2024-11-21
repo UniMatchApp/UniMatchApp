@@ -1,11 +1,16 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.matching
 
 import com.ulpgc.uniMatch.data.application.services.MatchingService
+import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MatchingController
+import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
+import com.ulpgc.uniMatch.data.infrastructure.entities.MatchingEntity
 
 class ApiMatchingService(
-    private val matchingController: MatchingController
+    private val matchingController: MatchingController,
+    private val profileService: ProfileService,
+    private val profileDao: ProfileDao
 ) : MatchingService {
 
     override suspend fun getMatchingUsers(userId: String, limit: Int): Result<List<Profile>> {
@@ -13,12 +18,17 @@ class ApiMatchingService(
             val response = matchingController.getMatchingUsers(userId, limit)
 
             if (!response.success) {
-               Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
+               Result.success(profileDao.getAllMatching().map(MatchingEntity::toDomain))
             } else {
-                Result.success(response.value ?: emptyList())
+                val userIds = response.value ?: emptyList()
+                val profiles = userIds.mapNotNull { profileService.getProfile(it).getOrNull() }
+                profiles.forEach {
+                    val matchingEntity = MatchingEntity.fromDomain(it)
+                    profileDao.insertMatching(matchingEntity)
+                }
+                Result.success(profiles)
             }
         } catch (e: Exception) {
-            // Manejo de errores
             Result.failure(e)
         }
     }
@@ -30,6 +40,7 @@ class ApiMatchingService(
             if (!response.success) {
                 Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
             } else {
+                profileDao.deleteProfile(dislikedUserId)
                 Result.success(Unit)
             }
         } catch (e: Exception) {
@@ -44,6 +55,7 @@ class ApiMatchingService(
             if (!response.success) {
                 Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
             } else {
+                profileDao.deleteProfile(likedUserId)
                 Result.success(Unit)
             }
         } catch (e: Exception) {
