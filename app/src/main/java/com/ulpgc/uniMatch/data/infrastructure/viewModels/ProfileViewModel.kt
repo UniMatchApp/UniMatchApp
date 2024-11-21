@@ -6,11 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.Gender
-import com.ulpgc.uniMatch.data.domain.enums.Habits
-import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
-import com.ulpgc.uniMatch.data.domain.enums.Religion
-import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.ui.screens.utils.enumToString
 import com.ulpgc.uniMatch.ui.screens.utils.stringToEnum
@@ -476,19 +472,19 @@ open class ProfileViewModel(
     fun updateSmokes() {
         if (_editedProfile.value?.smokesEnum == _profileData.value?.smokesEnum) return
         if(_editedProfile.value?.smokesEnum == null)
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateSmokes(userViewModel.userId!!, _editedProfile.value?.smokesEnum)
-            result.onSuccess {
-                _profileData.value = _profileData.value?.copy(smokes = enumToString(_editedProfile.value?.smokesEnum))
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating smokes"
-                )
-                _isLoading.value = false
+            viewModelScope.launch {
+                _isLoading.value = true
+                val result = profileService.updateSmokes(userViewModel.userId!!, _editedProfile.value?.smokesEnum)
+                result.onSuccess {
+                    _profileData.value = _profileData.value?.copy(smokes = enumToString(_editedProfile.value?.smokesEnum))
+                    _isLoading.value = false
+                }.onFailure { error ->
+                    errorViewModel.showError(
+                        error.message ?: "Error updating smokes"
+                    )
+                    _isLoading.value = false
+                }
             }
-        }
     }
 
     fun updateDoesSports() {

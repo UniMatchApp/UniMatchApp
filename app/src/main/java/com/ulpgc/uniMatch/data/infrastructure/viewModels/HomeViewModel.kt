@@ -28,15 +28,14 @@ class HomeViewModel (
     fun loadMatchingUsers() {
         viewModelScope.launch {
             _isLoading.value = true
+            _matchingProfiles.value = emptyList()
             val result = userViewModel.userId?.let { matchingService.getMatchingUsers(it, 10) }
             if (result != null) {
                 result.onSuccess { profiles ->
+                    Log.i("HomeViewModel", "Loaded matching users: $profiles")
                     _matchingProfiles.value = profiles
                     _isLoading.value = false
-                }.onFailure { error ->
-                    errorViewModel.showError(
-                        error.message ?: "Error loading matching users"
-                    )
+                }.onFailure {
                     _isLoading.value = false
                 }
             }
@@ -49,12 +48,9 @@ class HomeViewModel (
             val result = userViewModel.userId?.let { matchingService.getMatchingUsers(it, 10) }
             if (result != null) {
                 result.onSuccess { profiles ->
-                    _matchingProfiles.value = _matchingProfiles.value + profiles
+                    _matchingProfiles.value += profiles
                     _isLoading.value = false
-                }.onFailure { error ->
-                    errorViewModel.showError(
-                        error.message ?: "Error loading matching users"
-                    )
+                }.onFailure {
                     _isLoading.value = false
                 }
             }
@@ -64,18 +60,12 @@ class HomeViewModel (
     fun dislikeUser(userId: String, targetId: String) {
         viewModelScope.launch {
             userViewModel.userId?.let { userId ->
-                matchingService.dislikeUser(userId, targetId)?.onSuccess {
-                    // Eliminar el perfil de la lista
+                matchingService.dislikeUser(userId, targetId).onSuccess {
                     Log.i("DislikeUser", "Successfully disliked user: $targetId")
                     _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != targetId }
-                    //Print the list of profiles de uno en uno
                     for (profile in _matchingProfiles.value) {
                         Log.i("DislikeUser", "Profile: $profile")
                     }
-                }?.onFailure { error ->
-                    errorViewModel.showError(
-                        error.message ?: "Error disliking user"
-                    )
                 }
             }
         }
@@ -84,13 +74,8 @@ class HomeViewModel (
     fun likeUser(userId: String, targetId: String) {
         viewModelScope.launch {
             userViewModel.userId?.let { userId ->
-                matchingService.likeUser(userId, targetId)?.onSuccess {
-                    // Eliminar el perfil de la lista
+                matchingService.likeUser(userId, targetId).onSuccess {
                     _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != targetId }
-                }?.onFailure { error ->
-                    errorViewModel.showError(
-                        error.message ?: "Error liking user"
-                    )
                 }
             }
         }
