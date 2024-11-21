@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
-import com.ulpgc.uniMatch.ui.components.profile.WallGrid
+import com.ulpgc.uniMatch.ui.components.profile.WallGridDraggable
 
 
 @Composable
@@ -57,7 +57,7 @@ fun ProfileWall(
                 .padding(8.dp)
         ) {
 
-            WallGrid(
+            WallGridDraggable(
                 activity!!,
                 initialProfileImages = profileImages,
                 onAddImageClick = { imageUrl ->
@@ -65,6 +65,9 @@ fun ProfileWall(
                 },
                 onDeleteImageClick = { imageUrl ->
                     profileViewModel.deleteImage(imageUrl)
+                },
+                onUpdateWallOrder = { newOrder ->
+                    profileViewModel.changeWallOrder(newOrder)
                 }
             )
         }

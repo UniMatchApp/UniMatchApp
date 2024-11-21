@@ -72,6 +72,12 @@ open class ProfileViewModel(
         _editedProfile.value?.weight = weight
     }
 
+    fun changeWallOrder(wall: List<String>) {
+        Log.i("ProfileViewModel", "Changing wall order to $wall")
+        Log.i("ProfileViewModel", "Current wall order: ${_editedProfile.value?.wall}")
+        _editedProfile.value?.wall = wall
+    }
+
     fun changeJob(job: String?) {
         Log.i("ProfileViewModel", "Changing job to $job")
         _editedProfile.value?.job = job

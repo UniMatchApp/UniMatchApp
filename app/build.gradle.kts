@@ -102,6 +102,10 @@ dependencies {
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
+    // Draggable grid
+    implementation(libs.reorderable)
+
+
     implementation(libs.ui)
     implementation(libs.google.material)
     implementation(libs.androidx.constraintlayout)

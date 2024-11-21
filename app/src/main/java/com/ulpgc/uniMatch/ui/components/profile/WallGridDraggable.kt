@@ -5,13 +5,11 @@ import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,19 +23,20 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import org.burnoutcrew.reorderable.NoDragCancelledAnimation
+import org.burnoutcrew.reorderable.ReorderableItem
+import org.burnoutcrew.reorderable.rememberReorderableLazyGridState
+import org.burnoutcrew.reorderable.reorderable
+import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draganddrop.DragAndDropEvent
-import androidx.compose.ui.draganddrop.DragAndDropTarget
-import androidx.compose.ui.draganddrop.mimeTypes
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -48,18 +47,17 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.ulpgc.uniMatch.R
+import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun WallGrid(
+fun WallGridDraggable(
     activity: Activity,
     initialProfileImages: List<String>,
     onAddImageClick: (Uri) -> Unit,
     onDeleteImageClick: (String) -> Unit,
-
+    onUpdateWallOrder: (List<String>) -> Unit
 ) {
-    var showDialog by remember { mutableStateOf(false) }
+
     val profileImages = remember { mutableStateListOf(*initialProfileImages.toTypedArray()) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -76,79 +74,71 @@ fun WallGrid(
         }
     }
 
+    var showDialog by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
     val imgHeight = (screenHeight - 56 - 16 - 32 ).div(3).dp // 56dp = AppBar , 16dp = padding, 32dp = 2*16dp de padding entre ellos
 
-    val displayedImages = profileImages.toMutableList()
-    while (displayedImages.size < 9) {
-        displayedImages.add("") // Casillas vacías
-    }
+    val state = rememberReorderableLazyGridState(dragCancelledAnimation = NoDragCancelledAnimation(),
+        onMove = { from, to ->
+            profileImages.add(to.index, profileImages.removeAt(from.index))
+            onUpdateWallOrder(profileImages)
+        }
+    )
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-        modifier = Modifier.fillMaxSize(),
+        state = state.gridState,
+        modifier = Modifier.reorderable(state)
     ) {
-        items(displayedImages) { imageUri ->
-            Box(
-                modifier = Modifier
-                    .height(imgHeight)
-                    .fillMaxSize()
-                    .padding(4.dp)
-
-            ) {
-
-                if (imageUri.isNotEmpty()) {
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(imageUri)
-                                .build(),
-                            contentDescription = "Imagen de perfil",
-                            contentScale = ContentScale.Crop,
+        items(profileImages, { it }) { item ->
+            Log.i("TuMadre", "Image: $item")
+            ReorderableItem(state, key = item) { isDragging ->
+                Box(
+                    modifier = Modifier
+                        .height(imgHeight)
+                        .fillMaxSize()
+                        .padding(4.dp)
+                        .reorderable(state) // Asegúrate de agregar el modificador de reorderable aquí
+                        .detectReorderAfterLongPress(state) // Aplica este en el Box para detectar el gesto de largo presionado
+                ) {
+                    if (item.isNotEmpty()) {
+                        Surface(
+                            shape = RoundedCornerShape(16.dp),
                             modifier = Modifier.fillMaxSize()
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .background(Color.White, CircleShape)
-                            .border(2.dp, Color.Black, CircleShape)
-                            .align(Alignment.TopEnd)
-                            .clickable {
-                                profileImages.remove(imageUri)
-                                onDeleteImageClick(imageUri)
-                            }
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.icon_remove),
-                            contentDescription = "Eliminar imagen",
-                            tint = Color.Red,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-                } else {
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clickable { showDialog = true }
-                    ) {
-                        Box(contentAlignment = Alignment.Center, modifier = Modifier.background(Color.Gray)) {
+                        ) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(item)
+                                    .build(),
+                                contentDescription = "Imagen de perfil",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .background(Color.White, CircleShape)
+                                .border(2.dp, Color.Black, CircleShape)
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    profileImages.remove(item)
+                                    onDeleteImageClick(item)
+                                }
+                        ) {
                             Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.icon_add_photo),
-                                contentDescription = "Añadir imagen",
-                                tint = Color.LightGray,
-                                modifier = Modifier.size(32.dp)
+                                imageVector = ImageVector.vectorResource(id = R.drawable.icon_remove),
+                                contentDescription = "Eliminar imagen",
+                                tint = Color.Red,
+                                modifier = Modifier.fillMaxSize()
                             )
                         }
                     }
                 }
             }
         }
+
     }
 
     if (showDialog) {
