@@ -78,11 +78,9 @@ fun ProfileInterests(
                     if (isAdded) {
                         enumToString(key)?.let { addedInterests.add(it) }
                         profileViewModel.updateInterests(addedInterests)
-                        profileViewModel.updateProfile()
                     } else {
                         enumToString(key)?.let { addedInterests.remove(it) }
                         profileViewModel.updateInterests(addedInterests)
-                        profileViewModel.updateProfile()
                     }
                 }
             }

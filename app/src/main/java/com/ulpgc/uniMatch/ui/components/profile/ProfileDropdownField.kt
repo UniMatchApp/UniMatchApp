@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.components.profile
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,10 +23,10 @@ fun ProfileDropdownField(
     label: String,
     options: List<String>,
     selectedOption: String?,
-    onEditField: (String) -> Unit,
+    onEditField: (String?) -> Unit,
     includeNullOption: Boolean = false
 ) {
-    var currentSelection by remember { mutableStateOf(selectedOption.takeIf { it in options } ?: options.first()) }
+    var currentSelection by remember { mutableStateOf(selectedOption.takeIf { it in options }) }
 
     Column(
         modifier = Modifier
@@ -43,10 +44,11 @@ fun ProfileDropdownField(
             items = options,
             selectedItem = currentSelection,
             onItemSelected = { selected ->
-                currentSelection = selected ?: options.first()
+                Log.i("ProfileScreen", "selectedJobOption: $selected")
+                currentSelection = selected
                 onEditField(currentSelection)
             },
-            includeNullOption = true
+            includeNullOption
         )
     }
 }
