@@ -145,45 +145,15 @@ dependencies {
 }
 
 
-//tasks.whenTaskAdded {
-//    if (name == "compileDebugKotlin") {
-//        dependsOn("generateDebugResources")
-//        println("Running adb reverse...")
-//        val adbCommand = "adb reverse tcp:3000 tcp:3000"
-//        val adbCommand2 = "adb reverse tcp:8080 tcp:8080"
-//        val adbCommand3 = "adb reverse tcp:8081 tcp:8081"
-//        doFirst {
-//            exec {
-//                commandLine("cmd", "/c", adbCommand)
-//            }
-//            exec {
-//                commandLine("cmd", "/c", adbCommand2)
-//            }
-//            exec {
-//                commandLine("cmd", "/c", adbCommand3)
-//            }
-//        }
-//    }
-//}
+tasks.whenTaskAdded {
+    if (name == "compileDebugKotlin") {
+        dependsOn("generateDebugResources")
+        println("Running adb reverse using PowerShell script...")
 
-gradle.taskGraph.whenReady {
-    allTasks.forEach { task ->
-        val adbCommand = "adb reverse tcp:3000 tcp:3000"
-        val adbCommand2 = "adb reverse tcp:8080 tcp:8080"
-        val adbCommand3 = "adb reverse tcp:8081 tcp:8081"
-        task.doFirst {
-            println("Running adb reverse...")
+        doFirst {
             exec {
-                commandLine("cmd", "/c", adbCommand)
-            }
-            exec {
-                commandLine("cmd", "/c", adbCommand2)
-            }
-            exec {
-                commandLine("cmd", "/c", adbCommand3)
+                commandLine("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "../reverse_device_ports.ps1")
             }
         }
     }
 }
-
-
