@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -525,13 +526,15 @@ open class ProfileViewModel(
         }
     }
 
-    fun addImage(imageUrl: String) {
+    fun addImage(imageUrl: Uri) {
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.addImage(userViewModel.userId!!, imageUrl)
-            result.onSuccess {
-                _profileData.value =
-                    _profileData.value?.copy(wall = _profileData.value?.wall.orEmpty() + imageUrl)
+            result.onSuccess { imageUrlApi ->
+                Log.i("TuMadre", "Adding image: $imageUrlApi")
+                _profileData.value = _profileData.value?.copy(
+                    wall = _profileData.value?.wall.orEmpty() + imageUrlApi
+                )
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -543,12 +546,13 @@ open class ProfileViewModel(
     }
 
     fun deleteImage(imageUrl: String) {
+        Log.i("TuMadre", "Deleting image: $imageUrl")
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.removeImage(userViewModel.userId!!, imageUrl)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(
-                    wall = (_profileData.value?.wallList.orEmpty() - imageUrl).joinToString(", ")
+                    wall = (_profileData.value?.wall.orEmpty() - imageUrl)
                 )
                 _isLoading.value = false
             }.onFailure { error ->

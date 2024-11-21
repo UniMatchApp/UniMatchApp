@@ -25,7 +25,7 @@ data class ProfileEntity(
     val relationshipType: RelationshipType,
     val birthday: String,
     val interests: List<String>,
-    val wall: String,
+    val wall: List<String>,
     val preferredImage: String,
     val maxDistance: Int,
     val ageRangeMin: Int,

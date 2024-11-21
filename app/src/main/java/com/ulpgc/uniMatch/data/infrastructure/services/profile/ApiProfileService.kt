@@ -134,11 +134,18 @@ class ApiProfileService(
     ): Result<Unit> =
         handleApiCall { profileController.updateValuesAndBeliefs(userId, StringRequest(enumToString(valuesAndBeliefs))) }
 
-    override suspend fun addImage(userId: String, image: String): Result<Unit> =
-        handleApiCall { profileController.uploadPhoto(userId, image) }
+    override suspend fun addImage(userId: String, imageURI: Uri): Result<String> {
+        return try {
+            val response = profileController.uploadPhoto(userId, createImagePart(imageURI))
+            Result.success(response.value ?: "")
+        } catch (e: Exception) {
+            Result.failure(mapException(e))
+        }
+    }
 
-    override suspend fun removeImage(userId: String, image: String): Result<Unit> =
-        handleApiCall { profileController.deletePhoto(userId, image) }
+    override suspend fun removeImage(userId: String, imageURL: String): Result<Unit> =
+        handleApiCall { Log.i("TuMadre", "Deleting image: $imageURL")
+            profileController.deletePhoto(userId, imageURL) }
 
     override suspend fun createProfile(
         userId: String,
@@ -190,7 +197,7 @@ class ApiProfileService(
             val response = apiCall()
             Result.success(response)
         } catch (e: Exception) {
-            Result.failure(Exception("Failed to create profile: ${e.message}", e))
+            Result.failure(Exception("${e.message}", e))
         }
     }
 
@@ -219,6 +226,8 @@ class ApiProfileService(
             inputStream.use { it.readBytes().toRequestBody("image/*".toMediaTypeOrNull()) }
         return MultipartBody.Part.createFormData("thumbnail", uri.lastPathSegment, requestBody)
     }
+
+
 
     private fun createRequestBody(value: String): RequestBody =
         value.toRequestBody("text/plain".toMediaTypeOrNull())

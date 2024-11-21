@@ -125,16 +125,19 @@ interface ProfileController {
         @Body max: Int
     ): ApiResponse<Unit>
 
-    @DELETE("users/{id}/delete-photo/{photoUrl}")
-    suspend fun deletePhoto(
-        @Path("id") userId: String,
-        @Path("photoUrl") photoUrl: String
-    ): ApiResponse<Unit>
-
+    @Multipart
     @POST("users/{id}/photo")
     suspend fun uploadPhoto(
         @Path("id") userId: String,
-        @Body photoRequest: String
+        @Part photoURL: MultipartBody.Part
+    ): ApiResponse<String>
+
+    @DELETE("users/{id}/delete-photo/{photoUrl}")
+    suspend fun deletePhoto(
+        @Path("id") userId: String,
+        @Path("photoUrl") photoUrl : String
     ): ApiResponse<Unit>
+
+
 
 }
