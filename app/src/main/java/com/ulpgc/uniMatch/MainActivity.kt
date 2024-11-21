@@ -37,7 +37,8 @@ class MainActivity : ComponentActivity() {
                             app.chatViewModel,
                             app.profileViewModel,
                             app.homeViewModel,
-                            app.notificationsViewModel
+                            app.notificationsViewModel,
+                            app.errorViewModel
                         )
                     }
 

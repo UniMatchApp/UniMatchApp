@@ -161,7 +161,7 @@ fun ProfileCard(
                             currentImageIndex--
                         }
 
-                        x > clickAreaWidth && currentImageIndex < profile.wallList.size - 1 -> {
+                        x > clickAreaWidth && currentImageIndex < profile.wall.size - 1 -> {
                             currentImageIndex++
                         }
                     }
@@ -207,6 +207,7 @@ fun ProfileCard(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Top,
         ) {
+            Log.i("ProfileCard", "Profile wall size: ${profile.wall}")
             profile.wall.forEachIndexed { index, _ ->
                 Box(
                     modifier = Modifier
@@ -349,7 +350,7 @@ fun ProfileCard(
 
                     IconButton(
                         onClick = {
-                            currentImageIndex = (currentImageIndex + 1) % profile.wallList.size
+                            currentImageIndex = (currentImageIndex + 1) % profile.wall.size
                         }
                     ) {
                         Icon(

@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
@@ -62,7 +63,8 @@ fun CoreScreen(
     chatViewModel: ChatViewModel,
     profileViewModel: ProfileViewModel,
     homeViewModel: HomeViewModel,
-    notificationsViewModel: NotificationsViewModel
+    notificationsViewModel: NotificationsViewModel,
+    errorViewModel: ErrorViewModel
 ) {
     val authState by userViewModel.authState.collectAsState()
 
@@ -111,6 +113,7 @@ fun CoreScreen(
                 chatViewModel,
                 profileViewModel,
                 homeViewModel,
+                errorViewModel,
                 notificationsViewModel
             )
         }
@@ -125,6 +128,7 @@ fun CoreNavHost(
     chatViewModel: ChatViewModel,
     profileViewModel: ProfileViewModel,
     homeViewModel: HomeViewModel,
+    errorViewModel: ErrorViewModel,
     notificationsViewModel: NotificationsViewModel
 ) {
     NavHost(
@@ -136,7 +140,8 @@ fun CoreNavHost(
         composable(CoreRoutes.HOME) {
             HomeScreen(
                 homeViewModel = homeViewModel,
-                userViewModel = userViewModel
+                userViewModel = userViewModel,
+                errorViewModel = errorViewModel,
             )
         }
         composable(CoreRoutes.SEARCH) { SearchScreen() }

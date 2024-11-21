@@ -1,18 +1,17 @@
 package com.ulpgc.uniMatch.data.infrastructure.controllers
 
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
-import com.ulpgc.uniMatch.data.domain.models.Profile
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface MatchingController {
 
-    @GET("matching/{userId}/{limit}")
+    @GET("matching/potential-matches/{userId}/{limit}")
     suspend fun getMatchingUsers(
         @Path("userId") userId: String,
         @Path("limit") limit: Int
-    ): ApiResponse<List<Profile>>
+    ): ApiResponse<List<String>>
 
     @POST("matching/like/{userId}/{likedUserId}")
     suspend fun likeUser(

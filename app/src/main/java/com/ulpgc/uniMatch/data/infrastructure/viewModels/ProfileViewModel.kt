@@ -560,7 +560,7 @@ open class ProfileViewModel(
             val result = profileService.removeImage(userViewModel.userId!!, imageUrl)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(
-                    wall = (_profileData.value?.wallList.orEmpty() - imageUrl).joinToString(", ")
+                    wall = (_profileData.value?.wall ?: emptyList()).filter { it != imageUrl }
                 )
                 _isLoading.value = false
             }.onFailure { error ->

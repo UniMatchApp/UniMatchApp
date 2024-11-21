@@ -11,8 +11,8 @@ import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 
-@Entity(tableName = "profiles")
-data class ProfileEntity(
+@Entity(tableName = "matching")
+data class MatchingEntity(
     @PrimaryKey val profileId: String,
     val userId: String,
     val name: String,
@@ -45,43 +45,42 @@ data class ProfileEntity(
     val fact: String?
 ) {
     companion object {
-        // Método para mapear un ProfileEntity a un Profile de dominio
-        fun toDomain(profileEntity: ProfileEntity): Profile {
-            Log.i("ApiProfileService", "toDomain: $profileEntity")
+        fun toDomain(matchingEntity: MatchingEntity): Profile {
+            Log.i("ApiProfileService", "toDomain: $matchingEntity")
             return Profile(
-                userId = profileEntity.userId,
-                name = profileEntity.name,
-                age = profileEntity.age,
-                aboutMe = profileEntity.aboutMe,
-                location = Profile.Location(profileEntity.latitude, profileEntity.longitude, null),
-                gender = profileEntity.gender.toString(),
-                sexualOrientation = profileEntity.sexualOrientation.toString(),
-                relationshipType = profileEntity.relationshipType.toString(),
-                birthday = profileEntity.birthday,
-                interests = profileEntity.interests,
-                wall = profileEntity.wall,
-                preferredImage = profileEntity.preferredImage,
-                maxDistance = profileEntity.maxDistance,
-                ageRange = Profile.AgeRange(profileEntity.ageRangeMin, profileEntity.ageRangeMax),
-                horoscope = profileEntity.horoscope?.toString(),
-                height = profileEntity.height,
-                weight = profileEntity.weight,
-                job = profileEntity.job,
-                education = profileEntity.education,
-                personalityType = profileEntity.personalityType,
-                pets = profileEntity.pets,
-                drinks = profileEntity.drinks?.toString(),
-                smokes = profileEntity.smokes?.toString(),
-                doesSports = profileEntity.doesSports?.toString(),
-                valuesAndBeliefs = profileEntity.valuesAndBeliefs?.toString(),
-                genderPriority = profileEntity.genderPriority?.toString(),
-                fact = profileEntity.fact
+                userId = matchingEntity.userId,
+                name = matchingEntity.name,
+                age = matchingEntity.age,
+                aboutMe = matchingEntity.aboutMe,
+                location = Profile.Location(matchingEntity.latitude, matchingEntity.longitude, null),
+                gender = matchingEntity.gender.toString(),
+                sexualOrientation = matchingEntity.sexualOrientation.toString(),
+                relationshipType = matchingEntity.relationshipType.toString(),
+                birthday = matchingEntity.birthday,
+                interests = matchingEntity.interests,
+                wall = matchingEntity.wall,
+                preferredImage = matchingEntity.preferredImage,
+                maxDistance = matchingEntity.maxDistance,
+                ageRange = Profile.AgeRange(matchingEntity.ageRangeMin, matchingEntity.ageRangeMax),
+                horoscope = matchingEntity.horoscope?.toString(),
+                height = matchingEntity.height,
+                weight = matchingEntity.weight,
+                job = matchingEntity.job,
+                education = matchingEntity.education,
+                personalityType = matchingEntity.personalityType,
+                pets = matchingEntity.pets,
+                drinks = matchingEntity.drinks?.toString(),
+                smokes = matchingEntity.smokes?.toString(),
+                doesSports = matchingEntity.doesSports?.toString(),
+                valuesAndBeliefs = matchingEntity.valuesAndBeliefs?.toString(),
+                genderPriority = matchingEntity.genderPriority?.toString(),
+                fact = matchingEntity.fact
             )
         }
 
-        // Método para mapear un Profile de dominio a un ProfileEntity
-        fun fromDomain(profile: Profile): ProfileEntity {
-            return ProfileEntity(
+        // Método para mapear un Profile de dominio a un matchingEntity
+        fun fromDomain(profile: Profile): MatchingEntity {
+            return MatchingEntity(
                 profileId = profile.profileId,
                 userId = profile.userId,
                 name = profile.name,
