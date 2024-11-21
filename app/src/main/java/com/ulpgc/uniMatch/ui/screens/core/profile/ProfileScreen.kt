@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -91,18 +92,13 @@ fun ProfileScreen(
         }
     } else if (profile != null) {
 
-//        var aboutMeText by remember { mutableStateOf(profile.aboutMe ?: "") }
+        var aboutMeText by remember { mutableStateOf(profile.aboutMe ?: "") }
 
         Log.i("ProfileScreen", "Profile: $profile")
 
         val horoscopeMap =
             context.resources.getStringArray(R.array.horoscope).mapIndexed { index, name ->
                 Horoscope.entries.getOrNull(index) to name
-            }.toMap()
-
-        val relationshipTypeMap =
-            context.resources.getStringArray(R.array.relationship_type).mapIndexed { index, name ->
-                RelationshipType.entries[index] to name
             }.toMap()
 
         val genderMap =
@@ -158,6 +154,8 @@ fun ProfileScreen(
                 null
             }
         }
+
+        Log.i("ProfileScreen", "job: ${jobsMap[stringToEnum<Jobs>(profile.job)]}")
 
         Column(
             modifier = Modifier
@@ -241,15 +239,17 @@ fun ProfileScreen(
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.align(Alignment.Start)
             )
+
             OutlinedTextField(
-                value = profile.aboutMe,
+                value = aboutMeText,
                 onValueChange = { newText ->
-//                    aboutMeText = newText
-                    profileViewModel.changeAboutMe(newText)
+                    aboutMeText = newText
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
             )
+
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -360,31 +360,14 @@ fun ProfileScreen(
                 options = jobsMap.values.toList(),
                 selectedOption = jobsMap[stringToEnum<Jobs>(profile.job)],
                 onEditField = { selectedOption ->
-                    val selectedJobOption = jobsMap.entries.find { it.value == selectedOption }?.key
-                    if (selectedJobOption != null) {
-                        enumToString(selectedJobOption)?.let { profileViewModel.changeJob(it) }
-                    }
+                    Log.i("ProfileScreen", "selectedOption: $selectedOption")
+                    var selectedJobOption = jobsMap.entries.find { it.value == selectedOption }?.key
+                    Log.i("ProfileScreen", "selectedJobOption: $selectedJobOption")
+                    profileViewModel.changeJob(
+                        enumToString(selectedJobOption)
+                    )
                 },
                 includeNullOption = true
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ProfileDropdownField(
-                label = stringResource(R.string.what_type_of_relationship),
-                options = relationshipTypeMap.values.toList(),
-                selectedOption = relationshipTypeMap[profile.relationshipTypeEnum]!!,
-                onEditField = { selectedOption ->
-                    val relationshipTypeOption =
-                        relationshipTypeMap.entries.find { it.value == selectedOption }?.key
-                    if (relationshipTypeOption != null) {
-                        enumToString(relationshipTypeOption)?.let {
-                            profileViewModel.changeRelationshipType(
-                                it
-                            )
-                        }
-                    }
-                },
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -399,40 +382,26 @@ fun ProfileScreen(
                 onSelectedItemChange = { field, selectedOption ->
                     when (field) {
                         "horoscope" -> {
-                            val horoscopeOption =
-                                horoscopeMap.entries.find { it.value == selectedOption }?.key
-                            if (horoscopeOption != null) {
-                                enumToString(horoscopeOption)?.let {
-                                    profileViewModel.changeHoroscope(
-                                        it
-                                    )
-                                }
-                            }
+                            var horoscopeOption = horoscopeMap.entries.find { it.value == selectedOption }?.key
+                            profileViewModel.changeHoroscope(
+                                enumToString(horoscopeOption)
+                            )
                         }
 
                         "education" -> {
+                            var educationOption = educationMap.entries.find { it.value == selectedOption }?.key
+                            Log.i("ProfileScreen", "selectedEducationOption: $educationOption")
+                            profileViewModel.changeEducation(
+                                enumToString(educationOption)
+                            )
 
-                            val educationOption =
-                                educationMap.entries.find { it.value == selectedOption }?.key
-                            if (educationOption != null) {
-                                enumToString(educationOption)?.let {
-                                    profileViewModel.changeEducation(
-                                        it
-                                    )
-                                }
-                            }
                         }
 
                         "personality_type" -> {
-                            var personalityOption =
-                                personalityMap.entries.find { it.value == selectedOption }?.key
-                            if (personalityOption != null) {
-                                enumToString(personalityOption)?.let {
-                                    profileViewModel.changePersonalityType(
-                                        it
-                                    )
-                                }
-                            }
+                            var personalityOption = personalityMap.entries.find { it.value == selectedOption }?.key
+                            profileViewModel.changePersonalityType(
+                                enumToString(personalityOption)
+                            )
                         }
 
                         else -> println("Campo desconocido: $field")
@@ -454,25 +423,39 @@ fun ProfileScreen(
                 onSelectedItemChange = { field, selectedOption ->
                     when (field) {
                         "pets" -> {
-                            val petsOption =
-                                petsMap.entries.find { it.value == selectedOption }?.key
-                            if (petsOption != null) {
-                                enumToString(petsOption)?.let { profileViewModel.changePets(it) }
-                            }
+                            var petsOption = petsMap.entries.find { it.value == selectedOption }?.key
+                            profileViewModel.changePets(
+                                enumToString(petsOption)
+                            )
                         }
 
-                        "drinks" -> profileViewModel.changeDrinks(
-                            habitsMap.entries.find { it.value == selectedOption }?.key.toString())
+                        "drinks" ->  {
+                            var drinksOption = habitsMap.entries.find { it.value == selectedOption }?.key
+                            profileViewModel.changeDrinks(
+                                enumToString(drinksOption)
+                            )
+                        }
 
+                        "smokes" -> {
+                            var smokesOption = habitsMap.entries.find { it.value == selectedOption }?.key
+                            profileViewModel.changeSmokes(
+                                enumToString(smokesOption)
+                            )
+                        }
 
-                        "smokes" -> profileViewModel.changeSmokes(
-                            habitsMap.entries.find { it.value == selectedOption }?.key.toString())
+                        "sports" -> {
+                            var sportssOption = habitsMap.entries.find { it.value == selectedOption }?.key
+                            profileViewModel.changeDoesSports(
+                                enumToString(sportssOption)
+                            )
+                        }
 
-                        "sports" -> profileViewModel.changeDoesSports(
-                            habitsMap.entries.find { it.value == selectedOption }?.key.toString())
-
-                        "religion" -> profileViewModel.changeValuesAndBeliefs(
-                            religionMap.entries.find { it.value == selectedOption }?.key.toString())
+                        "religion" -> {
+                            var religionOption = religionMap.entries.find { it.value == selectedOption }?.key
+                            profileViewModel.changeValuesAndBeliefs(
+                                enumToString(religionOption)
+                            )
+                        }
 
                         else -> println("Campo desconocido: $field")
                     }
@@ -487,6 +470,9 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
+                    if(aboutMeText != profile.aboutMe) {
+                        profileViewModel.changeAboutMe(aboutMeText)
+                    }
                     profileViewModel.updateProfile()
                 },
                 modifier = Modifier.fillMaxWidth()

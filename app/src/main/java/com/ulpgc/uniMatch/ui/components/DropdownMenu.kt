@@ -32,8 +32,6 @@ fun DropdownMenu(
     var selectedText by remember { mutableStateOf(selectedItem) }
     var defaultText = stringResource(id = R.string.none)
 
-    Log.i("DropdownMenu", "selectedItem: $selectedItem")
-
     Column(
         modifier = Modifier.fillMaxWidth(),
     ) {

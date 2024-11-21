@@ -20,7 +20,7 @@ fun ProfileSection(
     title: String,
     rowTitles: List<Pair<String, String?>>,
     isSelectable: Boolean = true,
-    onSelectedItemChange: (String, String) -> Unit = { _, _ -> } // función vacía por defecto
+    onSelectedItemChange: (String, String?) -> Unit = { _, _ -> } // función vacía por defecto
 ) {
     Column(
         modifier = Modifier

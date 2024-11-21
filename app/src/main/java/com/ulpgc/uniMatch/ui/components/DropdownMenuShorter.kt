@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,9 +36,10 @@ import com.ulpgc.uniMatch.R
 @Composable
 fun DropdownMenuShorter(
     items: List<String>,
-    selectedItem: String,
+    selectedItem: String?,
     isSelectable: Boolean = true,
-    onSelectedItemChange: (String) -> Unit
+    onSelectedItemChange: (String?) -> Unit,
+    includeNullOption: Boolean = false
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -64,15 +66,17 @@ fun DropdownMenuShorter(
                     .menuAnchor(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = if(selectedText in items) selectedText else defaultText,
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Black,
-                        textAlign = TextAlign.Start
+                (if(selectedText in items) selectedText else defaultText)?.let {
+                    Text(
+                        text = it,
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.Black,
+                            textAlign = TextAlign.Start
+                        )
                     )
-                )
+                }
 
                 if (isSelectable) {
                     Icon(
@@ -89,6 +93,17 @@ fun DropdownMenuShorter(
                 onDismissRequest = { isExpanded = false },
                 modifier = Modifier.fillMaxWidth()
             ) {
+                if (includeNullOption) {
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(id = R.string.dropdown_empty_option)) },
+                        onClick = {
+                            selectedText = null
+                            isExpanded = false
+                            onSelectedItemChange(null)
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
                 items.forEach { text ->
                     DropdownMenuItem(
                         text = { Text(text = text, fontSize = 12.sp, color = MaterialTheme.colorScheme.onBackground) },
@@ -100,6 +115,7 @@ fun DropdownMenuShorter(
                     )
                 }
             }
+
         }
     }
 }
