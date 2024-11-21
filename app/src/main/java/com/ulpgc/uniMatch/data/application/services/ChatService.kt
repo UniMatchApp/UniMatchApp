@@ -5,15 +5,12 @@ import com.ulpgc.uniMatch.data.domain.models.Message
 
 interface ChatService {
     suspend fun sendMessage(
-        loggedUserId: String,
-        chatId: String,
-        content: String,
-        attachment: String?
+        loggedUserId: String, chatId: String, content: String, attachment: String?
     ): Result<Message>
 
     suspend fun getChats(loggedUserId: String): Result<List<Chat>>
 
     suspend fun getMessages(chatId: String, offset: Int, limit: Int): Result<List<Message>>
 
-    suspend fun getChatsByName(chatName: String): Result<List<Chat>>
+    suspend fun getChatsByName(userName: String): Result<List<Chat>>
 }

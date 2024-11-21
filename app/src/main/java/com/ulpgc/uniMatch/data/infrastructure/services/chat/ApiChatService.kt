@@ -191,7 +191,43 @@ class ApiChatService(
 
     }
 
-    override suspend fun getChatsByName(chatName: String): Result<List<Chat>> {
-        TODO("Not yet implemented")
+    override suspend fun getChatsByName(userName: String): Result<List<Chat>> {
+        return try {
+            // Obtener la lista de chats que coinciden con el nombre de usuario
+            val chatEntities = chatMessageDao.getChatsByUserName(userName)
+
+            // Transformar cada ChatEntity en un Chat con sus mensajes y conteos correspondientes
+            val chats = chatEntities.map { chatEntity ->
+                val lastMessageEntity = chatMessageDao.getLastMessageForChat(chatEntity.id)
+                val unreadMessagesCount = chatMessageDao.countUnreadMessages(chatEntity.id)
+
+                val lastMessage = lastMessageEntity?.let {
+                    Message(
+                        messageId = it.messageId,
+                        chatId = it.chatId,
+                        content = it.content,
+                        senderId = it.senderId,
+                        recipientId = it.recipientId,
+                        timestamp = it.timestamp,
+                        status = it.status,
+                        deletedStatus = it.deletedStatus,
+                        attachment = it.attachment
+                    )
+                }
+
+                Chat(
+                    userId = chatEntity.id,
+                    userName = chatEntity.name,
+                    profilePictureUrl = chatEntity.profilePictureUrl,
+                    lastMessage = lastMessage,
+                    unreadMessagesCount = unreadMessagesCount
+                )
+            }
+
+            Result.success(chats)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
+
 }

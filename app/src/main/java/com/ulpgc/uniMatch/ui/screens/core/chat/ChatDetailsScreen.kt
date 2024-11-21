@@ -31,11 +31,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.ui.components.chats.MessageBubble
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Composable
 fun ChatDetailScreen(
@@ -45,9 +43,7 @@ fun ChatDetailScreen(
 ) {
     val messages by chatViewModel.messages.collectAsState()
     LaunchedEffect(chatId) {
-        withContext(Dispatchers.IO) {
-            chatViewModel.loadMessages(chatId, messages.size)
-        }
+        chatViewModel.loadMessages(chatId, messages.size)
     }
 
     Column(
@@ -56,7 +52,7 @@ fun ChatDetailScreen(
     ) {
         LazyColumn(
             modifier = Modifier
-                .padding(top=8.dp, bottom=4.dp, start=16.dp, end=16.dp)
+                .padding(top = 8.dp, bottom = 4.dp, start = 16.dp, end = 16.dp)
                 .weight(1f)
         ) {
             items(messages) { message ->
