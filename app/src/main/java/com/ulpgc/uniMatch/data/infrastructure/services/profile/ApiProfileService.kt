@@ -138,8 +138,10 @@ class ApiProfileService(
     override suspend fun addImage(userId: String, imageURI: Uri): Result<String> {
         return try {
             val response = profileController.uploadPhoto(userId, createImagePart(imageURI))
+            Log.i("TuMadre", "Response: $response")
             Result.success(response.value ?: "")
         } catch (e: Exception) {
+            Log.i("TuMadre", "Error: $e")
             Result.failure(mapException(e))
         }
     }
