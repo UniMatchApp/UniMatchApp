@@ -57,6 +57,16 @@ class ApiChatService(
         }
     }
 
+    override suspend fun saveMessage(message: Message): Result<Unit> {
+        return try {
+            // Insert the message into the local database
+            chatMessageDao.insertMessage(MessageEntity.fromDomain(message))
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override suspend fun getChats(loggedUserId: String): Result<List<Chat>> {
         return try {
             val chats = mutableListOf<Chat>()

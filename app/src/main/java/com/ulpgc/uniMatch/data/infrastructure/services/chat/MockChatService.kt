@@ -45,4 +45,8 @@ class MockChatService : ChatService {
             ChatPreviewDataMock.searchChatPreviewDataMocks(userName)
         )
     }
+
+    override suspend fun saveMessage(message: Message): Result<Unit> {
+        return Result.success(Unit)
+    }
 }

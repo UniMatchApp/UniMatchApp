@@ -8,6 +8,8 @@ interface ChatService {
         loggedUserId: String, chatId: String, content: String, attachment: String?
     ): Result<Message>
 
+    suspend fun saveMessage(message: Message): Result<Unit>
+
     suspend fun getChats(loggedUserId: String): Result<List<Chat>>
 
     suspend fun getMessages(chatId: String, offset: Int, limit: Int): Result<List<Message>>

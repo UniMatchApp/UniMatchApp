@@ -63,23 +63,28 @@ open class ChatViewModel(
 
     private fun handleNewMessage(notification: Notifications)  {
         val message = notification.payload as MessageNotificationPayload
+        viewModelScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
+            val newMessage = Message(
+                messageId = message.id,
+                senderId = message.getSender(),
+                attachment =  message.getThumbnail(),
+                content = message.getContent(),
+                timestamp = notification.date,
+                recipientId = userViewModel.userId!!,
+                chatId = message.getSender()
+            )
 
-        val messageId = message.id
-        val senderId = message.getSender()
-        val attachment = message.getThumbnail()
-        val content = message.getContent()
-        val timestamp = notification.date
+            chatService.saveMessage(newMessage)
 
-        val newMessage = Message(
-            messageId = messageId,
-            senderId = senderId,
-            attachment = attachment,
-            content = content,
-            timestamp = timestamp,
-            recipientId = userViewModel.userId!!,
-            chatId = senderId
-        )
-        _messages.value += newMessage
+            _messages.value += newMessage
+        }
+
+
+
 
 
     }
