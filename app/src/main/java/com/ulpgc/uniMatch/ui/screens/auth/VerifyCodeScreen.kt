@@ -51,8 +51,10 @@ fun VerifyCodeScreen(
         if (verifyCodeResult.value != null) {
             if (verifyCodeResult.value!!) {
                 onVerificationSuccess()
+                userViewModel.resetVerificationResult()
+            } else {
+                userViewModel.resetVerificationResult()
             }
-            userViewModel.resetVerificationResult()
 
         }
     }

@@ -6,6 +6,7 @@ import com.ulpgc.uniMatch.data.application.services.LoginResponse
 import com.ulpgc.uniMatch.data.application.services.PasswordRequest
 import com.ulpgc.uniMatch.data.application.services.RegisterRequest
 import com.ulpgc.uniMatch.data.application.services.RegisterResponse
+import com.ulpgc.uniMatch.data.application.services.ReportRequest
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -20,7 +21,7 @@ interface UserController {
     suspend fun register(@Body registerRequest: RegisterRequest): ApiResponse<RegisterResponse>
 
     @POST("users/{id}/report/{targetId}")
-    suspend fun reportUser(@Path("id") userId: String, @Path("targetId") reportedUserId: String): ApiResponse<Unit>
+    suspend fun reportUser(@Path("id") userId: String, @Path("targetId") reportedUserId: String, @Body reportRequest: ReportRequest): ApiResponse<Unit>
 
     @POST("users/{id}/block/{targetId}")
     suspend fun blockUser(@Path("id") userId: String, @Path("targetId") blockedUserId: String): ApiResponse<Unit>

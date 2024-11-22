@@ -121,8 +121,10 @@ open class UserViewModel(
         viewModelScope.launch {
             val result = userService.verifyCode(email, code)
             result.onSuccess {
+                Log.i("UserViewModel", "Code verified")
                 _verifyCodeResult.value = true
             }.onFailure {
+                Log.i("UserViewModel", "Code not verified")
                 _verifyCodeResult.value = false
                 errorViewModel.showError(it.message ?: "Unknown error occurred")
             }

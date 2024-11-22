@@ -84,7 +84,8 @@ class HomeViewModel (
     fun reportUser(reportedUserId: String, reason: String, details: String, extra: String = "") {
         viewModelScope.launch {
             userViewModel.userId?.let { userId ->
-                userService.reportUser(userId, reportedUserId).onSuccess {
+                val predefineReason = "$reason: $details"
+                userService.reportUser(userId, reportedUserId, predefineReason, extra).onSuccess {
                     _matchingProfiles.value = matchingProfiles.value.filter { it.userId != reportedUserId }
                 }.onFailure { error ->
                     errorViewModel.showError(

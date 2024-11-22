@@ -7,6 +7,7 @@ import com.ulpgc.uniMatch.data.application.services.LoginResponse
 import com.ulpgc.uniMatch.data.application.services.PasswordRequest
 import com.ulpgc.uniMatch.data.application.services.RegisterRequest
 import com.ulpgc.uniMatch.data.application.services.RegisterResponse
+import com.ulpgc.uniMatch.data.application.services.ReportRequest
 import com.ulpgc.uniMatch.data.application.services.UserService
 import com.ulpgc.uniMatch.data.domain.models.User
 import com.ulpgc.uniMatch.data.infrastructure.controllers.UserController
@@ -101,10 +102,10 @@ class ApiUserService(
         }
     }
 
-    override suspend fun reportUser(userId: String, reportedUserId: String): Result<Unit> {
+    override suspend fun reportUser(userId: String, reportedUserId: String, predefinedReason: String, comment: String?): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = userController.reportUser(userId, reportedUserId)
+                val response = userController.reportUser(userId, reportedUserId, ReportRequest(predefinedReason, comment))
                 if (response.success) {
                     Result.success(Unit)
                 } else {

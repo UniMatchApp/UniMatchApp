@@ -62,7 +62,7 @@ class MockUserService : UserService {
         }
     }
 
-    override suspend fun reportUser(userId: String, reportedUserId: String): Result<Unit> {
+    override suspend fun reportUser(userId: String, reportedUserId: String, predefinedReason: String, comment: String?): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
                 Result.success(Unit)
