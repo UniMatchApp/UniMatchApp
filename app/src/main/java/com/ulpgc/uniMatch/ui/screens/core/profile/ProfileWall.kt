@@ -59,7 +59,7 @@ fun ProfileWall(
                     profileViewModel.deleteImage(imageUrl)
                 },
                 onUpdateWallOrder = { newOrder ->
-                    profileViewModel.changeWallOrder(newOrder)
+                    profileViewModel.updateWall(newOrder)
                 }
             )
         }

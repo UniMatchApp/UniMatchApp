@@ -119,6 +119,9 @@ interface ProfileController {
         @Body max: Int
     ): ApiResponse<Unit>
 
+    @PUT("users/{id}/wall")
+    suspend fun updateWall(@Path("id") userId: String, @Body wall: ListRequest): ApiResponse<List<String>>
+
     @Multipart
     @POST("users/{id}/photo")
     suspend fun uploadPhoto(

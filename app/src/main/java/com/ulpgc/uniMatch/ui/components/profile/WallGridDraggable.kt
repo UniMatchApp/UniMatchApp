@@ -70,7 +70,6 @@ fun WallGridDraggable(
             imageUri?.let {
                 if (profileImages.size < 9) {
                     profileImages.add(it.toString())
-                    Log.i("WallGrid", "Added image: $profileImages")
                     onAddImageClick(it)
                 }
             }
@@ -84,8 +83,11 @@ fun WallGridDraggable(
 
     val state = rememberReorderableLazyGridState(dragCancelledAnimation = NoDragCancelledAnimation(),
         onMove = { from, to ->
-            profileImages.add(to.index, profileImages.removeAt(from.index))
-            onUpdateWallOrder(profileImages)
+            Log.i("WallGrid", "From: ${from.index} To: ${to.index}")
+            if (from.index != to.index) { // Verifica que no es un movimiento redundante
+                profileImages.add(to.index, profileImages.removeAt(from.index))
+                onUpdateWallOrder(profileImages) // Notifica el nuevo orden
+            }
         }
     )
 
@@ -93,7 +95,6 @@ fun WallGridDraggable(
         modifier = Modifier
             .fillMaxSize().padding(8.dp)
     ) {
-        // Grid de imágenes
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             state = state.gridState,
