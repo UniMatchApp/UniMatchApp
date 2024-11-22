@@ -84,6 +84,12 @@
     <string name="change_email">Change email</string>
     <string name="change_password">Change password</string>
 
+    <!--PROFILE WALL -->
+    <string name="upload_image">Upload Image</string>
+    <string name="where_do_you_wanna_get_image">Where do you want to upload the file from?</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+
 
     <!--PREFERENCES SCREEN-->
     <string name="edit_preferences">Edit Preferences</string>

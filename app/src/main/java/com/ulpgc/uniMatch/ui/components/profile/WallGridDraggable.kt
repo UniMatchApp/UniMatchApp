@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -41,12 +42,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.ui.theme.MainColor
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 
 @Composable
@@ -86,66 +89,95 @@ fun WallGridDraggable(
         }
     )
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        state = state.gridState,
-        modifier = Modifier.reorderable(state)
+
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize().padding(8.dp)
     ) {
-        items(profileImages, { it }) { item ->
-            Log.i("TuMadre", "Image: $item")
-            ReorderableItem(state, key = item) { isDragging ->
-                Box(
-                    modifier = Modifier
-                        .height(imgHeight)
-                        .fillMaxSize()
-                        .padding(4.dp)
-                        .reorderable(state) // Asegúrate de agregar el modificador de reorderable aquí
-                        .detectReorderAfterLongPress(state) // Aplica este en el Box para detectar el gesto de largo presionado
-                ) {
-                    if (item.isNotEmpty()) {
-                        Surface(
-                            shape = RoundedCornerShape(16.dp),
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            AsyncImage(
-                                model = ImageRequest.Builder(LocalContext.current)
-                                    .data(item)
-                                    .build(),
-                                contentDescription = "Imagen de perfil",
-                                contentScale = ContentScale.Crop,
+        // Grid de imágenes
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            state = state.gridState,
+            modifier = Modifier
+                .reorderable(state)
+                .fillMaxSize()
+        ) {
+            items(profileImages, { it }) { item ->
+                ReorderableItem(state, key = item) { isDragging ->
+                    Log.i("WallGrid", "Item: $isDragging")
+                    Box(
+                        modifier = Modifier
+                            .height(imgHeight)
+                            .fillMaxSize()
+                            .padding(4.dp)
+                            .reorderable(state)
+                            .detectReorderAfterLongPress(state)
+                    ) {
+                        if (item.isNotEmpty()) {
+                            Surface(
+                                shape = RoundedCornerShape(16.dp),
                                 modifier = Modifier.fillMaxSize()
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .background(Color.White, CircleShape)
-                                .border(2.dp, Color.Black, CircleShape)
-                                .align(Alignment.TopEnd)
-                                .clickable {
-                                    profileImages.remove(item)
-                                    onDeleteImageClick(item)
-                                }
-                        ) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.icon_remove),
-                                contentDescription = "Eliminar imagen",
-                                tint = Color.Red,
-                                modifier = Modifier.fillMaxSize()
-                            )
+                            ) {
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(item)
+                                        .build(),
+                                    contentDescription = "Imagen de perfil",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .background(Color.White, CircleShape)
+                                    .border(2.dp, Color.Black, CircleShape)
+                                    .align(Alignment.TopEnd)
+                                    .clickable {
+                                        profileImages.remove(item)
+                                        onDeleteImageClick(item)
+                                    }
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.icon_remove),
+                                    contentDescription = "Eliminar imagen",
+                                    tint = Color.Red,
+                                    modifier = Modifier.fillMaxSize()
+                                )
+                            }
                         }
                     }
                 }
             }
         }
 
+        // Botón de añadir imagen
+        if (profileImages.size != 9) {
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)  // Alinea el botón en la esquina inferior derecha
+                    .background(MainColor, CircleShape),  // Fondo circular
+
+                onClick = { showDialog = true }
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.icon_add_photo),
+                    contentDescription = "Añadir imagen",
+                    tint = Color.White,
+                    modifier = Modifier.fillMaxSize().padding(4.dp)
+                )
+            }
+        }
     }
+
+
 
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Subir archivo") },
-            text = { Text("¿Desde dónde quieres subir el archivo?") },
+            title = { Text(stringResource(R.string.upload_image)) },
+            text = { Text(stringResource(R.string.where_do_you_wanna_get_image)) },
             confirmButton = {
                 Button(onClick = {
                     showDialog = false
@@ -155,7 +187,7 @@ fun WallGridDraggable(
                         .maxResultSize(1080, 1080)
                         .createIntent { intent -> imagePickerLauncher.launch(intent) }
                 }) {
-                    Text("Cámara")
+                    Text(stringResource(R.string.camera))
                 }
             },
             dismissButton = {
@@ -167,7 +199,7 @@ fun WallGridDraggable(
                         .maxResultSize(1080, 1080)
                         .createIntent { intent -> imagePickerLauncher.launch(intent) }
                 }) {
-                    Text("Archivos")
+                    Text(stringResource(R.string.gallery))
                 }
             }
         )
