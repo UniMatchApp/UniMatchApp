@@ -89,8 +89,6 @@ fun WallGridDraggable(
         }
     )
 
-
-
     Box(
         modifier = Modifier
             .fillMaxSize().padding(8.dp)
@@ -152,12 +150,11 @@ fun WallGridDraggable(
             }
         }
 
-        // Botón de añadir imagen
         if (profileImages.size != 9) {
             IconButton(
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)  // Alinea el botón en la esquina inferior derecha
-                    .background(MainColor, CircleShape),  // Fondo circular
+                    .align(Alignment.BottomEnd)
+                    .background(MainColor, CircleShape),
 
                 onClick = { showDialog = true }
             ) {
