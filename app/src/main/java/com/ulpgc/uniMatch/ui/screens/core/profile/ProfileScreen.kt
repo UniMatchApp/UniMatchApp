@@ -329,6 +329,7 @@ fun ProfileScreen(
                 label = stringResource(R.string.weight),
                 initialValue = profile.weight,
                 onValueChange = { newWeight ->
+                    Log.i("TuMadre", "newWeight: $newWeight")
                     profileViewModel.changeWeight(newWeight)
                 }
             )

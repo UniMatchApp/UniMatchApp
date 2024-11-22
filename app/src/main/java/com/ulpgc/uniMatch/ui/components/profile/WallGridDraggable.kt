@@ -50,7 +50,7 @@ import coil.request.ImageRequest
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.ui.theme.MainColor
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
+import org.burnoutcrew.reorderable.detectReorder
 
 @Composable
 fun WallGridDraggable(
@@ -112,7 +112,7 @@ fun WallGridDraggable(
                             .fillMaxSize()
                             .padding(4.dp)
                             .reorderable(state)
-                            .detectReorderAfterLongPress(state)
+                            .detectReorder(state)
                     ) {
                         if (item.isNotEmpty()) {
                             Surface(
