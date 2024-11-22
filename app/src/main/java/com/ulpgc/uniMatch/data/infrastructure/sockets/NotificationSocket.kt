@@ -23,6 +23,8 @@ import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 import org.json.JSONException
 import org.json.JSONObject
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.atomic.AtomicBoolean
 
 class NotificationSocket(
@@ -84,6 +86,7 @@ class NotificationSocket(
     private fun parseNotificationMessage(text: String) {
         try {
             val notificationResponse = JSONObject(text)
+            Log.d("NotificationSocket", "Notification Response: $notificationResponse")
             val type = notificationResponse.getString("type")
             val status = notificationResponse.getString("status")
             val payload = notificationResponse.getString("payload")
@@ -94,7 +97,11 @@ class NotificationSocket(
 
             val typeEnum = NotificationTypeEnum.entries.find { it.type == type }
             val statusEnum = NotificationStatus.entries.find { it.status == status }
-            val convertedDate = date.toLong()
+
+            val convertedDate = ZonedDateTime.parse(
+                date,
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX")
+            ).toInstant().toEpochMilli()
 
             typeEnum?.let {
                 when (it) {
@@ -136,7 +143,15 @@ class NotificationSocket(
                 }
             } ?: Log.e("NotificationSocket", "Unknown notification type: $type")
         } catch (e: JSONException) {
-            Log.e("NotificationSocket", "Error parsing notification message: ${e.message}")
+            Log.e(
+                "NotificationSocket",
+                "JSONException -> Error parsing notification message: ${e.message}"
+            )
+        } catch (e: Exception) {
+            Log.e(
+                "NotificationSocket",
+                "Exception -> Error parsing notification message: ${e.message}"
+            )
         }
     }
 
@@ -151,9 +166,9 @@ class NotificationSocket(
         try {
             val messagePayload = JSONObject(payload)
             val messageStatusEnum =
-                MessageStatus.entries.find { it.status == messagePayload.getString("status") }
+                MessageStatus.entries.find { it.status == messagePayload.getString("_status") }
             val deletedStatus =
-                DeletedMessageStatus.entries.find { it.status == messagePayload.getString("deletedStatus") }
+                DeletedMessageStatus.entries.find { it.status == messagePayload.getString("_deletedStatus") }
 
             if (messageStatusEnum == null || deletedStatus == null) {
                 Log.e("NotificationSocket", "Error parsing message status")
@@ -162,9 +177,9 @@ class NotificationSocket(
 
             val messagePayloadObject = MessageNotificationPayload(
                 messagePayload.getString("id"),
-                messagePayload.getString("sender"),
-                messagePayload.getString("content"),
-                messagePayload.optString("thumbnail", null),
+                messagePayload.getString("_sender"),
+                messagePayload.getString("_content"),
+                messagePayload.optString("_thumbnail", ""),
                 messageStatusEnum,
                 deletedStatus
             )

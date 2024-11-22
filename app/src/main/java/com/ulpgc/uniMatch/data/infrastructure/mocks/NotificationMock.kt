@@ -13,7 +13,7 @@ object NotificationMock {
             Notifications(
                 id = "1",
                 type = NotificationType.APP,
-                status = NotificationStatus.UNREAD,
+                status = NotificationStatus.SENT,
                 contentId = "content1",
                 payload = AppNotificationPayload("1", "New Message", "You have a new message"),
                 date = System.currentTimeMillis(),
@@ -24,7 +24,7 @@ object NotificationMock {
             Notifications(
                 id = "2",
                 type = NotificationType.APP,
-                status = NotificationStatus.UNREAD,
+                status = NotificationStatus.SENT,
                 contentId = "content2",
                 payload = AppNotificationPayload("2", "Friend Request", "John Doe sent you a friend request"),
                 date = System.currentTimeMillis(),
