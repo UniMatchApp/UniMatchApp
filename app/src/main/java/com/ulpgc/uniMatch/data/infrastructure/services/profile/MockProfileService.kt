@@ -122,6 +122,10 @@ class MockProfileService: ProfileService {
         return Result.success(Unit)
     }
 
+    override suspend fun updateWall(userId: String, wall: List<String>): Result<Unit> {
+        return Result.success(Unit)
+    }
+
     override suspend fun createProfile(
         userId: String,
         fullName: String,

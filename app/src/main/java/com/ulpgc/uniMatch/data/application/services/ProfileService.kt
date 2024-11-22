@@ -60,4 +60,5 @@ interface ProfileService {
 
     suspend fun addImage(userId: String, imageURI: Uri): Result<String>
     suspend fun removeImage(userId: String, imageURL: String): Result<Unit>
+    suspend fun updateWall(userId: String, wall: List<String>): Result<Unit>
 }

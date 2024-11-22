@@ -150,6 +150,9 @@ class ApiProfileService(
         handleApiCall { Log.i("TuMadre", "Deleting image: $imageURL")
             profileController.deletePhoto(userId, imageURL) }
 
+    override suspend fun updateWall(userId: String, wall: List<String>): Result<Unit> =
+        handleApiCall { profileController.updateWall(userId, ListRequest(wall)) }
+
     override suspend fun createProfile(
         userId: String,
         fullName: String,

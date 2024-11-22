@@ -72,12 +72,6 @@ open class ProfileViewModel(
         _editedProfile.value?.weight = weight
     }
 
-    fun changeWallOrder(wall: List<String>) {
-        Log.i("ProfileViewModel", "Changing wall order to $wall")
-        Log.i("ProfileViewModel", "Current wall order: ${_editedProfile.value?.wall}")
-        _editedProfile.value?.wall = wall
-    }
-
     fun changeJob(job: String?) {
         Log.i("ProfileViewModel", "Changing job to $job")
         _editedProfile.value?.job = job
@@ -528,6 +522,22 @@ open class ProfileViewModel(
             }.onFailure { error ->
                 errorViewModel.showError(
                     error.message ?: "Error updating values and beliefs"
+                )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateWall(wall: List<String>) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateWall(userViewModel.userId!!, wall)
+            result.onSuccess {
+                _profileData.value = _profileData.value?.copy(wall = wall)
+                _isLoading.value = false
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating wall"
                 )
                 _isLoading.value = false
             }
