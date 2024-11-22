@@ -26,9 +26,5 @@ interface MessageController {
         @Body message: Message
     ): ApiResponse<Message>
 
-    @GET("matching/mutual-likes/{userId}")
-    suspend fun getMatchingUserIds(
-        @Path("userId") userId: String
-    ): ApiResponse<List<Profile>>
 
 }

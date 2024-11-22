@@ -99,8 +99,9 @@ class UniMatchApplication : Application() {
     private val apiChatService by lazy {
         ApiChatService(
             messageController = ApiClient.retrofit.create(MessageController::class.java),
+            matchingController = ApiClient.retrofit.create(MatchingController::class.java),
             chatMessageDao = database.chatMessageDao(),
-            profileService = MockProfileService()
+            profileService = profileService,
         )
     }
 

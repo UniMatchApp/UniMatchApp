@@ -6,6 +6,7 @@ import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
+import com.ulpgc.uniMatch.data.infrastructure.controllers.MatchingController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MessageController
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ChatMessageDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
@@ -16,6 +17,7 @@ import java.util.UUID
 
 class ApiChatService(
     private val messageController: MessageController,
+    private val matchingController: MatchingController,
     private val chatMessageDao: ChatMessageDao,
     private val profileService: ProfileService,
 ) : ChatService {
@@ -91,9 +93,10 @@ class ApiChatService(
             chats.addAll(dbChats)
 
             // TODO: Create new empty chats for matching users from endpoint in backend
-            val matchingUsers = messageController.getMatchingUserIds(loggedUserId);
+            val matchingUsers = matchingController.getMatchingUserIds(loggedUserId);
 
-            matchingUsers.value?.forEach { profile ->
+            matchingUsers.value?.forEach { userId ->
+                val profile = profileService.getProfile(userId).getOrElse { return@forEach }
                 if (dbChats.none { it.userId == profile.userId }) {
                     chatMessageDao.insertChat(
                         ChatEntity(

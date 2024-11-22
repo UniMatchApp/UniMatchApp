@@ -2,6 +2,7 @@ package com.ulpgc.uniMatch.ui.components.chats
 
 // Función auxiliar para formatear el timestamp
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,11 +43,14 @@ import java.util.Locale
 fun formatTimestamp(timestamp: Long): String {
     val date = Date(timestamp)
     val sdf = SimpleDateFormat("HH:mm", Locale.getDefault()) // Usa el locale del dispositivo
+    // Print the timestamp in the format "HH:mm"
+    Log.d("MessageBubble", "timestamp: $timestamp -> formatTimestamp: ${sdf.format(date)}")
     return sdf.format(date)
 }
 
 @Composable
 fun MessageBubble(message: Message, isCurrentUser: Boolean) {
+    Log.d("MessageBubble", "MessageBubble: $message")
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = if (isCurrentUser) Arrangement.End else Arrangement.Start,
