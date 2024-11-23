@@ -8,9 +8,10 @@ class TokenResponseInterceptor(private val tokenProvider: TokenProvider) : Inter
     override fun intercept(chain: Interceptor.Chain): Response {
         val response = chain.proceed(chain.request())
 
-        val newToken = response.header("New-Authorization-Token")
+        val newToken = response.header("Authorization")
         newToken?.let {
-            tokenProvider.saveToken(it)
+            val tokenParts = it.split(" ")
+            tokenProvider.saveToken(tokenParts[1])
         }
 
         return response
