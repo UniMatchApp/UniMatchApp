@@ -1,14 +1,11 @@
 package com.ulpgc.uniMatch
 
-import NotificationSocket
-import UserStatusSocket
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.ulpgc.uniMatch.data.infrastructure.events.WebSocketEventBus
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorState
 import com.ulpgc.uniMatch.ui.components.ErrorDialog
