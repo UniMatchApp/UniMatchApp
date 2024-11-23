@@ -148,10 +148,12 @@ fun AuthScreen(
                     onCompleteProfile = {
                         navController.navigate(AuthRoutes.OPTIONS)
                         userViewModel.resetRegisteredUserId()
+                        userViewModel.resetProfileCreated()
                     },
                     onBack = {
                         navController.navigate(AuthRoutes.REGISTER)
                         userViewModel.resetRegisteredUserId()
+                        userViewModel.resetProfileCreated()
                     },
                     location = location
                 )

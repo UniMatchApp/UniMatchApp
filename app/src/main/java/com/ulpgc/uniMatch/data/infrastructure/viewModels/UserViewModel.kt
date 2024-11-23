@@ -212,6 +212,10 @@ open class UserViewModel(
         _temporaryEmail.value = null
     }
 
+    fun resetProfileCreated() {
+        _profileCreated.value = false
+    }
+
     fun resetEmail() {
         _email.value = null
     }
