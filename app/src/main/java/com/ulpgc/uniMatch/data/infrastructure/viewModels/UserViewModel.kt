@@ -99,7 +99,14 @@ open class UserViewModel(
     }
 
     fun deleteAccount() {
-        //TODO: Implement delete account
+        viewModelScope.launch {
+            val result = userService.deleteAccount(userId!!)
+            result.onSuccess {
+                logout()
+            }.onFailure {
+                errorViewModel.showError(it.message ?: "Unknown error occurred")
+            }
+        }
     }
 
     fun forgotPassword(email: String): Boolean {

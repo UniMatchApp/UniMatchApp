@@ -121,4 +121,14 @@ class MockUserService : UserService {
             }
         }
     }
+
+    override suspend fun deleteAccount(userId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
 }

@@ -24,4 +24,5 @@ interface UserService {
     suspend fun verifyCode(email: String, code: String): Result<Boolean>
     suspend fun resetPassword(userId: String, newPassword: String): Result<Boolean>
     suspend fun resendCode(email: String): Result<Boolean>
+    suspend fun deleteAccount(userId: String): Result<Unit>
 }

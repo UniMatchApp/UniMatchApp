@@ -38,11 +38,7 @@ fun ProfileWall(
 
     Log.i("TuMadre", "Images: $profileImages")
 
-    if (isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    } else if( profile != null) {
+     if( profile != null) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -81,7 +81,6 @@
     <string name="cookies_policy">Política de cookies</string>
     <string name="privacy_policy">Política de privacidad</string>
     <string name="session_data">Datos de sesión</string>
-    <string name="change_email">Modificar correo electrónico</string>
     <string name="change_password">Cambiar contraseña</string>
 
     <!--PROFILE WALL -->
@@ -438,7 +437,9 @@
     <string name="log_out">Cerrar Sesión</string>
     <string name="delete_account">Eliminar Cuenta</string>
     <string name="log_out_confirmation">¿Estás seguro de que deseas cerrar sesión?</string>
-    <string name="delete_account_confirmation">¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.</string>
+    <string name="delete_account_title">¿Estás seguro de que deseas eliminar la cuenta?</string>
+    <string name="delete_account_confirmation">DELETE</string>
+    <string name="delete_account_confirmation_text">Introduce DELETE para confirmar la eliminación de tu cuenta.</string>
 
 
     <!--MISC-->

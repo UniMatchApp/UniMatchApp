@@ -81,6 +81,21 @@ class ApiUserService(
         }
     }
 
+    override suspend fun deleteAccount(userId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = userController.deleteAccount(userId)
+                if (response.success) {
+                    secureStorage.clearUser()
+                    Result.success(Unit)
+                } else {
+                    Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
+                }
+            } catch (e: Exception) {
+                Result.failure(Throwable("Failed to delete account: ${e.message}"))
+            }
+        }
+    }
     override suspend fun getCurrentUser(): Result<User?> {
         return withContext(Dispatchers.IO) {
             try {

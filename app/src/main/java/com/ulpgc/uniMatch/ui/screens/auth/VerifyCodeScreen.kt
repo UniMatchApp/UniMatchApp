@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,6 +30,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
@@ -128,13 +130,14 @@ fun VerifyCodeContent(
                         }
                     },
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(40.dp)
                         .background(
                             color = Color.White,
                             shape = MaterialTheme.shapes.small
                         )
                         .padding(8.dp)
                         .focusRequester(focusRequesters[index]),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     decorationBox = { innerTextField ->
                         if (digit.isEmpty()) {
                             Text("0", color = Color.Gray)
