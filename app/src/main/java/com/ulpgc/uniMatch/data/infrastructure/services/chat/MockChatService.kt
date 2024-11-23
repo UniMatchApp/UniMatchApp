@@ -1,6 +1,8 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.chat
 
 import com.ulpgc.uniMatch.data.application.services.ChatService
+import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.infrastructure.mocks.ChatPreviewDataMock
@@ -34,19 +36,77 @@ class MockChatService : ChatService {
         )
     }
 
-    override suspend fun getMessages(chatId: String, offset: Int, limit: Int): Result<List<Message>> {
+    override suspend fun getMessages(
+        chatId: String,
+        offset: Int,
+        limit: Int
+    ): Result<List<Message>> {
         return Result.success(
             MessageMock.createMockMessages(10)
         )
     }
 
-    override suspend fun getChatsByName(userName: String): Result<List<Chat>> {
+    override suspend fun getChatsByName(loggedUserId: String, filterName: String): Result<List<Chat>> {
         return Result.success(
-            ChatPreviewDataMock.searchChatPreviewDataMocks(userName)
+            ChatPreviewDataMock.searchChatPreviewDataMocks(filterName)
         )
     }
 
     override suspend fun saveMessage(message: Message): Result<Unit> {
         return Result.success(Unit)
+    }
+
+    override suspend fun setMessageStatus(
+        loggedUserId: String,
+        messageId: String,
+        status: MessageStatus
+    ): Result<Message> {
+        return Result.success(
+            Message(
+                messageId,
+                UUID.randomUUID().toString(),
+                "content",
+                loggedUserId,
+                UUID.randomUUID().toString(),
+                null,
+                status
+            )
+        )
+    }
+
+    override suspend fun editMessageContent(
+        userId: String,
+        messageId: String,
+        newContent: String
+    ): Result<Message> {
+        return Result.success(
+            Message(
+                messageId,
+                UUID.randomUUID().toString(),
+                newContent,
+                userId,
+                UUID.randomUUID().toString(),
+                null
+            )
+        )
+    }
+
+    override suspend fun deleteMessage(
+        userId: String,
+        messageId: String,
+        deletedStatus: DeletedMessageStatus
+    ): Result<Message> {
+        return Result.success(
+            Message(
+                messageId,
+                UUID.randomUUID().toString(),
+                "content",
+                userId,
+                UUID.randomUUID().toString(),
+                null,
+                MessageStatus.READ,
+                deletedStatus
+            )
+        )
     }
 }

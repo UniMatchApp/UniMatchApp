@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
 import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
 import com.ulpgc.uniMatch.data.infrastructure.entities.MessageEntity
@@ -52,11 +53,16 @@ interface ChatMessageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMessage(message: MessageEntity)
 
-    // Actualiza el conteo de mensajes no leídos en el chat
-    @Query("SELECT COUNT(*) FROM messages WHERE chatId = :chatId AND status = :status")
+
+    @Query("UPDATE messages SET content = :content WHERE messageId = :messageId")
+    suspend fun setMessageContent(messageId: String, content: String)
+
+    // Actualiza el conteo de mensajes no leídos en el chat (status != READ)
+    @Query("SELECT COUNT(*) FROM messages WHERE chatId = :chatId AND status != :status AND recipientId == :userId")
     suspend fun countUnreadMessages(
+        userId: String,
         chatId: String,
-        status: MessageStatus = MessageStatus.SENT
+        status: MessageStatus = MessageStatus.READ
     ): Int
 
     // Obtiene los mensajes de un chat específico, con paginación
@@ -76,10 +82,13 @@ interface ChatMessageDao {
     @Query("UPDATE messages SET status = :status WHERE messageId = :chatId AND status != :status")
     suspend fun setMessageStatus(chatId: String, status: MessageStatus)
 
-    // Otras operaciones CRUD
+
     @Query("DELETE FROM messages WHERE chatId = :chatId")
     suspend fun deleteMessagesByChat(chatId: String)
 
     @Query("DELETE FROM chats WHERE id = :chatId")
     suspend fun deleteChat(chatId: String)
+
+    @Query("UPDATE messages SET deletedStatus = :deletedStatus WHERE messageId = :messageId")
+    suspend fun setMessageDeletedStatus(messageId: String, deletedStatus: DeletedMessageStatus)
 }

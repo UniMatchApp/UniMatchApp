@@ -36,3 +36,26 @@ data class Message(
     }
 
 }
+
+data class ModifyMessageDTO(
+    @SerializedName("senderId") val senderId: String,
+    @SerializedName("content") var content: String? = null,
+    @SerializedName("status") var status: MessageStatus? = null,
+    @SerializedName("deletedStatus") var deletedStatus: DeletedMessageStatus? = null
+) {
+    companion object {
+        fun createModifyMessage(
+            senderId: String,
+            content: String? = null,
+            status: MessageStatus? = null,
+            deletedStatus: DeletedMessageStatus? = null
+        ): ModifyMessageDTO {
+            return ModifyMessageDTO(
+                content = content,
+                senderId = senderId,
+                status = status,
+                deletedStatus = deletedStatus
+            )
+        }
+    }
+}
