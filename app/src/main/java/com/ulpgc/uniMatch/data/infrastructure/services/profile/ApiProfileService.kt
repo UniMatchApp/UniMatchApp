@@ -55,106 +55,96 @@ class ApiProfileService(
         }
     }
 
-    override suspend fun updateAgeRange(userId: String, min: Int, max: Int): Result<Unit> =
-        handleApiCall { profileController.updateAgeRange(userId, min, max) }
+    override suspend fun updateAgeRange(min: Int, max: Int): Result<Unit> =
+        handleApiCall { profileController.updateAgeRange(min, max) }
 
-    override suspend fun updateMaxDistance(userId: String, distance: Int): Result<Unit> =
-        handleApiCall { profileController.updateMaxDistance(userId, distance) }
+    override suspend fun updateMaxDistance(distance: Int): Result<Unit> =
+        handleApiCall { profileController.updateMaxDistance(distance) }
 
-    override suspend fun updateGenderPriority(userId: String, gender: Gender?): Result<Unit> =
-        handleApiCall { profileController.updateGenderPriority(userId, gender) }
+    override suspend fun updateGenderPriority(gender: Gender?): Result<Unit> =
+        handleApiCall { profileController.updateGenderPriority(gender) }
 
     override suspend fun updateRelationshipType(
-        userId: String,
         relationshipType: RelationshipType
     ): Result<Unit> =
-        handleApiCall { profileController.updateRelationshipType(userId, StringRequest(relationshipType.toString())) }
+        handleApiCall { profileController.updateRelationshipType(StringRequest(relationshipType.toString())) }
 
-    override suspend fun updateAboutMe(userId: String, aboutMe: String): Result<Unit> =
-        handleApiCall { profileController.updateAbout(userId, StringRequest(aboutMe)) }
+    override suspend fun updateAboutMe(aboutMe: String): Result<Unit> =
+        handleApiCall { profileController.updateAbout(StringRequest(aboutMe)) }
 
-    override suspend fun updateFact(userId: String, fact: String?): Result<Unit> =
-        handleApiCall { profileController.updateFact(userId, StringRequest(fact)) }
+    override suspend fun updateFact(fact: String?): Result<Unit> =
+        handleApiCall { profileController.updateFact(StringRequest(fact)) }
 
-    override suspend fun updateInterests(userId: String, interests: List<String>): Result<Unit> =
-        handleApiCall { profileController.updateInterests(userId, ListRequest(interests)) }
+    override suspend fun updateInterests(interests: List<String>): Result<Unit> =
+        handleApiCall { profileController.updateInterests(ListRequest(interests)) }
 
-    override suspend fun updateHeight(userId: String, height: Int?): Result<Unit> =
-        handleApiCall { profileController.updateHeight(userId, IntRequest(height)) }
+    override suspend fun updateHeight(height: Int?): Result<Unit> =
+        handleApiCall { profileController.updateHeight(IntRequest(height)) }
 
-    override suspend fun updateWeight(userId: String, weight: Int?): Result<Unit> =
-        handleApiCall { profileController.updateWeight(userId, IntRequest(weight)) }
+    override suspend fun updateWeight(weight: Int?): Result<Unit> =
+        handleApiCall { profileController.updateWeight(IntRequest(weight)) }
 
-    override suspend fun updateGender(userId: String, gender: Gender): Result<Unit> =
-        handleApiCall { profileController.updateGender(userId, StringRequest(enumToString(gender))) }
+    override suspend fun updateGender(gender: Gender): Result<Unit> =
+        handleApiCall { profileController.updateGender(StringRequest(enumToString(gender))) }
 
     override suspend fun updateSexualOrientation(
-        userId: String,
         orientation: SexualOrientation
     ): Result<Unit> =
-        handleApiCall { profileController.updateSexualOrientation(userId, StringRequest(orientation.toString())) }
+        handleApiCall { profileController.updateSexualOrientation(StringRequest(orientation.toString())) }
 
-    override suspend fun updateJob(userId: String, position: String?): Result<Unit> =
+    override suspend fun updateJob(position: String?): Result<Unit> =
         handleApiCall {
-            Log.i("TuMadre", "Position: $position");
-            profileController.updateJob(userId, StringRequest(position))
+            profileController.updateJob(StringRequest(position))
         }
 
-    override suspend fun updateHoroscope(userId: String, horoscope: Horoscope?): Result<Unit> =
-        handleApiCall { profileController.updateHoroscope(userId, StringRequest(enumToString(horoscope))) }
+    override suspend fun updateHoroscope(horoscope: Horoscope?): Result<Unit> =
+        handleApiCall { profileController.updateHoroscope(StringRequest(enumToString(horoscope))) }
 
-    override suspend fun updateEducation(userId: String, education: String?): Result<Unit> =
+    override suspend fun updateEducation(education: String?): Result<Unit> =
         handleApiCall {
-            Log.i("TuMadre", "Education: $education");
-            profileController.updateDegree(userId, StringRequest(education))
+            profileController.updateDegree(StringRequest(education))
         }
 
     override suspend fun updatePersonalityType(
-        userId: String,
         personalityType: String?
     ): Result<Unit> =
-        handleApiCall { profileController.updatePersonality(userId, StringRequest(personalityType)) }
+        handleApiCall { profileController.updatePersonality(StringRequest(personalityType)) }
 
-    override suspend fun updatePets(userId: String, pets: String?): Result<Unit> =
+    override suspend fun updatePets(pets: String?): Result<Unit> =
         handleApiCall {
-            profileController.updatePets(userId, StringRequest(pets)) }
+            profileController.updatePets(StringRequest(pets)) }
 
-    override suspend fun updateDrinks(userId: String, drinks: Habits?): Result<Unit> =
-        handleApiCall { profileController.updateDrinks(userId, StringRequest(enumToString(drinks))) }
+    override suspend fun updateDrinks(drinks: Habits?): Result<Unit> =
+        handleApiCall { profileController.updateDrinks(StringRequest(enumToString(drinks))) }
 
-    override suspend fun updateSmokes(userId: String, smokes: Habits?): Result<Unit> =
+    override suspend fun updateSmokes(smokes: Habits?): Result<Unit> =
         handleApiCall {
-            profileController.updateSmokes(userId, StringRequest(enumToString(smokes))) }
+            profileController.updateSmokes(StringRequest(enumToString(smokes))) }
 
-    override suspend fun updateDoesSports(userId: String, doesSports: Habits?): Result<Unit> =
-        handleApiCall { profileController.updateSports(userId, StringRequest(enumToString(doesSports))) }
+    override suspend fun updateDoesSports(doesSports: Habits?): Result<Unit> =
+        handleApiCall { profileController.updateSports(StringRequest(enumToString(doesSports))) }
 
     override suspend fun updateValuesAndBeliefs(
-        userId: String,
         valuesAndBeliefs: Religion?
     ): Result<Unit> =
-        handleApiCall { profileController.updateValuesAndBeliefs(userId, StringRequest(enumToString(valuesAndBeliefs))) }
+        handleApiCall { profileController.updateValuesAndBeliefs(StringRequest(enumToString(valuesAndBeliefs))) }
 
-    override suspend fun addImage(userId: String, imageURI: Uri): Result<String> {
+    override suspend fun addImage(imageURI: Uri): Result<String> {
         return try {
-            val response = profileController.uploadPhoto(userId, createImagePart(imageURI))
-            Log.i("TuMadre", "Response: $response")
+            val response = profileController.uploadPhoto(createImagePart(imageURI))
             Result.success(response.value ?: "")
         } catch (e: Exception) {
-            Log.i("TuMadre", "Error: $e")
             Result.failure(mapException(e))
         }
     }
 
-    override suspend fun removeImage(userId: String, imageURL: String): Result<Unit> =
-        handleApiCall { Log.i("TuMadre", "Deleting image: $imageURL")
-            profileController.deletePhoto(userId, imageURL) }
+    override suspend fun removeImage(imageURL: String): Result<Unit> =
+        handleApiCall { profileController.deletePhoto(imageURL) }
 
-    override suspend fun updateWall(userId: String, wall: List<String>): Result<Unit> =
-        handleApiCall { profileController.updateWall(userId, ListRequest(wall)) }
+    override suspend fun updateWall(wall: List<String>): Result<Unit> =
+        handleApiCall { profileController.updateWall(ListRequest(wall)) }
 
     override suspend fun createProfile(
-        userId: String,
         fullName: String,
         age: Int,
         aboutMe: String,
@@ -179,7 +169,6 @@ class ApiProfileService(
 
             val request = handleApiCall {
                 profileController.createProfile(
-                    userId,
                     fullNameRequest,
                     ageRequest,
                     aboutMeRequest,

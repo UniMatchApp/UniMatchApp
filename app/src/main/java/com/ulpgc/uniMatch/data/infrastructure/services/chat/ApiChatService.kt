@@ -41,9 +41,7 @@ class ApiChatService(
             )
             chatMessageDao.insertMessages(listOf(MessageEntity.fromDomain(message)))
 
-            // Then we must try to send the message to the server
-
-            val response = messageController.sendMessage("Bearer token", message)
+            val response = messageController.sendMessage(message)
 
             if (!response.success) {
                 throw Throwable(response.errorMessage ?: "Unknown error occurred")
@@ -108,7 +106,7 @@ class ApiChatService(
             chats.addAll(dbChats)
 
             // TODO: Create new empty chats for matching users from endpoint in backend
-            val matchingUsers = matchingController.getMatchingUserIds(loggedUserId);
+            val matchingUsers = matchingController.getMatchingUserIds();
 
             matchingUsers.value?.forEach { userId ->
                 val profile = profileService.getProfile(userId).getOrElse { return@forEach }
@@ -127,7 +125,7 @@ class ApiChatService(
                     ?: 0
             while (true) {
                 val response =
-                    messageController.getMessages("Bearer token", loggedUserId, lastMessageTime)
+                    messageController.getMessages(lastMessageTime)
 
                 if (!response.success) {
                     throw Throwable(response.errorMessage ?: "Unknown error occurred")
@@ -265,7 +263,6 @@ class ApiChatService(
         return try {
             chatMessageDao.setMessageStatus(messageId, status)
             val response = messageController.modifyMessage(
-                "Bearer token",
                 messageId,
                 ModifyMessageDTO.createModifyMessage(
                     loggedUserId,
@@ -301,7 +298,6 @@ class ApiChatService(
         return try {
             chatMessageDao.setMessageContent(messageId, newContent)
             val response = messageController.modifyMessage(
-                "Bearer token",
                 messageId,
                 ModifyMessageDTO.createModifyMessage(
                     userId,
@@ -338,7 +334,6 @@ class ApiChatService(
         return try {
             chatMessageDao.setMessageDeletedStatus(messageId, deletedStatus)
             val response = messageController.modifyMessage(
-                "Bearer token",
                 messageId,
                 ModifyMessageDTO.createModifyMessage(
                     userId,

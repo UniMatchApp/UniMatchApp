@@ -15,21 +15,17 @@ interface MessageController {
 
     @GET("messages")
     suspend fun getMessages(
-        @Header("Authorization") authToken: String,
-        @Query("userId") userId: String,
         @Query("after") lastMessageTime: Long = 0,
         @Query("limit") limit: Int = 50
     ): ApiResponse<List<Message>>
 
     @POST("messages")
     suspend fun sendMessage(
-        @Header("Authorization") authToken: String,
         @Body message: Message
     ): ApiResponse<Message>
 
     @PUT("messages/{messageId}")
     suspend fun modifyMessage(
-        @Header("Authorization") authToken: String,
         @Path("messageId") messageId: String,
         @Body message: ModifyMessageDTO
     ): ApiResponse<Message>

@@ -131,9 +131,9 @@ open class UserViewModel(
         }
     }
 
-    fun resetPassword(userId: String, newPassword: String) {
+    fun resetPassword(newPassword: String) {
         viewModelScope.launch {
-            val result = userService.resetPassword(userId, newPassword)
+            val result = userService.resetPassword(newPassword)
             result.onSuccess {
                 _resetPasswordResult.value = true
             }.onFailure {
@@ -156,7 +156,6 @@ open class UserViewModel(
     }
 
     fun createProfile(
-        userId: String,
         fullName: String,
         age: Int,
         aboutMe: String,
@@ -169,7 +168,6 @@ open class UserViewModel(
     ) {
         viewModelScope.launch {
             val result = profileService.createProfile(
-                userId,
                 fullName,
                 age,
                 aboutMe,

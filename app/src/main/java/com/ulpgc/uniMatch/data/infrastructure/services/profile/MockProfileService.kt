@@ -21,113 +21,108 @@ class MockProfileService: ProfileService {
         )
     }
 
-    override suspend fun updateAgeRange(userId: String, min: Int, max: Int): Result<Unit> {
+    override suspend fun updateAgeRange(min: Int, max: Int): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateMaxDistance(userId: String, distance: Int): Result<Unit> {
+    override suspend fun updateMaxDistance(distance: Int): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateGenderPriority(userId: String, gender: Gender?): Result<Unit> {
+    override suspend fun updateGenderPriority(gender: Gender?): Result<Unit> {
         return Result.success(Unit)
     }
 
     override suspend fun updateRelationshipType(
-        userId: String,
         relationshipType: RelationshipType
     ): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateAboutMe(userId: String, aboutMe: String): Result<Unit> {
+    override suspend fun updateAboutMe(aboutMe: String): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateFact(userId: String, fact: String?): Result<Unit> {
+    override suspend fun updateFact(fact: String?): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateInterests(userId: String, interests: List<String>): Result<Unit> {
+    override suspend fun updateInterests(interests: List<String>): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateHeight(userId: String, height: Int?): Result<Unit> {
+    override suspend fun updateHeight(height: Int?): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateWeight(userId: String, weight: Int?): Result<Unit> {
+    override suspend fun updateWeight(weight: Int?): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateGender(userId: String, gender: Gender): Result<Unit> {
+    override suspend fun updateGender(gender: Gender): Result<Unit> {
         return Result.success(Unit)
     }
 
     override suspend fun updateSexualOrientation(
-        userId: String,
         orientation: SexualOrientation
     ): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateJob(userId: String, position: String?): Result<Unit> {
+    override suspend fun updateJob(position: String?): Result<Unit> {
         return Result.success(Unit)
     }
 
 
-    override suspend fun updateHoroscope(userId: String, horoscope: Horoscope?): Result<Unit> {
+    override suspend fun updateHoroscope(horoscope: Horoscope?): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateEducation(userId: String, education: String?): Result<Unit> {
+    override suspend fun updateEducation(education: String?): Result<Unit> {
         return Result.success(Unit)
     }
 
     override suspend fun updatePersonalityType(
-        userId: String,
         personalityType: String?
     ): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updatePets(userId: String, pets: String?): Result<Unit> {
+    override suspend fun updatePets(pets: String?): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateDrinks(userId: String, drinks: Habits?): Result<Unit> {
+    override suspend fun updateDrinks(drinks: Habits?): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateSmokes(userId: String, smokes: Habits?): Result<Unit> {
+    override suspend fun updateSmokes(smokes: Habits?): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateDoesSports(userId: String, doesSports: Habits?): Result<Unit> {
+    override suspend fun updateDoesSports(doesSports: Habits?): Result<Unit> {
         return Result.success(Unit)
     }
 
     override suspend fun updateValuesAndBeliefs(
-        userId: String,
         valuesAndBeliefs: Religion?
     ): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun addImage(userId: String, image: Uri): Result<String> {
+    override suspend fun addImage(imageURI: Uri): Result<String> {
         return Result.success("")
     }
 
-    override suspend fun removeImage(userId: String, image: String): Result<Unit> {
+    override suspend fun removeImage(imageURL: String): Result<Unit> {
         return Result.success(Unit)
     }
 
-    override suspend fun updateWall(userId: String, wall: List<String>): Result<Unit> {
+    override suspend fun updateWall(wall: List<String>): Result<Unit> {
         return Result.success(Unit)
     }
 
     override suspend fun createProfile(
-        userId: String,
         fullName: String,
         age: Int,
         aboutMe: String,

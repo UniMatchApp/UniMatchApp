@@ -274,7 +274,6 @@ fun RegisterProfileScreen(
                         errorViewModel.showError(ageError)
                     } else {
                         userViewModel.createProfile(
-                            userId,
                             fullName,
                             age,
                             aboutMe,

@@ -20,11 +20,11 @@ interface UserController {
     @POST("users")
     suspend fun register(@Body registerRequest: RegisterRequest): ApiResponse<RegisterResponse>
 
-    @POST("users/{id}/report/{targetId}")
-    suspend fun reportUser(@Path("id") userId: String, @Path("targetId") reportedUserId: String, @Body reportRequest: ReportRequest): ApiResponse<Unit>
+    @POST("users/report/{targetId}")
+    suspend fun reportUser(@Path("targetId") reportedUserId: String, @Body reportRequest: ReportRequest): ApiResponse<Unit>
 
-    @POST("users/{id}/block/{targetId}")
-    suspend fun blockUser(@Path("id") userId: String, @Path("targetId") blockedUserId: String): ApiResponse<Unit>
+    @POST("users/block/{targetId}")
+    suspend fun blockUser(@Path("targetId") blockedUserId: String): ApiResponse<Unit>
 
     @POST("users/auth/{email}/forgot-password")
     suspend fun forgotPassword(@Path("email") email: String): ApiResponse<String>
@@ -32,8 +32,8 @@ interface UserController {
     @POST("users/auth/{email}/verify-code/{code}")
     suspend fun verifyCode(@Path("email") userId: String, @Path("code") code: String): ApiResponse<Boolean>
 
-    @PUT("users/password/{id}")
-    suspend fun resetPassword(@Path("id") userId: String, @Body passwordRequest: PasswordRequest): ApiResponse<Unit>
+    @PUT("users/password")
+    suspend fun resetPassword(@Body passwordRequest: PasswordRequest): ApiResponse<Unit>
 
     @POST("users/auth/{email}/resend-code")
     suspend fun resendCode(@Path("email") email: String): ApiResponse<Boolean>

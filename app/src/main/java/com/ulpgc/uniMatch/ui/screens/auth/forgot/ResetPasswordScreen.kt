@@ -63,7 +63,7 @@ fun ResetPasswordScreen(
         } else if (newPassword != confirmPassword) {
             errorViewModel.showError(passwordsDoNotMatch)
         } else {
-            userViewModel.resetPassword(userId, newPassword)
+            userViewModel.resetPassword(newPassword)
         }
     }
 

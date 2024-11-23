@@ -104,10 +104,10 @@ class ApiUserService(
         }
     }
 
-    override suspend fun reportUser(userId: String, reportedUserId: String, predefinedReason: String, comment: String?): Result<Unit> {
+    override suspend fun reportUser(reportedUserId: String, predefinedReason: String, comment: String?): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = userController.reportUser(userId, reportedUserId, ReportRequest(predefinedReason, comment))
+                val response = userController.reportUser(reportedUserId, ReportRequest(predefinedReason, comment))
                 if (response.success) {
                     Result.success(Unit)
                 } else {
@@ -119,10 +119,10 @@ class ApiUserService(
         }
     }
 
-    override suspend fun blockUser(userId: String, blockedUserId: String): Result<Unit> {
+    override suspend fun blockUser(blockedUserId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = userController.blockUser(userId, blockedUserId)
+                val response = userController.blockUser(blockedUserId)
                 if (response.success) {
                     Result.success(Unit)
                 } else {
@@ -166,10 +166,10 @@ class ApiUserService(
         }
     }
 
-    override suspend fun resetPassword(userId: String, newPassword: String): Result<Boolean> {
+    override suspend fun resetPassword(newPassword: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             try {
-                val response = userController.resetPassword(userId, PasswordRequest(newPassword))
+                val response = userController.resetPassword(PasswordRequest(newPassword))
                 if (response.success) {
                     Result.success(true)
                 } else {

@@ -29,15 +29,13 @@ class HomeViewModel (
         viewModelScope.launch {
             _isLoading.value = true
             _matchingProfiles.value = emptyList()
-            val result = userViewModel.userId?.let { matchingService.getMatchingUsers(it, 10) }
-            if (result != null) {
-                result.onSuccess { profiles ->
-                    Log.i("HomeViewModel", "Loaded matching users: $profiles")
-                    _matchingProfiles.value = profiles
-                    _isLoading.value = false
-                }.onFailure {
-                    _isLoading.value = false
-                }
+            val result = matchingService.getMatchingUsers(10)
+            result.onSuccess { profiles ->
+                Log.i("HomeViewModel", "Loaded matching users: $profiles")
+                _matchingProfiles.value = profiles
+                _isLoading.value = false
+            }.onFailure {
+                _isLoading.value = false
             }
         }
     }
@@ -45,53 +43,41 @@ class HomeViewModel (
     fun loadMoreMatchingUsers() {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = userViewModel.userId?.let { matchingService.getMatchingUsers(it, 10) }
-            if (result != null) {
-                result.onSuccess { profiles ->
-                    _matchingProfiles.value += profiles
-                    _isLoading.value = false
-                }.onFailure {
-                    _isLoading.value = false
-                }
+            val result = matchingService.getMatchingUsers(10)
+            result.onSuccess { profiles ->
+                _matchingProfiles.value += profiles
+                _isLoading.value = false
+            }.onFailure {
+                _isLoading.value = false
             }
         }
     }
 
-    fun dislikeUser(userId: String, targetId: String) {
+    fun dislikeUser(targetId: String) {
         viewModelScope.launch {
-            userViewModel.userId?.let { userId ->
-                matchingService.dislikeUser(userId, targetId).onSuccess {
-                    Log.i("DislikeUser", "Successfully disliked user: $targetId")
-                    _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != targetId }
-                    for (profile in _matchingProfiles.value) {
-                        Log.i("DislikeUser", "Profile: $profile")
-                    }
-                }
+            matchingService.dislikeUser(targetId).onSuccess {
+                _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != targetId }
             }
         }
     }
 
-    fun likeUser(userId: String, targetId: String) {
+    fun likeUser(targetId: String) {
         viewModelScope.launch {
-            userViewModel.userId?.let { userId ->
-                matchingService.likeUser(userId, targetId).onSuccess {
-                    _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != targetId }
-                }
+            matchingService.likeUser(targetId).onSuccess {
+                _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != targetId }
             }
         }
     }
 
     fun reportUser(reportedUserId: String, reason: String, details: String, extra: String = "") {
         viewModelScope.launch {
-            userViewModel.userId?.let { userId ->
-                val predefineReason = "$reason: $details"
-                userService.reportUser(userId, reportedUserId, predefineReason, extra).onSuccess {
-                    _matchingProfiles.value = matchingProfiles.value.filter { it.userId != reportedUserId }
-                }.onFailure { error ->
-                    errorViewModel.showError(
-                        error.message ?: "Error reporting user"
-                    )
-                }
+            val predefineReason = "$reason: $details"
+            userService.reportUser(reportedUserId, predefineReason, extra).onSuccess {
+                _matchingProfiles.value = matchingProfiles.value.filter { it.userId != reportedUserId }
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error reporting user"
+                )
             }
         }
     }
@@ -99,7 +85,7 @@ class HomeViewModel (
     fun blockUser(blockedUserId: String) {
         viewModelScope.launch {
             userViewModel.userId?.let { userId ->
-                userService.blockUser(userId, blockedUserId).onSuccess {
+                userService.blockUser(blockedUserId).onSuccess {
                     _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != blockedUserId }
                     Log.i("HomeViewModel", "User $blockedUserId has been blocked and profiles updated.")
                 }.onFailure { error ->
