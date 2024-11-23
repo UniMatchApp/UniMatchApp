@@ -23,9 +23,8 @@ interface ProfileController {
     suspend fun getProfile(@Path("id") id: String): ApiResponse<Profile>
 
     @Multipart
-    @POST("users/{id}")
+    @POST("users/profile")
     suspend fun createProfile(
-        @Path("id") userId: String,
         @Part("name") name: RequestBody,
         @Part("age") age: RequestBody,
         @Part("aboutMe") aboutMe: RequestBody,
@@ -37,101 +36,92 @@ interface ProfileController {
         @Part thumbnail: MultipartBody.Part
     ): ApiResponse<Profile>
 
-    @PUT("users/{id}/about")
-    suspend fun updateAbout(@Path("id") userId: String, @Body about: StringRequest): ApiResponse<String>
+    @PUT("users/about")
+    suspend fun updateAbout(@Body about: StringRequest): ApiResponse<String>
 
-    @PUT("users/{id}/fact")
-    suspend fun updateFact(@Path("id") userId: String, @Body fact: StringRequest): ApiResponse<String>
+    @PUT("users/fact")
+    suspend fun updateFact(@Body fact: StringRequest): ApiResponse<String>
 
     @PUT("users/{id}/degree")
-    suspend fun updateDegree(@Path("id") userId: String, @Body degree: StringRequest): ApiResponse<String>
+    suspend fun updateDegree(@Body degree: StringRequest): ApiResponse<String>
 
-    @PUT("users/{id}/drinks")
-    suspend fun updateDrinks(@Path("id") userId: String, @Body drinks: StringRequest): ApiResponse<String>
+    @PUT("users/drinks")
+    suspend fun updateDrinks(@Body drinks: StringRequest): ApiResponse<String>
 
-    @PUT("users/{id}/height")
-    suspend fun updateHeight(@Path("id") userId: String, @Body height: IntRequest): ApiResponse<Int>
+    @PUT("users/height")
+    suspend fun updateHeight(@Body height: IntRequest): ApiResponse<Int>
 
-    @PUT("users/{id}/weight")
-    suspend fun updateWeight(@Path("id") userId: String, @Body weight: IntRequest): ApiResponse<Int>
+    @PUT("users/weight")
+    suspend fun updateWeight(@Body weight: IntRequest): ApiResponse<Int>
 
-    @PUT("users/{id}/gender")
-    suspend fun updateGender(@Path("id") id: String, @Body gender: StringRequest): ApiResponse<String>
+    @PUT("users/gender")
+    suspend fun updateGender(@Body gender: StringRequest): ApiResponse<String>
 
-    @PUT("users/{id}/horoscope")
+    @PUT("users/horoscope")
     suspend fun updateHoroscope(
-        @Path("id") userId: String,
         @Body horoscope: StringRequest
     ): ApiResponse<String?>
 
-    @PUT("users/{id}/interests")
+    @PUT("users/interests")
     suspend fun updateInterests(
-        @Path("id") userId: String,
         @Body interests: ListRequest
     ): ApiResponse<List<String>>
 
-    @PUT("users/{id}/job")
-    suspend fun updateJob(@Path("id") userId: String, @Body job: StringRequest): ApiResponse<String?>
+    @PUT("users/job")
+    suspend fun updateJob(@Body job: StringRequest): ApiResponse<String?>
 
-    @PUT("users/{id}/personality")
+    @PUT("users/personality")
     suspend fun updatePersonality(
-        @Path("id") userId: String,
         @Body personality: StringRequest
     ): ApiResponse<String?>
 
-    @PUT("users/{id}/pets")
-    suspend fun updatePets(@Path("id") userId: String, @Body pets: StringRequest): ApiResponse<String?>
+    @PUT("users/pets")
+    suspend fun updatePets(@Body pets: StringRequest): ApiResponse<String?>
 
-    @PUT("users/{id}/relationship-type")
+    @PUT("users/relationship-type")
     suspend fun updateRelationshipType(
-        @Path("id") userId: String,
         @Body relationshipType: StringRequest
     ): ApiResponse<String?>
 
-    @PUT("users/{id}/sexual-orientation")
+    @PUT("users/sexual-orientation")
     suspend fun updateSexualOrientation(
-        @Path("id") userId: String,
         @Body sexualOrientation: StringRequest
     ): ApiResponse<String>
 
-    @PUT("users/{id}/smokes")
-    suspend fun updateSmokes(@Path("id") userId: String, @Body smokes: StringRequest): ApiResponse<String?>
+    @PUT("users/smokes")
+    suspend fun updateSmokes(@Body smokes: StringRequest): ApiResponse<String?>
 
-    @PUT("users/{id}/sports")
-    suspend fun updateSports(@Path("id") userId: String, @Body sports: StringRequest): ApiResponse<String?>
+    @PUT("users/sports")
+    suspend fun updateSports(@Body sports: StringRequest): ApiResponse<String?>
 
-    @PUT("users/{id}/values-and-beliefs")
-    suspend fun updateValuesAndBeliefs(@Path("id") userId: String,@Body valuesAndBeliefs: StringRequest): ApiResponse<String?>
+    @PUT("users/values-and-beliefs")
+    suspend fun updateValuesAndBeliefs(@Body valuesAndBeliefs: StringRequest): ApiResponse<String?>
 
-    @PUT("users/{id}/gender-priority")
-    suspend fun updateGenderPriority(@Path("id") userId: String, @Body gender: Gender?): ApiResponse<String>
+    @PUT("users/gender-priority")
+    suspend fun updateGenderPriority(@Body gender: Gender?): ApiResponse<String>
 
-    @PUT("users/{id}/max-distance")
+    @PUT("users/max-distance")
     suspend fun updateMaxDistance(
-        @Path("id") userId: String,
         @Body distance: Int
     ): ApiResponse<Unit>
 
-    @PUT("users/{id}/age-range")
+    @PUT("users/age-range")
     suspend fun updateAgeRange(
-        @Path("id") userId: String,
         @Body min: Int,
         @Body max: Int
     ): ApiResponse<Unit>
 
-    @PUT("users/{id}/wall")
-    suspend fun updateWall(@Path("id") userId: String, @Body wall: ListRequest): ApiResponse<List<String>>
+    @PUT("users/wall")
+    suspend fun updateWall(@Body wall: ListRequest): ApiResponse<List<String>>
 
     @Multipart
-    @POST("users/{id}/photo")
+    @POST("users/photo")
     suspend fun uploadPhoto(
-        @Path("id") userId: String,
         @Part photoURL: MultipartBody.Part
     ): ApiResponse<String>
 
-    @DELETE("users/{id}/delete-photo/{photoUrl}")
+    @DELETE("users/delete-photo/{photoUrl}")
     suspend fun deletePhoto(
-        @Path("id") userId: String,
         @Path("photoUrl") photoUrl : String
     ): ApiResponse<Unit>
 }

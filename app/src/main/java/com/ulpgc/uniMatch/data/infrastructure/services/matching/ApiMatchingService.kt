@@ -13,9 +13,9 @@ class ApiMatchingService(
     private val profileDao: ProfileDao
 ) : MatchingService {
 
-    override suspend fun getMatchingUsers(userId: String, limit: Int): Result<List<Profile>> {
+    override suspend fun getMatchingUsers(limit: Int): Result<List<Profile>> {
         return try {
-            val response = matchingController.getMatchingUsers(userId, limit)
+            val response = matchingController.getMatchingUsers(limit)
 
             if (!response.success) {
                Result.success(profileDao.getAllMatching().map(MatchingEntity::toDomain))
@@ -33,9 +33,9 @@ class ApiMatchingService(
         }
     }
 
-    override suspend fun dislikeUser(userId: String, dislikedUserId: String): Result<Unit> {
+    override suspend fun dislikeUser(dislikedUserId: String): Result<Unit> {
         return try {
-            val response = matchingController.dislikeUser(userId, dislikedUserId)
+            val response = matchingController.dislikeUser(dislikedUserId)
 
             if (!response.success) {
                 Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
@@ -48,9 +48,9 @@ class ApiMatchingService(
         }
     }
 
-    override suspend fun likeUser(userId: String, likedUserId: String): Result<Unit> {
+    override suspend fun likeUser(likedUserId: String): Result<Unit> {
         return try {
-            val response = matchingController.likeUser(userId, likedUserId)
+            val response = matchingController.likeUser(likedUserId)
 
             if (!response.success) {
                 Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))

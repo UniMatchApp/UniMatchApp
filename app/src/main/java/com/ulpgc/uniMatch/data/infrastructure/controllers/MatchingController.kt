@@ -7,26 +7,21 @@ import retrofit2.http.Path
 
 interface MatchingController {
 
-    @GET("matching/mutual-likes/{userId}")
-    suspend fun getMatchingUserIds(
-        @Path("userId") userId: String
-    ): ApiResponse<List<String>>
+    @GET("matching/mutual-likes")
+    suspend fun getMatchingUserIds(): ApiResponse<List<String>>
 
-    @GET("matching/potential-matches/{userId}/{limit}")
+    @GET("matching/potential-matches/{limit}")
     suspend fun getMatchingUsers(
-        @Path("userId") userId: String,
         @Path("limit") limit: Int
     ): ApiResponse<List<String>>
 
-    @POST("matching/like/{userId}/{likedUserId}")
+    @POST("matching/like/{likedUserId}")
     suspend fun likeUser(
-        @Path("userId") userId: String,
         @Path("likedUserId") likedUserId: String
     ): ApiResponse<Unit>
 
-    @POST("matching/dislike/{userId}/{dislikedUserId}")
+    @POST("matching/dislike/{dislikedUserId}")
     suspend fun dislikeUser(
-        @Path("userId") userId: String,
         @Path("dislikedUserId") dislikedUserId: String
     ): ApiResponse<Unit>
 }

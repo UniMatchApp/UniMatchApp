@@ -122,10 +122,6 @@ open class ProfileViewModel(
         _editedProfile.value?.sexualOrientation = orientation
     }
 
-    fun changeRelationshipType(relationshipType: RelationshipType) {
-        _editedProfile.value?.relationshipType = relationshipType
-    }
-
     fun loadProfile(userId: String) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -170,7 +166,6 @@ open class ProfileViewModel(
 
             Log.i("ProfileViewModel", "Updated profile: ${_editedProfile.value}")
             loadProfile()
-
         }
     }
 
@@ -179,7 +174,7 @@ open class ProfileViewModel(
     fun updateAgeRange(min: Int, max: Int) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateAgeRange(userViewModel.userId!!, min, max)
+            val result = profileService.updateAgeRange(min, max)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(ageRange = Profile.AgeRange(min, max))
                 _isLoading.value = false
@@ -195,7 +190,7 @@ open class ProfileViewModel(
     fun updateMaxDistance(maxDistance: Int) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateMaxDistance(userViewModel.userId!!, maxDistance)
+            val result = profileService.updateMaxDistance(maxDistance)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(maxDistance = maxDistance)
                 _isLoading.value = false
@@ -211,7 +206,7 @@ open class ProfileViewModel(
     fun updateGenderPriority(gender: Gender?) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateGenderPriority(userViewModel.userId!!, _editedProfile.value?.genderPriority)
+            val result = profileService.updateGenderPriority(_editedProfile.value?.genderPriority)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(genderPriority = _editedProfile.value?.genderPriority)
                 _isLoading.value = false
@@ -229,7 +224,7 @@ open class ProfileViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             val result =
-                profileService.updateRelationshipType(userViewModel.userId!!, relationshipType)
+                profileService.updateRelationshipType(relationshipType)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(relationshipType = relationshipType)
                 _isLoading.value = false
@@ -248,9 +243,7 @@ open class ProfileViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             val result = _editedProfile.value?.aboutMe?.let {
-                profileService.updateAboutMe(userViewModel.userId!!,
-                    it
-                )
+                profileService.updateAboutMe(it)
             }
             if (result != null) {
                 result.onSuccess {
@@ -270,7 +263,7 @@ open class ProfileViewModel(
         if (_editedProfile.value?.fact == _profileData.value?.fact) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateFact(userViewModel.userId!!, _editedProfile.value?.fact)
+            val result = profileService.updateFact(_editedProfile.value?.fact)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(fact = _editedProfile.value?.fact)
                 _isLoading.value = false
@@ -286,7 +279,7 @@ open class ProfileViewModel(
     fun updateInterests(interests: List<String>) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateInterests(userViewModel.userId!!, interests)
+            val result = profileService.updateInterests(interests)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(interests = interests)
                 _isLoading.value = false
@@ -303,7 +296,7 @@ open class ProfileViewModel(
         if (_editedProfile.value?.height == _profileData.value?.height) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateHeight(userViewModel.userId!!, _editedProfile.value?.height)
+            val result = profileService.updateHeight(_editedProfile.value?.height)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(height = _editedProfile.value?.height)
                 _isLoading.value = false
@@ -320,7 +313,7 @@ open class ProfileViewModel(
         if (_editedProfile.value?.weight == _profileData.value?.weight) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateWeight(userViewModel.userId!!, _editedProfile.value?.weight)
+            val result = profileService.updateWeight(_editedProfile.value?.weight)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(weight = _editedProfile.value?.weight)
                 _isLoading.value = false
@@ -338,7 +331,7 @@ open class ProfileViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             val result =
-                _editedProfile.value?.let { profileService.updateGender(userViewModel.userId!!, it.gender) }
+                _editedProfile.value?.let { profileService.updateGender(it.gender) }
             if (result != null) {
                 result.onSuccess {
                     _profileData.value = _editedProfile.value?.gender?.let { it1 -> _profileData.value?.copy(gender = it1) }
@@ -358,7 +351,7 @@ open class ProfileViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             val result = _editedProfile.value?.sexualOrientation?.let {
-                profileService.updateSexualOrientation(userViewModel.userId!!,
+                profileService.updateSexualOrientation(
                     it
                 )
             }
@@ -380,7 +373,7 @@ open class ProfileViewModel(
         if (_editedProfile.value?.job == _profileData.value?.job) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateJob(userViewModel.userId!!, _editedProfile.value?.job)
+            val result = profileService.updateJob(_editedProfile.value?.job)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(job = _editedProfile.value?.job)
                 _isLoading.value = false
@@ -397,7 +390,7 @@ open class ProfileViewModel(
         if (_editedProfile.value?.horoscope == _profileData.value?.horoscope) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateHoroscope(userViewModel.userId!!, _editedProfile.value?.horoscope)
+            val result = profileService.updateHoroscope(_editedProfile.value?.horoscope)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(horoscope = _editedProfile.value?.horoscope)
                 _isLoading.value = false
@@ -415,7 +408,7 @@ open class ProfileViewModel(
         if (_editedProfile.value?.education == _profileData.value?.education) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateEducation(userViewModel.userId!!, _editedProfile.value?.education)
+            val result = profileService.updateEducation(_editedProfile.value?.education)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(education = _editedProfile.value?.education)
                 _isLoading.value = false
@@ -433,7 +426,7 @@ open class ProfileViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             val result =
-                profileService.updatePersonalityType(userViewModel.userId!!, _editedProfile.value?.personalityType)
+                profileService.updatePersonalityType(_editedProfile.value?.personalityType)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(personalityType = _editedProfile.value?.personalityType)
                 _isLoading.value = false
@@ -450,7 +443,7 @@ open class ProfileViewModel(
         if (_editedProfile.value?.pets == _profileData.value?.pets) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updatePets(userViewModel.userId!!, _editedProfile.value?.pets)
+            val result = profileService.updatePets(_editedProfile.value?.pets)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(pets = _editedProfile.value?.pets)
                 _isLoading.value = false
@@ -467,7 +460,7 @@ open class ProfileViewModel(
         if (_editedProfile.value?.drinks == _profileData.value?.drinks) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateDrinks(userViewModel.userId!!, _editedProfile.value?.drinks)
+            val result = profileService.updateDrinks(_editedProfile.value?.drinks)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(drinks = _editedProfile.value?.drinks)
                 _isLoading.value = false
@@ -484,7 +477,7 @@ open class ProfileViewModel(
         if (_editedProfile.value?.smokes == _profileData.value?.smokes) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateSmokes(userViewModel.userId!!, _editedProfile.value?.smokes)
+            val result = profileService.updateSmokes(_editedProfile.value?.smokes)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(smokes = _editedProfile.value?.smokes)
                 _isLoading.value = false
@@ -501,7 +494,7 @@ open class ProfileViewModel(
         if (_editedProfile.value?.doesSports == _profileData.value?.doesSports) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateDoesSports(userViewModel.userId!!, _editedProfile.value?.doesSports)
+            val result = profileService.updateDoesSports(_editedProfile.value?.doesSports)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(doesSports = _editedProfile.value?.doesSports)
                 _isLoading.value = false
@@ -519,7 +512,7 @@ open class ProfileViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             val result =
-                profileService.updateValuesAndBeliefs(userViewModel.userId!!, _editedProfile.value?.valuesAndBeliefs)
+                profileService.updateValuesAndBeliefs(_editedProfile.value?.valuesAndBeliefs)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(valuesAndBeliefs = _editedProfile.value?.valuesAndBeliefs)
                 _isLoading.value = false
@@ -535,7 +528,7 @@ open class ProfileViewModel(
     fun updateWall(wall: List<String>) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateWall(userViewModel.userId!!, wall)
+            val result = profileService.updateWall(wall)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(wall = wall)
                 _isLoading.value = false
@@ -551,7 +544,7 @@ open class ProfileViewModel(
     fun addImage(imageUrl: Uri) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.addImage(userViewModel.userId!!, imageUrl)
+            val result = profileService.addImage(imageUrl)
             result.onSuccess { imageUrlApi ->
                 Log.i("TuMadre", "Adding image: $imageUrlApi")
                 _profileData.value = _profileData.value?.copy(
@@ -571,7 +564,7 @@ open class ProfileViewModel(
         Log.i("TuMadre", "Deleting image: $imageUrl")
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.removeImage(userViewModel.userId!!, imageUrl)
+            val result = profileService.removeImage(imageUrl)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(
                     wall = (_profileData.value?.wall.orEmpty() - imageUrl)

@@ -80,11 +80,11 @@ fun HomeScreen(
                             profile = profile,
                             onSwipeLeft = {
                                 Log.i("HomeScreen", "Dislike profile: $profile")
-                                homeViewModel.dislikeUser(userId, profile.userId)
+                                homeViewModel.dislikeUser(profile.userId)
                             },
                             onSwipeRight = {
                                 Log.i("HomeScreen", "Like profile: $profile")
-                                homeViewModel.likeUser(userId, profile.userId)
+                                homeViewModel.likeUser(profile.userId)
                             },
                             onOpenProfile = { selectedProfile = profile; isModalOpen = true }
                         )
