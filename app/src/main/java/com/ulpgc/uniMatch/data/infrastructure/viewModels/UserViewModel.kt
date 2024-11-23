@@ -92,6 +92,10 @@ open class UserViewModel(
         }
     }
 
+    fun validateCurrentPassword(currentPassword: String): Boolean {
+        return true
+    }
+
     fun logout() {
         authToken = null
         _authState.value = AuthState.Unauthenticated

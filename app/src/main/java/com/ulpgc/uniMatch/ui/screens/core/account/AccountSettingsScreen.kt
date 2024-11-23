@@ -20,9 +20,12 @@ import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 
 @Composable
-fun AccountSettingsScreen(userViewModel: UserViewModel) {
+fun AccountSettingsScreen(
+    userViewModel: UserViewModel
+) {
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showDeleteAccountDialog by remember { mutableStateOf(false) }
+    var showChangePasswordDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -33,7 +36,7 @@ fun AccountSettingsScreen(userViewModel: UserViewModel) {
         AccountOptionItem(
             iconId = R.drawable.ic_password,
             title = stringResource(R.string.change_password),
-            onClick = {}
+            onClick = { showChangePasswordDialog = true }
         )
         AccountOptionItem(
             iconId = R.drawable.ic_arrow_back,
@@ -44,6 +47,18 @@ fun AccountSettingsScreen(userViewModel: UserViewModel) {
             iconId = R.drawable.ic_delete_account,
             title = stringResource(R.string.delete_account),
             onClick = { showDeleteAccountDialog = true }
+        )
+    }
+
+    if (showChangePasswordDialog) {
+        ChangePasswordDialog(
+            onConfirm = { currentPassword, newPassword ->
+                if (userViewModel.validateCurrentPassword(currentPassword)) {
+                    userViewModel.resetPassword(newPassword)
+                    showChangePasswordDialog = false
+                }
+            },
+            onDismiss = { showChangePasswordDialog = false }
         )
     }
 
@@ -68,6 +83,66 @@ fun AccountSettingsScreen(userViewModel: UserViewModel) {
             onDismiss = { showDeleteAccountDialog = false }
         )
     }
+}
+
+@Composable
+fun ChangePasswordDialog(
+    onConfirm: (currentPassword: String, newPassword: String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var currentPassword by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
+    var isCurrentPasswordValid by remember { mutableStateOf(true) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.change_password_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = currentPassword,
+                    onValueChange = {
+                        currentPassword = it
+                        isCurrentPasswordValid = true // Reinicia el estado al escribir
+                    },
+                    label = { Text(stringResource(R.string.current_password)) },
+                    isError = !isCurrentPasswordValid,
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = newPassword,
+                    onValueChange = { newPassword = it },
+                    label = { Text(stringResource(R.string.new_password)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(currentPassword, newPassword)
+                    isCurrentPasswordValid = false // Muestra el error si la validación falla
+                },
+                enabled = currentPassword.isNotBlank() && newPassword.isNotBlank()
+            ) {
+                Text(text = stringResource(R.string.confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.cancel))
+            }
+        }
+    )
 }
 
 @Composable

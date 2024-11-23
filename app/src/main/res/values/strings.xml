@@ -440,6 +440,8 @@
     <string name="delete_account_title">¿Estás seguro de que deseas eliminar la cuenta?</string>
     <string name="delete_account_confirmation">DELETE</string>
     <string name="delete_account_confirmation_text">Introduce DELETE para confirmar la eliminación de tu cuenta.</string>
+    <string name="change_password_title">Cambiar contraseña</string>
+    <string name="current_password">Contraseña actual</string>
 
 
     <!--MISC-->

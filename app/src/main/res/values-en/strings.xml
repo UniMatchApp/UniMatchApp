@@ -438,6 +438,8 @@
     <string name="delete_account_title">Are you sure you want to delete the account</string>
     <string name="delete_account_confirmation">DELETE</string>
     <string name="delete_account_confirmation_text">Introduce DELETE to confirm the deletion of your account.</string>
+    <string name="change_password_title">Change password</string>
+    <string name="current_password">Current password</string>
 
 
 

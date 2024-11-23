@@ -557,6 +557,7 @@ open class ProfileViewModel(
                 _profileData.value = _profileData.value?.copy(
                     wall = _profileData.value?.wall.orEmpty() + imageUrlApi
                 )
+                Log.i("TuMadre", "Adding image: ${_profileData.value?.wall}")
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
