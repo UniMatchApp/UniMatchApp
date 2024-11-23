@@ -25,7 +25,8 @@ class SecureStorage(context: Context) {
         registrationDate: Date,
         blockedUsers: List<String>,
         reportedUsers: List<String>,
-        registered: Boolean
+        registered: Boolean,
+        token: String
     ) {
         with(sharedPreferences.edit()) {
             putString("userId", userId)
@@ -34,6 +35,7 @@ class SecureStorage(context: Context) {
             putStringSet("blockedUsers", blockedUsers.toSet())
             putStringSet("reportedUsers", reportedUsers.toSet())
             putBoolean("registered", registered)
+            putString("token", token)
             apply()
         }
     }
@@ -59,6 +61,17 @@ class SecureStorage(context: Context) {
             )
         } else {
             null
+        }
+    }
+
+    fun getToken(): String? {
+        return sharedPreferences.getString("token", null)
+    }
+
+    fun saveToken(token: String) {
+        with(sharedPreferences.edit()) {
+            putString("token", token)
+            apply()
         }
     }
 

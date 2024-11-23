@@ -36,7 +36,8 @@ class ApiUserService(
                         response.value.user.registrationDate,
                         response.value.user.blockedUsers,
                         response.value.user.reportedUsers,
-                        response.value.user.registered
+                        response.value.user.registered,
+                        response.value.token
                     )
                     Result.success(response.value)
                 } else {
@@ -67,7 +68,8 @@ class ApiUserService(
                         response.value.user.registrationDate,
                         response.value.user.blockedUsers,
                         response.value.user.reportedUsers,
-                        response.value.user.registered
+                        response.value.user.registered,
+                        response.value.token
                     )
                     Result.success(response.value)
                 } else {

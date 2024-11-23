@@ -63,7 +63,7 @@ open class UserViewModel(
             val result = userService.login(email.trim(), password)
             result.onSuccess { loginResponse ->
                 authToken = loginResponse.token
-                Log.i(("Login response"), loginResponse.toString())
+                Log.i("Login response", loginResponse.toString())
                 if (loginResponse.user.registered) {
                     Log.i("UserViewModel", "User is registered")
                     _authState.value = AuthState.Authenticated(loginResponse.user)

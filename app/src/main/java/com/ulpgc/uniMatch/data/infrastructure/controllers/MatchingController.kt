@@ -29,6 +29,4 @@ interface MatchingController {
         @Path("userId") userId: String,
         @Path("dislikedUserId") dislikedUserId: String
     ): ApiResponse<Unit>
-
-
 }

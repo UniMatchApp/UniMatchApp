@@ -134,7 +134,4 @@ interface ProfileController {
         @Path("id") userId: String,
         @Path("photoUrl") photoUrl : String
     ): ApiResponse<Unit>
-
-
-
 }

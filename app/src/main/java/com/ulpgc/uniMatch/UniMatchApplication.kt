@@ -5,6 +5,7 @@ import UserStatusSocket
 import android.app.Application
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.api.ApiClient
+import com.ulpgc.uniMatch.data.application.api.TokenProvider
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MatchingController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MessageController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.NotificationController
@@ -13,6 +14,7 @@ import com.ulpgc.uniMatch.data.infrastructure.controllers.UserController
 import com.ulpgc.uniMatch.data.infrastructure.database.AppDatabase
 import com.ulpgc.uniMatch.data.infrastructure.events.WebSocketEventBus
 import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
+import com.ulpgc.uniMatch.data.infrastructure.secure.SecureTokenProvider
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.ApiChatService
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
 import com.ulpgc.uniMatch.data.infrastructure.services.matching.ApiMatchingService
@@ -34,22 +36,85 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 class UniMatchApplication : Application() {
 
     private val database by lazy { AppDatabase.getDatabase(this) }
-    private val secureStorage: SecureStorage by lazy {
-        SecureStorage(this)
+
+    val secureStorageDelegate = lazy { SecureStorage(this) }
+
+    val secureStorage by secureStorageDelegate
+
+    private val tokenProvider: TokenProvider by lazy {
+        SecureTokenProvider(secureStorage)
+    }
+
+    private val apiClient: ApiClient by lazy {
+        try {
+            ApiClient(tokenProvider)
+        } catch (e: Exception) {
+            Log.e("UniMatchApplication", "Error initializing ApiClient: ${e.message}")
+            throw e
+        }
+    }
+
+    // ----------------------------------- Mock services -----------------------------------
+    private val mockMatchingService = MockMatchingService()
+    private val mockNotificationService = MockNotificationService()
+    private val mockProfileService = MockProfileService()
+    private val mockUserService = MockUserService()
+    private val mockChatService = MockChatService()
+
+    // ----------------------------------- API services -----------------------------------
+    private val apiChatService by lazy {
+        ApiChatService(
+            messageController = apiClient.retrofit.create(MessageController::class.java),
+            matchingController = apiClient.retrofit.create(MatchingController::class.java),
+            chatMessageDao = database.chatMessageDao(),
+            profileService = apiProfileService
+        )
+    }
+
+    private val apiUserService by lazy {
+        ApiUserService(
+            userController = apiClient.retrofit.create(UserController::class.java),
+            secureStorage = secureStorage
+        )
+    }
+
+    private val apiProfileService by lazy {
+        ApiProfileService(
+            profileController = apiClient.retrofit.create(ProfileController::class.java),
+            profileDao = database.profileDao(),
+            contentResolver = contentResolver
+        )
+    }
+
+    private val apiMatchingService by lazy {
+        try {
+            val matchingController = apiClient.retrofit.create(MatchingController::class.java)
+            ApiMatchingService(
+                matchingController = matchingController,
+                profileService = apiProfileService,
+                profileDao = database.profileDao()
+            )
+        } catch (e: Exception) {
+            Log.e("UniMatchApplication", "Error initializing ApiMatchingService: ${e.message}")
+            null
+        }
+    }
+
+    private val apiNotificationService by lazy {
+        ApiNotificationService(
+            notificationController = apiClient.retrofit.create(NotificationController::class.java)
+        )
     }
 
     // ----------------------------------- Services -----------------------------------
     private val userService by lazy { apiUserService }
     private val profileService by lazy { apiProfileService }
     private val matchingService by lazy { apiMatchingService }
-    private val notificationService by lazy { mockNotificationService }
+    private val notificationService by lazy { apiNotificationService }
     private val chatService by lazy { apiChatService }
 
-
     // ----------------------------------- ViewModels -----------------------------------
-    val errorViewModel: ErrorViewModel by lazy {
-        ErrorViewModel()
-    }
+    val errorViewModel: ErrorViewModel by lazy { ErrorViewModel() }
 
     val userViewModel: UserViewModel by lazy {
         UserViewModel(userService, profileService, errorViewModel)
@@ -70,14 +135,9 @@ class UniMatchApplication : Application() {
         )
     }
 
+    val eventbus by lazy { WebSocketEventBus() }
 
-    val eventbus by lazy {
-        WebSocketEventBus()
-    }
-
-    val permissionsViewModel by lazy {
-        PermissionsViewModel()
-    }
+    val permissionsViewModel by lazy { PermissionsViewModel() }
 
     val notificationsViewModel: NotificationsViewModel by lazy {
         NotificationsViewModel(notificationService, errorViewModel, eventbus, userViewModel)
@@ -86,59 +146,6 @@ class UniMatchApplication : Application() {
     val chatViewModel: ChatViewModel by lazy {
         ChatViewModel(chatService, profileService, errorViewModel, userViewModel, eventbus)
     }
-
-    // ----------------------------------- Mock services -----------------------------------
-    private val mockMatchingService = MockMatchingService()
-    private val mockNotificationService = MockNotificationService()
-    private val mockProfileService = MockProfileService()
-    private val mockUserService = MockUserService()
-    private val mockChatService = MockChatService()
-
-
-    // ----------------------------------- API services -----------------------------------
-    private val apiChatService by lazy {
-        ApiChatService(
-            messageController = ApiClient.retrofit.create(MessageController::class.java),
-            matchingController = ApiClient.retrofit.create(MatchingController::class.java),
-            chatMessageDao = database.chatMessageDao(),
-            profileService = profileService,
-        )
-    }
-
-    private val apiUserService by lazy {
-        ApiUserService(
-            userController = ApiClient.retrofit.create(UserController::class.java),
-            secureStorage = secureStorage
-        )
-    }
-
-    private val apiProfileService by lazy {
-        ApiProfileService(
-            profileController = ApiClient.retrofit.create(ProfileController::class.java),
-            profileDao = database.profileDao(),
-            contentResolver = contentResolver
-        )
-    }
-
-    private val apiMatchingService: ApiMatchingService? by lazy {
-        try {
-            val matchingController = ApiClient.retrofit.create(MatchingController::class.java)
-            val profileService = apiProfileService
-
-            ApiMatchingService(
-                matchingController = matchingController,
-                profileService = profileService,
-                profileDao = database.profileDao()
-            )
-        } catch (e: Exception) {
-            Log.e("UniMatchApplication", "Error initializing ApiMatchingService: ${e.message}")
-            null
-        }
-    }
-
-    private val apiNotificationService = ApiNotificationService(
-        notificationController = ApiClient.retrofit.create(NotificationController::class.java)
-    )
 
     public fun initializeWebSocket(userId: String, eventbus: WebSocketEventBus) {
         val userStatusSocket = UserStatusSocket("localhost", 8081, userId, eventbus)
@@ -152,10 +159,9 @@ class UniMatchApplication : Application() {
         Log.i("UniMatchApplication", "Application initialized")
 
         // Eliminar manualmente el archivo de la base de datos
-//        val db= applicationContext.getDatabasePath("uniMatch_database")
+//        val db = applicationContext.getDatabasePath("uniMatch_database")
 //        if (db.exists()) {
 //            db.delete()
 //        }
-
     }
 }
