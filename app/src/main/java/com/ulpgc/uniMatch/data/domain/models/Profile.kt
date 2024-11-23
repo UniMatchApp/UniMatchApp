@@ -18,76 +18,30 @@ data class Profile(
     val age: Int,
     var aboutMe: String,
     var location: Location?,
-    var gender: String,
-    var sexualOrientation: String,
-    var relationshipType: String,
+    var gender: Gender,
+    var sexualOrientation: SexualOrientation,
+    var relationshipType: RelationshipType,
     val birthday: String,
     var interests: List<String>,
     var wall: List<String>,
     var preferredImage: String,
     var maxDistance: Int,
     var ageRange: AgeRange,
-    var horoscope: String?,
+    var horoscope: Horoscope?,
     var height: Int?,
     var weight: Int?,
     var job: String?,
     var education: String?,
     var personalityType: String?,
     var pets: String?,
-    var drinks: String?,
-    var smokes: String?,
-    var doesSports: String?,
-    var valuesAndBeliefs: String?,
-    var genderPriority: String?,
+    var drinks: Habits?,
+    var smokes: Habits?,
+    var doesSports: Habits?,
+    var valuesAndBeliefs: Religion?,
+    var genderPriority: Gender?,
     var fact: String?
 ) {
 
-    val sexualOrientationEnum: SexualOrientation
-        get() {
-            return SexualOrientation.valueOf(sexualOrientation.uppercase())
-        }
-
-    val relationshipTypeEnum: RelationshipType
-        get() {
-            return RelationshipType.valueOf(relationshipType.uppercase())
-        }
-
-    val drinksEnum: Habits?
-        get() {
-            return drinks?.let { Habits.valueOf(it.uppercase()) }
-        }
-
-    val smokesEnum: Habits?
-        get() {
-            return smokes?.let { Habits.valueOf(it.uppercase()) }
-        }
-
-    val doesSportsEnum: Habits?
-        get() {
-            return doesSports?.let { Habits.valueOf(it.uppercase()) }
-        }
-
-    val valuesAndBeliefsEnum: Religion?
-        get() {
-            return valuesAndBeliefs?.let { Religion.valueOf(it.uppercase()) }
-        }
-
-
-    val genderEnum: Gender
-        get() {
-            return Gender.valueOf(gender.uppercase(Locale.getDefault()))
-        }
-
-
-    val genderPriorityEnum: Gender?
-        get() {
-            return genderPriority?.let { Gender.valueOf(it.uppercase()) }
-        }
-
-    val horoscopeEnum: Horoscope?
-        get() {
-            return horoscope?.let { Horoscope.valueOf(it.uppercase()) }
-        }
 
     // Getter for date as Date object
     val birthdayDate: Date

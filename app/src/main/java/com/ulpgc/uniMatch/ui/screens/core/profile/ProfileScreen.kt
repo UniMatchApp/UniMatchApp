@@ -304,11 +304,11 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.gender),
                 options = context.resources.getStringArray(R.array.genders).toList(),
-                selectedOption = genderMap[profile.genderEnum]!!,
+                selectedOption = genderMap[profile.gender]!!,
                 onEditField = { selectedOption ->
                     var genderOption = genderMap.entries.find { it.value == selectedOption }?.key
                     if (genderOption != null) {
-                        enumToString(genderOption)?.let { profileViewModel.changeGender(it) }
+                        profileViewModel.changeGender(genderOption)
                     }
                 }
             )
@@ -339,16 +339,14 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.sexual_orientation),
                 options = context.resources.getStringArray(R.array.sexual_orientation).toList(),
-                selectedOption = sexualOrientationMap[profile.sexualOrientationEnum]!!,
+                selectedOption = sexualOrientationMap[profile.sexualOrientation]!!,
                 onEditField = { selectedOption ->
                     val sexualOrientationOption =
                         sexualOrientationMap.entries.find { it.value == selectedOption }?.key
                     if (sexualOrientationOption != null) {
-                        enumToString(sexualOrientationOption)?.let {
-                            profileViewModel.changeSexualOrientation(
-                                it
-                            )
-                        }
+                        profileViewModel.changeSexualOrientation(
+                            sexualOrientationOption
+                        )
                     }
                 },
                 includeNullOption = true
@@ -376,7 +374,7 @@ fun ProfileScreen(
             ProfileSection(
                 title = stringResource(R.string.more_about_me),
                 rowTitles = listOf(
-                    "horoscope" to horoscopeMap[profile.horoscopeEnum],
+                    "horoscope" to horoscopeMap[profile.horoscope],
                     "education" to educationMap[stringToEnum<Education>(profile.education)],
                     "personality_type" to personalityMap[stringToEnum<Personality>(profile.personalityType)]
                 ),
@@ -385,7 +383,7 @@ fun ProfileScreen(
                         "horoscope" -> {
                             var horoscopeOption = horoscopeMap.entries.find { it.value == selectedOption }?.key
                             profileViewModel.changeHoroscope(
-                                enumToString(horoscopeOption)
+                                horoscopeOption
                             )
                         }
 
@@ -416,10 +414,10 @@ fun ProfileScreen(
                 title = stringResource(R.string.lifestyle),
                 rowTitles = listOf(
                     "pets" to petsMap[stringToEnum<Pets>(profile.pets)],
-                    "drinks" to habitsMap[profile.drinksEnum],
-                    "smokes" to habitsMap[profile.smokesEnum],
-                    "sports" to habitsMap[profile.doesSportsEnum],
-                    "religion" to religionMap[profile.valuesAndBeliefsEnum]
+                    "drinks" to habitsMap[profile.drinks],
+                    "smokes" to habitsMap[profile.smokes],
+                    "sports" to habitsMap[profile.doesSports],
+                    "religion" to religionMap[profile.valuesAndBeliefs]
                 ),
                 onSelectedItemChange = { field, selectedOption ->
                     when (field) {
@@ -433,28 +431,28 @@ fun ProfileScreen(
                         "drinks" ->  {
                             var drinksOption = habitsMap.entries.find { it.value == selectedOption }?.key
                             profileViewModel.changeDrinks(
-                                enumToString(drinksOption)
+                                drinksOption
                             )
                         }
 
                         "smokes" -> {
                             var smokesOption = habitsMap.entries.find { it.value == selectedOption }?.key
                             profileViewModel.changeSmokes(
-                                enumToString(smokesOption)
+                                smokesOption
                             )
                         }
 
                         "sports" -> {
                             var sportssOption = habitsMap.entries.find { it.value == selectedOption }?.key
                             profileViewModel.changeDoesSports(
-                                enumToString(sportssOption)
+                                sportssOption
                             )
                         }
 
                         "religion" -> {
                             var religionOption = religionMap.entries.find { it.value == selectedOption }?.key
                             profileViewModel.changeValuesAndBeliefs(
-                                enumToString(religionOption)
+                                religionOption
                             )
                         }
 

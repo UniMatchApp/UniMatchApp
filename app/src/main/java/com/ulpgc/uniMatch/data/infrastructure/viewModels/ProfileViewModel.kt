@@ -6,7 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.Gender
+import com.ulpgc.uniMatch.data.domain.enums.Habits
+import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
+import com.ulpgc.uniMatch.data.domain.enums.Religion
+import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.ui.screens.utils.enumToString
 import com.ulpgc.uniMatch.ui.screens.utils.stringToEnum
@@ -77,7 +81,7 @@ open class ProfileViewModel(
         _editedProfile.value?.job = job
     }
 
-    fun changeHoroscope(horoscope: String?) {
+    fun changeHoroscope(horoscope: Horoscope?) {
         _editedProfile.value?.horoscope = horoscope
     }
 
@@ -94,31 +98,31 @@ open class ProfileViewModel(
         _editedProfile.value?.pets = pets
     }
 
-    fun changeDrinks(drinks: String?) {
+    fun changeDrinks(drinks: Habits?) {
         _editedProfile.value?.drinks = drinks
     }
 
-    fun changeSmokes(smokes: String?) {
+    fun changeSmokes(smokes: Habits?) {
         _editedProfile.value?.smokes = smokes
     }
 
-    fun changeDoesSports(doesSports: String?) {
+    fun changeDoesSports(doesSports: Habits?) {
         _editedProfile.value?.doesSports = doesSports
     }
 
-    fun changeValuesAndBeliefs(valuesAndBeliefs: String?) {
+    fun changeValuesAndBeliefs(valuesAndBeliefs: Religion?) {
         _editedProfile.value?.valuesAndBeliefs = valuesAndBeliefs
     }
 
-    fun changeGender(gender: String) {
+    fun changeGender(gender: Gender) {
         _editedProfile.value?.gender = gender
     }
 
-    fun changeSexualOrientation(orientation: String) {
+    fun changeSexualOrientation(orientation: SexualOrientation) {
         _editedProfile.value?.sexualOrientation = orientation
     }
 
-    fun changeRelationshipType(relationshipType: String) {
+    fun changeRelationshipType(relationshipType: RelationshipType) {
         _editedProfile.value?.relationshipType = relationshipType
     }
 
@@ -164,8 +168,9 @@ open class ProfileViewModel(
 
             updateFunctions.forEach { it() }
 
-            _isLoading.value = false
+            Log.i("ProfileViewModel", "Updated profile: ${_editedProfile.value}")
             loadProfile()
+
         }
     }
 
@@ -206,9 +211,9 @@ open class ProfileViewModel(
     fun updateGenderPriority(gender: Gender?) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateGenderPriority(userViewModel.userId!!, stringToEnum<Gender>(_editedProfile.value?.genderPriority))
+            val result = profileService.updateGenderPriority(userViewModel.userId!!, _editedProfile.value?.genderPriority)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(genderPriority = _editedProfile.value?.genderPriority.toString())
+                _profileData.value = _profileData.value?.copy(genderPriority = _editedProfile.value?.genderPriority)
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -226,7 +231,7 @@ open class ProfileViewModel(
             val result =
                 profileService.updateRelationshipType(userViewModel.userId!!, relationshipType)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(relationshipType = relationshipType.toString())
+                _profileData.value = _profileData.value?.copy(relationshipType = relationshipType)
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -329,14 +334,14 @@ open class ProfileViewModel(
     }
 
     fun updateGender() {
-        if (_editedProfile.value?.genderEnum == _profileData.value?.genderEnum) return
+        if (_editedProfile.value?.gender == _profileData.value?.gender) return
         viewModelScope.launch {
             _isLoading.value = true
             val result =
-                _editedProfile.value?.let { profileService.updateGender(userViewModel.userId!!, it.genderEnum) }
+                _editedProfile.value?.let { profileService.updateGender(userViewModel.userId!!, it.gender) }
             if (result != null) {
                 result.onSuccess {
-                    _profileData.value = _profileData.value?.copy(gender = _editedProfile.value?.genderEnum.toString())
+                    _profileData.value = _editedProfile.value?.gender?.let { it1 -> _profileData.value?.copy(gender = it1) }
                     _isLoading.value = false
                 }.onFailure { error ->
                     errorViewModel.showError(
@@ -349,17 +354,17 @@ open class ProfileViewModel(
     }
 
     fun updateSexualOrientation() {
-        if (_editedProfile.value?.sexualOrientationEnum == _profileData.value?.sexualOrientationEnum) return
+        if (_editedProfile.value?.sexualOrientation == _profileData.value?.sexualOrientation) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = _editedProfile.value?.sexualOrientationEnum?.let {
+            val result = _editedProfile.value?.sexualOrientation?.let {
                 profileService.updateSexualOrientation(userViewModel.userId!!,
                     it
                 )
             }
             if (result != null) {
                 result.onSuccess {
-                    _profileData.value = _profileData.value?.copy(sexualOrientation = _editedProfile.value?.sexualOrientationEnum.toString())
+                    _profileData.value = _editedProfile.value?.let { it1 -> _profileData.value?.copy(sexualOrientation = it1.sexualOrientation) }
                     _isLoading.value = false
                 }.onFailure { error ->
                     errorViewModel.showError(
@@ -389,12 +394,12 @@ open class ProfileViewModel(
     }
 
     fun updateHoroscope() {
-        if (_editedProfile.value?.horoscopeEnum == _profileData.value?.horoscopeEnum) return
+        if (_editedProfile.value?.horoscope == _profileData.value?.horoscope) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateHoroscope(userViewModel.userId!!, _editedProfile.value?.horoscopeEnum)
+            val result = profileService.updateHoroscope(userViewModel.userId!!, _editedProfile.value?.horoscope)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(horoscope = enumToString(_editedProfile.value?.horoscopeEnum))
+                _profileData.value = _profileData.value?.copy(horoscope = _editedProfile.value?.horoscope)
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -459,12 +464,12 @@ open class ProfileViewModel(
     }
 
     fun updateDrinks() {
-        if (_editedProfile.value?.drinksEnum == _profileData.value?.drinksEnum) return
+        if (_editedProfile.value?.drinks == _profileData.value?.drinks) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateDrinks(userViewModel.userId!!, _editedProfile.value?.drinksEnum)
+            val result = profileService.updateDrinks(userViewModel.userId!!, _editedProfile.value?.drinks)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(drinks = enumToString(_editedProfile.value?.drinksEnum))
+                _profileData.value = _profileData.value?.copy(drinks = _editedProfile.value?.drinks)
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -476,30 +481,29 @@ open class ProfileViewModel(
     }
 
     fun updateSmokes() {
-        if (_editedProfile.value?.smokesEnum == _profileData.value?.smokesEnum) return
-        if(_editedProfile.value?.smokesEnum == null)
-            viewModelScope.launch {
-                _isLoading.value = true
-                val result = profileService.updateSmokes(userViewModel.userId!!, _editedProfile.value?.smokesEnum)
-                result.onSuccess {
-                    _profileData.value = _profileData.value?.copy(smokes = enumToString(_editedProfile.value?.smokesEnum))
-                    _isLoading.value = false
-                }.onFailure { error ->
-                    errorViewModel.showError(
-                        error.message ?: "Error updating smokes"
-                    )
-                    _isLoading.value = false
-                }
+        if (_editedProfile.value?.smokes == _profileData.value?.smokes) return
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = profileService.updateSmokes(userViewModel.userId!!, _editedProfile.value?.smokes)
+            result.onSuccess {
+                _profileData.value = _profileData.value?.copy(smokes = _editedProfile.value?.smokes)
+                _isLoading.value = false
+            }.onFailure { error ->
+                errorViewModel.showError(
+                    error.message ?: "Error updating smokes"
+                )
+                _isLoading.value = false
             }
+        }
     }
 
     fun updateDoesSports() {
-        if (_editedProfile.value?.doesSportsEnum == _profileData.value?.doesSportsEnum) return
+        if (_editedProfile.value?.doesSports == _profileData.value?.doesSports) return
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateDoesSports(userViewModel.userId!!, _editedProfile.value?.doesSportsEnum)
+            val result = profileService.updateDoesSports(userViewModel.userId!!, _editedProfile.value?.doesSports)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(doesSports = enumToString(_editedProfile.value?.doesSportsEnum))
+                _profileData.value = _profileData.value?.copy(doesSports = _editedProfile.value?.doesSports)
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -511,13 +515,13 @@ open class ProfileViewModel(
     }
 
     fun updateValuesAndBeliefs() {
-        if (_editedProfile.value?.valuesAndBeliefsEnum == _profileData.value?.valuesAndBeliefsEnum) return
+        if (_editedProfile.value?.valuesAndBeliefs == _profileData.value?.valuesAndBeliefs) return
         viewModelScope.launch {
             _isLoading.value = true
             val result =
-                profileService.updateValuesAndBeliefs(userViewModel.userId!!, _editedProfile.value?.valuesAndBeliefsEnum)
+                profileService.updateValuesAndBeliefs(userViewModel.userId!!, _editedProfile.value?.valuesAndBeliefs)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(valuesAndBeliefs = enumToString(_editedProfile.value?.valuesAndBeliefsEnum))
+                _profileData.value = _profileData.value?.copy(valuesAndBeliefs = _editedProfile.value?.valuesAndBeliefs)
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
