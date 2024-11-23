@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 
@@ -44,10 +45,13 @@ open class ProfileViewModel(
 
 
     fun loadProfile() {
+        Log.i("ProfileViewModel", "Loading profile for user: ${userViewModel.userId}")
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.getProfile(userViewModel.userId!!)
+            Log.i("ProfileViewModel", "result: $result")
             result.onSuccess { profileData ->
+                Log.i("ProfileViewModel", "Loading profile: $profileData")
                 _profileData.value = profileData
                 _editedProfile.value = profileData.copy()
                 _isLoading.value = false
@@ -123,10 +127,12 @@ open class ProfileViewModel(
     }
 
     fun loadProfile(userId: String) {
+        Log.i("ProfileViewModel", "Loading profile for user: $userId")
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.getProfile(userId)
             result.onSuccess { profileData ->
+                Log.i("ProfileViewModel", "Loading profile: $profileData")
                 _profileData.value = profileData
                 _isLoading.value = false
             }.onFailure { error ->
@@ -140,33 +146,34 @@ open class ProfileViewModel(
 
     fun updateProfile() {
         viewModelScope.launch {
-            _isLoading.value = true
             Log.i("ProfileViewModel", "Updating profile: ${_editedProfile.value}")
             Log.i("ProfileViewModel", "Current profile: ${profileData.value}")
 
             val updateFunctions = listOf(
-                ::updateAboutMe,
-                ::updateFact,
-                ::updateHeight,
-                ::updateWeight,
-                ::updateGender,
-                ::updateSexualOrientation,
-                ::updateJob,
-                ::updateHoroscope,
-                ::updateEducation,
-                ::updatePersonalityType,
-                ::updatePets,
-                ::updateDrinks,
-                ::updateSmokes,
-                ::updateDoesSports,
-                ::updateValuesAndBeliefs
+                launch { updateAboutMe() },
+                launch { updateFact() },
+                launch { updateHeight() },
+                launch { updateWeight() },
+                launch { updateJob() },
+                launch { updateHoroscope() },
+                launch { updateEducation() },
+                launch { updatePersonalityType() },
+                launch { updatePets() },
+                launch { updateDrinks() },
+                launch { updateSmokes() },
+                launch { updateDoesSports() },
+                launch { updateValuesAndBeliefs() },
+                launch { updateGender() },
+                launch { updateSexualOrientation() },
+
             )
 
-            updateFunctions.forEach { it() }
+            updateFunctions.joinAll()
 
             Log.i("ProfileViewModel", "Updated profile: ${_editedProfile.value}")
-            loadProfile()
         }
+
+
     }
 
 

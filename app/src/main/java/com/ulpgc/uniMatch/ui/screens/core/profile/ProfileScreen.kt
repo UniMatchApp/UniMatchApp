@@ -86,11 +86,7 @@ fun ProfileScreen(
 
     val isLoading by profileViewModel.isLoading.collectAsState()
 
-    if (isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    } else if (profile != null) {
+    if (profile != null) {
 
         var aboutMeText by remember { mutableStateOf(profile.aboutMe ?: "") }
 
@@ -471,6 +467,7 @@ fun ProfileScreen(
                 onClick = {
                     if(aboutMeText != profile.aboutMe) {
                         profileViewModel.changeAboutMe(aboutMeText)
+
                     }
                     profileViewModel.updateProfile()
                 },
