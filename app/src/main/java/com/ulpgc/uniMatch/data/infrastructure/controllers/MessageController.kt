@@ -2,11 +2,12 @@ package com.ulpgc.uniMatch.data.infrastructure.controllers
 
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
 import com.ulpgc.uniMatch.data.domain.models.Message
-import com.ulpgc.uniMatch.data.domain.models.Profile
+import com.ulpgc.uniMatch.data.domain.models.ModifyMessageDTO
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -26,5 +27,11 @@ interface MessageController {
         @Body message: Message
     ): ApiResponse<Message>
 
+    @PUT("messages/{messageId}")
+    suspend fun modifyMessage(
+        @Header("Authorization") authToken: String,
+        @Path("messageId") messageId: String,
+        @Body message: ModifyMessageDTO
+    ): ApiResponse<Message>
 
 }

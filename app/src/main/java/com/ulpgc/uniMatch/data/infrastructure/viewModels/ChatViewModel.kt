@@ -9,6 +9,8 @@ import com.ulpgc.uniMatch.data.application.events.EventBus
 import com.ulpgc.uniMatch.data.application.events.EventListener
 import com.ulpgc.uniMatch.data.application.services.ChatService
 import com.ulpgc.uniMatch.data.application.services.ProfileService
+import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.domain.models.Profile
@@ -61,7 +63,7 @@ open class ChatViewModel(
         }
     }
 
-    private fun handleNewMessage(notification: Notifications)  {
+    private fun handleNewMessage(notification: Notifications) {
         val message = notification.payload as MessageNotificationPayload
         viewModelScope.launch {
             if (userViewModel.userId.isNullOrEmpty()) {
@@ -71,7 +73,7 @@ open class ChatViewModel(
             val newMessage = Message(
                 messageId = message.id,
                 senderId = message.getSender(),
-                attachment =  message.getThumbnail(),
+                attachment = message.getThumbnail(),
                 content = message.getContent(),
                 timestamp = notification.date,
                 recipientId = userViewModel.userId!!,
@@ -80,11 +82,10 @@ open class ChatViewModel(
 
             chatService.saveMessage(newMessage)
 
+            chatService.setMessageStatus(userViewModel.userId!!, message.id, MessageStatus.RECEIVED)
+
             _messages.value += newMessage
         }
-
-
-
 
 
     }
@@ -118,6 +119,7 @@ open class ChatViewModel(
                 return@launch
             }
             _isLoading.value = true
+
             // Obtener el perfil del otro usuario y manejar el Result
             val otherUserResult = profileService.getProfile(chatId)
             otherUserResult.onSuccess { profile ->
@@ -127,20 +129,32 @@ open class ChatViewModel(
                     error.message ?: "Error loading other user profile"
                 )
             }
-            val result = chatService.getMessages(chatId, offset, limit)
-            result.onSuccess { messages ->
-                _messages.value = messages
-                _isLoading.value = false
 
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error loading messages"
-                )
-                _isLoading.value = false
+            val messages = (chatService.getMessages(chatId, offset, limit)
+                .onFailure {
+                    errorViewModel.showError(it.message ?: "Error loading messages")
+                    _isLoading.value = false
+                }.getOrDefault(emptyList())).toMutableList()
+
+            // Set all messages as received if the recipient is the logged user
+            messages.indices.forEach { index ->
+                val message = messages[index]
+                if (message.recipientId != userViewModel.userId ||
+                    message.status == MessageStatus.READ
+                ) return@forEach
+                val updatedMessage = chatService.setMessageStatus(
+                    userViewModel.userId!!,
+                    message.messageId,
+                    MessageStatus.READ
+                ).getOrElse { return@forEach }
+                messages[index] = updatedMessage
             }
+
+
+            this@ChatViewModel._messages.value = messages.toMutableList()
+            _isLoading.value = false
         }
     }
-
 
 
     fun sendMessage(chatId: String, content: String, attachment: String?) {
@@ -161,8 +175,12 @@ open class ChatViewModel(
 
     fun filterChats(recipientName: String) {
         viewModelScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
             _isLoading.value = true
-            val result = chatService.getChatsByName(recipientName)
+            val result = chatService.getChatsByName(userViewModel.userId!!, recipientName)
             result.onSuccess { chats ->
                 _chatList.value = chats
                 _isLoading.value = false
@@ -175,18 +193,74 @@ open class ChatViewModel(
         }
     }
 
+    fun setMessageStatus(messageId: String, status: MessageStatus) {
+        viewModelScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
+            val result: Result<Message> =
+                chatService.setMessageStatus(userViewModel.userId!!, messageId, status)
+            result.onSuccess {
+
+            }
+            result.onFailure { error ->
+                Log.e("ChatViewModel", "Error setting message status: ${error.message}")
+            }
+        }
+    }
+
 
     fun editMessage(messageId: String, newContent: String) {
         viewModelScope.launch {
-            // Lógica para editar el mensaje (actualizar la base de datos local y notificar cambios al backend)
-        }
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
 
+            val result = chatService.editMessageContent(
+                userViewModel.userId!!, messageId, newContent
+            )
+
+            result.onFailure { error ->
+                Log.e("ChatViewModel", "Error editing message: ${error.message}")
+            }
+        }
     }
 
-    fun deleteMessage(messageId: String) {
+    fun deleteMessageAsSender(messageId: String, forAll: Boolean = false) {
         viewModelScope.launch {
-            // Lógica para eliminar el mensaje (actualizar la base de datos local y notificar cambios al backend)
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
+
+            val result = chatService.deleteMessage(
+                userViewModel.userId!!,
+                messageId,
+                if (forAll) DeletedMessageStatus.DELETED_FOR_BOTH else DeletedMessageStatus.DELETED_BY_SENDER
+            )
+
+            result.onFailure { error ->
+                Log.e("ChatViewModel", "Error deleting message: ${error.message}")
+            }
         }
     }
 
+    fun deleteMessageAsRecipient(messageId: String) {
+        viewModelScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
+
+            val result = chatService.deleteMessage(
+                userViewModel.userId!!, messageId, DeletedMessageStatus.DELETED_BY_RECIPIENT
+            )
+
+            result.onFailure { error ->
+                Log.e("ChatViewModel", "Error deleting message: ${error.message}")
+            }
+        }
+    }
 }

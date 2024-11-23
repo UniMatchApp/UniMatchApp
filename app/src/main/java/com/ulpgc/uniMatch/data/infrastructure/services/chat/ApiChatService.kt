@@ -3,9 +3,11 @@ package com.ulpgc.uniMatch.data.infrastructure.services.chat
 
 import com.ulpgc.uniMatch.data.application.services.ChatService
 import com.ulpgc.uniMatch.data.application.services.ProfileService
+import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
 import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
+import com.ulpgc.uniMatch.data.domain.models.ModifyMessageDTO
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MatchingController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MessageController
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ChatMessageDao
@@ -74,7 +76,10 @@ class ApiChatService(
                 chatMessageDao.getAllChatsOrderedByLastMessage().first().map { chatEntity ->
                     // Obtiene el último mensaje y el conteo de no leídos para cada chat
                     val lastMessageEntity = chatMessageDao.getLastMessageForChat(chatEntity.id)
-                    val unreadMessagesCount = chatMessageDao.countUnreadMessages(chatEntity.id)
+                    val unreadMessagesCount = chatMessageDao.countUnreadMessages(
+                        userId = loggedUserId,
+                        chatId = chatEntity.id
+                    )
 
                     // Mapea el último mensaje al modelo de dominio si existe
                     val lastMessage = lastMessageEntity?.let {
@@ -198,6 +203,8 @@ class ApiChatService(
                         attachment = messageEntity.attachment
                     )
                 }
+
+
             Result.success(messages)
         } catch (e: Exception) {
             Result.failure(e)
@@ -205,15 +212,21 @@ class ApiChatService(
 
     }
 
-    override suspend fun getChatsByName(userName: String): Result<List<Chat>> {
+    override suspend fun getChatsByName(
+        loggedUserId: String,
+        filterName: String
+    ): Result<List<Chat>> {
         return try {
             // Obtener la lista de chats que coinciden con el nombre de usuario
-            val chatEntities = chatMessageDao.getChatsByUserName(userName)
+            val chatEntities = chatMessageDao.getChatsByUserName(filterName)
 
             // Transformar cada ChatEntity en un Chat con sus mensajes y conteos correspondientes
             val chats = chatEntities.map { chatEntity ->
                 val lastMessageEntity = chatMessageDao.getLastMessageForChat(chatEntity.id)
-                val unreadMessagesCount = chatMessageDao.countUnreadMessages(chatEntity.id)
+                val unreadMessagesCount = chatMessageDao.countUnreadMessages(
+                    userId = loggedUserId,
+                    chatId = chatEntity.id
+                )
 
                 val lastMessage = lastMessageEntity?.let {
                     Message(
@@ -244,4 +257,115 @@ class ApiChatService(
         }
     }
 
+    override suspend fun setMessageStatus(
+        loggedUserId: String,
+        messageId: String,
+        status: MessageStatus
+    ): Result<Message> {
+        return try {
+            chatMessageDao.setMessageStatus(messageId, status)
+            val response = messageController.modifyMessage(
+                "Bearer token",
+                messageId,
+                ModifyMessageDTO.createModifyMessage(
+                    loggedUserId,
+                    status = status
+                )
+            )
+            if (!response.success || response.value == null) {
+                throw Throwable(response.errorMessage ?: "Unknown error occurred")
+            }
+            Result.success(
+                Message(
+                    messageId = messageId,
+                    chatId = response.value.senderId,
+                    content = response.value.content,
+                    senderId = response.value.senderId,
+                    recipientId = response.value.recipientId,
+                    timestamp = response.value.timestamp,
+                    status = response.value.status,
+                    deletedStatus = response.value.deletedStatus,
+                    attachment = response.value.attachment
+                )
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun editMessageContent(
+        userId: String,
+        messageId: String,
+        newContent: String
+    ): Result<Message> {
+        return try {
+            chatMessageDao.setMessageContent(messageId, newContent)
+            val response = messageController.modifyMessage(
+                "Bearer token",
+                messageId,
+                ModifyMessageDTO.createModifyMessage(
+                    userId,
+                    content = newContent
+                )
+            )
+            if (!response.success || response.value == null) {
+                throw Throwable(response.errorMessage ?: "Unknown error occurred")
+            }
+
+            Result.success(
+                Message(
+                    messageId = messageId,
+                    chatId = response.value.senderId,
+                    content = response.value.content,
+                    senderId = response.value.senderId,
+                    recipientId = response.value.recipientId,
+                    timestamp = response.value.timestamp,
+                    status = response.value.status,
+                    deletedStatus = response.value.deletedStatus,
+                    attachment = response.value.attachment
+                )
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun deleteMessage(
+        userId: String,
+        messageId: String,
+        deletedStatus: DeletedMessageStatus
+    ): Result<Message> {
+        return try {
+            chatMessageDao.setMessageDeletedStatus(messageId, deletedStatus)
+            val response = messageController.modifyMessage(
+                "Bearer token",
+                messageId,
+                ModifyMessageDTO.createModifyMessage(
+                    userId,
+                    deletedStatus = deletedStatus
+                )
+            )
+            if (!response.success || response.value == null) {
+                throw Throwable(response.errorMessage ?: "Unknown error occurred")
+            }
+
+            Result.success(
+                Message(
+                    messageId = messageId,
+                    chatId = response.value.senderId,
+                    content = response.value.content,
+                    senderId = response.value.senderId,
+                    recipientId = response.value.recipientId,
+                    timestamp = response.value.timestamp,
+                    status = response.value.status,
+                    deletedStatus = response.value.deletedStatus,
+                    attachment = response.value.attachment
+                )
+            )
+
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+
+    }
 }
