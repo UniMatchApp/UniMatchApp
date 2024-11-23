@@ -65,9 +65,9 @@ fun PreferencesScreen(
     LaunchedEffect(profile) {
         profile?.let {
             maxDistance = it.maxDistance
-            genderPriority = it.genderPriorityEnum
+            genderPriority = it.genderPriority
             ageRange = it.ageRange.min to it.ageRange.max
-            relationshipType = it.relationshipTypeEnum
+            relationshipType = it.relationshipType
             // Inicializa ageMin y ageMax solo una vez
             ageMin = it.ageRange.min.toFloat()
             ageMax = it.ageRange.max.toFloat()
