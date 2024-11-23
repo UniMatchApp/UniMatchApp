@@ -38,13 +38,7 @@ fun ProfileInterests(
 
     val profile = profileViewModel.profileData.collectAsState().value
 
-    val isLoading by profileViewModel.isLoading.collectAsState()
-
-    if (isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    } else if (profile != null) {
+    if (profile != null) {
         Log.i("ProfileInterests", "profile interests: ${profile.interests}")
         val interestsMap =
             context.resources.getStringArray(R.array.interests).mapIndexed { index, name ->

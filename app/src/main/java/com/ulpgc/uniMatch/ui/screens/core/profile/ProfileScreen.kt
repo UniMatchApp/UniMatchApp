@@ -84,8 +84,6 @@ fun ProfileScreen(
 
     val profile = profileViewModel.profileData.collectAsState().value
 
-    val isLoading by profileViewModel.isLoading.collectAsState()
-
     if (profile != null) {
 
         var aboutMeText by remember { mutableStateOf(profile.aboutMe ?: "") }
