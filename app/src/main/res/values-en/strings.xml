@@ -81,8 +81,10 @@
     <string name="cookies_policy">Cookies Policy</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="session_data">Session data</string>
-    <string name="change_email">Change email</string>
     <string name="change_password">Change password</string>
+    <string name="unsaved_changes">Unsaved Changes</string>
+    <string name="save_changes_confirmation">Do you want to save the changes?</string>
+
 
     <!--PROFILE WALL -->
     <string name="upload_image">Upload Image</string>
@@ -436,7 +438,12 @@
     <string name="log_out">Log Out</string>
     <string name="delete_account">Delete Account</string>
     <string name="log_out_confirmation">Are you sure you want to log out?</string>
-    <string name="delete_account_confirmation">Are you sure you want to delete your account?</string>
+    <string name="delete_account_title">Are you sure you want to delete the account</string>
+    <string name="delete_account_confirmation">DELETE</string>
+    <string name="delete_account_confirmation_text">Introduce DELETE to confirm the deletion of your account.</string>
+    <string name="change_password_title">Change password</string>
+    <string name="current_password">Current password</string>
+
 
 
     <!--MISC-->

@@ -20,10 +20,12 @@ import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 
 @Composable
-fun AccountSettingsScreen(userViewModel: UserViewModel) {
-
+fun AccountSettingsScreen(
+    userViewModel: UserViewModel
+) {
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showDeleteAccountDialog by remember { mutableStateOf(false) }
+    var showChangePasswordDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -32,14 +34,9 @@ fun AccountSettingsScreen(userViewModel: UserViewModel) {
             .padding(vertical = 16.dp)
     ) {
         AccountOptionItem(
-            iconId = R.drawable.ic_email,
-            title = stringResource(R.string.change_email),
-            onClick = {}
-        )
-        AccountOptionItem(
             iconId = R.drawable.ic_password,
             title = stringResource(R.string.change_password),
-            onClick = {}
+            onClick = { showChangePasswordDialog = true }
         )
         AccountOptionItem(
             iconId = R.drawable.ic_arrow_back,
@@ -53,31 +50,136 @@ fun AccountSettingsScreen(userViewModel: UserViewModel) {
         )
     }
 
+    if (showChangePasswordDialog) {
+        ChangePasswordDialog(
+            onConfirm = { newPassword ->
+                userViewModel.resetPassword(newPassword)
+                showChangePasswordDialog = false
+            },
+            onDismiss = { showChangePasswordDialog = false }
+        )
+    }
+
     if (showLogoutDialog) {
         ConfirmationDialog(
             title = stringResource(R.string.log_out),
             message = stringResource(R.string.log_out_confirmation),
             onConfirm = {
                 showLogoutDialog = false
-                userViewModel.logout() // Ejecutar acción de cerrar sesión
+                userViewModel.logout()
             },
             onDismiss = { showLogoutDialog = false }
         )
     }
 
-    // Diálogo de confirmación para eliminar cuenta
     if (showDeleteAccountDialog) {
-        ConfirmationDialog(
-            title = stringResource(R.string.delete_account),
-            message = stringResource(R.string.delete_account_confirmation),
+        DeleteAccountDialog(
             onConfirm = {
                 showDeleteAccountDialog = false
-                userViewModel.deleteAccount() // Ejecutar acción de eliminar cuenta
+                userViewModel.deleteAccount()
             },
             onDismiss = { showDeleteAccountDialog = false }
         )
     }
 }
+
+@Composable
+fun ChangePasswordDialog(
+    onConfirm: (newPassword: String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var newPassword by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.change_password_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = newPassword,
+                    onValueChange = { newPassword = it },
+                    label = { Text(stringResource(R.string.new_password)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirm(newPassword)
+                },
+                enabled = newPassword.isNotBlank()
+            ) {
+                Text(text = stringResource(R.string.confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+fun DeleteAccountDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    var inputText by remember { mutableStateOf("") }
+    val requiredText = stringResource(R.string.delete_account_confirmation)
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.delete_account_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                Text(
+                    text = stringResource(R.string.delete_account_confirmation_text),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = inputText,
+                    onValueChange = { inputText = it },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    if (inputText == requiredText) {
+                        onConfirm()
+                    }
+                },
+                enabled = inputText == requiredText
+            ) {
+                Text(text = stringResource(R.string.confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.cancel))
+            }
+        }
+    )
+}
+
 
 @Composable
 fun ConfirmationDialog(

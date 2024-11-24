@@ -34,15 +34,8 @@ fun ProfileWall(
     val profile = profileViewModel.profileData.collectAsState().value
     val profileImages = profile?.wall ?: emptyList()
     val activity = LocalContext.current as? ComponentActivity
-    val isLoading by profileViewModel.isLoading.collectAsState()
 
-    Log.i("TuMadre", "Images: $profileImages")
-
-    if (isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    } else if( profile != null) {
+     if( profile != null) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

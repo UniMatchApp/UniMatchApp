@@ -161,7 +161,7 @@ dependencies {
 //        }
 //    }
 //}
-
+//
 gradle.taskGraph.whenReady {
     allTasks.forEach { task ->
         val adbCommand = "adb reverse tcp:3000 tcp:3000"

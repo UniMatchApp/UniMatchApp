@@ -44,7 +44,7 @@ interface ProfileController {
     @PUT("users/fact")
     suspend fun updateFact(@Body fact: StringRequest): ApiResponse<String>
 
-    @PUT("users/{id}/degree")
+    @PUT("users/degree")
     suspend fun updateDegree(@Body degree: StringRequest): ApiResponse<String>
 
     @PUT("users/drinks")

@@ -18,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
@@ -84,13 +85,9 @@ fun ProfileScreen(
 
     val profile = profileViewModel.profileData.collectAsState().value
 
-    val isLoading by profileViewModel.isLoading.collectAsState()
+    var showUnsavedChanges by remember { mutableStateOf(false) }
 
-    if (isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    } else if (profile != null) {
+    if (profile != null) {
 
         var aboutMeText by remember { mutableStateOf(profile.aboutMe ?: "") }
 
@@ -206,7 +203,14 @@ fun ProfileScreen(
                                 .align(Alignment.TopEnd)
                                 .padding(8.dp)
                         ) {
-                            IconButton(onClick = { profile.let { onEditClick(it.profileId) } }) {
+                            IconButton(onClick = {
+                                if(profileViewModel.hasUnsavedChanges()) {
+                                    showUnsavedChanges = true
+                                }
+                                if(!showUnsavedChanges) {
+                                    profile.let { onEditClick(it.profileId) }
+                                }
+                            }) {
                                 Image(
                                     painter = painterResource(id = R.drawable.icon_edit),
                                     contentDescription = "Edit profile",
@@ -244,6 +248,7 @@ fun ProfileScreen(
                 value = aboutMeText,
                 onValueChange = { newText ->
                     aboutMeText = newText
+                    profileViewModel.changeAboutMe(newText)
                 },
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -289,7 +294,15 @@ fun ProfileScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { profile.let { onEditInterestsClick(it.profileId) } }
+                    .clickable {
+                        if(profileViewModel.hasUnsavedChanges()) {
+                            showUnsavedChanges = true
+                        }
+                        if(!showUnsavedChanges) {
+                            profile.let { onEditInterestsClick(it.profileId) }
+                        }
+
+                    }
                     .border(width = 1.dp, color = Color.Gray)
                     .padding(16.dp)
             ) {
@@ -304,11 +317,11 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.gender),
                 options = context.resources.getStringArray(R.array.genders).toList(),
-                selectedOption = genderMap[profile.genderEnum]!!,
+                selectedOption = genderMap[profile.gender]!!,
                 onEditField = { selectedOption ->
                     var genderOption = genderMap.entries.find { it.value == selectedOption }?.key
                     if (genderOption != null) {
-                        enumToString(genderOption)?.let { profileViewModel.changeGender(it) }
+                        profileViewModel.changeGender(genderOption)
                     }
                 }
             )
@@ -339,16 +352,14 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.sexual_orientation),
                 options = context.resources.getStringArray(R.array.sexual_orientation).toList(),
-                selectedOption = sexualOrientationMap[profile.sexualOrientationEnum]!!,
+                selectedOption = sexualOrientationMap[profile.sexualOrientation]!!,
                 onEditField = { selectedOption ->
                     val sexualOrientationOption =
                         sexualOrientationMap.entries.find { it.value == selectedOption }?.key
                     if (sexualOrientationOption != null) {
-                        enumToString(sexualOrientationOption)?.let {
-                            profileViewModel.changeSexualOrientation(
-                                it
-                            )
-                        }
+                        profileViewModel.changeSexualOrientation(
+                            sexualOrientationOption
+                        )
                     }
                 },
                 includeNullOption = true
@@ -376,7 +387,7 @@ fun ProfileScreen(
             ProfileSection(
                 title = stringResource(R.string.more_about_me),
                 rowTitles = listOf(
-                    "horoscope" to horoscopeMap[profile.horoscopeEnum],
+                    "horoscope" to horoscopeMap[profile.horoscope],
                     "education" to educationMap[stringToEnum<Education>(profile.education)],
                     "personality_type" to personalityMap[stringToEnum<Personality>(profile.personalityType)]
                 ),
@@ -385,7 +396,7 @@ fun ProfileScreen(
                         "horoscope" -> {
                             var horoscopeOption = horoscopeMap.entries.find { it.value == selectedOption }?.key
                             profileViewModel.changeHoroscope(
-                                enumToString(horoscopeOption)
+                                horoscopeOption
                             )
                         }
 
@@ -416,10 +427,10 @@ fun ProfileScreen(
                 title = stringResource(R.string.lifestyle),
                 rowTitles = listOf(
                     "pets" to petsMap[stringToEnum<Pets>(profile.pets)],
-                    "drinks" to habitsMap[profile.drinksEnum],
-                    "smokes" to habitsMap[profile.smokesEnum],
-                    "sports" to habitsMap[profile.doesSportsEnum],
-                    "religion" to religionMap[profile.valuesAndBeliefsEnum]
+                    "drinks" to habitsMap[profile.drinks],
+                    "smokes" to habitsMap[profile.smokes],
+                    "sports" to habitsMap[profile.doesSports],
+                    "religion" to religionMap[profile.valuesAndBeliefs]
                 ),
                 onSelectedItemChange = { field, selectedOption ->
                     when (field) {
@@ -433,28 +444,28 @@ fun ProfileScreen(
                         "drinks" ->  {
                             var drinksOption = habitsMap.entries.find { it.value == selectedOption }?.key
                             profileViewModel.changeDrinks(
-                                enumToString(drinksOption)
+                                drinksOption
                             )
                         }
 
                         "smokes" -> {
                             var smokesOption = habitsMap.entries.find { it.value == selectedOption }?.key
                             profileViewModel.changeSmokes(
-                                enumToString(smokesOption)
+                                smokesOption
                             )
                         }
 
                         "sports" -> {
                             var sportssOption = habitsMap.entries.find { it.value == selectedOption }?.key
                             profileViewModel.changeDoesSports(
-                                enumToString(sportssOption)
+                                sportssOption
                             )
                         }
 
                         "religion" -> {
                             var religionOption = religionMap.entries.find { it.value == selectedOption }?.key
                             profileViewModel.changeValuesAndBeliefs(
-                                enumToString(religionOption)
+                                religionOption
                             )
                         }
 
@@ -471,9 +482,6 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    if(aboutMeText != profile.aboutMe) {
-                        profileViewModel.changeAboutMe(aboutMeText)
-                    }
                     profileViewModel.updateProfile()
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -488,4 +496,41 @@ fun ProfileScreen(
             Text(stringResource(R.string.loading_error))
         }
     }
+
+    if (showUnsavedChanges) {
+        ConfirmationDialog(
+            onDismiss = { showUnsavedChanges = false },
+            onConfirm = {
+                profileViewModel.updateProfile()
+                showUnsavedChanges = false
+            }
+        )
+    }
+
 }
+
+
+@Composable
+fun ConfirmationDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        title = { Text(text = stringResource(R.string.unsaved_changes)) },
+        text = { Text(text = stringResource(R.string.save_changes_confirmation)) },
+        confirmButton = {
+            Button(onClick = { onConfirm() }) {
+                Text(text = stringResource(R.string.save))
+            }
+        },
+        dismissButton = {
+            Button(onClick = { onDismiss() }) {
+                Text(text = stringResource(R.string.cancel))
+            }
+        }
+    )
+}
+
+
+

@@ -8,6 +8,7 @@ import com.ulpgc.uniMatch.data.application.services.RegisterRequest
 import com.ulpgc.uniMatch.data.application.services.RegisterResponse
 import com.ulpgc.uniMatch.data.application.services.ReportRequest
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -37,4 +38,7 @@ interface UserController {
 
     @POST("users/auth/{email}/resend-code")
     suspend fun resendCode(@Path("email") email: String): ApiResponse<Boolean>
+
+    @DELETE("users/{id}")
+    suspend fun deleteAccount(@Path("id") userId: String): ApiResponse<Unit>
 }
