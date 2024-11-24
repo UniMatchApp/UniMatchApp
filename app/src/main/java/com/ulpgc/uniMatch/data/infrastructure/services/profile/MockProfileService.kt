@@ -25,8 +25,8 @@ class MockProfileService: ProfileService {
         return Result.success(Unit)
     }
 
-    override suspend fun updateMaxDistance(distance: Int): Result<Unit> {
-        return Result.success(Unit)
+    override suspend fun updateMaxDistance(distance: Int): Result<Int> {
+        return Result.success(distance)
     }
 
     override suspend fun updateGenderPriority(gender: Gender?): Result<Unit> {
@@ -107,6 +107,10 @@ class MockProfileService: ProfileService {
     override suspend fun updateValuesAndBeliefs(
         valuesAndBeliefs: Religion?
     ): Result<Unit> {
+        return Result.success(Unit)
+    }
+
+    override suspend fun updateLocation(location: Profile.Location?): Result<Unit> {
         return Result.success(Unit)
     }
 

@@ -4,8 +4,10 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
+import com.ulpgc.uniMatch.data.application.services.AgeRangeRequest
 import com.ulpgc.uniMatch.data.application.services.IntRequest
 import com.ulpgc.uniMatch.data.application.services.ListRequest
+import com.ulpgc.uniMatch.data.application.services.LocationRequest
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.application.services.StringRequest
 import com.ulpgc.uniMatch.data.domain.enums.Gender
@@ -56,13 +58,15 @@ class ApiProfileService(
     }
 
     override suspend fun updateAgeRange(min: Int, max: Int): Result<Unit> =
-        handleApiCall { profileController.updateAgeRange(min, max) }
+        handleApiCall { profileController.updateAgeRange(AgeRangeRequest(min, max)) }
 
-    override suspend fun updateMaxDistance(distance: Int): Result<Unit> =
-        handleApiCall { profileController.updateMaxDistance(distance) }
+    override suspend fun updateMaxDistance(distance: Int): Result<Int> {
+        val handle = handleApiCall { profileController.updateMaxDistance(IntRequest(distance)) }
+        return handle.map { distance }
+    }
 
     override suspend fun updateGenderPriority(gender: Gender?): Result<Unit> =
-        handleApiCall { profileController.updateGenderPriority(gender) }
+        handleApiCall { profileController.updateGenderPriority(StringRequest(enumToString(gender))) }
 
     override suspend fun updateRelationshipType(
         relationshipType: RelationshipType
@@ -128,6 +132,13 @@ class ApiProfileService(
         valuesAndBeliefs: Religion?
     ): Result<Unit> =
         handleApiCall { profileController.updateValuesAndBeliefs(StringRequest(enumToString(valuesAndBeliefs))) }
+
+    override suspend fun updateLocation(location: Profile.Location?): Result<Unit> {
+        val longitude = location?.longitude
+        val latitude = location?.latitude
+        val altitude = location?.altitude
+        return handleApiCall { profileController.updateLocation(LocationRequest(longitude, latitude, altitude)) }
+    }
 
     override suspend fun addImage(imageURI: Uri): Result<String> {
         return try {

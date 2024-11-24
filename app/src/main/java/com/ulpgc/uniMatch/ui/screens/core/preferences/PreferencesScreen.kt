@@ -27,12 +27,14 @@ import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
 
 @Composable
 fun PreferencesScreen(
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    permissionsViewModel: PermissionsViewModel
 ) {
     val profile by profileViewModel.profileData.collectAsState()
 
@@ -68,14 +70,11 @@ fun PreferencesScreen(
             genderPriority = it.genderPriority
             ageRange = it.ageRange.min to it.ageRange.max
             relationshipType = it.relationshipType
-            // Inicializa ageMin y ageMax solo una vez
             ageMin = it.ageRange.min.toFloat()
             ageMax = it.ageRange.max.toFloat()
         }
     }
-    Log.i("Prefereces", "Age range: $ageRange")
-    Log.i("Prefereces","Age min: $ageMin")
-    Log.i("Prefereces","Age max: $ageMax")
+
 
     Column(modifier = Modifier.padding(16.dp)) {
 
@@ -95,7 +94,12 @@ fun PreferencesScreen(
                 onValueChange = { maxDistance = it.toInt() },
                 valueRange = 0f..100f,
                 onValueChangeFinished = {
-                    profileViewModel.updateMaxDistance(maxDistance)
+                    if (profile?.location != null) {
+                        Log.i("ProfileLocation", profile?.location.toString())
+                        profileViewModel.updateMaxDistance(maxDistance)
+                    } else {
+                        maxDistance = 0
+                    }
                 },
                 colors = SliderDefaults.colors(
                     thumbColor = MaterialTheme.colorScheme.primary,

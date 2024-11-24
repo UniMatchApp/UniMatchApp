@@ -10,21 +10,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.screens.core.BottomNavigationBar
 import com.ulpgc.uniMatch.ui.screens.core.SearchScreen
@@ -40,6 +44,7 @@ import com.ulpgc.uniMatch.ui.screens.core.preferences.PreferencesScreen
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileInterests
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileScreen
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileWall
+import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 
 object CoreRoutes {
     const val HOME = "home"
@@ -64,7 +69,8 @@ fun CoreScreen(
     profileViewModel: ProfileViewModel,
     homeViewModel: HomeViewModel,
     notificationsViewModel: NotificationsViewModel,
-    errorViewModel: ErrorViewModel
+    errorViewModel: ErrorViewModel,
+    permissionsViewModel: PermissionsViewModel
 ) {
     val authState by userViewModel.authState.collectAsState()
 
@@ -84,6 +90,26 @@ fun CoreScreen(
         CoreRoutes.ACCOUNT -> true
 
         else -> false
+    }
+    val localContext = LocalContext.current
+    val locationHelper = LocationHelper(localContext)
+
+    suspend fun getLocation(): Profile.Location? {
+        val location = locationHelper.getCurrentLocation()
+        val profileLocation =
+            location?.longitude?.let {
+                location.latitude.let { it1 ->
+                    Profile.Location(it,
+                        it1, null)
+                }
+            }
+        Log.i("PreferencesScreen", "Location: $profileLocation")
+        return profileLocation
+    }
+
+
+    LaunchedEffect(Unit) {
+        profileViewModel.updateLocation(getLocation())
     }
 
     Scaffold(
@@ -114,7 +140,8 @@ fun CoreScreen(
                 profileViewModel,
                 homeViewModel,
                 errorViewModel,
-                notificationsViewModel
+                notificationsViewModel,
+                permissionsViewModel
             )
         }
     }
@@ -129,7 +156,8 @@ fun CoreNavHost(
     profileViewModel: ProfileViewModel,
     homeViewModel: HomeViewModel,
     errorViewModel: ErrorViewModel,
-    notificationsViewModel: NotificationsViewModel
+    notificationsViewModel: NotificationsViewModel,
+    permissionsViewModel: PermissionsViewModel
 ) {
     NavHost(
         navController = navController,
@@ -173,7 +201,8 @@ fun CoreNavHost(
 
         composable(CoreRoutes.PREFERENCES) {
             PreferencesScreen(
-                profileViewModel = profileViewModel
+                profileViewModel = profileViewModel,
+                permissionsViewModel = permissionsViewModel
             )
         }
 

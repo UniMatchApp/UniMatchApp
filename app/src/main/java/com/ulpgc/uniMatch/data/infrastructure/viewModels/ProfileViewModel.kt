@@ -18,6 +18,7 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
 
+
 open class ProfileViewModel(
     private val profileService: ProfileService,
     private val errorViewModel: ErrorViewModel,
@@ -146,6 +147,7 @@ open class ProfileViewModel(
 
     fun updateProfile() {
         viewModelScope.launch {
+            _isLoading.value = true
             Log.i("ProfileViewModel", "Updating profile: ${_editedProfile.value}")
             Log.i("ProfileViewModel", "Current profile: ${profileData.value}")
 
@@ -198,7 +200,7 @@ open class ProfileViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.updateMaxDistance(maxDistance)
-            result.onSuccess {
+            result.onSuccess { maxDistance ->
                 _profileData.value = _profileData.value?.copy(maxDistance = maxDistance)
                 _isLoading.value = false
             }.onFailure { error ->
@@ -480,6 +482,20 @@ open class ProfileViewModel(
         }
     }
 
+    fun updateLocation(location: Profile.Location?) {
+        viewModelScope.launch {
+            _isLoading.value = true
+
+            val result = profileService.updateLocation(location)
+            result.onSuccess {
+                _profileData.value = _profileData.value?.copy(location = location)
+                _isLoading.value = false
+            }.onFailure {
+                _isLoading.value = false
+            }
+        }
+    }
+
     fun updateSmokes() {
         if (_editedProfile.value?.smokes == _profileData.value?.smokes) return
         viewModelScope.launch {
@@ -553,11 +569,9 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.addImage(imageUrl)
             result.onSuccess { imageUrlApi ->
-                Log.i("TuMadre", "Adding image: $imageUrlApi")
                 _profileData.value = _profileData.value?.copy(
                     wall = _profileData.value?.wall.orEmpty() + imageUrlApi
                 )
-                Log.i("TuMadre", "Adding image: ${_profileData.value?.wall}")
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -569,7 +583,6 @@ open class ProfileViewModel(
     }
 
     fun deleteImage(imageUrl: String) {
-        Log.i("TuMadre", "Deleting image: $imageUrl")
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.removeImage(imageUrl)
