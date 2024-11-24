@@ -52,11 +52,9 @@ fun AccountSettingsScreen(
 
     if (showChangePasswordDialog) {
         ChangePasswordDialog(
-            onConfirm = { currentPassword, newPassword ->
-                if (userViewModel.validateCurrentPassword(currentPassword)) {
-                    userViewModel.resetPassword(newPassword)
-                    showChangePasswordDialog = false
-                }
+            onConfirm = { newPassword ->
+                userViewModel.resetPassword(newPassword)
+                showChangePasswordDialog = false
             },
             onDismiss = { showChangePasswordDialog = false }
         )
@@ -87,12 +85,10 @@ fun AccountSettingsScreen(
 
 @Composable
 fun ChangePasswordDialog(
-    onConfirm: (currentPassword: String, newPassword: String) -> Unit,
+    onConfirm: (newPassword: String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
-    var isCurrentPasswordValid by remember { mutableStateOf(true) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -106,18 +102,6 @@ fun ChangePasswordDialog(
         text = {
             Column {
                 OutlinedTextField(
-                    value = currentPassword,
-                    onValueChange = {
-                        currentPassword = it
-                        isCurrentPasswordValid = true // Reinicia el estado al escribir
-                    },
-                    label = { Text(stringResource(R.string.current_password)) },
-                    isError = !isCurrentPasswordValid,
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
                     value = newPassword,
                     onValueChange = { newPassword = it },
                     label = { Text(stringResource(R.string.new_password)) },
@@ -129,10 +113,9 @@ fun ChangePasswordDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    onConfirm(currentPassword, newPassword)
-                    isCurrentPasswordValid = false // Muestra el error si la validación falla
+                    onConfirm(newPassword)
                 },
-                enabled = currentPassword.isNotBlank() && newPassword.isNotBlank()
+                enabled = newPassword.isNotBlank()
             ) {
                 Text(text = stringResource(R.string.confirm))
             }

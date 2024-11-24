@@ -82,6 +82,9 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="session_data">Session data</string>
     <string name="change_password">Change password</string>
+    <string name="unsaved_changes">Unsaved Changes</string>
+    <string name="save_changes_confirmation">Do you want to save the changes?</string>
+
 
     <!--PROFILE WALL -->
     <string name="upload_image">Upload Image</string>

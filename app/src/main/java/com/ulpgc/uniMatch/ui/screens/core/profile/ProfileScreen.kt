@@ -18,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
@@ -83,6 +84,8 @@ fun ProfileScreen(
     val context = LocalContext.current
 
     val profile = profileViewModel.profileData.collectAsState().value
+
+    var showUnsavedChanges by remember { mutableStateOf(false) }
 
     if (profile != null) {
 
@@ -200,7 +203,14 @@ fun ProfileScreen(
                                 .align(Alignment.TopEnd)
                                 .padding(8.dp)
                         ) {
-                            IconButton(onClick = { profile.let { onEditClick(it.profileId) } }) {
+                            IconButton(onClick = {
+                                if(profileViewModel.hasUnsavedChanges()) {
+                                    showUnsavedChanges = true
+                                }
+                                if(!showUnsavedChanges) {
+                                    profile.let { onEditClick(it.profileId) }
+                                }
+                            }) {
                                 Image(
                                     painter = painterResource(id = R.drawable.icon_edit),
                                     contentDescription = "Edit profile",
@@ -238,6 +248,7 @@ fun ProfileScreen(
                 value = aboutMeText,
                 onValueChange = { newText ->
                     aboutMeText = newText
+                    profileViewModel.changeAboutMe(newText)
                 },
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -283,7 +294,15 @@ fun ProfileScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { profile.let { onEditInterestsClick(it.profileId) } }
+                    .clickable {
+                        if(profileViewModel.hasUnsavedChanges()) {
+                            showUnsavedChanges = true
+                        }
+                        if(!showUnsavedChanges) {
+                            profile.let { onEditInterestsClick(it.profileId) }
+                        }
+
+                    }
                     .border(width = 1.dp, color = Color.Gray)
                     .padding(16.dp)
             ) {
@@ -463,10 +482,6 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    if(aboutMeText != profile.aboutMe) {
-                        profileViewModel.changeAboutMe(aboutMeText)
-
-                    }
                     profileViewModel.updateProfile()
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -481,4 +496,41 @@ fun ProfileScreen(
             Text(stringResource(R.string.loading_error))
         }
     }
+
+    if (showUnsavedChanges) {
+        ConfirmationDialog(
+            onDismiss = { showUnsavedChanges = false },
+            onConfirm = {
+                profileViewModel.updateProfile()
+                showUnsavedChanges = false
+            }
+        )
+    }
+
 }
+
+
+@Composable
+fun ConfirmationDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        title = { Text(text = stringResource(R.string.unsaved_changes)) },
+        text = { Text(text = stringResource(R.string.save_changes_confirmation)) },
+        confirmButton = {
+            Button(onClick = { onConfirm() }) {
+                Text(text = stringResource(R.string.save))
+            }
+        },
+        dismissButton = {
+            Button(onClick = { onDismiss() }) {
+                Text(text = stringResource(R.string.cancel))
+            }
+        }
+    )
+}
+
+
+

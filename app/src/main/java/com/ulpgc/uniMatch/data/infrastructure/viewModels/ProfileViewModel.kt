@@ -12,15 +12,10 @@ import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
-import com.ulpgc.uniMatch.ui.screens.utils.enumToString
-import com.ulpgc.uniMatch.ui.screens.utils.stringToEnum
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-
 
 
 open class ProfileViewModel(
@@ -32,11 +27,11 @@ open class ProfileViewModel(
     private val _profileData = MutableStateFlow<Profile?>(null)
     val profileData: StateFlow<Profile?> get() = _profileData
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> get() = _isLoading
-
     private var _editedProfile = MutableStateFlow<Profile?>(null)
     val editedProfile: StateFlow<Profile?> get() = _editedProfile
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> get() = _isLoading
 
 
     fun getProfileData(): Profile? {
@@ -63,6 +58,12 @@ open class ProfileViewModel(
             }
         }
     }
+
+    fun hasUnsavedChanges() : Boolean {
+        Log.i("ProfileViewModel", "Checking for unsaved changes ${_profileData.value != _editedProfile.value}")
+        return _profileData.value != _editedProfile.value
+    }
+
 
     fun changeAboutMe(aboutMe: String) {
         _editedProfile.value?.aboutMe = aboutMe

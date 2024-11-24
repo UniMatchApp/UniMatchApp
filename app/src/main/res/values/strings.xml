@@ -82,6 +82,10 @@
     <string name="privacy_policy">Política de privacidad</string>
     <string name="session_data">Datos de sesión</string>
     <string name="change_password">Cambiar contraseña</string>
+    <string name="unsaved_changes">Cambios no guardados</string>
+    <string name="save_changes_confirmation">Está a punto de salir sin guardar los cambios. ¿Desea guardar?</string>
+
+
 
     <!--PROFILE WALL -->
     <string name="upload_image">Subir imagen</string>
