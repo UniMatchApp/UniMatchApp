@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,12 +28,16 @@ import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
+import com.ulpgc.uniMatch.data.domain.models.Profile
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
+import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 
 @Composable
 fun PreferencesScreen(
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    permissionsViewModel: PermissionsViewModel
 ) {
     val profile by profileViewModel.profileData.collectAsState()
 
@@ -44,6 +49,9 @@ fun PreferencesScreen(
     var genderPriority by remember { mutableStateOf<Gender?>(null) }
     var ageRange by remember { mutableStateOf(18 to 100) }
     var relationshipType by remember { mutableStateOf(RelationshipType.FRIENDSHIP) }
+
+    val hasLocationPermission by permissionsViewModel.hasLocationPermission.collectAsState()
+
 
     val context = LocalContext.current
 
@@ -58,24 +66,47 @@ fun PreferencesScreen(
     val minAge = 18f
     val maxAge = 100f
 
-    var ageMin by remember { mutableStateOf(ageRange.first.toFloat()) }
-    var ageMax by remember { mutableStateOf(ageRange.second.toFloat()) }
+    var ageMin by remember { mutableFloatStateOf(ageRange.first.toFloat()) }
+    var ageMax by remember { mutableFloatStateOf(ageRange.second.toFloat()) }
+    val LocalContext = LocalContext.current
+    val locationHelper = LocationHelper(LocalContext)
+
+    suspend fun getLocation(): Profile.Location? {
+        val location = locationHelper.getCurrentLocation()
+        val profileLocation =
+            location?.longitude?.let {
+                location.latitude.let { it1 ->
+                    Profile.Location(it,
+                        it1, null)
+                }
+            }
+        Log.i("PreferencesScreen", "Location: $profileLocation")
+        return profileLocation
+    }
 
 
+    LaunchedEffect(Unit) {
+        profileViewModel.loadProfile()
+        profileViewModel.updateLocation(getLocation())
+        permissionsViewModel.requestLocationPermission(LocalContext)
+    }
+
+    LaunchedEffect(hasLocationPermission) {
+        Log.i("PreferencesScreen", "hasLocationPermission: $hasLocationPermission")
+        val profileLocation = getLocation()
+        profileViewModel.updateLocation(profileLocation)
+    }
     LaunchedEffect(profile) {
         profile?.let {
             maxDistance = it.maxDistance
             genderPriority = it.genderPriorityEnum
             ageRange = it.ageRange.min to it.ageRange.max
             relationshipType = it.relationshipTypeEnum
-            // Inicializa ageMin y ageMax solo una vez
             ageMin = it.ageRange.min.toFloat()
             ageMax = it.ageRange.max.toFloat()
         }
     }
-    Log.i("Prefereces", "Age range: $ageRange")
-    Log.i("Prefereces","Age min: $ageMin")
-    Log.i("Prefereces","Age max: $ageMax")
+
 
     Column(modifier = Modifier.padding(16.dp)) {
 
@@ -95,7 +126,12 @@ fun PreferencesScreen(
                 onValueChange = { maxDistance = it.toInt() },
                 valueRange = 0f..100f,
                 onValueChangeFinished = {
-                    profileViewModel.updateMaxDistance(maxDistance)
+                    if (profile?.location != null) {
+                        Log.i("ProfileLocation", profile?.location.toString())
+                        profileViewModel.updateMaxDistance(maxDistance)
+                    } else {
+                        maxDistance = 0
+                    }
                 },
                 colors = SliderDefaults.colors(
                     thumbColor = MaterialTheme.colorScheme.primary,

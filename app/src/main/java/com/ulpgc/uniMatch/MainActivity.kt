@@ -35,7 +35,8 @@ class MainActivity : ComponentActivity() {
                             app.profileViewModel,
                             app.homeViewModel,
                             app.notificationsViewModel,
-                            app.errorViewModel
+                            app.errorViewModel,
+                            app.permissionsViewModel
                         )
                     }
 

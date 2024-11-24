@@ -84,7 +84,7 @@ class HomeViewModel (
 
     fun blockUser(blockedUserId: String) {
         viewModelScope.launch {
-            userViewModel.userId?.let { userId ->
+            userViewModel.userId?.let {
                 userService.blockUser(blockedUserId).onSuccess {
                     _matchingProfiles.value = _matchingProfiles.value.filter { it.userId != blockedUserId }
                     Log.i("HomeViewModel", "User $blockedUserId has been blocked and profiles updated.")

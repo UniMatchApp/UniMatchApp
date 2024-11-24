@@ -9,11 +9,9 @@ import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.ui.screens.utils.enumToString
-import com.ulpgc.uniMatch.ui.screens.utils.stringToEnum
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
 
 
 open class ProfileViewModel(
@@ -189,7 +187,7 @@ open class ProfileViewModel(
         viewModelScope.launch {
             _isLoading.value = true
             val result = profileService.updateMaxDistance(maxDistance)
-            result.onSuccess {
+            result.onSuccess { maxDistance ->
                 _profileData.value = _profileData.value?.copy(maxDistance = maxDistance)
                 _isLoading.value = false
             }.onFailure { error ->
@@ -204,9 +202,10 @@ open class ProfileViewModel(
     fun updateGenderPriority(gender: Gender?) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateGenderPriority(stringToEnum<Gender>(_editedProfile.value?.genderPriority))
+
+            val result = profileService.updateGenderPriority(gender)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(genderPriority = _editedProfile.value?.genderPriority.toString())
+                _profileData.value = _profileData.value?.copy(genderPriority = gender.toString())
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -464,6 +463,20 @@ open class ProfileViewModel(
                 errorViewModel.showError(
                     error.message ?: "Error updating drinks"
                 )
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun updateLocation(location: Profile.Location?) {
+        viewModelScope.launch {
+            _isLoading.value = true
+
+            val result = profileService.updateLocation(location)
+            result.onSuccess {
+                _profileData.value = _profileData.value?.copy(location = location)
+                _isLoading.value = false
+            }.onFailure {
                 _isLoading.value = false
             }
         }

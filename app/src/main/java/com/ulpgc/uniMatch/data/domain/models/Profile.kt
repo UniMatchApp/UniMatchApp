@@ -17,7 +17,7 @@ data class Profile(
     val name: String,
     val age: Int,
     var aboutMe: String,
-    var location: Location,
+    var location: Location?,
     var gender: String,
     var sexualOrientation: String,
     var relationshipType: String,

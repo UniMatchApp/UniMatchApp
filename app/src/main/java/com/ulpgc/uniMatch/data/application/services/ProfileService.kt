@@ -12,6 +12,8 @@ import com.ulpgc.uniMatch.data.domain.models.Profile
 data class StringRequest(val newContent: String?)
 data class IntRequest(val newContent: Int?)
 data class ListRequest(val newContent: List<String>)
+data class AgeRangeRequest(val min: Int, val max: Int)
+data class LocationRequest(val latitude: Double?, val longitude: Double?, val altitude: Double?)
 
 interface ProfileService {
     suspend fun createProfile(
@@ -28,7 +30,7 @@ interface ProfileService {
 
     suspend fun getProfile(userId: String): Result<Profile>
     suspend fun updateAgeRange(min: Int, max: Int): Result<Unit>
-    suspend fun updateMaxDistance(distance: Int): Result<Unit>
+    suspend fun updateMaxDistance(distance: Int): Result<Int>
     suspend fun updateGenderPriority(gender: Gender?): Result<Unit>
     suspend fun updateRelationshipType(
         relationshipType: RelationshipType
@@ -53,6 +55,7 @@ interface ProfileService {
     suspend fun updateSmokes(smokes: Habits?): Result<Unit>
     suspend fun updateDoesSports(doesSports: Habits?): Result<Unit>
     suspend fun updateValuesAndBeliefs(valuesAndBeliefs: Religion?): Result<Unit>
+    suspend fun updateLocation(location: Profile.Location?): Result<Unit>
 
     suspend fun addImage(imageURI: Uri): Result<String>
     suspend fun removeImage(imageURL: String): Result<Unit>

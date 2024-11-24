@@ -1,8 +1,10 @@
 package com.ulpgc.uniMatch.data.infrastructure.controllers
 
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
+import com.ulpgc.uniMatch.data.application.services.AgeRangeRequest
 import com.ulpgc.uniMatch.data.application.services.IntRequest
 import com.ulpgc.uniMatch.data.application.services.ListRequest
+import com.ulpgc.uniMatch.data.application.services.LocationRequest
 import com.ulpgc.uniMatch.data.application.services.StringRequest
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.models.Profile
@@ -98,21 +100,23 @@ interface ProfileController {
     suspend fun updateValuesAndBeliefs(@Body valuesAndBeliefs: StringRequest): ApiResponse<String?>
 
     @PUT("users/gender-priority")
-    suspend fun updateGenderPriority(@Body gender: Gender?): ApiResponse<String>
+    suspend fun updateGenderPriority(@Body gender: StringRequest?): ApiResponse<String?>
 
     @PUT("users/max-distance")
     suspend fun updateMaxDistance(
-        @Body distance: Int
-    ): ApiResponse<Unit>
+        @Body distance: IntRequest
+    ): ApiResponse<Int>
 
     @PUT("users/age-range")
     suspend fun updateAgeRange(
-        @Body min: Int,
-        @Body max: Int
+        @Body ageRange: AgeRangeRequest
     ): ApiResponse<Unit>
 
     @PUT("users/wall")
     suspend fun updateWall(@Body wall: ListRequest): ApiResponse<List<String>>
+
+    @PUT("users/location")
+    suspend fun updateLocation(@Body location: LocationRequest): ApiResponse<Unit>
 
     @Multipart
     @POST("users/photo")
