@@ -471,7 +471,6 @@ fun ProfileScreen(
 
                         else -> println("Campo desconocido: $field")
                     }
-                    Log.i("ProfileScreen", "Drinks: ${profile.drinks}")
                 }
             )
 

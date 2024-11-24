@@ -60,7 +60,6 @@ open class ProfileViewModel(
     }
 
     fun hasUnsavedChanges() : Boolean {
-        Log.i("ProfileViewModel", "Checking for unsaved changes ${_profileData.value != _editedProfile.value}")
         return _profileData.value != _editedProfile.value
     }
 
