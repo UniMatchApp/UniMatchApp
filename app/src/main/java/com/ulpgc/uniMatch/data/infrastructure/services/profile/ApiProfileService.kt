@@ -137,6 +137,7 @@ class ApiProfileService(
         val longitude = location?.longitude
         val latitude = location?.latitude
         val altitude = location?.altitude
+        Log.i("ApiProfileService", "Updating location: $location")
         return handleApiCall { profileController.updateLocation(LocationRequest(longitude, latitude, altitude)) }
     }
 

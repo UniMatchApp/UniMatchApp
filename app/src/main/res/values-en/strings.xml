@@ -473,5 +473,6 @@
     <string name="submit">Submit</string>
     <string name="ok">OK</string>
     <string name="location_error">An error occurred while retrieving your location.</string>
+    <string name="fetch_location">Fetch Location</string>
 
 </resources>

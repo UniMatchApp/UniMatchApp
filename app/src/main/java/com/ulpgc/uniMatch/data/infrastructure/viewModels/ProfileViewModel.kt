@@ -215,9 +215,9 @@ open class ProfileViewModel(
     fun updateGenderPriority(gender: Gender?) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.updateGenderPriority(_editedProfile.value?.genderPriority)
+            val result = profileService.updateGenderPriority(gender)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(genderPriority = _editedProfile.value?.genderPriority)
+                _profileData.value = _profileData.value?.copy(genderPriority = gender)
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
@@ -485,7 +485,6 @@ open class ProfileViewModel(
     fun updateLocation(location: Profile.Location?) {
         viewModelScope.launch {
             _isLoading.value = true
-
             val result = profileService.updateLocation(location)
             result.onSuccess {
                 _profileData.value = _profileData.value?.copy(location = location)

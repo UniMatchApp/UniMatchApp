@@ -6,10 +6,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
+import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class PermissionsViewModel : ViewModel() {
+
     private val _hasLocationPermission = MutableStateFlow(false)
     val hasLocationPermission: StateFlow<Boolean> get() = _hasLocationPermission
 
@@ -18,6 +20,7 @@ class PermissionsViewModel : ViewModel() {
 
     fun updateLocationPermissionStatus(isGranted: Boolean) {
         _hasLocationPermission.value = isGranted
+        LocationHelper
     }
 
     private fun updateStoragePermissionStatus(isGranted: Boolean) {

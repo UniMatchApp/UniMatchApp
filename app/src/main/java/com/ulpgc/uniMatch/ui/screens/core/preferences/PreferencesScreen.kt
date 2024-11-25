@@ -27,9 +27,12 @@ import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
+import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
+import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
+
 
 @Composable
 fun PreferencesScreen(
@@ -38,16 +41,29 @@ fun PreferencesScreen(
 ) {
     val profile by profileViewModel.profileData.collectAsState()
 
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         profileViewModel.loadProfile()
+        permissionsViewModel.checkLocationPermission(context)
     }
 
-    var maxDistance by remember { mutableIntStateOf(0) }
-    var genderPriority by remember { mutableStateOf<Gender?>(null) }
-    var ageRange by remember { mutableStateOf(18 to 100) }
-    var relationshipType by remember { mutableStateOf(RelationshipType.FRIENDSHIP) }
+    val hasLocationPermission by permissionsViewModel.hasLocationPermission.collectAsState()
 
-    val context = LocalContext.current
+    LaunchedEffect(hasLocationPermission) {
+        val location = LocationHelper.getCurrentLocation(context)
+        location?.let {
+            var loc = Profile.Location(
+                latitude = it.second,
+                longitude = it.first,
+                altitude = null
+            )
+            profileViewModel.updateLocation(loc)
+        }
+    }
+
+
+
 
     val genderMap = context.resources.getStringArray(R.array.genders).mapIndexed { index, name ->
         Gender.entries[index] to name
@@ -56,24 +72,6 @@ fun PreferencesScreen(
     val relationshipTypeMap = context.resources.getStringArray(R.array.relationship_type).mapIndexed { index, name ->
         RelationshipType.entries[index] to name
     }.toMap()
-
-    val minAge = 18f
-    val maxAge = 100f
-
-    var ageMin by remember { mutableStateOf(ageRange.first.toFloat()) }
-    var ageMax by remember { mutableStateOf(ageRange.second.toFloat()) }
-
-
-    LaunchedEffect(profile) {
-        profile?.let {
-            maxDistance = it.maxDistance
-            genderPriority = it.genderPriority
-            ageRange = it.ageRange.min to it.ageRange.max
-            relationshipType = it.relationshipType
-            ageMin = it.ageRange.min.toFloat()
-            ageMax = it.ageRange.max.toFloat()
-        }
-    }
 
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -85,6 +83,19 @@ fun PreferencesScreen(
                 color = MaterialTheme.colorScheme.onBackground
             )
         } else {
+            var maxDistance by remember { mutableIntStateOf(profile?.maxDistance ?: 0) }
+            var genderPriority by remember { mutableStateOf<Gender?>(null) }
+
+            var relationshipType by remember { mutableStateOf(RelationshipType.FRIENDSHIP) }
+
+            var ageRange by remember { mutableStateOf(18 to 100) }
+
+            val minAge = 18f
+            val maxAge = 100f
+
+            var ageMin by remember { mutableStateOf(profile?.ageRange?.min?.toFloat() ?: ageRange.first.toFloat()) }
+            var ageMax by remember { mutableStateOf(profile?.ageRange?.max?.toFloat() ?: ageRange.second.toFloat()) }
+
             Text(
                 text = stringResource(id = R.string.max_distance, maxDistance),
                 color = MaterialTheme.colorScheme.onBackground
@@ -94,12 +105,16 @@ fun PreferencesScreen(
                 onValueChange = { maxDistance = it.toInt() },
                 valueRange = 0f..100f,
                 onValueChangeFinished = {
-                    if (profile?.location != null) {
-                        Log.i("ProfileLocation", profile?.location.toString())
-                        profileViewModel.updateMaxDistance(maxDistance)
+                    if(!hasLocationPermission) {
+                        permissionsViewModel.requestLocationPermission(context)
                     } else {
-                        maxDistance = 0
+                        if (profile?.location != null) {
+                            profileViewModel.updateMaxDistance(maxDistance)
+                        } else {
+                            maxDistance = 0
+                        }
                     }
+
                 },
                 colors = SliderDefaults.colors(
                     thumbColor = MaterialTheme.colorScheme.primary,
@@ -132,7 +147,6 @@ fun PreferencesScreen(
                         if (genderOption != null) {
                             genderPriority = genderOption
                         }
-
                         profileViewModel.updateGenderPriority(genderPriority)
                     },
                     includeNullOption = true
@@ -144,13 +158,11 @@ fun PreferencesScreen(
             Text(
                 text = stringResource(
                     id = R.string.age_range_title,
-                    ageRange.first,
-                    ageRange.second
+                    ageMin.toInt(),
+                    ageMax.toInt()
                 ),
                 color = MaterialTheme.colorScheme.onBackground
             )
-
-
 
             RangeSlider(
                 value = ageMin..ageMax,
@@ -208,4 +220,5 @@ fun PreferencesScreen(
             )
         }
     }
+
 }

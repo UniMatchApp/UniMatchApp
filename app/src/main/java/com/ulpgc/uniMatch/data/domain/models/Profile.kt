@@ -54,9 +54,9 @@ data class Profile(
         }
 
     data class Location(
-        val latitude: Double?,
-        val longitude: Double?,
-        val altitude: Double?
+        var latitude: Double?,
+        var longitude: Double?,
+        var altitude: Double?
     )
 
     data class AgeRange(

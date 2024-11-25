@@ -475,5 +475,7 @@
     <string name="submit">Enviar</string>
     <string name="ok">Aceptar</string>
     <string name="location_error">Ha habido un error al buscar su ubicación</string>
+    <string name="fetch_location">Obtener ubicación</string>
+
 
 </resources>

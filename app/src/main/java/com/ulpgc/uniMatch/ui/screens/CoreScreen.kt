@@ -91,6 +91,7 @@ fun CoreScreen(
 
         else -> false
     }
+
     val localContext = LocalContext.current
     val locationHelper = LocationHelper(localContext)
 
@@ -106,7 +107,6 @@ fun CoreScreen(
         Log.i("PreferencesScreen", "Location: $profileLocation")
         return profileLocation
     }
-
 
     LaunchedEffect(Unit) {
         profileViewModel.updateLocation(getLocation())
