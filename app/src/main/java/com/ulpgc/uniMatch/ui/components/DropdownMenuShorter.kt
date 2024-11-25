@@ -95,7 +95,10 @@ fun DropdownMenuShorter(
             ) {
                 if (includeNullOption) {
                     DropdownMenuItem(
-                        text = { Text(text = stringResource(id = R.string.dropdown_empty_option)) },
+                        text = { Text(
+                            text = stringResource(id = R.string.dropdown_empty_option),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )},
                         onClick = {
                             selectedText = null
                             isExpanded = false

@@ -87,6 +87,8 @@ fun ProfileScreen(
 
     var showUnsavedChanges by remember { mutableStateOf(false) }
 
+    var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
+
     if (profile != null) {
 
         var aboutMeText by remember { mutableStateOf(profile.aboutMe ?: "") }
@@ -152,8 +154,6 @@ fun ProfileScreen(
             }
         }
 
-        Log.i("ProfileScreen", "job: ${jobsMap[stringToEnum<Jobs>(profile.job)]}")
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -204,10 +204,10 @@ fun ProfileScreen(
                                 .padding(8.dp)
                         ) {
                             IconButton(onClick = {
-                                if(profileViewModel.hasUnsavedChanges()) {
+                                if (profileViewModel.hasUnsavedChanges()) {
                                     showUnsavedChanges = true
-                                }
-                                if(!showUnsavedChanges) {
+                                    pendingAction = { profile.let { onEditClick(it.profileId) } }
+                                } else {
                                     profile.let { onEditClick(it.profileId) }
                                 }
                             }) {
@@ -295,10 +295,10 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        if(profileViewModel.hasUnsavedChanges()) {
+                        if (profileViewModel.hasUnsavedChanges()) {
                             showUnsavedChanges = true
-                        }
-                        if(!showUnsavedChanges) {
+                            pendingAction = { profile.let { onEditInterestsClick(it.profileId) } }
+                        } else {
                             profile.let { onEditInterestsClick(it.profileId) }
                         }
 
@@ -498,13 +498,21 @@ fun ProfileScreen(
 
     if (showUnsavedChanges) {
         ConfirmationDialog(
-            onDismiss = { showUnsavedChanges = false },
+            onDismiss = {
+                showUnsavedChanges = false
+                pendingAction?.invoke()
+                pendingAction = null
+            },
             onConfirm = {
                 profileViewModel.updateProfile()
                 showUnsavedChanges = false
+                pendingAction?.invoke()
+                pendingAction = null
             }
         )
     }
+
+
 
 }
 
@@ -516,8 +524,8 @@ fun ConfirmationDialog(
 ) {
     AlertDialog(
         onDismissRequest = { onDismiss() },
-        title = { Text(text = stringResource(R.string.unsaved_changes)) },
-        text = { Text(text = stringResource(R.string.save_changes_confirmation)) },
+        title = { Text(text = stringResource(R.string.unsaved_changes), color = MaterialTheme.colorScheme.onBackground) },
+        text = { Text(text = stringResource(R.string.save_changes_confirmation), color = MaterialTheme.colorScheme.onBackground) },
         confirmButton = {
             Button(onClick = { onConfirm() }) {
                 Text(text = stringResource(R.string.save))
