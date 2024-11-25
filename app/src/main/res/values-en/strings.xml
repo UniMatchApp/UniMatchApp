@@ -159,6 +159,7 @@
         <item>Friends</item>
         <item>Casual</item>
         <item>Relationship</item>
+        <item>Open</item>
         <item>Other</item>
     </string-array>
 

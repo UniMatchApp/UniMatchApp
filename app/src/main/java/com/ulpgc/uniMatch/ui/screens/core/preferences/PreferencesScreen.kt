@@ -63,8 +63,6 @@ fun PreferencesScreen(
     }
 
 
-
-
     val genderMap = context.resources.getStringArray(R.array.genders).mapIndexed { index, name ->
         Gender.entries[index] to name
     }.toMap()
@@ -84,9 +82,9 @@ fun PreferencesScreen(
             )
         } else {
             var maxDistance by remember { mutableIntStateOf(profile?.maxDistance ?: 0) }
-            var genderPriority by remember { mutableStateOf<Gender?>(null) }
+            var genderPriority by remember { mutableStateOf<Gender?>(profile!!.genderPriority) }
 
-            var relationshipType by remember { mutableStateOf(RelationshipType.FRIENDSHIP) }
+            var relationshipType by remember { mutableStateOf(profile!!.relationshipType) }
 
             var ageRange by remember { mutableStateOf(18 to 100) }
 
@@ -102,7 +100,9 @@ fun PreferencesScreen(
             )
             Slider(
                 value = maxDistance.toFloat(),
-                onValueChange = { maxDistance = it.toInt() },
+                onValueChange = {
+                    maxDistance = it.toInt()
+                },
                 valueRange = 0f..100f,
                 onValueChangeFinished = {
                     if(!hasLocationPermission) {
@@ -144,10 +144,7 @@ fun PreferencesScreen(
                     selectedItem = genderMap[genderPriority],
                     onItemSelected = { selectedGender ->
                         var genderOption = genderMap.entries.find { it.value == selectedGender }?.key
-                        if (genderOption != null) {
-                            genderPriority = genderOption
-                        }
-                        profileViewModel.updateGenderPriority(genderPriority)
+                        profileViewModel.updateGenderPriority(genderOption)
                     },
                     includeNullOption = true
                 )
@@ -200,11 +197,9 @@ fun PreferencesScreen(
                         items = relationshipTypeMap.values.toList(),
                         selectedItem = relationshipTypeMap[it],
                         onItemSelected = { selectedRelationship ->
-
                             var relationshipOption = relationshipTypeMap.entries.find { it.value == selectedRelationship }?.key
                             if (relationshipOption != null) {
-                                relationshipType = relationshipOption
-                                profileViewModel.updateRelationshipType(relationshipType)
+                                profileViewModel.updateRelationshipType(relationshipOption)
                             }
                         }
                     )
