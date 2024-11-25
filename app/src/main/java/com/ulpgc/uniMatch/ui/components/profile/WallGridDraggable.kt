@@ -23,6 +23,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -174,7 +175,7 @@ fun WallGridDraggable(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text(stringResource(R.string.upload_image)) },
+            title = { Text(stringResource(R.string.upload_image), color = MaterialTheme.colorScheme.onBackground) },
             text = { Text(stringResource(R.string.where_do_you_wanna_get_image)) },
             confirmButton = {
                 Button(onClick = {

@@ -90,7 +90,6 @@ fun ProfileScreen(
     var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
 
     if (profile != null) {
-
         var aboutMeText by remember { mutableStateOf(profile.aboutMe ?: "") }
 
         Log.i("ProfileScreen", "Profile: $profile")
@@ -301,7 +300,6 @@ fun ProfileScreen(
                         } else {
                             profile.let { onEditInterestsClick(it.profileId) }
                         }
-
                     }
                     .border(width = 1.dp, color = Color.Gray)
                     .padding(16.dp)
@@ -372,9 +370,7 @@ fun ProfileScreen(
                 options = jobsMap.values.toList(),
                 selectedOption = jobsMap[stringToEnum<Jobs>(profile.job)],
                 onEditField = { selectedOption ->
-                    Log.i("ProfileScreen", "selectedOption: $selectedOption")
                     var selectedJobOption = jobsMap.entries.find { it.value == selectedOption }?.key
-                    Log.i("ProfileScreen", "selectedJobOption: $selectedJobOption")
                     profileViewModel.changeJob(
                         enumToString(selectedJobOption)
                     )
@@ -402,7 +398,6 @@ fun ProfileScreen(
 
                         "education" -> {
                             var educationOption = educationMap.entries.find { it.value == selectedOption }?.key
-                            Log.i("ProfileScreen", "selectedEducationOption: $educationOption")
                             profileViewModel.changeEducation(
                                 enumToString(educationOption)
                             )
@@ -511,9 +506,6 @@ fun ProfileScreen(
             }
         )
     }
-
-
-
 }
 
 

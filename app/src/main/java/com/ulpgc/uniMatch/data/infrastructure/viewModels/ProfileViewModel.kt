@@ -475,9 +475,9 @@ open class ProfileViewModel(
     fun updateLocation(location: Profile.Location?) {
         viewModelScope.launch {
             _isLoading.value = true
+            Log.i("ProfileViewModel", "Updating location: $location")
             val result = profileService.updateLocation(location)
             result.onSuccess { location2 ->
-                Log.i("ProfileViewModel", "Updated location: $location2")
                 _profileData.value = _profileData.value?.copy(location = location)
                 _isLoading.value = false
             }.onFailure {

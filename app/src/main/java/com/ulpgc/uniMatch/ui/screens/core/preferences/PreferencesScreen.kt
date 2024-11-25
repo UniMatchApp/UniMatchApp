@@ -45,7 +45,7 @@ fun PreferencesScreen(
 
     LaunchedEffect(Unit) {
         profileViewModel.loadProfile()
-        permissionsViewModel.checkLocationPermission(context)
+        permissionsViewModel.requestLocationPermission(context)
     }
 
     val hasLocationPermission by permissionsViewModel.hasLocationPermission.collectAsState()
@@ -61,7 +61,6 @@ fun PreferencesScreen(
             profileViewModel.updateLocation(loc)
         }
     }
-
 
     val genderMap = context.resources.getStringArray(R.array.genders).mapIndexed { index, name ->
         Gender.entries[index] to name
@@ -105,22 +104,18 @@ fun PreferencesScreen(
                 },
                 valueRange = 0f..100f,
                 onValueChangeFinished = {
-                    if(!hasLocationPermission) {
-                        permissionsViewModel.requestLocationPermission(context)
+                    if (profile?.location != null) {
+                        profileViewModel.updateMaxDistance(maxDistance)
                     } else {
-                        if (profile?.location != null) {
-                            profileViewModel.updateMaxDistance(maxDistance)
-                        } else {
-                            maxDistance = 0
-                        }
+                        maxDistance = 0
                     }
-
                 },
                 colors = SliderDefaults.colors(
                     thumbColor = MaterialTheme.colorScheme.primary,
                     activeTrackColor = MaterialTheme.colorScheme.primary,
                     inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                )
+                ),
+                enabled = hasLocationPermission
             )
 
             Spacer(modifier = Modifier.height(16.dp))

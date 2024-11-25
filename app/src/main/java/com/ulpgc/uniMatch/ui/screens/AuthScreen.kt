@@ -67,25 +67,6 @@ fun AuthScreen(
         permissionsViewModel.updateLocationPermissionStatus(isGranted)
     }
 
-//    suspend fun askForPermission() {
-//        if (!hasPermission.value) {
-//            val canRequestAgain = shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)
-//            if (canRequestAgain) {
-//                permissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-//            }
-//        } else {
-//            LocationHelper.getCurrentLocation(activity)?.let { userLocation ->
-//                val latitude = userLocation.first
-//                val longitude = userLocation.second
-//                location = Pair(latitude, longitude)
-//            }
-//        }
-//    }
-//
-//    LaunchedEffect(Unit) {
-//        askForPermission()
-//    }
-
     LaunchedEffect (hasPermission.value) {
         if (hasPermission.value) {
             LocationHelper.getCurrentLocation(activity)?.let { userLocation ->
