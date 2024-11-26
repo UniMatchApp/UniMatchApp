@@ -20,6 +20,8 @@ import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.controllers.ProfileController
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
+import com.ulpgc.uniMatch.ui.screens.shared.safeApiCall
+import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
 import com.ulpgc.uniMatch.ui.screens.utils.enumToString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -36,7 +38,7 @@ class ApiProfileService(
 ) : ProfileService {
 
     override suspend fun getProfile(userId: String): Result<Profile> {
-        return try {
+        return safeRequest {
             var profileEntity = profileDao.getProfileById(userId)
             val updatedProfileEntity = profileController.getProfile(userId)
 
@@ -51,110 +53,105 @@ class ApiProfileService(
 
             Log.i("ApiProfileService", "ProfileEntity: $profileEntity")
             Result.success(ProfileEntity.toDomain(profileEntity))
-        } catch (e: Throwable) {
-            Log.e("ApiProfileService", "Error getting profile", e)
-            Result.failure(e)
         }
     }
 
-    override suspend fun updateAgeRange(min: Int, max: Int): Result<Unit> =
-        handleApiCall { profileController.updateAgeRange(AgeRangeRequest(min, max)) }
-
-    override suspend fun updateMaxDistance(distance: Int): Result<Int> {
-        val handle = handleApiCall { profileController.updateMaxDistance(IntRequest(distance)) }
-        return handle.map { distance }
+    override suspend fun updateAgeRange(min: Int, max: Int): Result<Unit> {
+        val safeApiCall: ApiResponse<Unit> =
+            safeRequest { profileController.updateAgeRange(AgeRangeRequest(min, max)) }
+        return if (safeApiCall.success) {
+            Result.success(Unit)
+        } else {
+            Result.failure(Throwable(safeApiCall.errorMessage ?: "Unknown error occurred"))
+        }
     }
 
-    override suspend fun updateGenderPriority(gender: Gender?): Result<Unit> =
-        handleApiCall { profileController.updateGenderPriority(StringRequest(enumToString(gender))) }
+    override suspend fun updateMaxDistance(distance: Int): Result<Int> =
+        safeApiCall { profileController.updateMaxDistance(IntRequest(distance)) }
+
+
+    override suspend fun updateGenderPriority(gender: Gender?): Result<String?> =
+        safeApiCall { profileController.updateGenderPriority(StringRequest(enumToString(gender))) }
+
 
     override suspend fun updateRelationshipType(
         relationshipType: RelationshipType
-    ): Result<Unit> =
-        handleApiCall { profileController.updateRelationshipType(StringRequest(relationshipType.toString())) }
-
-    override suspend fun updateAboutMe(aboutMe: String): Result<Unit> =
-        handleApiCall { profileController.updateAbout(StringRequest(aboutMe)) }
-
-    override suspend fun updateFact(fact: String?): Result<Unit> =
-        handleApiCall { profileController.updateFact(StringRequest(fact)) }
-
-    override suspend fun updateInterests(interests: List<String>): Result<Unit> =
-        handleApiCall { profileController.updateInterests(ListRequest(interests)) }
-
-    override suspend fun updateHeight(height: Int?): Result<Unit> =
-        handleApiCall { profileController.updateHeight(IntRequest(height)) }
-
-    override suspend fun updateWeight(weight: Int?): Result<Unit> =
-        handleApiCall { profileController.updateWeight(IntRequest(weight)) }
-
-    override suspend fun updateGender(gender: Gender): Result<Unit> =
-        handleApiCall { profileController.updateGender(StringRequest(enumToString(gender))) }
-
-    override suspend fun updateSexualOrientation(
-        orientation: SexualOrientation
-    ): Result<Unit> =
-        handleApiCall { profileController.updateSexualOrientation(StringRequest(orientation.toString())) }
-
-    override suspend fun updateJob(position: String?): Result<Unit> =
-        handleApiCall {
-            profileController.updateJob(StringRequest(position))
+    ): Result<String?> =
+        safeApiCall {
+            profileController.updateRelationshipType(StringRequest(relationshipType.toString()))
         }
 
-    override suspend fun updateHoroscope(horoscope: Horoscope?): Result<Unit> =
-        handleApiCall { profileController.updateHoroscope(StringRequest(enumToString(horoscope))) }
+    override suspend fun updateAboutMe(aboutMe: String): Result<String> =
+        safeApiCall { profileController.updateAbout(StringRequest(aboutMe)) }
 
-    override suspend fun updateEducation(education: String?): Result<Unit> =
-        handleApiCall {
-            profileController.updateDegree(StringRequest(education))
+    override suspend fun updateFact(fact: String?): Result<String> =
+        safeApiCall { profileController.updateFact(StringRequest(fact)) }
+
+    override suspend fun updateInterests(interests: List<String>): Result<List<String>> =
+        safeApiCall { profileController.updateInterests(ListRequest(interests)) }
+
+    override suspend fun updateHeight(height: Int?): Result<Int> =
+        safeApiCall { profileController.updateHeight(IntRequest(height)) }
+
+    override suspend fun updateWeight(weight: Int?): Result<Int> =
+        safeApiCall { profileController.updateWeight(IntRequest(weight)) }
+
+    override suspend fun updateGender(gender: Gender): Result<String> =
+        safeApiCall { profileController.updateGender(StringRequest(enumToString(gender))) }
+
+    override suspend fun updateSexualOrientation(orientation: SexualOrientation): Result<String> =
+        safeApiCall { profileController.updateSexualOrientation(StringRequest(orientation.toString())) }
+
+    override suspend fun updateJob(position: String?): Result<String?> =
+        safeApiCall { profileController.updateJob(StringRequest(position)) }
+
+    override suspend fun updateHoroscope(horoscope: Horoscope?): Result<String?> =
+        safeApiCall { profileController.updateHoroscope(StringRequest(enumToString(horoscope))) }
+
+    override suspend fun updateEducation(education: String?): Result<String> =
+        safeApiCall { profileController.updateDegree(StringRequest(education)) }
+
+    override suspend fun updatePersonalityType(personalityType: String?): Result<String?> =
+        safeApiCall { profileController.updatePersonality(StringRequest(personalityType)) }
+
+    override suspend fun updatePets(pets: String?): Result<String?> =
+        safeApiCall { profileController.updatePets(StringRequest(pets)) }
+
+    override suspend fun updateDrinks(drinks: Habits?): Result<String> =
+        safeApiCall { profileController.updateDrinks(StringRequest(enumToString(drinks))) }
+
+    override suspend fun updateSmokes(smokes: Habits?): Result<String?> =
+        safeApiCall { profileController.updateSmokes(StringRequest(enumToString(smokes))) }
+
+    override suspend fun updateDoesSports(doesSports: Habits?): Result<String?> =
+        safeApiCall { profileController.updateSports(StringRequest(enumToString(doesSports))) }
+
+    override suspend fun updateValuesAndBeliefs(valuesAndBeliefs: Religion?): Result<String?> =
+        safeApiCall {
+            profileController.updateValuesAndBeliefs(StringRequest(enumToString(valuesAndBeliefs)))
         }
 
-    override suspend fun updatePersonalityType(
-        personalityType: String?
-    ): Result<Unit> =
-        handleApiCall { profileController.updatePersonality(StringRequest(personalityType)) }
-
-    override suspend fun updatePets(pets: String?): Result<Unit> =
-        handleApiCall {
-            profileController.updatePets(StringRequest(pets)) }
-
-    override suspend fun updateDrinks(drinks: Habits?): Result<Unit> =
-        handleApiCall { profileController.updateDrinks(StringRequest(enumToString(drinks))) }
-
-    override suspend fun updateSmokes(smokes: Habits?): Result<Unit> =
-        handleApiCall {
-            profileController.updateSmokes(StringRequest(enumToString(smokes))) }
-
-    override suspend fun updateDoesSports(doesSports: Habits?): Result<Unit> =
-        handleApiCall { profileController.updateSports(StringRequest(enumToString(doesSports))) }
-
-    override suspend fun updateValuesAndBeliefs(
-        valuesAndBeliefs: Religion?
-    ): Result<Unit> =
-        handleApiCall { profileController.updateValuesAndBeliefs(StringRequest(enumToString(valuesAndBeliefs))) }
-
-    override suspend fun updateLocation(location: Profile.Location?): Result<Unit> {
-        val longitude = location?.longitude
-        val latitude = location?.latitude
-        val altitude = location?.altitude
-        Log.i("ApiProfileService", "Updating location: $location")
-        return handleApiCall { profileController.updateLocation(LocationRequest(longitude, latitude, altitude)) }
-    }
-
-    override suspend fun addImage(imageURI: Uri): Result<String> {
-        return try {
-            val response = profileController.uploadPhoto(createImagePart(imageURI))
-            Result.success(response.value ?: "")
-        } catch (e: Exception) {
-            Result.failure(mapException(e))
+    override suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location> {
+        return safeApiCall {
+            profileController.updateLocation(
+                LocationRequest(
+                    location?.longitude,
+                    location?.latitude,
+                    location?.altitude
+                )
+            )
         }
     }
+
+    override suspend fun addImage(imageURI: Uri): Result<String> =
+        safeApiCall { profileController.uploadPhoto(createImagePart(imageURI)) }
+
 
     override suspend fun removeImage(imageURL: String): Result<Unit> =
-        handleApiCall { profileController.deletePhoto(imageURL) }
+        safeApiCall { profileController.deletePhoto(imageURL) }
 
-    override suspend fun updateWall(wall: List<String>): Result<Unit> =
-        handleApiCall { profileController.updateWall(ListRequest(wall)) }
+    override suspend fun updateWall(wall: List<String>): Result<List<String>> =
+        safeApiCall { profileController.updateWall(ListRequest(wall)) }
 
     override suspend fun createProfile(
         fullName: String,
@@ -167,7 +164,7 @@ class ApiProfileService(
         location: Pair<Double, Double>?,
         profileImage: Uri
     ): Result<Profile> = withContext(Dispatchers.IO) {
-        try {
+        safeRequest {
             val fullNameRequest = createRequestBody(fullName)
             val ageRequest = createRequestBody(age.toString())
             val aboutMeRequest = createRequestBody(aboutMe)
@@ -179,7 +176,7 @@ class ApiProfileService(
 
             val imageRequest = createImagePart(profileImage)
 
-            val request = handleApiCall {
+            return@withContext safeApiCall {
                 profileController.createProfile(
                     fullNameRequest,
                     ageRequest,
@@ -192,38 +189,7 @@ class ApiProfileService(
                     imageRequest,
                 )
             }
-
-            return@withContext handleProfileCreationResult(request)
-        } catch (e: Exception) {
-            Result.failure(Exception("Failed to create profile: ${e.message}", e))
         }
-    }
-
-    private suspend fun <T> handleApiCall(apiCall: suspend () -> T): Result<T> {
-        return try {
-            val response = apiCall()
-            Result.success(response)
-        } catch (e: Exception) {
-            Result.failure(Exception("${e.message}", e))
-        }
-    }
-
-    private fun handleProfileCreationResult(request: Result<ApiResponse<Profile>>): Result<Profile> {
-        return request.fold(
-            onSuccess = { apiResponse ->
-                apiResponse.value?.let {
-                    Result.success(it)
-                } ?: Result.failure(Exception("Profile creation failed: null response"))
-            },
-            onFailure = { throwable ->
-                Result.failure(
-                    Exception(
-                        "Profile creation failed: ${throwable.message}",
-                        throwable
-                    )
-                )
-            }
-        )
     }
 
     private fun createImagePart(uri: Uri): MultipartBody.Part {
@@ -234,22 +200,6 @@ class ApiProfileService(
         return MultipartBody.Part.createFormData("thumbnail", uri.lastPathSegment, requestBody)
     }
 
-
-
     private fun createRequestBody(value: String): RequestBody =
         value.toRequestBody("text/plain".toMediaTypeOrNull())
-
-
-    private suspend fun <T> handleDatabaseCall(databaseCall: suspend () -> T): Result<T> = try {
-        Result.success(databaseCall())
-    } catch (e: Throwable) {
-        Result.failure(e)
-    }
-
-    private fun mapException(e: Exception): Throwable = when (e) {
-        is java.net.UnknownHostException -> Throwable("No connection to server")
-        is java.net.SocketTimeoutException -> Throwable("Request timed out")
-        is retrofit2.HttpException -> Throwable("API error: ${e.message()}")
-        else -> Throwable("Unknown error: ${e.message}")
-    }
 }

@@ -34,11 +34,9 @@ open class ProfileViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
 
-
     fun getProfileData(): Profile? {
         return _profileData.value
     }
-
 
     fun loadProfile() {
         viewModelScope.launch {
@@ -142,7 +140,7 @@ open class ProfileViewModel(
         viewModelScope.launch {
             _isLoading.value = true
 
-            val updateFunctions = listOf(
+            listOf(
                 launch { updateAboutMe() },
                 launch { updateFact() },
                 launch { updateHeight() },
@@ -157,18 +155,10 @@ open class ProfileViewModel(
                 launch { updateDoesSports() },
                 launch { updateValuesAndBeliefs() },
                 launch { updateGender() },
-                launch { updateSexualOrientation() },
-
-            )
-
-            updateFunctions.joinAll()
-
+                launch { updateSexualOrientation() }
+            ).joinAll()
         }
-
-
     }
-
-
 
     fun updateAgeRange(min: Int, max: Int) {
         viewModelScope.launch {

@@ -116,7 +116,7 @@ interface ProfileController {
     suspend fun updateWall(@Body wall: ListRequest): ApiResponse<List<String>>
 
     @PUT("users/location")
-    suspend fun updateLocation(@Body location: LocationRequest): ApiResponse<String>
+    suspend fun updateLocation(@Body location: LocationRequest): ApiResponse<Profile.Location>
 
     @Multipart
     @POST("users/photo")
