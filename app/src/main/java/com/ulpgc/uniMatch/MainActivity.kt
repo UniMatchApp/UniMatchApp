@@ -12,20 +12,30 @@ import com.ulpgc.uniMatch.ui.components.ErrorDialog
 import com.ulpgc.uniMatch.ui.screens.AuthScreen
 import com.ulpgc.uniMatch.ui.screens.CoreScreen
 import com.ulpgc.uniMatch.ui.theme.UniMatchTheme
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val app = application as UniMatchApplication
+
+        app.userViewModel.checkUserSession()
+
+        // Utiliza la API de SplashScreen
+        installSplashScreen().setKeepOnScreenCondition {
+            app.userViewModel.isCheckingSession.value
+        }
+
         enableEdgeToEdge()
         setContent {
             UniMatchTheme {
                 val authState by app.userViewModel.authState.collectAsState()
                 val errorState by app.errorViewModel.errorState.collectAsState()
 
-
                 when (authState) {
+
                     is AuthState.Authenticated -> {
                         val userId = (authState as AuthState.Authenticated).user.id
                         app.initializeWebSocket(userId, app.eventbus)
@@ -58,6 +68,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
 }

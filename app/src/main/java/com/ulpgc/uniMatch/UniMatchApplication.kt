@@ -117,7 +117,7 @@ class UniMatchApplication : Application() {
     val errorViewModel: ErrorViewModel by lazy { ErrorViewModel() }
 
     val userViewModel: UserViewModel by lazy {
-        UserViewModel(userService, profileService, errorViewModel)
+        UserViewModel(userService, profileService, errorViewModel, secureStorage)
     }
 
     val profileViewModel: ProfileViewModel by lazy {

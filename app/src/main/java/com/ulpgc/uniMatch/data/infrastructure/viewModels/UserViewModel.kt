@@ -10,6 +10,7 @@ import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.User
+import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -19,7 +20,8 @@ import java.io.File
 open class UserViewModel(
     private val userService: UserService,
     private val profileService: ProfileService,
-    private val errorViewModel: ErrorViewModel
+    private val errorViewModel: ErrorViewModel,
+    private val secureStorage: SecureStorage
 ) : ViewModel() {
 
     private val _verifyCodeResult = MutableStateFlow<Boolean?>(null)
@@ -57,6 +59,9 @@ open class UserViewModel(
     private var _loginUserId = MutableStateFlow<String?>(null)
     val loginUserId: StateFlow<String?> = _loginUserId
 
+    private val _isCheckingSession = MutableStateFlow(true)
+    val isCheckingSession: StateFlow<Boolean> = _isCheckingSession
+
     fun login(email: String, password: String) {
 
         viewModelScope.launch {
@@ -80,6 +85,15 @@ open class UserViewModel(
         }
     }
 
+    fun checkUserSession() {
+        _isCheckingSession.value = true
+        val user = secureStorage.getUser()
+        if (user != null) {
+            _authState.value = AuthState.Authenticated(user)
+        }
+        _isCheckingSession.value = false
+    }
+
     fun register(email: String, password: String) {
         viewModelScope.launch {
             val result = userService.register(email, password)
@@ -100,6 +114,7 @@ open class UserViewModel(
         authToken = null
         _authState.value = AuthState.Unauthenticated
         _email.value = null
+        secureStorage.clearUser()
     }
 
     fun deleteAccount() {
