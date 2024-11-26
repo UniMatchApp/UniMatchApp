@@ -360,7 +360,7 @@ fun ProfileScreen(
                         )
                     }
                 },
-                includeNullOption = true
+                includeNullOption = false
             )
 
             Spacer(modifier = Modifier.height(16.dp))
