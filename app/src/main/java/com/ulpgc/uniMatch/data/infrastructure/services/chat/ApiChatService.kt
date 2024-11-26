@@ -13,6 +13,7 @@ import com.ulpgc.uniMatch.data.infrastructure.controllers.MessageController
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ChatMessageDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
 import com.ulpgc.uniMatch.data.infrastructure.entities.MessageEntity
+import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
 import kotlinx.coroutines.flow.first
 import java.util.UUID
 
@@ -29,7 +30,7 @@ class ApiChatService(
         content: String,
         attachment: String?
     ): Result<Message> {
-        return try {
+        return safeRequest {
             // First we save the message to the local database
             val message = Message(
                 messageId = UUID.randomUUID().toString(),
@@ -51,24 +52,19 @@ class ApiChatService(
             message.status = MessageStatus.SENT
 
             Result.success(message)
-
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 
     override suspend fun saveMessage(message: Message): Result<Unit> {
-        return try {
+        return safeRequest {
             // Insert the message into the local database
             chatMessageDao.insertMessage(MessageEntity.fromDomain(message))
             Result.success(Unit)
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 
     override suspend fun getChats(loggedUserId: String): Result<List<Chat>> {
-        return try {
+        return safeRequest {
             val chats = mutableListOf<Chat>()
             val dbChats: List<Chat> =
                 chatMessageDao.getAllChatsOrderedByLastMessage().first().map { chatEntity ->
@@ -174,8 +170,6 @@ class ApiChatService(
                 lastMessageTime = response.value.maxByOrNull { it.timestamp }?.timestamp ?: 0
             }
             Result.success(chats)
-        } catch (e: Exception) {
-            Result.failure(e)
         }
 
 
@@ -186,7 +180,7 @@ class ApiChatService(
         offset: Int,
         limit: Int
     ): Result<List<Message>> {
-        return try {
+        return safeRequest {
             val messages =
                 chatMessageDao.getMessages(chatId, limit, offset).first().map { messageEntity ->
                     Message(
@@ -204,8 +198,6 @@ class ApiChatService(
 
 
             Result.success(messages)
-        } catch (e: Exception) {
-            Result.failure(e)
         }
 
     }
@@ -214,7 +206,7 @@ class ApiChatService(
         loggedUserId: String,
         filterName: String
     ): Result<List<Chat>> {
-        return try {
+        return safeRequest {
             // Obtener la lista de chats que coinciden con el nombre de usuario
             val chatEntities = chatMessageDao.getChatsByUserName(filterName)
 
@@ -250,8 +242,6 @@ class ApiChatService(
             }
 
             Result.success(chats)
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 
@@ -260,7 +250,7 @@ class ApiChatService(
         messageId: String,
         status: MessageStatus
     ): Result<Message> {
-        return try {
+        return safeRequest {
             chatMessageDao.setMessageStatus(messageId, status)
             val response = messageController.modifyMessage(
                 messageId,
@@ -285,8 +275,6 @@ class ApiChatService(
                     attachment = response.value.attachment
                 )
             )
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 
@@ -295,7 +283,7 @@ class ApiChatService(
         messageId: String,
         newContent: String
     ): Result<Message> {
-        return try {
+        return safeRequest {
             chatMessageDao.setMessageContent(messageId, newContent)
             val response = messageController.modifyMessage(
                 messageId,
@@ -321,8 +309,6 @@ class ApiChatService(
                     attachment = response.value.attachment
                 )
             )
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 
@@ -331,7 +317,7 @@ class ApiChatService(
         messageId: String,
         deletedStatus: DeletedMessageStatus
     ): Result<Message> {
-        return try {
+        return safeRequest {
             chatMessageDao.setMessageDeletedStatus(messageId, deletedStatus)
             val response = messageController.modifyMessage(
                 messageId,
@@ -357,10 +343,6 @@ class ApiChatService(
                     attachment = response.value.attachment
                 )
             )
-
-        } catch (e: Exception) {
-            Result.failure(e)
         }
-
     }
 }

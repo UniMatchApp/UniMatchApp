@@ -6,6 +6,7 @@ import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MatchingController
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.MatchingEntity
+import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
 
 class ApiMatchingService(
     private val matchingController: MatchingController,
@@ -14,11 +15,11 @@ class ApiMatchingService(
 ) : MatchingService {
 
     override suspend fun getMatchingUsers(limit: Int): Result<List<Profile>> {
-        return try {
+        return safeRequest {
             val response = matchingController.getMatchingUsers(limit)
 
             if (!response.success) {
-               Result.success(profileDao.getAllMatching().map(MatchingEntity::toDomain))
+                Result.success(profileDao.getAllMatching().map(MatchingEntity::toDomain))
             } else {
                 val userIds = response.value ?: emptyList()
                 val profiles = userIds.mapNotNull { profileService.getProfile(it).getOrNull() }
@@ -28,13 +29,11 @@ class ApiMatchingService(
                 }
                 Result.success(profiles)
             }
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 
     override suspend fun dislikeUser(dislikedUserId: String): Result<Unit> {
-        return try {
+        return safeRequest {
             val response = matchingController.dislikeUser(dislikedUserId)
 
             if (!response.success) {
@@ -43,13 +42,11 @@ class ApiMatchingService(
                 profileDao.deleteProfile(dislikedUserId)
                 Result.success(Unit)
             }
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 
     override suspend fun likeUser(likedUserId: String): Result<Unit> {
-        return try {
+        return safeRequest {
             val response = matchingController.likeUser(likedUserId)
 
             if (!response.success) {
@@ -58,8 +55,6 @@ class ApiMatchingService(
                 profileDao.deleteProfile(likedUserId)
                 Result.success(Unit)
             }
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
 }

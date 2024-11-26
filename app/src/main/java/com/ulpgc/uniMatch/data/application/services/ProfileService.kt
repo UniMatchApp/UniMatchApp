@@ -31,33 +31,33 @@ interface ProfileService {
     suspend fun getProfile(userId: String): Result<Profile>
     suspend fun updateAgeRange(min: Int, max: Int): Result<Unit>
     suspend fun updateMaxDistance(distance: Int): Result<Int>
-    suspend fun updateGenderPriority(gender: Gender?): Result<Unit>
+    suspend fun updateGenderPriority(gender: Gender?): Result<String?>
     suspend fun updateRelationshipType(
         relationshipType: RelationshipType
-    ): Result<Unit>
+    ): Result<String?>
 
-    suspend fun updateAboutMe(aboutMe: String): Result<Unit>
-    suspend fun updateFact(fact: String?): Result<Unit>
-    suspend fun updateInterests(interests: List<String>): Result<Unit>
-    suspend fun updateHeight(height: Int?): Result<Unit>
-    suspend fun updateWeight(weight: Int?): Result<Unit>
-    suspend fun updateGender(gender: Gender): Result<Unit>
+    suspend fun updateAboutMe(aboutMe: String): Result<String>
+    suspend fun updateFact(fact: String?): Result<String>
+    suspend fun updateInterests(interests: List<String>): Result<List<String>>
+    suspend fun updateHeight(height: Int?): Result<Int>
+    suspend fun updateWeight(weight: Int?): Result<Int>
+    suspend fun updateGender(gender: Gender): Result<String>
     suspend fun updateSexualOrientation(
         orientation: SexualOrientation
-    ): Result<Unit>
+    ): Result<String>
 
-    suspend fun updateJob(position: String?): Result<Unit>
-    suspend fun updateHoroscope(horoscope: Horoscope?): Result<Unit>
-    suspend fun updateEducation(education: String?): Result<Unit>
-    suspend fun updatePersonalityType(personalityType: String?): Result<Unit>
-    suspend fun updatePets(pets: String?): Result<Unit>
-    suspend fun updateDrinks(drinks: Habits?): Result<Unit>
-    suspend fun updateSmokes(smokes: Habits?): Result<Unit>
-    suspend fun updateDoesSports(doesSports: Habits?): Result<Unit>
-    suspend fun updateValuesAndBeliefs(valuesAndBeliefs: Religion?): Result<Unit>
-    suspend fun updateLocation(location: Profile.Location?): Result<Unit>
+    suspend fun updateJob(position: String?): Result<String?>
+    suspend fun updateHoroscope(horoscope: Horoscope?): Result<String?>
+    suspend fun updateEducation(education: String?): Result<String>
+    suspend fun updatePersonalityType(personalityType: String?): Result<String?>
+    suspend fun updatePets(pets: String?): Result<String?>
+    suspend fun updateDrinks(drinks: Habits?): Result<String>
+    suspend fun updateSmokes(smokes: Habits?): Result<String?>
+    suspend fun updateDoesSports(doesSports: Habits?): Result<String?>
+    suspend fun updateValuesAndBeliefs(valuesAndBeliefs: Religion?): Result<String?>
+    suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location>
 
     suspend fun addImage(imageURI: Uri): Result<String>
     suspend fun removeImage(imageURL: String): Result<Unit>
-    suspend fun updateWall(wall: List<String>): Result<Unit>
+    suspend fun updateWall(wall: List<String>): Result<List<String>>
 }

@@ -14,8 +14,6 @@ import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.mindrot.jbcrypt.BCrypt
-import java.io.File
 
 open class UserViewModel(
     private val userService: UserService,
@@ -63,7 +61,6 @@ open class UserViewModel(
     val isCheckingSession: StateFlow<Boolean> = _isCheckingSession
 
     fun login(email: String, password: String) {
-
         viewModelScope.launch {
             val result = userService.login(email.trim(), password)
             result.onSuccess { loginResponse ->
@@ -106,9 +103,6 @@ open class UserViewModel(
         }
     }
 
-    fun validateCurrentPassword(currentPassword: String): Boolean {
-        return true
-    }
 
     fun logout() {
         authToken = null
@@ -194,15 +188,8 @@ open class UserViewModel(
     ) {
         viewModelScope.launch {
             val result = profileService.createProfile(
-                fullName,
-                age,
-                aboutMe,
-                gender,
-                sexualOrientation,
-                relationshipType,
-                birthday,
-                location,
-                profileImageUri
+                fullName, age, aboutMe, gender, sexualOrientation,
+                relationshipType, birthday, location, profileImageUri
             )
             result.onSuccess {
                 _profileCreated.value = true
@@ -249,9 +236,6 @@ open class UserViewModel(
         _resetPasswordResult.value = null
     }
 
-    private fun hashPassword(password: String): String {
-        return BCrypt.hashpw(password, BCrypt.gensalt())
-    }
 }
 
 
