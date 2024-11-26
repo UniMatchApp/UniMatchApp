@@ -315,7 +315,7 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.gender),
                 options = context.resources.getStringArray(R.array.genders).toList(),
-                selectedOption = genderMap[profile.gender]!!,
+                selectedOption = genderMap[profile.gender],
                 onEditField = { selectedOption ->
                     var genderOption = genderMap.entries.find { it.value == selectedOption }?.key
                     if (genderOption != null) {
@@ -350,7 +350,7 @@ fun ProfileScreen(
             ProfileDropdownField(
                 label = stringResource(R.string.sexual_orientation),
                 options = context.resources.getStringArray(R.array.sexual_orientation).toList(),
-                selectedOption = sexualOrientationMap[profile.sexualOrientation]!!,
+                selectedOption = sexualOrientationMap[profile.sexualOrientation],
                 onEditField = { selectedOption ->
                     val sexualOrientationOption =
                         sexualOrientationMap.entries.find { it.value == selectedOption }?.key
