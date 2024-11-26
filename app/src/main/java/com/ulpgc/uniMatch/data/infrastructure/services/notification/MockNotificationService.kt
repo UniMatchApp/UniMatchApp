@@ -11,7 +11,7 @@ class MockNotificationService(
     override suspend fun getNotifications(userId: String): Result<List<Notifications>> {
         return safeRequest {
             val notifications = NotificationMock.getNotificationsForUser(userId)
-            Result.success(notifications)
+            return@safeRequest notifications
         }
     }
 

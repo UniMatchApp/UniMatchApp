@@ -8,10 +8,9 @@ inline fun <T> safeApiCall(
     return safeRequest {
         val response = call()
         if (response.success) {
-            response.value?.let { Result.success(it) }
-                ?: Result.failure(Throwable("Response value is null"))
+            response.value ?: throw IllegalStateException("Response value is null")
         } else {
-            Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
+            throw Exception(response.errorMessage ?: "Unknown error occurred")
         }
     }
 }

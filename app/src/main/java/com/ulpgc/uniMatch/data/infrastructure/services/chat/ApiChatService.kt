@@ -51,7 +51,7 @@ class ApiChatService(
             chatMessageDao.setMessageStatus(message.messageId, MessageStatus.SENT)
             message.status = MessageStatus.SENT
 
-            Result.success(message)
+            return@safeRequest message
         }
     }
 
@@ -59,7 +59,6 @@ class ApiChatService(
         return safeRequest {
             // Insert the message into the local database
             chatMessageDao.insertMessage(MessageEntity.fromDomain(message))
-            Result.success(Unit)
         }
     }
 
@@ -169,7 +168,7 @@ class ApiChatService(
                 }
                 lastMessageTime = response.value.maxByOrNull { it.timestamp }?.timestamp ?: 0
             }
-            Result.success(chats)
+            return@safeRequest chats
         }
 
 
@@ -195,9 +194,7 @@ class ApiChatService(
                         attachment = messageEntity.attachment
                     )
                 }
-
-
-            Result.success(messages)
+            return@safeRequest messages
         }
 
     }
@@ -240,8 +237,7 @@ class ApiChatService(
                     unreadMessagesCount = unreadMessagesCount
                 )
             }
-
-            Result.success(chats)
+            return@safeRequest chats
         }
     }
 
@@ -262,19 +258,18 @@ class ApiChatService(
             if (!response.success || response.value == null) {
                 throw Throwable(response.errorMessage ?: "Unknown error occurred")
             }
-            Result.success(
-                Message(
-                    messageId = messageId,
-                    chatId = response.value.senderId,
-                    content = response.value.content,
-                    senderId = response.value.senderId,
-                    recipientId = response.value.recipientId,
-                    timestamp = response.value.timestamp,
-                    status = response.value.status,
-                    deletedStatus = response.value.deletedStatus,
-                    attachment = response.value.attachment
-                )
+            return@safeRequest Message(
+                messageId = messageId,
+                chatId = response.value.senderId,
+                content = response.value.content,
+                senderId = response.value.senderId,
+                recipientId = response.value.recipientId,
+                timestamp = response.value.timestamp,
+                status = response.value.status,
+                deletedStatus = response.value.deletedStatus,
+                attachment = response.value.attachment
             )
+
         }
     }
 
@@ -296,18 +291,16 @@ class ApiChatService(
                 throw Throwable(response.errorMessage ?: "Unknown error occurred")
             }
 
-            Result.success(
-                Message(
-                    messageId = messageId,
-                    chatId = response.value.senderId,
-                    content = response.value.content,
-                    senderId = response.value.senderId,
-                    recipientId = response.value.recipientId,
-                    timestamp = response.value.timestamp,
-                    status = response.value.status,
-                    deletedStatus = response.value.deletedStatus,
-                    attachment = response.value.attachment
-                )
+            return@safeRequest Message(
+                messageId = messageId,
+                chatId = response.value.senderId,
+                content = response.value.content,
+                senderId = response.value.senderId,
+                recipientId = response.value.recipientId,
+                timestamp = response.value.timestamp,
+                status = response.value.status,
+                deletedStatus = response.value.deletedStatus,
+                attachment = response.value.attachment
             )
         }
     }
@@ -330,18 +323,16 @@ class ApiChatService(
                 throw Throwable(response.errorMessage ?: "Unknown error occurred")
             }
 
-            Result.success(
-                Message(
-                    messageId = messageId,
-                    chatId = response.value.senderId,
-                    content = response.value.content,
-                    senderId = response.value.senderId,
-                    recipientId = response.value.recipientId,
-                    timestamp = response.value.timestamp,
-                    status = response.value.status,
-                    deletedStatus = response.value.deletedStatus,
-                    attachment = response.value.attachment
-                )
+            return@safeRequest Message(
+                messageId = messageId,
+                chatId = response.value.senderId,
+                content = response.value.content,
+                senderId = response.value.senderId,
+                recipientId = response.value.recipientId,
+                timestamp = response.value.timestamp,
+                status = response.value.status,
+                deletedStatus = response.value.deletedStatus,
+                attachment = response.value.attachment
             )
         }
     }

@@ -14,11 +14,9 @@ class MockUserService : UserService {
     override suspend fun login(email: String, password: String): Result<LoginResponse> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                Result.success(
-                    LoginResponse(
-                        "mock_token",
-                        UserMock.createMockLoggedUser()
-                    )
+                LoginResponse(
+                    "mock_token",
+                    UserMock.createMockLoggedUser()
                 )
             }
         }
@@ -27,11 +25,9 @@ class MockUserService : UserService {
     override suspend fun register(email: String, password: String): Result<RegisterResponse> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                Result.success(
-                    RegisterResponse(
-                        "mock_token",
-                        UserMock.createMockUser()
-                    )
+                RegisterResponse(
+                    "mock_token",
+                    UserMock.createMockUser()
                 )
             }
         }
@@ -40,18 +36,14 @@ class MockUserService : UserService {
     override suspend fun getCurrentUser(): Result<User?> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                Result.success(
-                    UserMock.createMockLoggedUser()
-                )
+                UserMock.createMockLoggedUser()
             }
         }
     }
 
     override suspend fun logout(): Result<Unit> {
         return withContext(Dispatchers.IO) {
-            safeRequest {
-                Result.success(Unit)
-            }
+            safeRequest {}
         }
     }
 
@@ -62,7 +54,7 @@ class MockUserService : UserService {
     ): Result<Unit> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                Result.success(Unit)
+                return@safeRequest
             }
         }
     }
@@ -70,7 +62,7 @@ class MockUserService : UserService {
     override suspend fun blockUser(blockedUserId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                Result.success(Unit)
+                return@safeRequest
             }
         }
     }
@@ -78,7 +70,7 @@ class MockUserService : UserService {
     override suspend fun forgotPassword(email: String): Result<String> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                Result.success("mock_code")
+                return@safeRequest "mock_code"
             }
         }
     }
@@ -86,15 +78,15 @@ class MockUserService : UserService {
     override suspend fun verifyCode(email: String, code: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                Result.success(true)
+                return@safeRequest true
             }
         }
     }
 
-    override suspend fun resetPassword(newPassword: String): Result<Boolean> {
+    override suspend fun resetPassword(newPassword: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                Result.success(true)
+                return@safeRequest
             }
         }
     }
@@ -102,7 +94,7 @@ class MockUserService : UserService {
     override suspend fun resendCode(email: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                Result.success(true)
+                return@safeRequest true
             }
         }
     }
@@ -110,7 +102,7 @@ class MockUserService : UserService {
     override suspend fun deleteAccount(userId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                Result.success(Unit)
+                return@safeRequest
             }
         }
     }

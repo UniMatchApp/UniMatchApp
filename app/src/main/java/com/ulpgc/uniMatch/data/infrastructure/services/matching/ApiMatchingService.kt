@@ -16,32 +16,45 @@ class ApiMatchingService(
 
     override suspend fun getMatchingUsers(limit: Int): Result<List<Profile>> {
         return safeRequest {
+            // Realizar la llamada al controlador
             val response = matchingController.getMatchingUsers(limit)
 
+            // Si la respuesta no es exitosa, retornar datos desde el DAO local
             if (!response.success) {
-                Result.success(profileDao.getAllMatching().map(MatchingEntity::toDomain))
-            } else {
-                val userIds = response.value ?: emptyList()
-                val profiles = userIds.mapNotNull { profileService.getProfile(it).getOrNull() }
-                profiles.forEach {
-                    val matchingEntity = MatchingEntity.fromDomain(it)
-                    profileDao.insertMatching(matchingEntity)
-                }
-                Result.success(profiles)
+                return@safeRequest profileDao.getAllMatching().map(MatchingEntity::toDomain)
             }
+
+            // Si la respuesta es exitosa, obtener los IDs de usuario
+            val userIds = response.value.orEmpty()
+
+            // Mapear los IDs a perfiles, ignorando cualquier fallo en la obtención de perfiles
+            val profiles = userIds.mapNotNull { userId ->
+                profileService.getProfile(userId).getOrNull()
+            }
+
+            // Guardar los perfiles en la base de datos local
+            profiles.forEach { profile ->
+                val matchingEntity = MatchingEntity.fromDomain(profile)
+                profileDao.insertMatching(matchingEntity)
+            }
+
+            // Retornar la lista de perfiles
+            return@safeRequest profiles
         }
     }
+
 
     override suspend fun dislikeUser(dislikedUserId: String): Result<Unit> {
         return safeRequest {
             val response = matchingController.dislikeUser(dislikedUserId)
 
+            // Si la respuesta no es exitosa, lanzar una excepción que será manejada por safeRequest
             if (!response.success) {
-                Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
-            } else {
-                profileDao.deleteProfile(dislikedUserId)
-                Result.success(Unit)
+                throw Exception(response.errorMessage ?: "Unknown error occurred")
             }
+
+            // Si la respuesta es exitosa, eliminar el perfil del DAO
+            profileDao.deleteProfile(dislikedUserId)
         }
     }
 
@@ -49,12 +62,14 @@ class ApiMatchingService(
         return safeRequest {
             val response = matchingController.likeUser(likedUserId)
 
+            // Si la respuesta no es exitosa, lanzar una excepción que será manejada por safeRequest
             if (!response.success) {
-                Result.failure(Throwable(response.errorMessage ?: "Unknown error occurred"))
-            } else {
-                profileDao.deleteProfile(likedUserId)
-                Result.success(Unit)
+                throw Exception(response.errorMessage ?: "Unknown error occurred")
             }
+
+            // Si la respuesta es exitosa, eliminar el perfil del DAO
+            profileDao.deleteProfile(likedUserId)
         }
     }
+
 }

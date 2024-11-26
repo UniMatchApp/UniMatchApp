@@ -9,7 +9,7 @@ import java.net.UnknownHostException
 
 inline fun <T> safeRequest(
     block: () -> T
-): T {
+): Result<T> {
     val stackTrace = Thread.currentThread().stackTrace
     val callerElement = stackTrace.getOrNull(3)
     val fullClassName = callerElement?.className ?: "UnknownClass"
@@ -17,27 +17,26 @@ inline fun <T> safeRequest(
     val simpleClassName = fullClassName.substringAfterLast('.')
 
     return try {
-        block()
+        Result.success(block())
     } catch (e: HttpException) {
         val errorMessage = e.response()?.errorBody()?.string() ?: "Unknown error occurred"
         Log.e("$simpleClassName::$methodName", "HTTP Exception: $errorMessage")
-        throw Exception("Operation failed: $errorMessage")
+        Result.failure(Exception("HTTP error: $errorMessage"))
     } catch (e: SocketTimeoutException) {
         Log.e("$simpleClassName::$methodName", "Socket Timeout Exception: ${e.message}")
-        throw Exception("Operation failed: ${e.message}")
+        Result.failure(Exception("Socket timeout: ${e.message}"))
     } catch (e: UnknownHostException) {
         Log.e("$simpleClassName::$methodName", "UnknownHostException: ${e.message}")
-        throw Exception("Operation failed: ${e.message}")
+        Result.failure(Exception("Unknown host: ${e.message}"))
     } catch (e: JSONException) {
         Log.e("$simpleClassName::$methodName", "JSON Exception: ${e.message}")
-        throw Exception("Operation failed: ${e.message}")
+        Result.failure(Exception("JSON error: ${e.message}"))
     } catch (e: JsonSyntaxException) {
         Log.e("$simpleClassName::$methodName", "JSON Syntax Exception: ${e.message}")
-        throw Exception("Operation failed: ${e.message}")
+        Result.failure(Exception("JSON syntax error: ${e.message}"))
     } catch (e: Exception) {
         Log.e("$simpleClassName::$methodName", "Exception: ${e.message}")
-        throw Exception("Operation failed: ${e.message}")
+        Result.failure(Exception("General error: ${e.message}"))
     }
 }
-
 

@@ -3,7 +3,6 @@ package com.ulpgc.uniMatch.data.infrastructure.services.profile
 import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
-import com.ulpgc.uniMatch.data.application.api.ApiResponse
 import com.ulpgc.uniMatch.data.application.services.AgeRangeRequest
 import com.ulpgc.uniMatch.data.application.services.IntRequest
 import com.ulpgc.uniMatch.data.application.services.ListRequest
@@ -52,19 +51,13 @@ class ApiProfileService(
             }
 
             Log.i("ApiProfileService", "ProfileEntity: $profileEntity")
-            Result.success(ProfileEntity.toDomain(profileEntity))
+            return@safeRequest ProfileEntity.toDomain(profileEntity)
         }
     }
 
-    override suspend fun updateAgeRange(min: Int, max: Int): Result<Unit> {
-        val safeApiCall: ApiResponse<Unit> =
-            safeRequest { profileController.updateAgeRange(AgeRangeRequest(min, max)) }
-        return if (safeApiCall.success) {
-            Result.success(Unit)
-        } else {
-            Result.failure(Throwable(safeApiCall.errorMessage ?: "Unknown error occurred"))
-        }
-    }
+    override suspend fun updateAgeRange(min: Int, max: Int): Result<Unit> =
+        safeApiCall { profileController.updateAgeRange(AgeRangeRequest(min, max)) }
+
 
     override suspend fun updateMaxDistance(distance: Int): Result<Int> =
         safeApiCall { profileController.updateMaxDistance(IntRequest(distance)) }

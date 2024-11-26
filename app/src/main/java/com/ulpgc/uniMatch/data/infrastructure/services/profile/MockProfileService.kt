@@ -139,9 +139,7 @@ class MockProfileService : ProfileService {
     ): Result<Profile> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                Result.success(
-                    ProfileMock.createMockProfile()
-                )
+                return@safeRequest ProfileMock.createMockProfile()
             }
         }
     }
