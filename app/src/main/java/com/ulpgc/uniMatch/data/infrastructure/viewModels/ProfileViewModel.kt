@@ -559,9 +559,11 @@ open class ProfileViewModel(
             _isLoading.value = true
             val result = profileService.addImage(imageUrl)
             result.onSuccess { imageUrlApi ->
+                Log.i("ProfileViewModel", "Image added: $imageUrlApi")
                 _profileData.value = _profileData.value?.copy(
                     wall = _profileData.value?.wall.orEmpty() + imageUrlApi
                 )
+                Log.i("ProfileViewModel", "Wall updated: ${_profileData.value?.wall}")
                 _isLoading.value = false
             }.onFailure { error ->
                 errorViewModel.showError(
