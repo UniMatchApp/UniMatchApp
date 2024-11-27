@@ -65,6 +65,12 @@ fun NotificationsScreen(
         notificationsViewModel.loadNotifications()
     }
 
+    LaunchedEffect(notifications) {
+        notifications.forEach { notification ->
+            notificationsViewModel.markNotificationAsRead(notification.id)
+        }
+    }
+
     if (showDeleteConfirmationDialog.value) {
         DeleteConfirmationDialog(
             onConfirm = {
@@ -147,9 +153,9 @@ fun NotificationsScreen(
         }
     }
 
-    if (isLoading || profileLoading) {
-        LoadingSkeleton()
-    }
+//    if (isLoading || profileLoading) {
+//        LoadingSkeleton()
+//    }
 }
 
 @Composable

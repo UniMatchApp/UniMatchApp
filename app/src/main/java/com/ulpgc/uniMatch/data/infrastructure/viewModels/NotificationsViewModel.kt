@@ -92,10 +92,7 @@ class NotificationsViewModel (
                 result.onSuccess { notifications ->
                     _notifications.value = notifications
                     _isLoading.value = false
-                }.onFailure { error ->
-                    errorViewModel.showError(
-                        error.message ?: "Error loading notifications"
-                    )
+                }.onFailure {
                     _isLoading.value = false
                 }
             }
@@ -150,10 +147,6 @@ class NotificationsViewModel (
                     )
                 }
         }
-    }
-
-    fun disableAllNotifications() {
-        TODO("Not yet implemented")
     }
 
     fun toggleNotifications(it: Boolean) {

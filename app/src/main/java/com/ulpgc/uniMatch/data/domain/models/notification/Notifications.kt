@@ -14,16 +14,5 @@ data class Notifications (
     val date: Long,
     val recipient: String
 ) {
-    fun toEntity(): NotificationEntity {
-        return NotificationEntity(
-            id = id,
-            type = type,
-            status = status,
-            contentId = contentId,
-            payload = payload,
-            date = date,
-            recipient = recipient
-        )
-    }
 
 }

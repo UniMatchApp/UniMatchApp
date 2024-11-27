@@ -104,7 +104,8 @@ class UniMatchApplication : Application() {
 
     private val apiNotificationService by lazy {
         ApiNotificationService(
-            notificationController = apiClient.retrofit.create(NotificationController::class.java)
+            notificationController = apiClient.retrofit.create(NotificationController::class.java),
+            notificationDao = database.notificationsDao()
         )
     }
 
