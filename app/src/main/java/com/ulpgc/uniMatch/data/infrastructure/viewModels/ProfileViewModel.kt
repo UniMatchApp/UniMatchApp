@@ -66,6 +66,9 @@ open class ProfileViewModel(
     }
 
 
+    fun changeIntersts(interests: List<String>) {
+        _editedProfile.value?.interests = interests
+    }
     fun changeAboutMe(aboutMe: String) {
         _editedProfile.value?.aboutMe = aboutMe
     }
@@ -144,7 +147,7 @@ open class ProfileViewModel(
 
     fun updateProfile() {
         viewModelScope.launch {
-            _isLoading.value = true
+            _isLoadingProfile.value = true
 
             listOf(
                 launch { updateAboutMe() },
@@ -163,6 +166,8 @@ open class ProfileViewModel(
                 launch { updateGender() },
                 launch { updateSexualOrientation() }
             ).joinAll()
+
+            _isLoadingProfile.value = false
         }
     }
 
