@@ -162,9 +162,9 @@ class UniMatchApplication : Application() {
         Log.i("UniMatchApplication", "Application initialized")
 
         // Eliminar manualmente el archivo de la base de datos
-//        val db = applicationContext.getDatabasePath("uniMatch_database")
-//        if (db.exists()) {
-//            db.delete()
-//        }
+        val db = applicationContext.getDatabasePath("uniMatch_database")
+        if (db.exists()) {
+            db.delete()
+        }
     }
 }

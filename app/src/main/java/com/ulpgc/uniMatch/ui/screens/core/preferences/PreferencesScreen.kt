@@ -1,6 +1,5 @@
 package com.ulpgc.uniMatch.ui.screens.core.preferences
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

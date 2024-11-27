@@ -44,7 +44,6 @@ fun ProfileDropdownField(
             items = options,
             selectedItem = currentSelection,
             onItemSelected = { selected ->
-                Log.i("ProfileScreen", "selectedJobOption: $selected")
                 currentSelection = selected
                 onEditField(currentSelection)
             },

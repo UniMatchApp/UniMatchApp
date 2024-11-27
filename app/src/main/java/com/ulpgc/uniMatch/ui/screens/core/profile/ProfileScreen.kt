@@ -83,13 +83,22 @@ fun ProfileScreen(
 
     val context = LocalContext.current
 
-    val profile = profileViewModel.profileData.collectAsState().value
+    val profile = profileViewModel.editedProfile.collectAsState().value
 
+    val isLoadingProfile = profileViewModel.isLoadingProfile.collectAsState().value
     var showUnsavedChanges by remember { mutableStateOf(false) }
 
     var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
 
-    if (profile != null) {
+    if(isLoadingProfile) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+    else if (profile != null) {
         var aboutMeText by remember { mutableStateOf(profile.aboutMe ?: "") }
 
         Log.i("ProfileScreen", "Profile: $profile")
