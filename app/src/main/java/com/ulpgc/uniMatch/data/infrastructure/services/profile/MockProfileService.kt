@@ -31,14 +31,14 @@ class MockProfileService : ProfileService {
         )
     }
 
-    override suspend fun updateGenderPriority(gender: Gender?): Result<String?> {
-        return Result.success(gender.toString())
+    override suspend fun updateGenderPriority(gender: Gender?): Result<Gender?> {
+        return Result.success(gender)
     }
 
     override suspend fun updateRelationshipType(
         relationshipType: RelationshipType
-    ): Result<String?> {
-        return Result.success(relationshipType.toString())
+    ): Result<RelationshipType> {
+        return Result.success(relationshipType)
     }
 
     override suspend fun updateAboutMe(aboutMe: String): Result<String> {
@@ -61,14 +61,14 @@ class MockProfileService : ProfileService {
         return Result.success(20000)
     }
 
-    override suspend fun updateGender(gender: Gender): Result<String> {
-        return Result.success(gender.toString())
+    override suspend fun updateGender(gender: Gender): Result<Gender> {
+        return Result.success(gender)
     }
 
     override suspend fun updateSexualOrientation(
         orientation: SexualOrientation
-    ): Result<String> {
-        return Result.success(orientation.toString())
+    ): Result<SexualOrientation> {
+        return Result.success(orientation)
     }
 
     override suspend fun updateJob(position: String?): Result<String?> {
@@ -76,8 +76,8 @@ class MockProfileService : ProfileService {
     }
 
 
-    override suspend fun updateHoroscope(horoscope: Horoscope?): Result<String?> {
-        return Result.success(horoscope.toString())
+    override suspend fun updateHoroscope(horoscope: Horoscope?): Result<Horoscope?> {
+        return Result.success(horoscope)
     }
 
     override suspend fun updateEducation(education: String?): Result<String> {
@@ -94,20 +94,20 @@ class MockProfileService : ProfileService {
         return Result.success("mock_pets")
     }
 
-    override suspend fun updateDrinks(drinks: Habits?): Result<String> {
-        return Result.success(drinks.toString())
+    override suspend fun updateDrinks(drinks: Habits?): Result<Habits?> {
+        return Result.success(drinks)
     }
 
-    override suspend fun updateSmokes(smokes: Habits?): Result<String?> {
-        return Result.success(smokes.toString())
+    override suspend fun updateSmokes(smokes: Habits?): Result<Habits?> {
+        return Result.success(smokes)
     }
 
-    override suspend fun updateDoesSports(doesSports: Habits?): Result<String?> {
-        return Result.success(doesSports.toString())
+    override suspend fun updateDoesSports(doesSports: Habits?): Result<Habits?> {
+        return Result.success(doesSports)
     }
 
-    override suspend fun updateValuesAndBeliefs(valuesAndBeliefs: Religion?): Result<String?> {
-        return Result.success(valuesAndBeliefs.toString())
+    override suspend fun updateValuesAndBeliefs(valuesAndBeliefs: Religion?): Result<Religion?> {
+        return Result.success(valuesAndBeliefs)
     }
 
     override suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location> {

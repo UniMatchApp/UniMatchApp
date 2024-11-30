@@ -63,7 +63,7 @@ import coil.compose.AsyncImage
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enums.Interests
 import com.ulpgc.uniMatch.data.domain.models.Profile
-import com.ulpgc.uniMatch.ui.screens.utils.enumToString
+import com.ulpgc.uniMatch.ui.screens.utils.enumToStringReplace
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -110,7 +110,7 @@ fun ProfileCard(
         }.toMap()
 
     var profileInterests = interestsMap.mapNotNull { entry ->
-        if (profile.interests.contains(enumToString(entry.key))) {
+        if (profile.interests.contains(enumToStringReplace(entry.key))) {
             entry.value
         } else {
             null

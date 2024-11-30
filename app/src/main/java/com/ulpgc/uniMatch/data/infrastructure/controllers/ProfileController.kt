@@ -42,19 +42,19 @@ interface ProfileController {
     suspend fun updateAbout(@Body about: StringRequest): ApiResponse<String>
 
     @PUT("users/fact")
-    suspend fun updateFact(@Body fact: StringRequest): ApiResponse<String>
+    suspend fun updateFact(@Body fact: StringRequest): ApiResponse<String?>
 
     @PUT("users/degree")
-    suspend fun updateDegree(@Body degree: StringRequest): ApiResponse<String>
+    suspend fun updateDegree(@Body degree: StringRequest): ApiResponse<String?>
 
     @PUT("users/drinks")
-    suspend fun updateDrinks(@Body drinks: StringRequest): ApiResponse<String>
+    suspend fun updateDrinks(@Body drinks: StringRequest): ApiResponse<String?>
 
     @PUT("users/height")
-    suspend fun updateHeight(@Body height: IntRequest): ApiResponse<Int>
+    suspend fun updateHeight(@Body height: IntRequest): ApiResponse<Int?>
 
     @PUT("users/weight")
-    suspend fun updateWeight(@Body weight: IntRequest): ApiResponse<Int>
+    suspend fun updateWeight(@Body weight: IntRequest): ApiResponse<Int?>
 
     @PUT("users/gender")
     suspend fun updateGender(@Body gender: StringRequest): ApiResponse<String>
@@ -83,7 +83,7 @@ interface ProfileController {
     @PUT("users/relationship-type")
     suspend fun updateRelationshipType(
         @Body relationshipType: StringRequest
-    ): ApiResponse<String?>
+    ): ApiResponse<String>
 
     @PUT("users/sexual-orientation")
     suspend fun updateSexualOrientation(

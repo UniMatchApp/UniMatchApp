@@ -5,14 +5,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,7 +22,7 @@ import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enums.Interests
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.profile.InterestGrid
-import com.ulpgc.uniMatch.ui.screens.utils.enumToString
+import com.ulpgc.uniMatch.ui.screens.utils.enumToStringReplace
 
 @Composable
 fun ProfileInterests(
@@ -58,7 +56,7 @@ fun ProfileInterests(
             )
 
             val profileInterests = interestsMap.mapNotNull { entry ->
-                if (addedInterests.value.contains(enumToString(entry.key))) {
+                if (addedInterests.value.contains(enumToStringReplace(entry.key))) {
                     entry.value
                 } else {
                     null
@@ -69,11 +67,11 @@ fun ProfileInterests(
                 val key = interestsMap.entries.find { it.value == interest }?.key
                 if (key != null) {
                     if (isAdded) {
-                        enumToString(key)?.let {
+                        enumToStringReplace(key)?.let {
                             addedInterests.value = (addedInterests.value + it).toMutableList() // Conversión a MutableList
                         }
                     } else {
-                        enumToString(key)?.let {
+                        enumToStringReplace(key)?.let {
                             addedInterests.value = (addedInterests.value - it).toMutableList() // Conversión a MutableList
                         }
                     }
@@ -84,7 +82,6 @@ fun ProfileInterests(
             DisposableEffect(Unit) {
                 onDispose {
                     Log.i("ProfileInterests", "Updating interests: ${addedInterests.value}")
-                    profileViewModel.changeIntersts(addedInterests.value)
                     profileViewModel.updateInterests(addedInterests.value)
                 }
             }

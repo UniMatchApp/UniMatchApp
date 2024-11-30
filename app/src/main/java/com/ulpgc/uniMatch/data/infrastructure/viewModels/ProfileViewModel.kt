@@ -12,13 +12,9 @@ import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Profile
-import com.ulpgc.uniMatch.ui.screens.utils.stringToEnum
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-
-
 
 open class ProfileViewModel(
     private val profileService: ProfileService,
@@ -29,594 +25,344 @@ open class ProfileViewModel(
     private val _profileData = MutableStateFlow<Profile?>(null)
     val profileData: StateFlow<Profile?> get() = _profileData
 
-    private var _editedProfile = MutableStateFlow<Profile?>(null)
+    private val _editedProfile = MutableStateFlow<Profile?>(null)
     val editedProfile: StateFlow<Profile?> get() = _editedProfile
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
 
-    private val _isLoadingProfile = MutableStateFlow(false)
-    val isLoadingProfile: StateFlow<Boolean> get() = _isLoading
-
-    fun getProfileData(): Profile? {
-        return _profileData.value
-    }
-
     fun loadProfile() {
-
-        viewModelScope.launch {
-            _isLoadingProfile.value = true
+        performLoadingAction {
             val result = profileService.getProfile(userViewModel.userId!!)
-            result.onSuccess { profileData ->
-                Log.i("ProfileViewModel", "Profile loaded: $profileData")
-                _profileData.value = profileData
-                _editedProfile.value = profileData.copy()
-                _isLoadingProfile.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error loading profile"
-                )
-                _isLoadingProfile.value = false
+            result.onSuccess { profile ->
+                _profileData.value = profile
+                _editedProfile.value = profile.copy()
             }
         }
     }
 
-    fun hasUnsavedChanges() : Boolean {
-        return _profileData.value != _editedProfile.value
+    fun hasUnsavedChanges(): Boolean = _profileData.value != _editedProfile.value
+
+    private fun <T> updateField(
+        fieldUpdater: (Profile, T) -> Profile,
+        newValue: T,
+        serviceCall: suspend (T) -> Result<T>,
+        fieldSelector: (Profile) -> T?
+    ) {
+        val currentProfile = _profileData.value ?: return
+        val editedProfile = _editedProfile.value ?: return
+        if (fieldSelector(currentProfile) == newValue && fieldSelector(editedProfile) == newValue) return
+
+        performLoadingAction {
+            val result = serviceCall(newValue)
+            result.onSuccess { updatedValue ->
+                _profileData.value = fieldUpdater(currentProfile, updatedValue)
+                _editedProfile.value = fieldUpdater(editedProfile, updatedValue)
+            }.onFailure { error ->
+                Log.e("ProfileViewModel", "Error updating field", error)
+                _editedProfile.value = _profileData.value
+                errorViewModel.showError(error.message ?: "Error updating field")
+            }
+        }
     }
 
 
-    fun changeIntersts(interests: List<String>) {
-        _editedProfile.value?.interests = interests
-    }
-    fun changeAboutMe(aboutMe: String) {
-        _editedProfile.value?.aboutMe = aboutMe
-    }
-
-    fun changeFact(fact: String) {
-        _editedProfile.value?.fact = fact
-    }
-
-    fun changeHeight(height: Int?) {
-        _editedProfile.value?.height = height
-    }
-
-    fun changeWeight(weight: Int?) {
-        _editedProfile.value?.weight = weight
-    }
-
-    fun changeJob(job: String?) {
-        _editedProfile.value?.job = job
-    }
-
-    fun changeHoroscope(horoscope: Horoscope?) {
-        _editedProfile.value?.horoscope = horoscope
-    }
-
-    fun changeEducation(education: String?) {
-        _editedProfile.value?.education = education
-    }
-
-    fun changePersonalityType(personalityType: String?) {
-        _editedProfile.value?.personalityType = personalityType
-    }
-
-    fun changePets(pets: String?) {
-        _editedProfile.value?.pets = pets
-    }
-
-    fun changeDrinks(drinks: Habits?) {
-        _editedProfile.value?.drinks = drinks
-    }
-
-    fun changeSmokes(smokes: Habits?) {
-        _editedProfile.value?.smokes = smokes
-    }
-
-    fun changeDoesSports(doesSports: Habits?) {
-        _editedProfile.value?.doesSports = doesSports
-    }
-
-    fun changeValuesAndBeliefs(valuesAndBeliefs: Religion?) {
-        _editedProfile.value?.valuesAndBeliefs = valuesAndBeliefs
-    }
-
-    fun changeGender(gender: Gender) {
-        _editedProfile.value?.gender = gender
-    }
-
-    fun changeSexualOrientation(orientation: SexualOrientation) {
-        _editedProfile.value?.sexualOrientation = orientation
-    }
-
-    fun loadProfile(userId: String) {
+    private fun performLoadingAction(action: suspend () -> Unit) {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = profileService.getProfile(userId)
-            result.onSuccess { profileData ->
-                _profileData.value = profileData
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error loading profile"
-                )
+            try {
+                action()
+            } finally {
                 _isLoading.value = false
             }
         }
     }
 
     fun updateProfile() {
-        viewModelScope.launch {
-            _isLoadingProfile.value = true
+        performLoadingAction {
+            try {
+                updateAboutMe()
+                updateFact()
+                updateHeight()
+                updateWeight()
+                updateJob()
+                updateHoroscope()
+                updateEducation()
+                updatePersonalityType()
+                updatePets()
+                updateDrinks()
+                updateSmokes()
+                updateDoesSports()
+                updateValuesAndBeliefs()
+                updateGender()
+                updateSexualOrientation()
 
-            listOf(
-                launch { updateAboutMe() },
-                launch { updateFact() },
-                launch { updateHeight() },
-                launch { updateWeight() },
-                launch { updateJob() },
-                launch { updateHoroscope() },
-                launch { updateEducation() },
-                launch { updatePersonalityType() },
-                launch { updatePets() },
-                launch { updateDrinks() },
-                launch { updateSmokes() },
-                launch { updateDoesSports() },
-                launch { updateValuesAndBeliefs() },
-                launch { updateGender() },
-                launch { updateSexualOrientation() }
-            ).joinAll()
-
-            _isLoadingProfile.value = false
+            } catch (error: Exception) {
+                errorViewModel.showError(error.message ?: "Error updating profile")
+            }
         }
+    }
+
+
+    fun updateInterests(interests: List<String>) = updateField(
+        fieldUpdater = { profile, value -> profile.copy(interests = value) },
+        newValue = interests,
+        serviceCall = profileService::updateInterests,
+        fieldSelector = Profile::interests
+    )
+
+    private fun updateAboutMe() = _editedProfile.value?.let { updateField(
+        fieldUpdater = { profile, value -> profile.copy(aboutMe = value) },
+        newValue = it.aboutMe,
+        serviceCall = profileService::updateAboutMe,
+        fieldSelector = Profile::aboutMe
+        )
+    }
+
+    fun updateAboutMe(aboutMe: String) {
+        _editedProfile.value = _editedProfile.value?.copy(aboutMe = aboutMe)
+    }
+
+    private fun updateJob() = updateField(
+        fieldUpdater = { profile, value -> profile.copy(job = value) },
+        newValue = _editedProfile.value?.job,
+        serviceCall = profileService::updateJob,
+        fieldSelector = Profile::job
+    )
+
+    fun updateJob(job: String?) {
+        _editedProfile.value = _editedProfile.value?.copy(job = job)
+    }
+
+    private fun updateHoroscope() {
+        val horoscope = _editedProfile.value?.horoscope ?: return
+        updateField(
+            fieldUpdater = { profile, newHoroscope -> profile.copy(horoscope = newHoroscope) },
+            newValue = horoscope,
+            serviceCall = profileService::updateHoroscope,
+            fieldSelector = Profile::horoscope
+        )
+    }
+
+    fun updateHoroscope(horoscope: Horoscope?) {
+        _editedProfile.value = _editedProfile.value?.copy(horoscope = horoscope)
+    }
+
+    private fun updateEducation() = updateField(
+        fieldUpdater = { profile, value -> profile.copy(education = value) },
+        newValue = _editedProfile.value?.education,
+        serviceCall = profileService::updateEducation,
+        fieldSelector = Profile::education
+    )
+
+    fun updateEducation(education: String?) {
+        _editedProfile.value = _editedProfile.value?.copy(education = education)
+    }
+
+    private fun updatePersonalityType() = updateField(
+        fieldUpdater = { profile, value -> profile.copy(personalityType = value) },
+        newValue = _editedProfile.value?.personalityType,
+        serviceCall = profileService::updatePersonalityType,
+        fieldSelector = Profile::personalityType
+    )
+
+    fun updatePersonalityType(personalityType: String?) {
+        _editedProfile.value = _editedProfile.value?.copy(personalityType = personalityType)
+    }
+
+    private fun updatePets() = updateField(
+        fieldUpdater = { profile, value -> profile.copy(pets = value) },
+        newValue = _editedProfile.value?.pets,
+        serviceCall = profileService::updatePets,
+        fieldSelector = Profile::pets
+    )
+
+    fun updatePets(pets: String?) {
+        _editedProfile.value = _editedProfile.value?.copy(pets = pets)
+    }
+
+    private fun updateDrinks() = updateField(
+        fieldUpdater = { profile, value -> profile.copy(drinks = value) },
+        newValue = _editedProfile.value?.drinks,
+        serviceCall = profileService::updateDrinks,
+        fieldSelector = Profile::drinks
+    )
+
+    fun updateDrinks(drinks: Habits?) {
+        _editedProfile.value = _editedProfile.value?.copy(drinks = drinks)
+    }
+
+    private fun updateSmokes() = updateField(
+        fieldUpdater = { profile, value -> profile.copy(smokes = value) },
+        newValue = _editedProfile.value?.smokes,
+        serviceCall = profileService::updateSmokes,
+        fieldSelector = Profile::smokes
+    )
+
+    fun updateSmokes(smokes: Habits?) {
+        _editedProfile.value = _editedProfile.value?.copy(smokes = smokes)
+    }
+
+    private fun updateDoesSports() = updateField(
+        fieldUpdater = { profile, value -> profile.copy(doesSports = value) },
+        newValue = _editedProfile.value?.doesSports,
+        serviceCall = profileService::updateDoesSports,
+        fieldSelector = Profile::doesSports
+    )
+
+    fun updateDoesSports(doesSports: Habits?) {
+        _editedProfile.value = _editedProfile.value?.copy(doesSports = doesSports)
+    }
+
+    private fun updateValuesAndBeliefs() = updateField(
+        fieldUpdater = { profile, value -> profile.copy(valuesAndBeliefs = value) },
+        newValue = _editedProfile.value?.valuesAndBeliefs,
+        serviceCall = profileService::updateValuesAndBeliefs,
+        fieldSelector = Profile::valuesAndBeliefs
+    )
+
+    fun updateValuesAndBeliefs(valuesAndBeliefs: Religion?) {
+        _editedProfile.value = _editedProfile.value?.copy(valuesAndBeliefs = valuesAndBeliefs)
+    }
+
+    private fun updateWeight() = updateField(
+        fieldUpdater = { profile, value -> profile.copy(weight = value) },
+        newValue = _editedProfile.value?.weight,
+        serviceCall = profileService::updateWeight,
+        fieldSelector = Profile::weight
+    )
+
+    fun updateWeight(weight: Int?) {
+        _editedProfile.value = _editedProfile.value?.copy(weight = weight)
+    }
+
+    private fun updateHeight() = updateField(
+        fieldUpdater = { profile, value -> profile.copy(height = value) },
+        newValue = _editedProfile.value?.height,
+        serviceCall = profileService::updateHeight,
+        fieldSelector = Profile::height
+    )
+
+    fun updateHeight(height: Int?) {
+        _editedProfile.value = _editedProfile.value?.copy(height = height)
+    }
+
+    private fun updateFact() = updateField(
+        fieldUpdater = { profile, value -> profile.copy(fact = value) },
+        newValue = _editedProfile.value?.fact,
+        serviceCall = profileService::updateFact,
+        fieldSelector = Profile::fact
+    )
+
+    fun updateFact(fact: String) {
+        _editedProfile.value = _editedProfile.value?.copy(fact = fact)
+    }
+
+    private fun updateSexualOrientation(){
+        val sexualOrientation = _editedProfile.value?.sexualOrientation ?: return
+        updateField(
+            fieldUpdater = { profile, newSexualOrientation -> profile.copy(sexualOrientation = newSexualOrientation) },
+            newValue = sexualOrientation,
+            serviceCall = profileService::updateSexualOrientation,
+            fieldSelector = Profile::sexualOrientation
+        )
+    }
+
+    fun updateSexualOrientation(orientation: SexualOrientation) {
+        _editedProfile.value = _editedProfile.value?.copy(sexualOrientation = orientation)
+    }
+
+    private fun updateGender(){
+        val gender = _editedProfile.value?.gender ?: return
+        updateField(
+            fieldUpdater = { profile, value -> profile.copy(gender = value) },
+            newValue = gender,
+            serviceCall = profileService::updateGender,
+            fieldSelector = Profile::gender
+        )
+    }
+
+    fun updateGender(gender: Gender) {
+        _editedProfile.value = _editedProfile.value?.copy(gender = gender)
+    }
+
+    fun updateRelationshipType(relationshipType: RelationshipType) {
+        updateField(
+            fieldUpdater = { profile, value -> profile.copy(relationshipType = value) },
+            newValue = relationshipType,
+            serviceCall = profileService::updateRelationshipType,
+            fieldSelector = Profile::relationshipType
+        )
     }
 
     fun updateAgeRange(min: Int, max: Int) {
-        viewModelScope.launch {
-            _isLoading.value = true
+        val currentProfile = _profileData.value ?: return
+        val editedProfile = _editedProfile.value ?: return
+        if (currentProfile.ageRange == Profile.AgeRange(min, max)) return
+
+        performLoadingAction {
             val result = profileService.updateAgeRange(min, max)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(ageRange = Profile.AgeRange(min, max))
-                _isLoading.value = false
+                _profileData.value = currentProfile.copy(ageRange = Profile.AgeRange(min, max))
+                _editedProfile.value = editedProfile.copy(ageRange = Profile.AgeRange(min, max))
             }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating age range"
-                )
-                _isLoading.value = false
+                errorViewModel.showError(error.message ?: "Error updating age range")
             }
         }
     }
 
-    fun updateMaxDistance(maxDistance: Int) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateMaxDistance(maxDistance)
-            result.onSuccess { maxDistance ->
-                _profileData.value = _profileData.value?.copy(maxDistance = maxDistance)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating max distance"
-                )
-                _isLoading.value = false
-            }
-        }
+    fun updateGenderPriority (gender: Gender?) {
+        updateField(
+            fieldUpdater = { profile, value -> profile.copy(genderPriority = value) },
+            newValue = gender,
+            serviceCall = profileService::updateGenderPriority,
+            fieldSelector = Profile::genderPriority
+        )
     }
 
-    fun updateGenderPriority(gender: Gender?) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateGenderPriority(gender)
-            result.onSuccess {
-                _profileData.value = _profileData.value?.copy(genderPriority = gender)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating gender priority"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
+    fun updateMaxDistance(maxDistance: Int) = updateField(
+        fieldUpdater = { profile, value -> profile.copy(maxDistance = value) },
+        newValue = maxDistance,
+        serviceCall = profileService::updateMaxDistance,
+        fieldSelector = Profile::maxDistance
+    )
 
+    fun updateLocation(location: Profile.Location?) = updateField(
+        fieldUpdater = { profile, value -> profile.copy(location = value) },
+        newValue = location,
+        serviceCall = profileService::updateLocation,
+        fieldSelector = Profile::location
+    )
 
-    fun updateRelationshipType(relationshipType: RelationshipType) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result =
-                profileService.updateRelationshipType(relationshipType)
-            result.onSuccess {
-                _profileData.value = _profileData.value?.copy(relationshipType = relationshipType)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating relationship type"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-
-    fun updateAboutMe() {
-        if (_editedProfile.value?.aboutMe == _profileData.value?.aboutMe) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = _editedProfile.value?.aboutMe?.let {
-                profileService.updateAboutMe(it)
-            }
-            if (result != null) {
-                result.onSuccess { newAboutMe ->
-                    _profileData.value = _profileData.value?.copy(aboutMe = newAboutMe)
-                    _isLoading.value = false
-                }.onFailure { error ->
-                    errorViewModel.showError(
-                        error.message ?: "Error updating about me"
-                    )
-                    _isLoading.value = false
-                }
-            }
-        }
-    }
-
-    fun updateFact() {
-        if (_editedProfile.value?.fact == _profileData.value?.fact) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateFact(_editedProfile.value?.fact)
-            result.onSuccess { newFact ->
-                Log.i("ProfileViewModel", "Fact updated: ${_editedProfile.value?.fact}")
-                _profileData.value = _profileData.value?.copy(fact = newFact)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating fact"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updateInterests(interests: List<String>) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateInterests(interests)
-            result.onSuccess {
-                Log.i("ProfileViewModel", "Interests updated: $interests")
-                _profileData.value = _profileData.value?.copy(interests = interests)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating interests"
-                )
-                _isLoading.value = false
-            }
-        }
-
-    }
-
-    fun updateSexualOrientation() {
-        if (_editedProfile.value?.sexualOrientation == _profileData.value?.sexualOrientation) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = _editedProfile.value?.sexualOrientation?.let {
-                profileService.updateSexualOrientation(it)
-            }
-            if (result != null) {
-                result.onSuccess { newSexualOrientation ->
-                    Log.i(
-                        "ProfileViewModel",
-                        "updated sexual orientation: ${_editedProfile.value?.sexualOrientation}"
-                    )
-                    val sexualOrientation = stringToEnum<SexualOrientation>(newSexualOrientation)
-                    if (sexualOrientation == null) {
-                        errorViewModel.showError("Error updating sexual orientation")
-                        _isLoading.value = false
-                        return@onSuccess
-                    }
-                    _profileData.value =
-                        _profileData.value?.copy(sexualOrientation = sexualOrientation)
-                    _isLoading.value = false
-                }.onFailure { error ->
-                    errorViewModel.showError(
-                        error.message ?: "Error updating sexual orientation"
-                    )
-                    _isLoading.value = false
-                }
-            }
-        }
-    }
-
-    fun updateJob() {
-        if (_editedProfile.value?.job == _profileData.value?.job) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateJob(_editedProfile.value?.job)
-            result.onSuccess { newJob ->
-                _profileData.value = _profileData.value?.copy(job = newJob)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating position"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updateHeight() {
-        if (_editedProfile.value?.height == _profileData.value?.height) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateHeight(_editedProfile.value?.height)
-            result.onSuccess { newHeight ->
-                Log.i("ProfileViewModel", "Height updated: ${_editedProfile.value?.height}")
-                _profileData.value = _profileData.value?.copy(height = newHeight)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating height"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updateWeight() {
-        if (_editedProfile.value?.weight == _profileData.value?.weight) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateWeight(_editedProfile.value?.weight)
-            result.onSuccess { newWeight ->
-                Log.i("ProfileViewModel", "Weight updated: ${_editedProfile.value?.weight}")
-                _profileData.value = _profileData.value?.copy(weight = newWeight)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating weight"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updateGender() {
-        if (_editedProfile.value?.gender == _profileData.value?.gender) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result =
-                _editedProfile.value?.let { profileService.updateGender(it.gender) }
-            if (result != null) {
-                result.onSuccess { newGender ->
-                    Log.i("ProfileViewModel", "updated gender: ${_editedProfile.value?.gender}")
-                    val gender = stringToEnum<Gender>(newGender)
-                    if(gender == null) {
-                        errorViewModel.showError("Error updating sexual orientation")
-                        _isLoading.value = false
-                        return@onSuccess
-                    }
-                    _profileData.value =  _profileData.value?.copy(gender = gender)
-                    _isLoading.value = false
-                }.onFailure { error ->
-                    errorViewModel.showError(
-                        error.message ?: "Error updating gender"
-                    )
-                    _isLoading.value = false
-                }
-            }
-        }
-    }
-
-    fun updateHoroscope() {
-        if (_editedProfile.value?.horoscope == _profileData.value?.horoscope) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateHoroscope(_editedProfile.value?.horoscope)
-            result.onSuccess { newHoroscope ->
-                val horoscope = stringToEnum<Horoscope>(newHoroscope)
-                if(horoscope == null) {
-                    errorViewModel.showError("Error updating horoscope")
-                    _isLoading.value = false
-                    return@onSuccess
-                }
-                _profileData.value = _profileData.value?.copy(horoscope = horoscope)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating horoscope"
-                )
-                _isLoading.value = false
-            }
-
-        }
-    }
-
-    fun updateEducation() {
-        if (_editedProfile.value?.education == _profileData.value?.education) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateEducation(_editedProfile.value?.education)
-            result.onSuccess { newEducation ->
-                _profileData.value = _profileData.value?.copy(education = newEducation)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating education"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updatePersonalityType() {
-        if (_editedProfile.value?.personalityType == _profileData.value?.personalityType) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result =
-                profileService.updatePersonalityType(_editedProfile.value?.personalityType)
-            result.onSuccess { newPersonalityType ->
-                _profileData.value = _profileData.value?.copy(personalityType = newPersonalityType)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating personality type"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updatePets() {
-        if (_editedProfile.value?.pets == _profileData.value?.pets) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updatePets(_editedProfile.value?.pets)
-            result.onSuccess { newPets ->
-                _profileData.value = _profileData.value?.copy(pets = newPets)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating pets"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updateDrinks() {
-        if (_editedProfile.value?.drinks == _profileData.value?.drinks) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateDrinks(_editedProfile.value?.drinks)
-            result.onSuccess {
-                _profileData.value = _profileData.value?.copy(drinks = _editedProfile.value?.drinks)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating drinks"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updateLocation(location: Profile.Location?) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            Log.i("ProfileViewModel", "Updating location: $location")
-            val result = profileService.updateLocation(location)
-            result.onSuccess { location2 ->
-                _profileData.value = _profileData.value?.copy(location = location)
-                _isLoading.value = false
-            }.onFailure {
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updateSmokes() {
-        if (_editedProfile.value?.smokes == _profileData.value?.smokes) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateSmokes(_editedProfile.value?.smokes)
-            result.onSuccess { newSmokes ->
-                _profileData.value = _profileData.value?.copy(smokes = stringToEnum<Habits>(newSmokes))
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating smokes"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updateDoesSports() {
-        if (_editedProfile.value?.doesSports == _profileData.value?.doesSports) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateDoesSports(_editedProfile.value?.doesSports)
-            result.onSuccess { newDoesSports ->
-                _profileData.value = _profileData.value?.copy(doesSports = stringToEnum<Habits>(newDoesSports))
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating sports participation"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updateValuesAndBeliefs() {
-        if (_editedProfile.value?.valuesAndBeliefs == _profileData.value?.valuesAndBeliefs) return
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result =
-                profileService.updateValuesAndBeliefs(_editedProfile.value?.valuesAndBeliefs)
-            result.onSuccess { newReligion ->
-                _profileData.value = _profileData.value?.copy(valuesAndBeliefs = stringToEnum<Religion>(newReligion))
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating values and beliefs"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun updateWall(wall: List<String>) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val result = profileService.updateWall(wall)
-            result.onSuccess {
-                _profileData.value = _profileData.value?.copy(wall = wall)
-                _isLoading.value = false
-            }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error updating wall"
-                )
-                _isLoading.value = false
-            }
-        }
-    }
+    fun updateWall(wall: List<String>) = updateField(
+        fieldUpdater = { profile, value -> profile.copy(wall = value) },
+        newValue = wall,
+        serviceCall = profileService::updateWall,
+        fieldSelector = Profile::wall
+    )
 
     fun addImage(imageUrl: Uri) {
-        viewModelScope.launch {
-            _isLoading.value = true
+        performLoadingAction {
             val result = profileService.addImage(imageUrl)
             result.onSuccess { imageUrlApi ->
-                Log.i("ProfileViewModel", "Image added: $imageUrlApi")
-                _profileData.value = _profileData.value?.copy(
-                    wall = _profileData.value?.wall.orEmpty() + imageUrlApi
-                )
-                Log.i("ProfileViewModel", "Wall updated: ${_profileData.value?.wall}")
-                _isLoading.value = false
+                _profileData.value = _profileData.value?.copy(wall = _profileData.value?.wall.orEmpty() + imageUrlApi)
+                _editedProfile.value = _editedProfile.value?.copy(wall = _editedProfile.value?.wall.orEmpty() + imageUrlApi)
             }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error adding image"
-                )
-                _isLoading.value = false
+                errorViewModel.showError(error.message ?: "Error adding image")
             }
         }
     }
 
     fun deleteImage(imageUrl: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
+        performLoadingAction {
             val result = profileService.removeImage(imageUrl)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(
-                    wall = (_profileData.value?.wall.orEmpty() - imageUrl)
-                )
-                _isLoading.value = false
+                _profileData.value = _profileData.value?.copy(wall = (_profileData.value?.wall.orEmpty() - imageUrl))
+                _editedProfile.value = _editedProfile.value?.copy(wall = (_editedProfile.value?.wall.orEmpty() - imageUrl))
             }.onFailure { error ->
-                errorViewModel.showError(
-                    error.message ?: "Error adding image"
-                )
-                _isLoading.value = false
+                errorViewModel.showError(error.message ?: "Error deleting image")
             }
         }
     }
 }
+

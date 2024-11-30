@@ -248,7 +248,7 @@ fun NotificationCard(
                     }
 
                     is MatchNotificationPayload -> {
-                        profileViewModel.loadProfile(notification.payload.getUserMatched())
+                        profileViewModel.loadProfile()
                         Text(
                             text = if (notification.payload.isLiked()) "${profile?.name} ${stringResource(R.string.liked_you)}" else "${profile?.name} ${stringResource(R.string.unliked_you)}",
                             style = MaterialTheme.typography.bodySmall

@@ -10,9 +10,13 @@ inline fun <reified T : Enum<T>> stringToEnum(value: String?): T? {
     }
 }
 
-fun <T : Enum<T>> enumToString(enumValue: T?): String? {
+fun <T : Enum<T>> enumToStringReplace(enumValue: T?): String? {
     return enumValue?.name
         ?.lowercase()
         ?.replace("_", " ")
+}
+
+fun <T : Enum<T>> enumToString(enumValue: T?): String? {
+    return enumValue?.name
 }
 

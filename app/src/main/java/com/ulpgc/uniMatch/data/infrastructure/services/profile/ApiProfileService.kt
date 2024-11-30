@@ -56,72 +56,165 @@ class ApiProfileService(
     }
 
     override suspend fun updateAgeRange(min: Int, max: Int): Result<Unit> =
-        safeApiCall { profileController.updateAgeRange(AgeRangeRequest(min, max)) }
+        safeApiCall { profileController.updateAgeRange(AgeRangeRequest(min, max)) }.mapCatching {
+            Unit
+        }
 
 
     override suspend fun updateMaxDistance(distance: Int): Result<Int> =
-        safeApiCall { profileController.updateMaxDistance(IntRequest(distance)) }
+        safeApiCall { profileController.updateMaxDistance(IntRequest(distance)) }.mapCatching {
+            distance
+        }
 
 
-    override suspend fun updateGenderPriority(gender: Gender?): Result<String?> =
-        safeApiCall { profileController.updateGenderPriority(StringRequest(enumToString(gender))) }
-
+    override suspend fun updateGenderPriority(gender: Gender?): Result<Gender?> =
+       try {
+           safeApiCall {
+               profileController.updateGenderPriority(StringRequest(enumToString(gender)))
+           }.mapCatching { response ->
+               response?.let { Gender.valueOf(it) }
+           }
+       } catch (e: NullPointerException) {
+           Result.success(null)
+       }
 
     override suspend fun updateRelationshipType(
         relationshipType: RelationshipType
-    ): Result<String?> =
+    ): Result<RelationshipType> =
         safeApiCall {
             profileController.updateRelationshipType(StringRequest(relationshipType.toString()))
+        }.mapCatching { response ->
+            response?.let { RelationshipType.valueOf(it) } ?: throw NullPointerException()
         }
 
     override suspend fun updateAboutMe(aboutMe: String): Result<String> =
-        safeApiCall { profileController.updateAbout(StringRequest(aboutMe)) }
+        safeApiCall { profileController.updateAbout(StringRequest(aboutMe)) }.mapCatching {
+            aboutMe
+        }
 
-    override suspend fun updateFact(fact: String?): Result<String> =
-        safeApiCall { profileController.updateFact(StringRequest(fact)) }
+    override suspend fun updateFact(fact: String?): Result<String?> =
+        try {
+            safeApiCall { profileController.updateFact(StringRequest(fact)) }
+        } catch (e: NullPointerException) {
+            Result.success(null)
+        }
 
     override suspend fun updateInterests(interests: List<String>): Result<List<String>> =
-        safeApiCall { profileController.updateInterests(ListRequest(interests)) }
+        safeApiCall {
+            profileController.updateInterests(ListRequest(interests))
+        }.mapCatching {
+            interests
+        }
 
-    override suspend fun updateHeight(height: Int?): Result<Int> =
-        safeApiCall { profileController.updateHeight(IntRequest(height)) }
+    override suspend fun updateHeight(height: Int?): Result<Int?> =
+        try{
+            safeApiCall { profileController.updateHeight(IntRequest(height)) }
+        } catch (e: NullPointerException) {
+            Result.success(null)
+        }
 
-    override suspend fun updateWeight(weight: Int?): Result<Int> =
-        safeApiCall { profileController.updateWeight(IntRequest(weight)) }
+    override suspend fun updateWeight(weight: Int?): Result<Int?> =
+        try {
+            safeApiCall { profileController.updateWeight(IntRequest(weight)) }
+        } catch (e: NullPointerException) {
+            Result.success(null)
+        }
 
-    override suspend fun updateGender(gender: Gender): Result<String> =
-        safeApiCall { profileController.updateGender(StringRequest(enumToString(gender))) }
+    override suspend fun updateGender(gender: Gender): Result<Gender> =
+        safeApiCall {
+            profileController.updateGender(StringRequest(gender.toString()))
+        }.mapCatching { response ->
+            response?.let { Gender.valueOf(it) } ?: throw NullPointerException()
+        }
 
-    override suspend fun updateSexualOrientation(orientation: SexualOrientation): Result<String> =
-        safeApiCall { profileController.updateSexualOrientation(StringRequest(orientation.toString())) }
+    override suspend fun updateSexualOrientation(orientation: SexualOrientation): Result<SexualOrientation> =
+        safeApiCall {
+            profileController.updateSexualOrientation(StringRequest(orientation.toString()))
+        }.mapCatching { response ->
+            response?.let { SexualOrientation.valueOf(it) } ?: throw NullPointerException()
+        }
 
     override suspend fun updateJob(position: String?): Result<String?> =
-        safeApiCall { profileController.updateJob(StringRequest(position)) }
+        try {
+            safeApiCall { profileController.updateJob(StringRequest(position)) }
+        } catch (e: NullPointerException) {
+            Result.success(null)
+        }
 
-    override suspend fun updateHoroscope(horoscope: Horoscope?): Result<String?> =
-        safeApiCall { profileController.updateHoroscope(StringRequest(enumToString(horoscope))) }
+    override suspend fun updateHoroscope(horoscope: Horoscope?): Result<Horoscope?> =
+        try {
+            safeApiCall {
+                profileController.updateHoroscope(StringRequest(enumToString(horoscope)))
+            }.mapCatching { response ->
+                response?.let { Horoscope.valueOf(it) }
+            }
+        } catch (e: NullPointerException) {
+            Result.success(null)
+        }
 
-    override suspend fun updateEducation(education: String?): Result<String> =
-        safeApiCall { profileController.updateDegree(StringRequest(education)) }
+    override suspend fun updateEducation(education: String?): Result<String?> =
+        try {
+            safeApiCall { profileController.updateDegree(StringRequest(education)) }
+        } catch (e: NullPointerException) {
+            Result.success(null)
+        }
 
     override suspend fun updatePersonalityType(personalityType: String?): Result<String?> =
-        safeApiCall { profileController.updatePersonality(StringRequest(personalityType)) }
+        try {
+            safeApiCall { profileController.updatePersonality(StringRequest(personalityType)) }
+        } catch (e: NullPointerException) {
+            Result.success(null)
+        }
 
     override suspend fun updatePets(pets: String?): Result<String?> =
-        safeApiCall { profileController.updatePets(StringRequest(pets)) }
+        try {
+            safeApiCall { profileController.updatePets(StringRequest(pets)) }
+        } catch (e: NullPointerException) {
+            Result.success(null)
+        }
 
-    override suspend fun updateDrinks(drinks: Habits?): Result<String> =
-        safeApiCall { profileController.updateDrinks(StringRequest(enumToString(drinks))) }
+    override suspend fun updateDrinks(drinks: Habits?): Result<Habits?> =
+        try {
+            safeApiCall {
+                profileController.updateDrinks(StringRequest(enumToString(drinks)))
+            }.mapCatching { response ->
+                response?.let { Habits.valueOf(it) }
+            }
+        } catch (e: NullPointerException) {
+            Result.success(null)
+        }
 
-    override suspend fun updateSmokes(smokes: Habits?): Result<String?> =
-        safeApiCall { profileController.updateSmokes(StringRequest(enumToString(smokes))) }
+    override suspend fun updateSmokes(smokes: Habits?): Result<Habits?> =
+        try {
+            safeApiCall {
+                profileController.updateSmokes(StringRequest(enumToString(smokes)))
+            }.mapCatching { response ->
+                response?.let { Habits.valueOf(it) }
+            }
+        } catch (e: NullPointerException) {
+            Result.success(null)
+        }
 
-    override suspend fun updateDoesSports(doesSports: Habits?): Result<String?> =
-        safeApiCall { profileController.updateSports(StringRequest(enumToString(doesSports))) }
+    override suspend fun updateDoesSports(doesSports: Habits?): Result<Habits?> =
+        try {
+            safeApiCall {
+                profileController.updateSports(StringRequest(enumToString(doesSports)))
+            }.mapCatching { response ->
+                response?.let { Habits.valueOf(it) }
+            }
+        } catch (e: NullPointerException) {
+            Result.success(null)
+        }
 
-    override suspend fun updateValuesAndBeliefs(valuesAndBeliefs: Religion?): Result<String?> =
-        safeApiCall {
-            profileController.updateValuesAndBeliefs(StringRequest(enumToString(valuesAndBeliefs)))
+    override suspend fun updateValuesAndBeliefs(valuesAndBeliefs: Religion?): Result<Religion?> =
+        try {
+            safeApiCall {
+                profileController.updateValuesAndBeliefs(StringRequest(enumToString(valuesAndBeliefs)))
+            }.mapCatching { response ->
+                response?.let { Religion.valueOf(it) }
+            }
+        } catch (e: NullPointerException) {
+            Result.success(null)
         }
 
     override suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location> {
@@ -133,18 +226,25 @@ class ApiProfileService(
                     location?.altitude
                 )
             )
+        }.mapCatching {
+            location ?: throw NullPointerException()
         }
     }
 
     override suspend fun addImage(imageURI: Uri): Result<String> =
-        safeApiCall { profileController.uploadPhoto(createImagePart(imageURI)) }
-
+        safeApiCall { profileController.uploadPhoto(createImagePart(imageURI)) }.mapCatching { image ->
+            image ?: throw NullPointerException()
+        }
 
     override suspend fun removeImage(imageURL: String): Result<Unit> =
-        safeApiCall { profileController.deletePhoto(imageURL) }
+        safeApiCall { profileController.deletePhoto(imageURL) }.mapCatching {
+            Unit
+        }
 
     override suspend fun updateWall(wall: List<String>): Result<List<String>> =
-        safeApiCall { profileController.updateWall(ListRequest(wall)) }
+        safeApiCall { profileController.updateWall(ListRequest(wall)) }.mapCatching {
+            wall
+        }
 
     override suspend fun createProfile(
         fullName: String,
@@ -181,7 +281,7 @@ class ApiProfileService(
                     locationRequest,
                     imageRequest,
                 )
-            }
+            }.mapCatching { it ?: throw NullPointerException() }
         }
     }
 
