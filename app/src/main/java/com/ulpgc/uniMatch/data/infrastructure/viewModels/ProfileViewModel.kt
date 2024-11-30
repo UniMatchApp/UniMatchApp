@@ -37,6 +37,8 @@ open class ProfileViewModel(
             result.onSuccess { profile ->
                 _profileData.value = profile
                 _editedProfile.value = profile.copy()
+                Log.i("ProfileViewModel", "Profile loaded ${_profileData.value}")
+                Log.i("ProfileViewModel", "Profile loaded ${_editedProfile.value}")
             }
         }
     }
@@ -49,8 +51,10 @@ open class ProfileViewModel(
         serviceCall: suspend (T) -> Result<T>,
         fieldSelector: (Profile) -> T?
     ) {
+
         val currentProfile = _profileData.value ?: return
         val editedProfile = _editedProfile.value ?: return
+
         if (fieldSelector(currentProfile) == newValue && fieldSelector(editedProfile) == newValue) return
 
         performLoadingAction {
@@ -327,12 +331,20 @@ open class ProfileViewModel(
         fieldSelector = Profile::maxDistance
     )
 
-    fun updateLocation(location: Profile.Location?) = updateField(
-        fieldUpdater = { profile, value -> profile.copy(location = value) },
-        newValue = location,
-        serviceCall = profileService::updateLocation,
-        fieldSelector = Profile::location
-    )
+    fun updateLocation(location: Profile.Location?) {
+        performLoadingAction {
+            Log.i("UpadteLocaton", "Updating field $location")
+            val result = profileService.updateLocation(location)
+            result.onSuccess { updatedValue ->
+                _profileData.value = _profileData.value?.copy(location = updatedValue)
+                _editedProfile.value = _editedProfile.value?.copy(location = updatedValue)
+            }.onFailure { error ->
+                Log.e("ProfileViewModel", "Error updating field", error)
+                _editedProfile.value = _profileData.value
+                errorViewModel.showError(error.message ?: "Error updating field")
+            }
+        }
+    }
 
     fun updateWall(wall: List<String>) = updateField(
         fieldUpdater = { profile, value -> profile.copy(wall = value) },

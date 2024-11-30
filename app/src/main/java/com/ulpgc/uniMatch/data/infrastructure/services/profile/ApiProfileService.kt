@@ -217,8 +217,9 @@ class ApiProfileService(
             Result.success(null)
         }
 
-    override suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location> {
+    override suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location?> {
         return safeApiCall {
+            Log.i("UpdateLocation", "Updating location in api ${location?.longitude},${location?.latitude}")
             profileController.updateLocation(
                 LocationRequest(
                     location?.longitude,
@@ -227,7 +228,7 @@ class ApiProfileService(
                 )
             )
         }.mapCatching {
-            location ?: throw NullPointerException()
+            location
         }
     }
 

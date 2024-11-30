@@ -92,6 +92,7 @@ fun CoreScreen(
         else -> false
     }
 
+
     val localContext = LocalContext.current
     val locationHelper = LocationHelper(localContext)
 
@@ -104,7 +105,7 @@ fun CoreScreen(
                         it1, null)
                 }
             }
-        Log.i("PreferencesScreen", "Location: $profileLocation")
+        Log.i("UpdateLocation", "Location: $profileLocation")
         return profileLocation
     }
 

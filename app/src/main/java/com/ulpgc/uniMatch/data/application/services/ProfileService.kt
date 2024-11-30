@@ -55,7 +55,7 @@ interface ProfileService {
     suspend fun updateSmokes(smokes: Habits?): Result<Habits?>
     suspend fun updateDoesSports(doesSports: Habits?): Result<Habits?>
     suspend fun updateValuesAndBeliefs(valuesAndBeliefs: Religion?): Result<Religion?>
-    suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location>
+    suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location?>
 
     suspend fun addImage(imageURI: Uri): Result<String>
     suspend fun removeImage(imageURL: String): Result<Unit>

@@ -44,10 +44,10 @@ fun PreferencesScreen(
 
     LaunchedEffect(Unit) {
         profileViewModel.loadProfile()
-        permissionsViewModel.requestLocationPermission(context)
+        permissionsViewModel.checkLocationPermission(context)
     }
 
-    val hasLocationPermission by permissionsViewModel.hasLocationPermission.collectAsState()
+    val hasLocationPermission = permissionsViewModel.hasLocationPermission.collectAsState().value
 
     LaunchedEffect(hasLocationPermission) {
         val location = LocationHelper.getCurrentLocation(context)

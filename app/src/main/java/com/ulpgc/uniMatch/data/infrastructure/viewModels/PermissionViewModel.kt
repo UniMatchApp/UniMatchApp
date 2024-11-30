@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
@@ -18,9 +19,10 @@ class PermissionsViewModel : ViewModel() {
     private val _hasStoragePermission = MutableStateFlow(false)
     val hasStoragePermission: StateFlow<Boolean> get() = _hasStoragePermission
 
+
     fun updateLocationPermissionStatus(isGranted: Boolean) {
         _hasLocationPermission.value = isGranted
-        LocationHelper
+        Log.i("PermissionsViewModel", "Location permission status updated: ${_hasLocationPermission.value}")
     }
 
     private fun updateStoragePermissionStatus(isGranted: Boolean) {
@@ -57,6 +59,8 @@ class PermissionsViewModel : ViewModel() {
             updateLocationPermissionStatus(true)
         }
     }
+
+
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
