@@ -131,11 +131,15 @@ fun RegisterProfileScreen(
 
 
     fun calculateAge(birthday: String): Int {
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        val birthDate = LocalDate.parse(birthday, formatter)
+        val patterns = listOf("d/M/yyyy", "dd/MM/yyyy")
+        val formatter = patterns
+            .map { DateTimeFormatter.ofPattern(it) }
+            .firstNotNullOfOrNull { runCatching { LocalDate.parse(birthday, it) }.getOrNull() }
+
         val currentDate = LocalDate.now()
-        return Period.between(birthDate, currentDate).years
+        return Period.between(formatter, currentDate).years
     }
+
 
     LazyColumn(
         modifier = Modifier

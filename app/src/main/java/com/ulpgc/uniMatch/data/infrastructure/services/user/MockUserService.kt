@@ -75,10 +75,10 @@ class MockUserService : UserService {
         }
     }
 
-    override suspend fun verifyCode(email: String, code: String): Result<Boolean> {
+    override suspend fun verifyCode(email: String, code: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                return@safeRequest true
+                return@safeRequest
             }
         }
     }

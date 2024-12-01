@@ -85,7 +85,8 @@ open class UserViewModel(
     fun checkUserSession() {
         _isCheckingSession.value = true
         val user = secureStorage.getUser()
-        if (user != null) {
+        Log.i("UserViewModel", "Checking user session: $user")
+        if (user != null && user.registered) {
             _authState.value = AuthState.Authenticated(user)
         }
         _isCheckingSession.value = false
@@ -105,10 +106,11 @@ open class UserViewModel(
 
 
     fun logout() {
-        authToken = null
-        _authState.value = AuthState.Unauthenticated
-        _email.value = null
-        secureStorage.clearUser()
+        if (authState.value is AuthState.Authenticated) {
+            authToken = null
+            _authState.value = AuthState.Unauthenticated
+            _email.value = null
+        }
     }
 
     fun deleteAccount() {

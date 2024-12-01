@@ -45,11 +45,14 @@ class UniMatchApplication : Application() {
         SecureTokenProvider(secureStorage)
     }
 
+    private fun provideUserViewModel(): UserViewModel {
+        return userViewModel
+    }
 
 
     private val apiClient: ApiClient by lazy {
         try {
-            ApiClient(tokenProvider)
+            ApiClient(tokenProvider) { provideUserViewModel() }
         } catch (e: Exception) {
             Log.e("UniMatchApplication", "Error initializing ApiClient: ${e.message}")
             throw e
