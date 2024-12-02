@@ -103,6 +103,7 @@
     <string name="age_range_title">Rango de Edad: %d - %d</string>
     <string name="relationship_type_title">Tipo de Relación</string>
     <string name="preferences_explanation">Unimatch utiliza estas preferencias para sugerir coincidencias. Algunas sugerencias pueden no estar dentro de tus parámetros.</string>
+    <string name="location_permission_required">Para cambiar la distancia máxima, necesitas habilitar los permisos de ubicación.</string>
 
     <!--DROPDOWN MENU-->
     <string name="dropdown_empty_option">Ninguno</string>

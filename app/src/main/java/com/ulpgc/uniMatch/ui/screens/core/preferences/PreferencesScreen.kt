@@ -104,6 +104,15 @@ fun PreferencesScreen(
                 text = stringResource(id = R.string.max_distance, maxDistance),
                 color = MaterialTheme.colorScheme.onBackground
             )
+            if (!hasLocationPermission) {
+                // Show a message explaining the need for location permission
+                Text(
+                    text = stringResource(id = R.string.location_permission_required),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+
             Slider(
                 value = maxDistance.toFloat(),
                 onValueChange = {

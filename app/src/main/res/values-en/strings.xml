@@ -102,6 +102,8 @@
     <string name="age_range_title">Age Range: %d - %d</string>
     <string name="relationship_type_title">Relationship Type</string>
     <string name="preferences_explanation">UniMatch uses these preferences to suggest matches. Some suggestions may not be within your parameters.</string>
+    <string name="location_permission_required">To change the maximum distance, you must grant location permissions.</string>
+
 
     <!--DROPDOWN MENU-->
     <string name="dropdown_empty_option">None</string>
