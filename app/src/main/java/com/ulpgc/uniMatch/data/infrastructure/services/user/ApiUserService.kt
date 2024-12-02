@@ -117,7 +117,7 @@ class ApiUserService(
                     ReportRequest(predefinedReason, comment)
                 )
             }
-        }.mapCatching { Unit }
+        }.mapCatching {  }
     }
 
     override suspend fun blockUser(blockedUserId: String): Result<Unit> {
@@ -125,7 +125,7 @@ class ApiUserService(
             safeApiCall {
                 userController.blockUser(blockedUserId)
             }
-        }.mapCatching { Unit }
+        }.mapCatching { }
     }
 
     override suspend fun forgotPassword(email: String): Result<String> {
@@ -136,12 +136,12 @@ class ApiUserService(
         }.mapCatching { it ?: throw IllegalStateException("Response value is null") }
     }
 
-    override suspend fun verifyCode(email: String, code: String): Result<Boolean> {
+    override suspend fun verifyCode(email: String, code: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             safeApiCall {
                 userController.verifyCode(email, code)
             }
-        }.mapCatching { it ?: throw IllegalStateException("Response value is null") }
+        }.mapCatching {  }
     }
 
     override suspend fun resetPassword(newPassword: String): Result<Unit> {

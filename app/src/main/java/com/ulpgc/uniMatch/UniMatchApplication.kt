@@ -4,7 +4,6 @@ import NotificationSocket
 import UserStatusSocket
 import android.app.Application
 import android.util.Log
-import androidx.compose.ui.platform.LocalContext
 import com.ulpgc.uniMatch.data.application.api.ApiClient
 import com.ulpgc.uniMatch.data.application.api.TokenProvider
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MatchingController
@@ -46,9 +45,14 @@ class UniMatchApplication : Application() {
         SecureTokenProvider(secureStorage)
     }
 
+    private fun provideUserViewModel(): UserViewModel {
+        return userViewModel
+    }
+
+
     private val apiClient: ApiClient by lazy {
         try {
-            ApiClient(tokenProvider)
+            ApiClient(tokenProvider) { provideUserViewModel() }
         } catch (e: Exception) {
             Log.e("UniMatchApplication", "Error initializing ApiClient: ${e.message}")
             throw e
@@ -160,6 +164,7 @@ class UniMatchApplication : Application() {
         super.onCreate()
 
         Log.i("UniMatchApplication", "Application initialized")
+
         // Eliminar manualmente el archivo de la base de datos
         val db = applicationContext.getDatabasePath("uniMatch_database")
         if (db.exists()) {
