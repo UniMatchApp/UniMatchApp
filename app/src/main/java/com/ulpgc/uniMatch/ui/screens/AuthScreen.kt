@@ -56,19 +56,18 @@ fun AuthScreen(
     var location by remember { mutableStateOf<Pair<Double, Double>?>(null) }
     val activity = LocalContext.current as Activity
 
-    val hasPermission = permissionsViewModel.hasLocationPermission.collectAsState()
+    val hasPermission = permissionsViewModel.hasLocationPermissions.collectAsState().value
 
     val temporaryEmail = userViewModel.temporaryEmail.collectAsState()
     val email = userViewModel.email.collectAsState()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        permissionsViewModel.updateLocationPermissionStatus(isGranted)
+    ) {
     }
 
-    LaunchedEffect (hasPermission.value) {
-        if (hasPermission.value) {
+    LaunchedEffect (hasPermission) {
+        if (hasPermission) {
             LocationHelper.getCurrentLocation(activity)?.let { userLocation ->
                 val latitude = userLocation.first
                 val longitude = userLocation.second

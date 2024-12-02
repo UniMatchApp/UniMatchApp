@@ -110,6 +110,11 @@ fun CoreScreen(
     }
 
     LaunchedEffect(Unit) {
+        if (LocationHelper.checkLocationPermission(localContext)) {
+            permissionsViewModel.updateLocationPermissionStatus(true)
+        } else {
+            permissionsViewModel.updateLocationPermissionStatus(false)
+        }
         profileViewModel.updateLocation(getLocation())
     }
 

@@ -1,25 +1,45 @@
 package com.ulpgc.uniMatch
 
+import android.Manifest
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorState
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
 import com.ulpgc.uniMatch.ui.components.ErrorDialog
 import com.ulpgc.uniMatch.ui.screens.AuthScreen
 import com.ulpgc.uniMatch.ui.screens.CoreScreen
+import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 import com.ulpgc.uniMatch.ui.theme.UniMatchTheme
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 
 class MainActivity : ComponentActivity() {
 
+    val permissionsViewModel = PermissionsViewModel()
+
+    private val requestLocationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                Log.i("MainActivityLocation", "Location permission granted")
+                permissionsViewModel.updateLocationPermissionStatus(true)
+            } else {
+                Log.i("MainActivityLocation", "Location permission denied")
+                permissionsViewModel.updateLocationPermissionStatus(false)
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val app = application as UniMatchApplication
+
+
 
         app.userViewModel.checkUserSession()
 
@@ -37,8 +57,19 @@ class MainActivity : ComponentActivity() {
                 when (authState) {
 
                     is AuthState.Authenticated -> {
+
                         val userId = (authState as AuthState.Authenticated).user.id
                         app.initializeWebSocket(userId, app.eventbus)
+
+                        if (!LocationHelper.checkLocationPermission(this)) {
+                            Log.i("MainActivityLocation", "Requesting location permission")
+                            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                        }
+                        else {
+                            Log.i("MainActivityLocation", "Location permission already granted")
+                            permissionsViewModel.updateLocationPermissionStatus(true)
+                        }
+
                         CoreScreen(
                             app.userViewModel,
                             app.chatViewModel,
@@ -46,14 +77,14 @@ class MainActivity : ComponentActivity() {
                             app.homeViewModel,
                             app.notificationsViewModel,
                             app.errorViewModel,
-                            app.permissionsViewModel
+                            permissionsViewModel
                         )
                     }
 
                     is AuthState.Unauthenticated -> AuthScreen(
                         app.userViewModel,
                         app.errorViewModel,
-                        app.permissionsViewModel
+                        permissionsViewModel
                     )
                 }
 

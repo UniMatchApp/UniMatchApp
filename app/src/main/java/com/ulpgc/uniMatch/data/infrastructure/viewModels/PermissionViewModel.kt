@@ -7,62 +7,30 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
-import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class PermissionsViewModel : ViewModel() {
 
-    private val _hasLocationPermission = MutableStateFlow(false)
-    val hasLocationPermission: StateFlow<Boolean> get() = _hasLocationPermission
 
-    private val _hasStoragePermission = MutableStateFlow(false)
-    val hasStoragePermission: StateFlow<Boolean> get() = _hasStoragePermission
+class PermissionsViewModel()  : ViewModel() {
 
+    private val _hasStoragePermissions = MutableStateFlow(false)
+    val hasStoragePermissions: StateFlow<Boolean> get() = _hasStoragePermissions
+
+    private val _hasLocationPermissions = MutableStateFlow(false)
+    val hasLocationPermissions: StateFlow<Boolean> get() = _hasLocationPermissions
 
     fun updateLocationPermissionStatus(isGranted: Boolean) {
-        _hasLocationPermission.value = isGranted
-        Log.i("PermissionsViewModel", "Location permission status updated: ${_hasLocationPermission.value}")
+        Log.i("PermissionsViewModel", "Location permission changed: $isGranted")
+        _hasLocationPermissions.value = isGranted
+        Log.i("PermissionsViewModel", "Location permission changed: ${_hasLocationPermissions.value}")
     }
 
-    private fun updateStoragePermissionStatus(isGranted: Boolean) {
-        _hasStoragePermission.value = isGranted
-    }
-
-    fun checkLocationPermission(context: Context) {
-        val isGranted = ActivityCompat.checkSelfPermission(
-            context, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        updateLocationPermissionStatus(isGranted)
-    }
-
-    fun checkStoragePermission(context: Context) {
-        val isGranted = ActivityCompat.checkSelfPermission(
-            context, Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-        updateStoragePermissionStatus(isGranted)
-    }
-
-    fun requestLocationPermission(context: Context) {
-        if (ActivityCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-
-            updateLocationPermissionStatus(false)
-        } else {
-            updateLocationPermissionStatus(true)
-        }
+    fun updateStoragePermissionStatus(isGranted: Boolean) {
+        Log.i("PermissionsViewModel", "Storage permission changed: $isGranted")
+        _hasStoragePermissions.value = isGranted
+        Log.i("PermissionsViewModel", "Storage permission changed: ${_hasStoragePermissions.value}")
     }
 
 
-
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
-    }
 }

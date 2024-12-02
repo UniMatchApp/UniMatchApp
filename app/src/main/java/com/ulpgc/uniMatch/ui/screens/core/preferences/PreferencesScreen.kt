@@ -1,5 +1,7 @@
 package com.ulpgc.uniMatch.ui.screens.core.preferences
 
+import android.util.Log
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,14 +44,20 @@ fun PreferencesScreen(
 
     val context = LocalContext.current
 
+    val hasLocationPermission = permissionsViewModel.hasLocationPermissions.collectAsState().value
+    Log.i("PreferencesScreen", "Has location permission: $hasLocationPermission")
+
     LaunchedEffect(Unit) {
         profileViewModel.loadProfile()
-        permissionsViewModel.checkLocationPermission(context)
+        if (LocationHelper.checkLocationPermission(context)) {
+            permissionsViewModel.updateLocationPermissionStatus(true)
+        } else {
+            permissionsViewModel.updateLocationPermissionStatus(false)
+        }
     }
 
-    val hasLocationPermission = permissionsViewModel.hasLocationPermission.collectAsState().value
-
     LaunchedEffect(hasLocationPermission) {
+        Log.i("PreferencesScreen", "Location permission changed: $hasLocationPermission")
         val location = LocationHelper.getCurrentLocation(context)
         location?.let {
             var loc = Profile.Location(
