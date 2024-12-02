@@ -2,7 +2,6 @@ package com.ulpgc.uniMatch
 
 import android.Manifest
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -10,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
@@ -18,19 +18,21 @@ import com.ulpgc.uniMatch.ui.screens.AuthScreen
 import com.ulpgc.uniMatch.ui.screens.CoreScreen
 import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 import com.ulpgc.uniMatch.ui.theme.UniMatchTheme
+import dev.shreyaspatil.permissionFlow.PermissionFlow
 
 
 class MainActivity : ComponentActivity() {
 
     val permissionsViewModel = PermissionsViewModel()
 
+    val permissionFlow = PermissionFlow.getInstance()
+
     private val requestLocationPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            permissionFlow.notifyPermissionsChanged(Manifest.permission.ACCESS_FINE_LOCATION)
             if (isGranted) {
-                Log.i("MainActivityLocation", "Location permission granted")
                 permissionsViewModel.updateLocationPermissionStatus(true)
             } else {
-                Log.i("MainActivityLocation", "Location permission denied")
                 permissionsViewModel.updateLocationPermissionStatus(false)
             }
         }
@@ -39,14 +41,26 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val app = application as UniMatchApplication
 
-
-
         app.userViewModel.checkUserSession()
 
         // Utiliza la API de SplashScreen
         installSplashScreen().setKeepOnScreenCondition {
             app.userViewModel.isCheckingSession.value
         }
+
+
+
+        // Se lanza el observable del permiso de ubicación
+        lifecycleScope.launchWhenStarted {
+            permissionFlow.getPermissionState(Manifest.permission.ACCESS_FINE_LOCATION).collect { state ->
+                if (state.isGranted) {
+                    permissionsViewModel.updateLocationPermissionStatus(true)
+                } else {
+                    permissionsViewModel.updateLocationPermissionStatus(false)
+                }
+            }
+        }
+
 
         enableEdgeToEdge()
         setContent {
@@ -62,11 +76,9 @@ class MainActivity : ComponentActivity() {
                         app.initializeWebSocket(userId, app.eventbus)
 
                         if (!LocationHelper.checkLocationPermission(this)) {
-                            Log.i("MainActivityLocation", "Requesting location permission")
                             requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                         }
                         else {
-                            Log.i("MainActivityLocation", "Location permission already granted")
                             permissionsViewModel.updateLocationPermissionStatus(true)
                         }
 

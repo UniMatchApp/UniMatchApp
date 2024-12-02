@@ -121,6 +121,8 @@ dependencies {
 
     implementation(libs.play.services.location.v2101)
 
+    // Permissions
+    implementation("dev.shreyaspatil.permission-flow:permission-flow-android:2.0.0")
 
     // ImagePicker
     implementation(libs.imagepicker)
@@ -155,35 +157,35 @@ dependencies {
 }
 
 
-//tasks.whenTaskAdded {
-//    if (name == "compileDebugKotlin") {
-//        dependsOn("generateDebugResources")
-//        println("Running adb reverse using PowerShell script...")
-//
-//        doFirst {
-//            exec {
-//                commandLine("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "../reverse_device_ports.ps1")
-//            }
-//        }
-//    }
-//}
-//
-gradle.taskGraph.whenReady {
-    allTasks.forEach { task ->
-        val adbCommand = "adb reverse tcp:3000 tcp:3000"
-        val adbCommand2 = "adb reverse tcp:8080 tcp:8080"
-        val adbCommand3 = "adb reverse tcp:8081 tcp:8081"
-        task.doFirst {
-            println("Running adb reverse...")
+tasks.whenTaskAdded {
+    if (name == "compileDebugKotlin") {
+        dependsOn("generateDebugResources")
+        println("Running adb reverse using PowerShell script...")
+
+        doFirst {
             exec {
-                commandLine("cmd", "/c", adbCommand)
-            }
-            exec {
-                commandLine("cmd", "/c", adbCommand2)
-            }
-            exec {
-                commandLine("cmd", "/c", adbCommand3)
+                commandLine("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "../reverse_device_ports.ps1")
             }
         }
     }
 }
+
+//gradle.taskGraph.whenReady {
+//    allTasks.forEach { task ->
+//        val adbCommand = "adb reverse tcp:3000 tcp:3000"
+//        val adbCommand2 = "adb reverse tcp:8080 tcp:8080"
+//        val adbCommand3 = "adb reverse tcp:8081 tcp:8081"
+//        task.doFirst {
+//            println("Running adb reverse...")
+//            exec {
+//                commandLine("cmd", "/c", adbCommand)
+//            }
+//            exec {
+//                commandLine("cmd", "/c", adbCommand2)
+//            }
+//            exec {
+//                commandLine("cmd", "/c", adbCommand3)
+//            }
+//        }
+//    }
+//}

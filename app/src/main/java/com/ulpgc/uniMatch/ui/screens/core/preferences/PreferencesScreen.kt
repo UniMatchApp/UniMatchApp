@@ -45,19 +45,12 @@ fun PreferencesScreen(
     val context = LocalContext.current
 
     val hasLocationPermission = permissionsViewModel.hasLocationPermissions.collectAsState().value
-    Log.i("PreferencesScreen", "Has location permission: $hasLocationPermission")
 
     LaunchedEffect(Unit) {
         profileViewModel.loadProfile()
-        if (LocationHelper.checkLocationPermission(context)) {
-            permissionsViewModel.updateLocationPermissionStatus(true)
-        } else {
-            permissionsViewModel.updateLocationPermissionStatus(false)
-        }
     }
 
     LaunchedEffect(hasLocationPermission) {
-        Log.i("PreferencesScreen", "Location permission changed: $hasLocationPermission")
         val location = LocationHelper.getCurrentLocation(context)
         location?.let {
             var loc = Profile.Location(
@@ -105,7 +98,6 @@ fun PreferencesScreen(
                 color = MaterialTheme.colorScheme.onBackground
             )
             if (!hasLocationPermission) {
-                // Show a message explaining the need for location permission
                 Text(
                     text = stringResource(id = R.string.location_permission_required),
                     color = MaterialTheme.colorScheme.error,
