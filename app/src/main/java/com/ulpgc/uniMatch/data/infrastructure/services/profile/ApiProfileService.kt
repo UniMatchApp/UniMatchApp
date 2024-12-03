@@ -3,6 +3,8 @@ package com.ulpgc.uniMatch.data.infrastructure.services.profile
 import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
+import com.google.gson.Gson
+import com.google.protobuf.Internal
 import com.ulpgc.uniMatch.data.application.services.AgeRangeRequest
 import com.ulpgc.uniMatch.data.application.services.IntRequest
 import com.ulpgc.uniMatch.data.application.services.ListRequest
@@ -24,6 +26,7 @@ import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
 import com.ulpgc.uniMatch.ui.screens.utils.enumToString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -259,6 +262,9 @@ class ApiProfileService(
         profileImage: Uri
     ): Result<Profile> = withContext(Dispatchers.IO) {
         safeRequest {
+            val gson = Gson()
+
+            Log.i("CreateProfile", "Creating profile $location")
             val fullNameRequest = createRequestBody(fullName)
             val ageRequest = createRequestBody(age.toString())
             val aboutMeRequest = createRequestBody(aboutMe)
@@ -266,7 +272,12 @@ class ApiProfileService(
             val sexualOrientationRequest = createRequestBody(sexualOrientation.toString())
             val relationshipTypeRequest = createRequestBody(relationshipType.toString())
             val birthdayRequest = createRequestBody(birthday)
-            val locationRequest = location?.let { createRequestBody("${it.first},${it.second}") }
+
+            val locationRequest = location?.let {
+                LocationRequest(it.first, it.second, null)
+            }
+
+            Log.i("CreateProfile", "LocationRequest: $locationRequest")
 
             val imageRequest = createImagePart(profileImage)
 
@@ -290,10 +301,11 @@ class ApiProfileService(
         val inputStream = contentResolver.openInputStream(uri)
             ?: throw IllegalArgumentException("Cannot open image input stream")
         val requestBody =
-            inputStream.use { it.readBytes().toRequestBody("image/*".toMediaTypeOrNull()) }
+            inputStream.use { it.readBytes().toRequestBody("image/png".toMediaTypeOrNull()) }
         return MultipartBody.Part.createFormData("thumbnail", uri.lastPathSegment, requestBody)
     }
 
     private fun createRequestBody(value: String): RequestBody =
         value.toRequestBody("text/plain".toMediaTypeOrNull())
 }
+

@@ -48,8 +48,6 @@ class MainActivity : ComponentActivity() {
             app.userViewModel.isCheckingSession.value
         }
 
-
-
         // Se lanza el observable del permiso de ubicación
         lifecycleScope.launchWhenStarted {
             permissionFlow.getPermissionState(Manifest.permission.ACCESS_FINE_LOCATION).collect { state ->

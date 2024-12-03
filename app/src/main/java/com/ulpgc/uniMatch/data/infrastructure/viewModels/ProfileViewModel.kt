@@ -354,6 +354,7 @@ open class ProfileViewModel(
     )
 
     fun addImage(imageUrl: Uri) {
+        Log.i("ProfileViewModel", "Adding image $imageUrl")
         performLoadingAction {
             val result = profileService.addImage(imageUrl)
             result.onSuccess { imageUrlApi ->

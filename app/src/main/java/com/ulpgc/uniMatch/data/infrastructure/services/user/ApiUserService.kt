@@ -79,7 +79,7 @@ class ApiUserService(
     override suspend fun deleteAccount(userId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             safeRequest {
-                val response = userController.deleteAccount(userId)
+                val response = userController.deleteAccount()
                 if (!response.success) {
                     throw Exception(response.errorMessage ?: "Unknown error occurred")
                 }

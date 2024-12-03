@@ -111,6 +111,7 @@ fun CoreScreen(
 
     LaunchedEffect(Unit) {
         profileViewModel.updateLocation(getLocation())
+
     }
 
 

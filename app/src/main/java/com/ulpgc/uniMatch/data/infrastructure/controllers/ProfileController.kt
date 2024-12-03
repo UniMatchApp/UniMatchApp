@@ -6,7 +6,6 @@ import com.ulpgc.uniMatch.data.application.services.IntRequest
 import com.ulpgc.uniMatch.data.application.services.ListRequest
 import com.ulpgc.uniMatch.data.application.services.LocationRequest
 import com.ulpgc.uniMatch.data.application.services.StringRequest
-import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -34,7 +33,7 @@ interface ProfileController {
         @Part("sexualOrientation") sexualOrientation: RequestBody,
         @Part("relationshipType") relationshipType: RequestBody,
         @Part("birthday") birthday: RequestBody,
-        @Part("location") location: RequestBody?,
+        @Part("location") location: LocationRequest?,
         @Part thumbnail: MultipartBody.Part
     ): ApiResponse<Profile>
 

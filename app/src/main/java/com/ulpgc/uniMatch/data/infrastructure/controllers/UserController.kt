@@ -39,6 +39,6 @@ interface UserController {
     @POST("users/auth/{email}/resend-code")
     suspend fun resendCode(@Path("email") email: String): ApiResponse<Boolean>
 
-    @DELETE("users/{id}")
-    suspend fun deleteAccount(@Path("id") userId: String): ApiResponse<Unit>
+    @DELETE("users")
+    suspend fun deleteAccount(): ApiResponse<Unit>
 }
