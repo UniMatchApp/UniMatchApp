@@ -262,8 +262,6 @@ class ApiProfileService(
         profileImage: Uri
     ): Result<Profile> = withContext(Dispatchers.IO) {
         safeRequest {
-            val gson = Gson()
-
             val fullNameRequest = createRequestBody(fullName)
             val ageRequest = createRequestBody(age.toString())
             val aboutMeRequest = createRequestBody(aboutMe)
