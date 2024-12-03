@@ -264,7 +264,6 @@ class ApiProfileService(
         safeRequest {
             val gson = Gson()
 
-            Log.i("CreateProfile", "Creating profile $location")
             val fullNameRequest = createRequestBody(fullName)
             val ageRequest = createRequestBody(age.toString())
             val aboutMeRequest = createRequestBody(aboutMe)
@@ -273,11 +272,8 @@ class ApiProfileService(
             val relationshipTypeRequest = createRequestBody(relationshipType.toString())
             val birthdayRequest = createRequestBody(birthday)
 
-            val locationRequest = location?.let {
-                LocationRequest(it.first, it.second, null)
-            }
-
-            Log.i("CreateProfile", "LocationRequest: $locationRequest")
+            val longitude = location?.first
+            val latitude = location?.second
 
             val imageRequest = createImagePart(profileImage)
 
@@ -290,7 +286,8 @@ class ApiProfileService(
                     sexualOrientationRequest,
                     relationshipTypeRequest,
                     birthdayRequest,
-                    locationRequest,
+                    longitude,
+                    latitude,
                     imageRequest,
                 )
             }.mapCatching { it ?: throw NullPointerException() }

@@ -33,7 +33,8 @@ interface ProfileController {
         @Part("sexualOrientation") sexualOrientation: RequestBody,
         @Part("relationshipType") relationshipType: RequestBody,
         @Part("birthday") birthday: RequestBody,
-        @Part("location") location: LocationRequest?,
+        @Part("latitude") latitude: Double?,
+        @Part("longitude") longitude: Double?,
         @Part thumbnail: MultipartBody.Part
     ): ApiResponse<Profile>
 
