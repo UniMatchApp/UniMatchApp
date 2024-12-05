@@ -187,7 +187,6 @@ class NotificationSocket(
             val notification = statusEnum?.let {
                 Notifications(
                     id,
-                    NotificationType.MESSAGE,
                     it,
                     contentId,
                     payload = messagePayloadObject,
@@ -226,7 +225,6 @@ class NotificationSocket(
             val notification = statusEnum?.let {
                 Notifications(
                     id,
-                    NotificationType.MATCH,
                     it,
                     contentId,
                     payload = matchPayloadObject,
@@ -265,7 +263,6 @@ class NotificationSocket(
             val notification = statusEnum?.let {
                 Notifications(
                     id,
-                    NotificationType.APP,
                     it,
                     contentId,
                     payload = appPayloadObject,
@@ -309,7 +306,6 @@ class NotificationSocket(
             val notification = statusEnum?.let {
                 Notifications(
                     id,
-                    NotificationType.EVENT,
                     it,
                     contentId,
                     payload = eventPayloadObject,

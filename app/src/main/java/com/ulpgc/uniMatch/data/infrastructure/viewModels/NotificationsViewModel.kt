@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.events.Event
@@ -93,6 +94,9 @@ class NotificationsViewModel (
                     _notifications.value = notifications
                     _isLoading.value = false
                 }.onFailure {
+                    errorViewModel.showError(
+                        it.message ?: "Error loading notifications"
+                    )
                     _isLoading.value = false
                 }
             }
@@ -104,7 +108,7 @@ class NotificationsViewModel (
             val result = notificationsService.markNotificationAsRead(notificationId)
             result.onSuccess {
                 _notifications.value = _notifications.value.map { notification ->
-                    if (notification.id == notificationId) {
+                    if (notification.id == notificationId && notification.status != NotificationStatus.READ) {
                         notification.copy(status = NotificationStatus.READ)
                     } else {
                         notification

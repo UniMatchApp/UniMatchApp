@@ -12,7 +12,6 @@ object NotificationMock {
         notificationsList.add(
             Notifications(
                 id = "1",
-                type = NotificationType.APP,
                 status = NotificationStatus.SENT,
                 contentId = "content1",
                 payload = AppNotificationPayload("1", "New Message", "You have a new message"),
@@ -23,7 +22,6 @@ object NotificationMock {
         notificationsList.add(
             Notifications(
                 id = "2",
-                type = NotificationType.APP,
                 status = NotificationStatus.SENT,
                 contentId = "content2",
                 payload = AppNotificationPayload("2", "Friend Request", "John Doe sent you a friend request"),

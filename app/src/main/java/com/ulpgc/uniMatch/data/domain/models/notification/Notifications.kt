@@ -7,7 +7,6 @@ import com.ulpgc.uniMatch.data.infrastructure.entities.NotificationEntity
 
 data class Notifications (
     val id: String,
-    val type: NotificationType,
     var status: NotificationStatus,
     val contentId: String,
     val payload: NotificationPayload,

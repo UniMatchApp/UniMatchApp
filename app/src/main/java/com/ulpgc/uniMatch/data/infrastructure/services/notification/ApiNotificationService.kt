@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.notification
 
 import com.ulpgc.uniMatch.data.application.services.NotificationsService
+import com.ulpgc.uniMatch.data.application.services.toDomainModel
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
 import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
 import com.ulpgc.uniMatch.data.infrastructure.controllers.NotificationController
@@ -24,14 +25,16 @@ class ApiNotificationService (
                 return@safeRequest notificationDao.getAllNotifications(userId).map(NotificationEntity::toDomain)
             }
 
-            val notifications = response.value.orEmpty()
+            notificationDao.deleteAllNotifications(userId)
 
-            notifications.forEach { notification ->
+            val notifications = response.value?.map { it.toDomainModel() }
+
+            notifications?.forEach { notification ->
                 val notificationEntity = NotificationEntity.fromDomain(notification)
                 notificationDao.insertNotifications(listOf(notificationEntity))
             }
 
-            return@safeRequest notifications
+            return@safeRequest notifications ?: emptyList()
         }
     }
 

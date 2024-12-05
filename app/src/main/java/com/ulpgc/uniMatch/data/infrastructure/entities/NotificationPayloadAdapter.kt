@@ -6,6 +6,8 @@ import MatchNotificationPayload
 import MessageNotificationPayload
 import NotificationPayload
 import com.google.gson.*
+import com.ulpgc.uniMatch.data.domain.enums.NotificationType
+import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
 import java.lang.reflect.Type
 
 class NotificationPayloadAdapter : JsonDeserializer<NotificationPayload>, JsonSerializer<NotificationPayload> {
@@ -35,12 +37,11 @@ class NotificationPayloadAdapter : JsonDeserializer<NotificationPayload>, JsonSe
         val type = jsonObject.get("type")?.asString
             ?: throw JsonParseException("Missing 'type' field in NotificationPayload")
 
-        val data = jsonObject.getAsJsonObject("data")
         return when (type) {
-            AppNotificationPayload::class.java.simpleName -> context.deserialize(data, AppNotificationPayload::class.java)
-            EventNotificationPayload::class.java.simpleName -> context.deserialize(data, EventNotificationPayload::class.java)
-            MatchNotificationPayload::class.java.simpleName -> context.deserialize(data, MatchNotificationPayload::class.java)
-            MessageNotificationPayload::class.java.simpleName -> context.deserialize(data, MessageNotificationPayload::class.java)
+            NotificationType.APP.toString() -> context.deserialize(json, AppNotificationPayload::class.java)
+            NotificationType.EVENT.toString() -> context.deserialize(json, EventNotificationPayload::class.java)
+            NotificationType.MATCH.toString() -> context.deserialize(json, MatchNotificationPayload::class.java)
+            NotificationType.MESSAGE.toString() -> context.deserialize(json, MessageNotificationPayload::class.java)
             else -> throw JsonParseException("Unknown type: $type")
         }
     }

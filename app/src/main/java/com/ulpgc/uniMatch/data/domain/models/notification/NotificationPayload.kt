@@ -1,16 +1,18 @@
 import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
 import com.ulpgc.uniMatch.data.domain.enums.EventStatus
 import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.NotificationType
 
 abstract class NotificationPayload(
-    val id: String
+    val id: String,
+    val type: NotificationType
 )
 
 class AppNotificationPayload(
     id: String,
     private val title: String,
     private val description: String
-) : NotificationPayload(id) {
+) : NotificationPayload(id, NotificationType.APP) {
     fun getTitle(): String {
         return title
     }
@@ -24,7 +26,7 @@ class EventNotificationPayload(
     id: String,
     private val title: String,
     private val status: EventStatus,
-) : NotificationPayload(id) {
+) : NotificationPayload(id, NotificationType.EVENT) {
     fun getTitle(): String {
         return title
     }
@@ -38,7 +40,7 @@ class MatchNotificationPayload(
     id: String,
     private val userMatched: String,
     private val isLiked: Boolean
-) : NotificationPayload(id) {
+) : NotificationPayload(id, NotificationType.MATCH) {
     fun getUserMatched(): String {
         return userMatched
     }
@@ -55,7 +57,7 @@ class MessageNotificationPayload(
     private val thumbnail: String?,
     private val status: MessageStatus,
     private val deletedStatus: DeletedMessageStatus
-) : NotificationPayload(id) {
+) : NotificationPayload(id, NotificationType.MESSAGE) {
     fun getSender(): String {
         return sender
     }
