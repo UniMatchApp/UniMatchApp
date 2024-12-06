@@ -74,6 +74,7 @@ class NotificationsViewModel (
     }
 
     private fun handleMatchNotification(notification: Notifications) {
+        Log.d("NotificationsViewModel", "Notification received: $notification")
         _notifications.value = _notifications.value.toMutableList().apply {
             add(0, notification)
         }
@@ -105,14 +106,16 @@ class NotificationsViewModel (
 
     fun markNotificationAsRead(notificationId: String) {
         viewModelScope.launch {
+            val notification = _notifications.value.find { it.id == notificationId }
+
+            if (notification?.status == NotificationStatus.READ) {
+                return@launch
+            }
+
             val result = notificationsService.markNotificationAsRead(notificationId)
             result.onSuccess {
-                _notifications.value = _notifications.value.map { notification ->
-                    if (notification.id == notificationId && notification.status != NotificationStatus.READ) {
-                        notification.copy(status = NotificationStatus.READ)
-                    } else {
-                        notification
-                    }
+                notification?.let {
+                    it.status = NotificationStatus.READ
                 }
             }
             result.onFailure { error ->

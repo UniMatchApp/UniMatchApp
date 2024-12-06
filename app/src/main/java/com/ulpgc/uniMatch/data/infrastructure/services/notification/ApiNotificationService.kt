@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.notification
 
+import android.util.Log
 import com.ulpgc.uniMatch.data.application.services.NotificationsService
 import com.ulpgc.uniMatch.data.application.services.toDomainModel
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
@@ -29,9 +30,8 @@ class ApiNotificationService (
 
             val notifications = response.value?.map { it.toDomainModel() }
 
-            notifications?.forEach { notification ->
-                val notificationEntity = NotificationEntity.fromDomain(notification)
-                notificationDao.insertNotifications(listOf(notificationEntity))
+            if (notifications != null) {
+                notificationDao.insertNotifications(notifications.map(NotificationEntity::fromDomain))
             }
 
             return@safeRequest notifications ?: emptyList()

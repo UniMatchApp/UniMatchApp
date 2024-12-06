@@ -48,7 +48,7 @@ class NotificationSocket(
         notificationSocket = client.newWebSocket(notificationRequest, object : WebSocketListener() {
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 Log.i("NotificationSocket", "Notification WebSocket connected for user $userId")
-                isReconnecting.set(false) // Reconexión exitosa
+                isReconnecting.set(false)
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
@@ -57,12 +57,12 @@ class NotificationSocket(
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 Log.e("NotificationSocket", "Notification WebSocket error: ${t.message}")
-                attemptReconnect() // Intentar reconectar
+                attemptReconnect()
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 Log.i("NotificationSocket", "Notification WebSocket closed: $reason")
-                attemptReconnect() // Intentar reconectar
+                attemptReconnect()
             }
         })
     }
@@ -77,7 +77,7 @@ class NotificationSocket(
                 Log.i("NotificationSocket", "Attempting to reconnect...")
                 notificationSocket?.cancel()
                 connect()
-                delay(RECONNECT_DELAY_MS) // Espera antes de volver a intentar
+                delay(RECONNECT_DELAY_MS)
             }
         }
     }
@@ -87,13 +87,14 @@ class NotificationSocket(
         try {
             val notificationResponse = JSONObject(text)
             Log.d("NotificationSocket", "Notification Response: $notificationResponse")
-            val type = notificationResponse.getString("type")
-            val status = notificationResponse.getString("status")
-            val payload = notificationResponse.getString("payload")
+
             val id = notificationResponse.getString("id")
             val contentId = notificationResponse.getString("contentId")
             val date = notificationResponse.getString("date")
             val recipient = notificationResponse.getString("recipient")
+            val status = notificationResponse.getString("status")
+            val payload = notificationResponse.getJSONObject("payload")
+            val type = payload.getString("type")
 
             val typeEnum = NotificationTypeEnum.entries.find { it.type == type }
             val statusEnum = NotificationStatus.entries.find { it.status == status }
@@ -109,7 +110,7 @@ class NotificationSocket(
                         id,
                         contentId,
                         recipient,
-                        payload,
+                        payload.toString(),
                         statusEnum,
                         convertedDate
                     )
@@ -118,7 +119,7 @@ class NotificationSocket(
                         id,
                         contentId,
                         recipient,
-                        payload,
+                        payload.toString(),
                         statusEnum,
                         convertedDate
                     )
@@ -127,7 +128,7 @@ class NotificationSocket(
                         id,
                         contentId,
                         recipient,
-                        payload,
+                        payload.toString(),
                         statusEnum,
                         convertedDate
                     )
@@ -136,7 +137,7 @@ class NotificationSocket(
                         id,
                         contentId,
                         recipient,
-                        payload,
+                        payload.toString(),
                         statusEnum,
                         convertedDate
                     )
@@ -154,6 +155,7 @@ class NotificationSocket(
             )
         }
     }
+
 
     private fun handleMessageNotification(
         id: String,
@@ -213,8 +215,8 @@ class NotificationSocket(
     ) {
         try {
             val matchPayload = JSONObject(payload)
-            val userMatched = matchPayload.getString("userMatched")
-            val isLiked = matchPayload.getBoolean("isLiked")
+            val userMatched = matchPayload.getString("_userMatched")
+            val isLiked = matchPayload.getBoolean("_isLiked")
 
             val matchPayloadObject = MatchNotificationPayload(
                 matchPayload.getString("id"),
@@ -232,6 +234,8 @@ class NotificationSocket(
                     recipient
                 )
             }
+
+
 
             notification?.let {
                 emitEvent(MatchNotificationEvent(it))
@@ -251,8 +255,8 @@ class NotificationSocket(
     ) {
         try {
             val appPayload = JSONObject(payload)
-            val title = appPayload.getString("title")
-            val description = appPayload.getString("description")
+            val title = appPayload.getString("_title")
+            val description = appPayload.getString("_description")
 
             val appPayloadObject = AppNotificationPayload(
                 appPayload.getString("id"),
@@ -289,7 +293,7 @@ class NotificationSocket(
     ) {
         try {
             val eventPayload = JSONObject(payload)
-            val title = eventPayload.getString("title")
+            val title = eventPayload.getString("_title")
             val status = EventStatus.entries.find { it.status == eventPayload.getString("status") }
 
             if (status == null) {
