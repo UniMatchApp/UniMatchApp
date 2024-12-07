@@ -9,6 +9,7 @@
     <string name="notifications">Notifications</string>
     <string name="user_filters">User Filters</string>
     <string name="account">Account</string>
+    <string name="policies">Policies</string>
 
     <!--LOGIN SCREEN-->
     <string name="login">Log In</string>
@@ -477,5 +478,10 @@
     <string name="ok">OK</string>
     <string name="location_error">An error occurred while retrieving your location.</string>
     <string name="fetch_location">Fetch Location</string>
+
+    <!--CHAT-->
+    <string name="no_chats">No chats available.</string>
+    <string name="start_chat">Enter a message to start the chat.</string>
+    <string name="typing">Typing…</string>
 
 </resources>

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -43,7 +44,7 @@ fun HomeTopBar(navController: NavHostController) {
                 )
                 Text(
                     text = stringResource(id = R.string.home),
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         },
@@ -53,7 +54,7 @@ fun HomeTopBar(navController: NavHostController) {
                     painter = painterResource(id = R.drawable.icon_bell),
                     contentDescription = "Notifications",
                     modifier = Modifier.size(AppSize.iconSize),
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
 
             }
@@ -62,13 +63,13 @@ fun HomeTopBar(navController: NavHostController) {
                     painter = painterResource(id = R.drawable.icon_filter),
                     contentDescription = "Filter",
                     modifier = Modifier.size(AppSize.iconSize),
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MainColor,
+            containerColor = MaterialTheme.colorScheme.onPrimary
         )
     )
 }

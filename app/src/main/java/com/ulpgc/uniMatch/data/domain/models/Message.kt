@@ -9,7 +9,6 @@ import java.util.UUID
 
 data class Message(
     @SerializedName("messageId") val messageId: String,
-    @SerializedName("chatId") val chatId: String,
     @SerializedName("content") var content: String,
     @SerializedName("senderId") val senderId: String,
     @SerializedName("recipientId") val recipientId: String,
@@ -27,7 +26,6 @@ data class Message(
         ): Message {
             return Message(
                 messageId = UUID.randomUUID().toString(),
-                chatId = chatId,
                 content = content,
                 senderId = senderId,
                 recipientId = recipientId

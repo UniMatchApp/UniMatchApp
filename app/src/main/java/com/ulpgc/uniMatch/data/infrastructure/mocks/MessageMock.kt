@@ -21,7 +21,6 @@ object MessageMock {
         return List(amount) {
             Message(
                 messageId = "message_$it",
-                chatId = "chat_1",
                 recipientId = mockSenderIds.random(),
                 senderId = mockSenderIds.random(),
                 content = "Message $it",

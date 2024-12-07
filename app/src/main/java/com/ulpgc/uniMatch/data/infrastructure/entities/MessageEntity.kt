@@ -35,7 +35,7 @@ data class MessageEntity(
         fun fromDomain(message: Message): MessageEntity {
             return MessageEntity(
                 messageId = message.messageId,
-                chatId = message.chatId,
+                chatId = message.senderId,
                 content = message.content,
                 senderId = message.senderId,
                 recipientId = message.recipientId,
@@ -49,7 +49,6 @@ data class MessageEntity(
         fun toDomain(messageEntity: MessageEntity): Message {
             return Message(
                 messageId = messageEntity.messageId,
-                chatId = messageEntity.chatId,
                 content = messageEntity.content,
                 senderId = messageEntity.senderId,
                 recipientId = messageEntity.recipientId,

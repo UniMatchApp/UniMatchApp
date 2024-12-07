@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
 import MessageNotificationPayload
+import UserStatusSocket
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,19 +10,26 @@ import com.ulpgc.uniMatch.data.application.events.EventBus
 import com.ulpgc.uniMatch.data.application.events.EventListener
 import com.ulpgc.uniMatch.data.application.services.ChatService
 import com.ulpgc.uniMatch.data.application.services.ProfileService
+import com.ulpgc.uniMatch.data.domain.enums.ChatStatus
 import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
 import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
+import com.ulpgc.uniMatch.data.infrastructure.events.GetUserStatusEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.MessageNotificationEvent
+import com.ulpgc.uniMatch.data.infrastructure.events.StoppedTypingEvent
+import com.ulpgc.uniMatch.data.infrastructure.events.TypingEvent
+import com.ulpgc.uniMatch.data.infrastructure.events.UserOfflineEvent
+import com.ulpgc.uniMatch.data.infrastructure.events.UserOnlineEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.security.Provider
 
 
 open class ChatViewModel(
@@ -30,6 +38,7 @@ open class ChatViewModel(
     private val errorViewModel: ErrorViewModel,
     private val userViewModel: UserViewModel,
     private val webSocketEventBus: EventBus,
+    private val statusSocket: UserStatusSocket
 ) : ViewModel(), EventListener {
 
     private val customScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -46,6 +55,9 @@ open class ChatViewModel(
     private val _chatList = MutableStateFlow<List<Chat>>(emptyList())
     val chatList: StateFlow<List<Chat>> get() = _chatList
 
+    private val _usersStatus = MutableStateFlow<Map<String, ChatStatus>>(emptyMap())
+    val usersStatus: StateFlow<Map<String, ChatStatus>> get() = _usersStatus
+
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val messages: StateFlow<List<Message>> get() = _messages
 
@@ -59,6 +71,21 @@ open class ChatViewModel(
         when (event) {
             is MessageNotificationEvent -> {
                 handleNewMessage(event.notification)
+            }
+            is UserOnlineEvent -> {
+                handleUserOnline(event.userId)
+            }
+            is UserOfflineEvent -> {
+                handleUserOffline(event.userId)
+            }
+            is TypingEvent -> {
+                handleTyping(event.userId, event.targetUserId)
+            }
+            is StoppedTypingEvent -> {
+                handleStoppedTyping(event.userId)
+            }
+            is GetUserStatusEvent -> {
+                handleGetUserStatus(event.userId, event.status)
             }
         }
     }
@@ -76,8 +103,7 @@ open class ChatViewModel(
                 attachment = message.getThumbnail(),
                 content = message.getContent(),
                 timestamp = notification.date,
-                recipientId = userViewModel.userId!!,
-                chatId = message.getSender()
+                recipientId = userViewModel.userId!!
             )
 
             chatService.saveMessage(newMessage)
@@ -86,8 +112,49 @@ open class ChatViewModel(
 
             _messages.value += newMessage
         }
+    }
 
+    private fun handleUserOnline(userId: String) {
+        if (_usersStatus.value.containsKey(userId)) {
+            _usersStatus.value = _usersStatus.value.toMutableMap().apply {
+                this[userId] = ChatStatus.ONLINE
+            }
+        }
+    }
 
+    private fun handleUserOffline(userId: String) {
+        if (_usersStatus.value.containsKey(userId)) {
+            _usersStatus.value = _usersStatus.value.toMutableMap().apply {
+                this[userId] = ChatStatus.OFFLINE
+            }
+        }
+    }
+
+    private fun handleTyping(userId: String, targetUserId: String) {
+        if (userId == userViewModel.userId) {
+            if (_usersStatus.value.containsKey(targetUserId)) {
+                Log.i("ChatViewModel", "User is typing")
+                _usersStatus.value = _usersStatus.value.toMutableMap().apply {
+                    this[targetUserId] = ChatStatus.TYPING
+                }
+            }
+        }
+    }
+
+    private fun handleStoppedTyping(userId: String) {
+        if (_usersStatus.value.containsKey(userId)) {
+            _usersStatus.value = _usersStatus.value.toMutableMap().apply {
+                this[userId] = ChatStatus.ONLINE
+            }
+        }
+    }
+
+    private fun handleGetUserStatus(userId: String, status: String) {
+        if (_usersStatus.value.containsKey(userId)) {
+            _usersStatus.value = _usersStatus.value.toMutableMap().apply {
+                this[userId] = ChatStatus.valueOf(status)
+            }
+        }
     }
 
     fun loadChats() {
@@ -101,6 +168,12 @@ open class ChatViewModel(
             val result = chatService.getChats(userViewModel.userId!!)
             result.onSuccess { chats ->
                 _chatList.value = chats
+                _usersStatus.value = chats.associate { it.userId to ChatStatus.OFFLINE }
+                chats.forEach { chat ->
+                    if (chat.userId != userViewModel.userId) {
+                        statusSocket.getUserStatus(userViewModel.userId!!, chat.userId)
+                    }
+                }
                 _isLoading.value = false
             }.onFailure { error ->
                 Log.e("ChatViewModel", "Error loading chats: ${error.message}")
@@ -151,7 +224,7 @@ open class ChatViewModel(
             }
 
 
-            this@ChatViewModel._messages.value = messages.toMutableList()
+            this@ChatViewModel._messages.value = (this@ChatViewModel._messages.value + messages).distinctBy { it.messageId }.toMutableList()
             _isLoading.value = false
         }
     }
@@ -159,19 +232,26 @@ open class ChatViewModel(
 
     fun sendMessage(chatId: String, content: String, attachment: String?) {
         viewModelScope.launch {
-            // Throw error if the authViewModel.userId is null
+
             if (userViewModel.userId.isNullOrEmpty()) {
                 errorViewModel.showError("User is not authenticated")
                 return@launch
             }
-            val result =
-                chatService.sendMessage(userViewModel.userId!!, chatId, content, attachment)
+
+            val result = chatService.sendMessage(userViewModel.userId!!, chatId, content, attachment)
+
             result.onFailure { error ->
                 Log.e("ChatViewModel", "Error sending message: ${error.message}")
             }
-            _messages.value += result.getOrNull()!!
+
+            result.getOrNull()?.let { message ->
+                _messages.value += message
+            } ?: run {
+                Log.e("ChatViewModel", "Failed to send message: Result is null")
+            }
         }
     }
+
 
     fun filterChats(recipientName: String) {
         viewModelScope.launch {
@@ -190,6 +270,26 @@ open class ChatViewModel(
                 )
                 _isLoading.value = false
             }
+        }
+    }
+
+    fun setUserTyping(targetUserId: String) {
+        customScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
+            statusSocket.setUserTyping(userViewModel.userId!!, targetUserId)
+        }
+    }
+
+    fun setUserStoppedTyping() {
+        customScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
+            statusSocket.setUserStoppedTyping(userViewModel.userId!!)
         }
     }
 

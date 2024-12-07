@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -37,7 +38,7 @@ fun AccountTopBar(navController: NavController) {
                         painter = painterResource(id = R.drawable.ic_arrow_back),
                         contentDescription = "Back",
                         modifier = Modifier.size(24.dp),
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
 
@@ -45,13 +46,13 @@ fun AccountTopBar(navController: NavController) {
 
                 Text(
                     text = stringResource(R.string.account),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MainColor,
+            containerColor = MaterialTheme.colorScheme.onPrimary,
         )
     )
 }

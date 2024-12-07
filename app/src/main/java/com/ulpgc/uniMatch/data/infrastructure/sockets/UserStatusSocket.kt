@@ -34,79 +34,85 @@ class UserStatusSocket(
 
 
     fun connect() {
-        val statusRequest = Request.Builder()
-            .url("ws://$backendUrl:$statusPort/status/$userId")
-            .build()
+        statusSocket?.cancel()
+        val courutineScope = CoroutineScope(Dispatchers.IO)
 
-        statusSocket = client.newWebSocket(statusRequest, object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                Log.i("UserStatusSocket", "Status WebSocket connected for user $userId")
-                isReconnecting.set(false) // Reconexión exitosa
-            }
+        courutineScope.launch {
+            val statusRequest = Request.Builder()
+                .url("ws://$backendUrl:$statusPort/status/$userId")
+                .build()
 
-            override fun onMessage(webSocket: WebSocket, text: String) {
-                try {
-                    val statusResponse = JSONObject(text)
-                    val chatStatus = statusResponse.getString("type")
-
-                    when (chatStatus) {
-                        "userOnline" -> {
-                            val userId = statusResponse.getString("userId")
-                            coroutineScope.launch {
-                                val event = UserOnlineEvent(userId)
-                                eventBus.emitEvent(event)
-                            }
-                        }
-
-                        "userOffline" -> {
-                            val userId = statusResponse.getString("userId")
-                            coroutineScope.launch {
-                                val event = UserOfflineEvent(userId)
-                                eventBus.emitEvent(event)
-                            }
-                        }
-
-                        "typing" -> {
-                            val userId = statusResponse.getString("userId")
-                            val targetUserId = statusResponse.getString("targetUserId")
-                            coroutineScope.launch {
-                                val event = TypingEvent(userId, targetUserId)
-                                eventBus.emitEvent(event)
-                            }
-                        }
-
-                        "stoppedTyping" -> {
-                            val userId = statusResponse.getString("userId")
-                            coroutineScope.launch {
-                                val event = StoppedTypingEvent(userId)
-                                eventBus.emitEvent(event)
-                            }
-                        }
-
-                        "getUserStatus" -> {
-                            val userId = statusResponse.getString("userId")
-                            val status = statusResponse.getString("status")
-                            coroutineScope.launch {
-                                val event = GetUserStatusEvent(userId, status)
-                                eventBus.emitEvent(event)
-                            }
-                        }
-                    }
-                } catch (e: JSONException) {
-                    Log.e("UserStatusSocket", "Error parsing status message: ${e.message}")
+            statusSocket = client.newWebSocket(statusRequest, object : WebSocketListener() {
+                override fun onOpen(webSocket: WebSocket, response: Response) {
+                    isReconnecting.set(false) // Reconexión exitosa
                 }
-            }
 
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                Log.e("UserStatusSocket", "Status WebSocket error: ${t.message}")
-                attemptReconnect() // Intentar reconectar
-            }
 
-            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                Log.i("UserStatusSocket", "Status WebSocket closed: $reason")
-                attemptReconnect() // Intentar reconectar
-            }
-        })
+                override fun onMessage(webSocket: WebSocket, text: String) {
+                    try {
+                        Log.i("UserStatusSocket", "Status message received: $text")
+                        val statusResponse = JSONObject(text)
+                        val chatStatus = statusResponse.getString("type")
+
+                        when (chatStatus) {
+                            "userOnline" -> {
+                                val userId = statusResponse.getString("userId")
+                                coroutineScope.launch {
+                                    val event = UserOnlineEvent(userId)
+                                    eventBus.emitEvent(event)
+                                }
+                            }
+
+                            "userOffline" -> {
+                                val userId = statusResponse.getString("userId")
+                                coroutineScope.launch {
+                                    val event = UserOfflineEvent(userId)
+                                    eventBus.emitEvent(event)
+                                }
+                            }
+
+                            "typing" -> {
+
+                                val targetUserId = statusResponse.getString("userId")
+                                coroutineScope.launch {
+                                    val event = TypingEvent(userId, targetUserId)
+                                    eventBus.emitEvent(event)
+                                }
+                            }
+
+                            "stoppedTyping" -> {
+                                val userId = statusResponse.getString("userId")
+                                coroutineScope.launch {
+                                    val event = StoppedTypingEvent(userId)
+                                    eventBus.emitEvent(event)
+                                }
+                            }
+
+                            "getUserStatus" -> {
+                                val userId = statusResponse.getString("userId")
+                                val status = statusResponse.getString("status")
+                                coroutineScope.launch {
+                                    val event = GetUserStatusEvent(userId, status)
+                                    eventBus.emitEvent(event)
+                                }
+                            }
+                        }
+                    } catch (e: JSONException) {
+                        Log.e("UserStatusSocket", "Error parsing status message: ${e.message}")
+                    }
+                }
+
+                override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                    Log.e("UserStatusSocket", "Status WebSocket error: ${t.message}")
+                    attemptReconnect() // Intentar reconectar
+                }
+
+                override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                    Log.i("UserStatusSocket", "Status WebSocket closed: $reason")
+                    attemptReconnect() // Intentar reconectar
+                }
+            })
+        }
     }
 
 
@@ -128,38 +134,32 @@ class UserStatusSocket(
         socket?.send(message)
     }
 
+    private fun ensureConnected() {
+        if (statusSocket == null) {
+            connect()
+        }
+    }
+
     override suspend fun setUserTyping(userId: String, targetUserId: String): Result<Unit> {
-        val message = """
-            {
-                "type": "typing",
-                "userId": "$userId",
-                "targetUserId": "$targetUserId"
-            }
-        """.trimIndent()
+        ensureConnected()
+        val message = """{"type": "typing","userId": "$userId","targetUserId": "$targetUserId"}""".trimIndent()
         sendMessage(statusSocket, message)
         return Result.success(Unit)
     }
 
     override suspend fun setUserStoppedTyping(userId: String): Result<Unit> {
-        val message = """
-            {
-                "type": "stoppedTyping",
-                "userId": "$userId"
-            }
-        """.trimIndent()
+        ensureConnected()
+        val message = """{"type": "stoppedTyping","userId": "$userId"}""".trimIndent()
         sendMessage(statusSocket, message)
         return Result.success(Unit)
     }
 
+
     override suspend fun getUserStatus(userId: String, targetUserId: String): Result<Unit> {
-        val message = """
-            {
-                "type": "getUserStatus",
-                "userId": "$userId",
-                "targetUserId": "$targetUserId"
-            }
-        """.trimIndent()
+        ensureConnected()
+        val message = """{"type": "getUserStatus","userId": "$userId","targetUserId": "$targetUserId"}""".trimIndent()
         sendMessage(statusSocket, message)
         return Result.success(Unit)
     }
+
 }

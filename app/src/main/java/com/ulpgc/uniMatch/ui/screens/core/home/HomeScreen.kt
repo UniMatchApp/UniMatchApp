@@ -58,7 +58,7 @@ fun HomeScreen(
         }
     }
 
-    if (isLoading) {
+    if (isLoading && matchingProfiles.isEmpty()) {
         LoadingIndicator()
     }
 

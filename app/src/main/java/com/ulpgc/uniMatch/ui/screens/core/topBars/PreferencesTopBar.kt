@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -38,7 +39,7 @@ fun PreferencesTopBar(navController: NavController) {
                     Icon(
                         painterResource(id = R.drawable.ic_arrow_back),
                         contentDescription = "Back",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(24.dp),
 
                         )
@@ -48,13 +49,13 @@ fun PreferencesTopBar(navController: NavController) {
 
                 Text(
                     text = stringResource(id = R.string.edit_preferences),
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MainColor,
+            containerColor = MaterialTheme.colorScheme.onPrimary
         )
     )
 }

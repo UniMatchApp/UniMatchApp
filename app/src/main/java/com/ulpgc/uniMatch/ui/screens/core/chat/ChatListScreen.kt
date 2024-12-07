@@ -2,30 +2,20 @@
 
 package com.ulpgc.uniMatch.ui.screens.core.chat
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.ui.components.chats.ChatList
 
@@ -34,6 +24,9 @@ fun ChatListScreen(
     viewModel: ChatViewModel,
     onChatClick: (String) -> Unit
 ) {
+
+    val usersStatus = viewModel.usersStatus.collectAsState()
+
     LaunchedEffect(Unit) {
         viewModel.loadChats()
     }
@@ -45,16 +38,26 @@ fun ChatListScreen(
         val isLoading by viewModel.isLoading.collectAsState()
 
         if (isLoading) {
-            CircularProgressIndicator()
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         } else if (chatList.isEmpty()) {
-            Text(text = "No chats available", style = MaterialTheme.typography.titleLarge)
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = stringResource(R.string.no_chats), style = MaterialTheme.typography.titleLarge)
+            }
         } else {
             ChatList(
                 chats = chatList,
                 onChatClick = { chat ->
-                    // Navegar al detalle del chat al hacer clic en un chat
                     onChatClick(chat.userId)
-                }
+                },
+                userStatusMap = usersStatus.value
             )
         }
     }

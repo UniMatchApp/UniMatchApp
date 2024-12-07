@@ -39,7 +39,7 @@ fun NotificationTopBar(navController: NavController) {
                     Icon(
                         painterResource(id = R.drawable.ic_arrow_back),
                         contentDescription = "Back",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(24.dp),
 
                     )
@@ -49,13 +49,13 @@ fun NotificationTopBar(navController: NavController) {
 
                 Text(
                     text = stringResource(id = R.string.notifications_title),
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MainColor,
+            containerColor = MaterialTheme.colorScheme.onPrimary
         )
     )
 }

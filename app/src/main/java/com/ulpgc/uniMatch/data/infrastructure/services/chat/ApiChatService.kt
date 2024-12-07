@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.chat
 
 
+import android.util.Log
 import com.ulpgc.uniMatch.data.application.services.ChatService
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
@@ -31,29 +32,35 @@ class ApiChatService(
         attachment: String?
     ): Result<Message> {
         return safeRequest {
-            // First we save the message to the local database
             val message = Message(
                 messageId = UUID.randomUUID().toString(),
                 content = content,
-                chatId = chatId,
                 senderId = loggedUserId,
                 recipientId = chatId,
                 attachment = attachment
             )
             chatMessageDao.insertMessages(listOf(MessageEntity.fromDomain(message)))
 
-            val response = messageController.sendMessage(message)
-
-            if (!response.success) {
-                throw Throwable(response.errorMessage ?: "Unknown error occurred")
+            val result = runCatching {
+                messageController.sendMessage(message)
             }
 
-            chatMessageDao.setMessageStatus(message.messageId, MessageStatus.SENT)
-            message.status = MessageStatus.SENT
+            if (result.isFailure) {
+                chatMessageDao.setMessageStatus(message.messageId, MessageStatus.FAILED)
+                message.status = MessageStatus.FAILED
+                Log.e("ApiChatService", "Message failed: $message")
+            } else {
+                chatMessageDao.setMessageStatus(message.messageId, MessageStatus.SENT)
+                message.status = MessageStatus.SENT
+                Log.i("ApiChatService", "Message sent: $message")
+            }
 
             return@safeRequest message
+        }.mapCatching { message ->
+            message
         }
     }
+
 
     override suspend fun saveMessage(message: Message): Result<Unit> {
         return safeRequest {
@@ -64,114 +71,62 @@ class ApiChatService(
 
     override suspend fun getChats(loggedUserId: String): Result<List<Chat>> {
         return safeRequest {
-            val chats = mutableListOf<Chat>()
-            val dbChats: List<Chat> =
-                chatMessageDao.getAllChatsOrderedByLastMessage().first().map { chatEntity ->
-                    // Obtiene el último mensaje y el conteo de no leídos para cada chat
-                    val lastMessageEntity = chatMessageDao.getLastMessageForChat(chatEntity.id)
-                    val unreadMessagesCount = chatMessageDao.countUnreadMessages(
-                        userId = loggedUserId,
-                        chatId = chatEntity.id
-                    )
+            val dbChats = chatMessageDao.getAllChatsOrderedByLastMessage().first().map { chatEntity ->
+                val lastMessageEntity = chatMessageDao.getLastMessageForChat(chatEntity.id)
+                val unreadMessagesCount = chatMessageDao.countUnreadMessages(loggedUserId, chatEntity.id)
 
-                    // Mapea el último mensaje al modelo de dominio si existe
-                    val lastMessage = lastMessageEntity?.let {
-                        Message(
-                            messageId = it.messageId,
-                            chatId = it.chatId,
-                            content = it.content,
-                            senderId = it.senderId,
-                            recipientId = it.recipientId,
-                            timestamp = it.timestamp,
-                            status = it.status,
-                            deletedStatus = it.deletedStatus,
-                            attachment = it.attachment
-                        )
+                // Crea el objeto de dominio Chat
+                Chat(
+                    userId = chatEntity.id,
+                    userName = chatEntity.name,
+                    profilePictureUrl = chatEntity.profilePictureUrl,
+                    lastMessage = lastMessageEntity?.let { MessageEntity.toDomain(it) },
+                    unreadMessagesCount = unreadMessagesCount
+                )
+            }.toMutableList()
+
+            // Crear chats para usuarios coincidentes si no existen
+            matchingController.getMatchingUserIds().value?.forEach { userId ->
+                profileService.getProfile(userId).onSuccess { profile ->
+                    if (dbChats.none { it.userId == profile.userId }) {
+                        chatMessageDao.insertChat(ChatEntity(id = profile.userId, name = profile.name, profilePictureUrl = profile.preferredImage))
+                        dbChats.add(Chat(userId = profile.userId, userName = profile.name, profilePictureUrl = profile.preferredImage, lastMessage = null, unreadMessagesCount = 0))
                     }
-                    // Retorna un objeto Chat del dominio con todos los datos necesarios
-                    Chat(
-                        userId = chatEntity.id,
-                        userName = chatEntity.name,
-                        profilePictureUrl = chatEntity.profilePictureUrl,
-                        lastMessage = lastMessage,
-                        unreadMessagesCount = unreadMessagesCount
-                    )
-                }
-
-            chats.addAll(dbChats)
-
-            // TODO: Create new empty chats for matching users from endpoint in backend
-            val matchingUsers = matchingController.getMatchingUserIds();
-
-            matchingUsers.value?.forEach { userId ->
-                val profile = profileService.getProfile(userId).getOrElse { return@forEach }
-                if (dbChats.none { it.userId == profile.userId }) {
-                    chatMessageDao.insertChat(
-                        ChatEntity(
-                            id = profile.userId,
-                            name = profile.name,
-                            profilePictureUrl = profile.preferredImage
-                        )
-                    )
                 }
             }
-            var lastMessageTime =
-                dbChats.maxByOrNull { it.lastMessage?.timestamp ?: 0 }?.lastMessage?.timestamp
-                    ?: 0
-            while (true) {
-                val response =
-                    messageController.getMessages(lastMessageTime)
 
-                if (!response.success) {
-                    throw Throwable(response.errorMessage ?: "Unknown error occurred")
-                }
-                if (response.value.isNullOrEmpty()) {
-                    break
-                }
+            // Obtener nuevos mensajes y actualizar chats
+            var lastMessageTime = dbChats.maxOfOrNull { it.lastMessage?.timestamp ?: 0 } ?: 0
+            while (true) {
+                val response = messageController.getMessages(lastMessageTime)
+                if (!response.success || response.value.isNullOrEmpty()) break
+
                 response.value.forEach { message ->
-                    val userId = (message.senderId != loggedUserId).let {
-                        if (it) message.senderId else message.recipientId
-                    }
+                    val userId = if (message.senderId != loggedUserId) message.senderId else message.recipientId
                     val chatEntity = chatMessageDao.getChatByUserId(userId)
 
                     if (chatEntity != null) {
-                        // Si el chat ya existe, actualizarlo
-                        chatMessageDao.insertMessage(
-                            MessageEntity.fromDomain(
-                                Message(
-                                    messageId = message.messageId,
-                                    chatId = chatEntity.id,
-                                    content = message.content,
-                                    senderId = message.senderId,
-                                    recipientId = message.recipientId,
-                                    timestamp = message.timestamp,
-                                    status = message.status,
-                                    deletedStatus = message.deletedStatus,
-                                    attachment = message.attachment
-                                )
-                            )
-                        )
+                        // Actualiza mensaje en chat existente
+                        chatMessageDao.insertMessage(MessageEntity.fromDomain(message))
                     } else {
-                        val profile = profileService.getProfile(userId)
-                            .getOrElse { return@forEach } // Si no se puede obtener el perfil, omitir el mensaje
-                        val newChat = Chat(
-                            userId = userId,
-                            userName = profile.name,
-                            profilePictureUrl = profile.preferredImage,
-                            lastMessage = message,
-                            unreadMessagesCount = 1
-                        )
-                        chatMessageDao.insertChat(ChatEntity.fromDomain(newChat))
-                        chats.add(newChat)
+                        profileService.getProfile(userId).onSuccess { profile ->
+                            val newChat = Chat(
+                                userId = userId,
+                                userName = profile.name,
+                                profilePictureUrl = profile.preferredImage,
+                                lastMessage = message,
+                                unreadMessagesCount = 1
+                            )
+                            chatMessageDao.insertChat(ChatEntity.fromDomain(newChat))
+                            dbChats.add(newChat)
+                        }
                     }
-
                 }
-                lastMessageTime = response.value.maxByOrNull { it.timestamp }?.timestamp ?: 0
+                lastMessageTime = response.value.maxOfOrNull { it.timestamp } ?: 0
             }
-            return@safeRequest chats
+
+            dbChats
         }
-
-
     }
 
     override suspend fun getMessages(
@@ -184,7 +139,6 @@ class ApiChatService(
                 chatMessageDao.getMessages(chatId, limit, offset).first().map { messageEntity ->
                     Message(
                         messageId = messageEntity.messageId,
-                        chatId = messageEntity.chatId,
                         content = messageEntity.content,
                         senderId = messageEntity.senderId,
                         recipientId = messageEntity.recipientId,
@@ -218,7 +172,6 @@ class ApiChatService(
                 val lastMessage = lastMessageEntity?.let {
                     Message(
                         messageId = it.messageId,
-                        chatId = it.chatId,
                         content = it.content,
                         senderId = it.senderId,
                         recipientId = it.recipientId,
@@ -260,7 +213,6 @@ class ApiChatService(
             }
             return@safeRequest Message(
                 messageId = messageId,
-                chatId = response.value.senderId,
                 content = response.value.content,
                 senderId = response.value.senderId,
                 recipientId = response.value.recipientId,
@@ -293,7 +245,6 @@ class ApiChatService(
 
             return@safeRequest Message(
                 messageId = messageId,
-                chatId = response.value.senderId,
                 content = response.value.content,
                 senderId = response.value.senderId,
                 recipientId = response.value.recipientId,
@@ -325,7 +276,6 @@ class ApiChatService(
 
             return@safeRequest Message(
                 messageId = messageId,
-                chatId = response.value.senderId,
                 content = response.value.content,
                 senderId = response.value.senderId,
                 recipientId = response.value.recipientId,

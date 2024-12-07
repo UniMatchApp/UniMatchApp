@@ -25,31 +25,23 @@ class HomeViewModel (
     private val _matchingProfiles = MutableStateFlow(emptyList<Profile>())
     val matchingProfiles: StateFlow<List<Profile>> get() = _matchingProfiles
 
-    fun loadMatchingUsers() {
+    fun loadMatchingUsers(limit: Int = 10) {
         viewModelScope.launch {
             _isLoading.value = true
-            _matchingProfiles.value = emptyList()
-            val result = matchingService.getMatchingUsers(10)
-            result.onSuccess { profiles ->
-                Log.i("HomeViewModel", "Loaded matching users: $profiles")
-                _matchingProfiles.value = profiles
-                _isLoading.value = false
-            }.onFailure {
-                _isLoading.value = false
+            matchingService.getMatchingUsers(limit).collect { profile ->
+                _matchingProfiles.value += profile
             }
+            _isLoading.value = false
         }
     }
 
     fun loadMoreMatchingUsers() {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = matchingService.getMatchingUsers(10)
-            result.onSuccess { profiles ->
-                _matchingProfiles.value += profiles
-                _isLoading.value = false
-            }.onFailure {
-                _isLoading.value = false
+            matchingService.getMatchingUsers(10).collect { profile ->
+                _matchingProfiles.value += profile
             }
+            _isLoading.value = false
         }
     }
 

@@ -19,7 +19,6 @@ class MockChatService : ChatService {
         return Result.success(
             Message(
                 UUID.randomUUID().toString(),
-                chatId,
                 content,
                 loggedUserId,
                 chatId,
@@ -64,7 +63,6 @@ class MockChatService : ChatService {
         return Result.success(
             Message(
                 messageId,
-                UUID.randomUUID().toString(),
                 "content",
                 loggedUserId,
                 UUID.randomUUID().toString(),
@@ -82,7 +80,6 @@ class MockChatService : ChatService {
         return Result.success(
             Message(
                 messageId,
-                UUID.randomUUID().toString(),
                 newContent,
                 userId,
                 UUID.randomUUID().toString(),
@@ -99,7 +96,6 @@ class MockChatService : ChatService {
         return Result.success(
             Message(
                 messageId,
-                UUID.randomUUID().toString(),
                 "content",
                 userId,
                 UUID.randomUUID().toString(),

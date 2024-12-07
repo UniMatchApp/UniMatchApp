@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -43,13 +44,13 @@ fun ChatDetailTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Icono de retroceso
+
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_arrow_back),
                         contentDescription = "Back",
                         modifier = Modifier.size(24.dp),
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
 
@@ -74,13 +75,13 @@ fun ChatDetailTopBar(
 
                 Text(
                     text = chatViewModel.otherUser.collectAsState().value?.name ?: "",
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MainColor,
+            containerColor = MaterialTheme.colorScheme.onPrimary
         )
     )
 }

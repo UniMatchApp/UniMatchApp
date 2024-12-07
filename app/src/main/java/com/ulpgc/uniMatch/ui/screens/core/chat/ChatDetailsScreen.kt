@@ -1,13 +1,14 @@
 package com.ulpgc.uniMatch.ui.screens.core.chat
 
 
+import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +29,7 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,10 +42,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.ui.components.chats.MessageBubble
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,6 +64,10 @@ fun ChatDetailScreen(
     // Cargar mensajes al iniciar
     LaunchedEffect(chatId) {
         chatViewModel.loadMessages(chatId, messages.size)
+    }
+
+    LaunchedEffect(messages) {
+        Log.i("ChatDetailScreen", "Messages: $messages")
     }
 
     // Detectar si el usuario está cerca del final de la lista
@@ -83,19 +92,23 @@ fun ChatDetailScreen(
         }
     }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .imePadding()
     ) {
         Column(
-            modifier = Modifier.fillMaxHeight(0.9f).fillMaxWidth(1f),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(top = 8.dp, bottom = 4.dp, start = 16.dp, end = 16.dp)
         ) {
             LazyColumn(
                 state = listState,
+
                 modifier = Modifier
-                    .padding(top = 8.dp, bottom = 4.dp, start = 16.dp, end = 16.dp)
-                    .weight(1f)
+                    .fillMaxWidth()
+                    .weight(1f), // Ocupa el espacio sobrante
             ) {
                 items(messages) { message ->
                     MessageBubble(
@@ -105,32 +118,47 @@ fun ChatDetailScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
-        }
-            MessageInput(
-                viewModel = chatViewModel,
-                chatId = chatId,
-                modifier = Modifier
-                    .fillMaxHeight(0.1f)
-                    .fillMaxWidth(1f)
-                    .align(Alignment.BottomCenter)
-            )
 
-        if (!showScrollToBottomButton) {
-            ScrollToBottomButton(
-                onClick = {
-                    coroutineScope.launch {
-                        listState.animateScrollToItem(messages.size - 1)
-                    }
-                },
-                // Set the position fixed
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 16.dp, bottom = 72.dp)
-                    .size(32.dp),
-            )
+            if (messages.isNotEmpty() && !showScrollToBottomButton) {
+                ScrollToBottomButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            if (messages.isNotEmpty()) {
+                                listState.animateScrollToItem(messages.size - 1)
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(Color.Transparent)
+                        .align(Alignment.End)
+
+                )
+
+            }
         }
+
+
+
+        MessageInput(
+            viewModel = chatViewModel,
+            chatId = chatId,
+            modifier = Modifier
+                .fillMaxWidth(),
+            onTyping = { typing ->
+                if (typing) {
+                    userViewModel.userId?.let { chatViewModel.setUserTyping(chatId) }
+                } else {
+                    chatViewModel.setUserStoppedTyping()
+                }
+            },
+            onStoppedTyping = {
+                chatViewModel.setUserStoppedTyping()
+            }
+        )
     }
 }
+
 
 @Composable
 private fun ScrollToBottomButton(
@@ -142,24 +170,28 @@ private fun ScrollToBottomButton(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.primary,
         shape = CircleShape,
-        elevation = FloatingActionButtonDefaults.elevation(8.dp)
+        elevation = FloatingActionButtonDefaults.elevation(8.dp),
     ) {
         Icon(
             imageVector = Icons.Default.ArrowDropDown,
             contentDescription = "Scroll to bottom",
-            modifier = Modifier.size(24.dp) // Tamaño del icono
+            modifier = Modifier.size(24.dp)
         )
     }
 }
-
 
 @Composable
 private fun MessageInput(
     viewModel: ChatViewModel,
     chatId: String,
+    onTyping: (Boolean) -> Unit,
+    onStoppedTyping: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var newMessage by remember { mutableStateOf("") }
+    var typing by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    var typingJob: Job? by remember { mutableStateOf(null) }
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -168,12 +200,32 @@ private fun MessageInput(
     ) {
         TextField(
             value = newMessage,
-            onValueChange = { newMessage = it },
+            onValueChange = {
+                newMessage = it
+                typing = it.isNotEmpty()
+                if (it.isNotEmpty()) {
+                    typingJob?.cancel()
+                    typingJob = coroutineScope.launch {
+                        delay(3000)
+                        onStoppedTyping()
+                    }
+                    onTyping(true)
+                } else {
+                    onTyping(false)
+                }
+            },
             modifier = Modifier
                 .weight(1f)
+                .background(MaterialTheme.colorScheme.surface)
                 .clip(CircleShape),
             shape = MaterialTheme.shapes.medium,
             textStyle = MaterialTheme.typography.bodyLarge,
+
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = MaterialTheme.colorScheme.onSurface
+            )
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -182,6 +234,9 @@ private fun MessageInput(
             onClick = {
                 viewModel.sendMessage(chatId, newMessage, null)
                 newMessage = ""
+                typing = false
+                onStoppedTyping()
+                onTyping(false)
             },
             modifier = Modifier
                 .size(46.dp)
@@ -196,3 +251,5 @@ private fun MessageInput(
         }
     }
 }
+
+

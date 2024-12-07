@@ -9,6 +9,7 @@
     <string name="notifications">Notificaciones</string>
     <string name="user_filters">user filters</string>
     <string name="account">Cuenta</string>
+    <string name="policies">Políticas</string>
 
     <!--LOGIN SCREEN-->
     <string name="login">Iniciar sesión</string>
@@ -479,5 +480,9 @@
     <string name="location_error">Ha habido un error al buscar su ubicación</string>
     <string name="fetch_location">Obtener ubicación</string>
 
+    <!--CHAT-->
+    <string name="no_chats">No tienes chats disponibles</string>
+    <string name="start_chat">Empieza una conversación</string>
+    <string name="typing">Escribiendo…</string>
 
 </resources>

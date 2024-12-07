@@ -1,32 +1,44 @@
 package com.ulpgc.uniMatch.ui.components.chats
 
-import ChatListItem
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.enums.ChatStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun ChatList(
     chats: List<Chat>,
-    onChatClick: (Chat) -> Unit
+    onChatClick: (Chat) -> Unit,
+    userStatusMap: Map<String, ChatStatus>
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
         items(chats) { chat ->
+            val lastMessage = chat.lastMessage?.content ?: stringResource(R.string.start_chat)
+            val lastMessageTime = if (chat.lastMessage != null) {
+                formatDate(chat.lastMessage.timestamp)
+            } else {
+                "" // No mostrar fecha si no hay mensaje
+            }
+
             ChatListItem(
                 profileImageUrl = chat.profilePictureUrl,
                 userName = chat.userName,
-                lastMessage = chat.lastMessage?.content ?: "",
-                lastMessageTime = formatDate(chat.lastMessage?.timestamp ?: 0),
+                lastMessage = lastMessage,
+                lastMessageTime = lastMessageTime,
                 unreadMessagesCount = chat.unreadMessagesCount,
-                onChatClick = { onChatClick(chat) } // Llamar al callback con el chat seleccionado
+                onChatClick = { onChatClick(chat) },
+                userStatus = userStatusMap[chat.userId]
             )
         }
     }

@@ -7,6 +7,9 @@ import com.ulpgc.uniMatch.data.infrastructure.controllers.MatchingController
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.MatchingEntity
 import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 
 class ApiMatchingService(
     private val matchingController: MatchingController,
@@ -14,34 +17,25 @@ class ApiMatchingService(
     private val profileDao: ProfileDao
 ) : MatchingService {
 
-    override suspend fun getMatchingUsers(limit: Int): Result<List<Profile>> {
-        return safeRequest {
-            // Realizar la llamada al controlador
-            val response = matchingController.getMatchingUsers(limit)
+    override suspend fun getMatchingUsers(limit: Int): Flow<Profile> = flow {
+        val response = safeRequest { matchingController.getMatchingUsers(limit) }
+        val userIds = response.mapCatching { it.value }.getOrNull() ?: emptyList()
 
-            // Si la respuesta no es exitosa, retornar datos desde el DAO local
-            if (!response.success) {
-                return@safeRequest profileDao.getAllMatching().map(MatchingEntity::toDomain)
-            }
-
-            // Si la respuesta es exitosa, obtener los IDs de usuario
-            val userIds = response.value.orEmpty()
-
-            // Mapear los IDs a perfiles, ignorando cualquier fallo en la obtención de perfiles
-            val profiles = userIds.mapNotNull { userId ->
-                profileService.getProfile(userId).getOrNull()
-            }
-
-            // Guardar los perfiles en la base de datos local
-            profiles.forEach { profile ->
+        for (userId in userIds) {
+            val profileResult = profileService.getProfile(userId)
+            val profile = profileResult.getOrNull()
+            if (profile != null) {
+                emit(profile)
                 val matchingEntity = MatchingEntity.fromDomain(profile)
                 profileDao.insertMatching(matchingEntity)
             }
-
-            // Retornar la lista de perfiles
-            return@safeRequest profiles
+        }
+    }.catch { e ->
+        profileDao.getAllMatching().forEach { matchingEntity ->
+            emit(MatchingEntity.toDomain(matchingEntity))
         }
     }
+
 
 
     override suspend fun dislikeUser(dislikedUserId: String): Result<Unit> {

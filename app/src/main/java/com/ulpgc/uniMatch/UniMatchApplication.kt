@@ -143,17 +143,28 @@ class UniMatchApplication : Application() {
 
     val eventbus by lazy { WebSocketEventBus() }
 
-
-
     val notificationsViewModel: NotificationsViewModel by lazy {
         NotificationsViewModel(notificationService, errorViewModel, eventbus, userViewModel)
     }
 
     val chatViewModel: ChatViewModel by lazy {
-        ChatViewModel(chatService, profileService, errorViewModel, userViewModel, eventbus)
+        val userStatusSocket =
+            userViewModel.userId?.let { UserStatusSocket("localhost", 8081, it, eventbus) }
+        if (userStatusSocket == null) {
+            throw IllegalStateException("UserViewModel is not initialized")
+        }
+        ChatViewModel(
+            chatService,
+            profileService,
+            errorViewModel,
+            userViewModel,
+            eventbus,
+            userStatusSocket
+        )
     }
 
-    public fun initializeWebSocket(userId: String, eventbus: WebSocketEventBus) {
+
+    fun initializeWebSocket(userId: String, eventbus: WebSocketEventBus) {
         val userStatusSocket = UserStatusSocket("localhost", 8081, userId, eventbus)
         val notificationsSocket = NotificationSocket("localhost", 8080, userId, eventbus)
         userStatusSocket.connect()
@@ -166,9 +177,9 @@ class UniMatchApplication : Application() {
         Log.i("UniMatchApplication", "Application initialized")
 
         // Eliminar manualmente el archivo de la base de datos
-        val db = applicationContext.getDatabasePath("uniMatch_database")
-        if (db.exists()) {
-            db.delete()
-        }
+//        val db = applicationContext.getDatabasePath("uniMatch_database")
+//        if (db.exists()) {
+//            db.delete()
+//        }
     }
 }
