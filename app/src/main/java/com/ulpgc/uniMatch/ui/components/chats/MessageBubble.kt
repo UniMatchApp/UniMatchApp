@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.domain.models.Message
 
 import com.ulpgc.uniMatch.ui.theme.Bone
@@ -87,7 +87,7 @@ fun MessageBubble(message: Message, isCurrentUser: Boolean) {
                     Spacer(modifier = Modifier.width(4.dp))
                     // Mostrar el ícono basado en el estado del mensaje
                     if (isCurrentUser) {
-                        MessageStatusIcon(message.status)
+                        MessageStatusIcon(message.receptionStatus)
                     }
                 }
             }
@@ -96,9 +96,9 @@ fun MessageBubble(message: Message, isCurrentUser: Boolean) {
 }
 
 @Composable
-fun MessageStatusIcon(status: MessageStatus) {
+fun MessageStatusIcon(status: ReceptionStatus) {
     when (status) {
-        MessageStatus.SENDING -> {
+        ReceptionStatus.SENDING -> {
             Icon(
                 imageVector = Icons.Default.Schedule, // Icono de "Enviando"
                 contentDescription = "Sending",
@@ -107,7 +107,7 @@ fun MessageStatusIcon(status: MessageStatus) {
             )
         }
 
-        MessageStatus.SENT -> {
+        ReceptionStatus.SENT -> {
             Icon(
                 imageVector = Icons.Default.Check, // Icono de "Enviado"
                 contentDescription = "Sent",
@@ -116,7 +116,7 @@ fun MessageStatusIcon(status: MessageStatus) {
             )
         }
 
-        MessageStatus.RECEIVED -> {
+        ReceptionStatus.RECEIVED -> {
             Icon(
                 imageVector = Icons.Default.DoneAll, // Icono de "Recibido"
                 contentDescription = "Received",
@@ -125,7 +125,7 @@ fun MessageStatusIcon(status: MessageStatus) {
             )
         }
 
-        MessageStatus.READ -> {
+        ReceptionStatus.READ -> {
             Icon(
                 imageVector = Icons.Default.DoneAll, // Icono de "Leído"
                 contentDescription = "Read",
@@ -134,7 +134,7 @@ fun MessageStatusIcon(status: MessageStatus) {
             )
         }
 
-        MessageStatus.FAILED -> {
+        ReceptionStatus.FAILED -> {
             Icon(
                 imageVector = Icons.Default.Close, // Icono de "Fallido"
                 contentDescription = "Failed",

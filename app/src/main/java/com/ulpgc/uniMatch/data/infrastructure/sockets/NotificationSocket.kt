@@ -1,11 +1,11 @@
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.events.Event
 import com.ulpgc.uniMatch.data.application.events.EventBus
+import com.ulpgc.uniMatch.data.domain.enums.ContentStatus
 import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
 import com.ulpgc.uniMatch.data.domain.enums.EventStatus
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
-import com.ulpgc.uniMatch.data.domain.enums.NotificationType
 import com.ulpgc.uniMatch.data.domain.enums.NotificationTypeEnum
 import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
 import com.ulpgc.uniMatch.data.infrastructure.events.AppNotificationEvent
@@ -52,6 +52,7 @@ class NotificationSocket(
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
+                Log.i("NotificationSocket", "Notification WebSocket message received: $text")
                 parseNotificationMessage(text)
             }
 
@@ -167,12 +168,14 @@ class NotificationSocket(
     ) {
         try {
             val messagePayload = JSONObject(payload)
-            val messageStatusEnum =
-                MessageStatus.entries.find { it.status == messagePayload.getString("_status") }
+            val receptionStatusEnum =
+                ReceptionStatus.entries.find { it.status == messagePayload.getString("_receptionStatus") }
             val deletedStatus =
                 DeletedMessageStatus.entries.find { it.status == messagePayload.getString("_deletedStatus") }
+            val contentStatus =
+                ContentStatus.entries.find { it.status == messagePayload.getString("_contentStatus") }
 
-            if (messageStatusEnum == null || deletedStatus == null) {
+            if (receptionStatusEnum == null || deletedStatus == null || contentStatus == null) {
                 Log.e("NotificationSocket", "Error parsing message status")
                 return
             }
@@ -182,7 +185,8 @@ class NotificationSocket(
                 messagePayload.getString("_sender"),
                 messagePayload.getString("_content"),
                 messagePayload.optString("_thumbnail", ""),
-                messageStatusEnum,
+                receptionStatusEnum,
+                contentStatus,
                 deletedStatus
             )
 

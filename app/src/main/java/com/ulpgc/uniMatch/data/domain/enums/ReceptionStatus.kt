@@ -1,12 +1,17 @@
 package com.ulpgc.uniMatch.data.domain.enums
 
 
-enum class MessageStatus(val status: String) {
+enum class ReceptionStatus(val status: String) {
     FAILED("FAILED"),
     SENDING("SENDING"),
     SENT("SENT"),
     RECEIVED("RECEIVED"),
     READ("READ"),
+}
+
+enum class ContentStatus(val status: String) {
+    NOT_EDITED("NOT_EDITED"),
+    EDITED("EDITED"),
 }
 
 enum class DeletedMessageStatus(val status: String) {

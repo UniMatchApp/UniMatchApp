@@ -30,6 +30,7 @@ fun ChatListScreen(
     LaunchedEffect(Unit) {
         viewModel.loadChats()
     }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally

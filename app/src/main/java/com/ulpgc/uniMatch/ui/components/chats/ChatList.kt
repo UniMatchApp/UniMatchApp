@@ -26,7 +26,7 @@ fun ChatList(
         items(chats) { chat ->
             val lastMessage = chat.lastMessage?.content ?: stringResource(R.string.start_chat)
             val lastMessageTime = if (chat.lastMessage != null) {
-                formatDate(chat.lastMessage.timestamp)
+                formatDate(chat.lastMessage!!.timestamp)
             } else {
                 "" // No mostrar fecha si no hay mensaje
             }

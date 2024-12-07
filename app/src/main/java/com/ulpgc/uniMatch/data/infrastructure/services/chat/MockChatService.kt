@@ -1,8 +1,9 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.chat
 
 import com.ulpgc.uniMatch.data.application.services.ChatService
+import com.ulpgc.uniMatch.data.domain.enums.ContentStatus
 import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.infrastructure.mocks.ChatPreviewDataMock
@@ -23,6 +24,7 @@ class MockChatService : ChatService {
                 loggedUserId,
                 chatId,
                 attachment,
+                ReceptionStatus.SENDING
             )
         )
     }
@@ -58,7 +60,7 @@ class MockChatService : ChatService {
     override suspend fun setMessageStatus(
         loggedUserId: String,
         messageId: String,
-        status: MessageStatus
+        status: ReceptionStatus
     ): Result<Message> {
         return Result.success(
             Message(
@@ -83,7 +85,8 @@ class MockChatService : ChatService {
                 newContent,
                 userId,
                 UUID.randomUUID().toString(),
-                null
+                null,
+                ReceptionStatus.READ
             )
         )
     }
@@ -100,8 +103,10 @@ class MockChatService : ChatService {
                 userId,
                 UUID.randomUUID().toString(),
                 null,
-                MessageStatus.READ,
-                deletedStatus
+                ReceptionStatus.READ,
+                ContentStatus.NOT_EDITED,
+                deletedStatus,
+
             )
         )
     }

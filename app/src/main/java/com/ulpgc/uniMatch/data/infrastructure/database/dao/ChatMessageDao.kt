@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
 import com.ulpgc.uniMatch.data.infrastructure.entities.MessageEntity
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +24,10 @@ interface ChatMessageDao {
 
     @Query("SELECT * FROM chats WHERE id = :senderId")
     suspend fun getChatByUserId(senderId: String): ChatEntity?
+
+    // Obtiene un chat por su id
+    @Query("SELECT * FROM chats WHERE id = :chatId")
+    suspend fun getChatById(chatId: String): ChatEntity?
 
     @Query("SELECT * FROM chats WHERE LOWER(name) LIKE '%' || LOWER(:userName) || '%'")
     suspend fun getChatsByUserName(userName: String): List<ChatEntity>
@@ -58,11 +62,11 @@ interface ChatMessageDao {
     suspend fun setMessageContent(messageId: String, content: String)
 
     // Actualiza el conteo de mensajes no leídos en el chat (status != READ)
-    @Query("SELECT COUNT(*) FROM messages WHERE chatId = :chatId AND status != :status AND recipientId == :userId")
+    @Query("SELECT COUNT(*) FROM messages WHERE chatId = :chatId AND receptionStatus != :status AND recipientId == :userId")
     suspend fun countUnreadMessages(
         userId: String,
         chatId: String,
-        status: MessageStatus = MessageStatus.READ
+        status: ReceptionStatus = ReceptionStatus.READ
     ): Int
 
     // Obtiene los mensajes de un chat específico, con paginación
@@ -76,11 +80,11 @@ interface ChatMessageDao {
     // Marca todos los mensajes como leídos en un chat y actualiza el contador
     @Transaction
     suspend fun markMessagesAsRead(chatId: String) {
-        setMessageStatus(chatId, MessageStatus.READ)
+        setMessageStatus(chatId, ReceptionStatus.READ)
     }
 
-    @Query("UPDATE messages SET status = :status WHERE messageId = :chatId AND status != :status")
-    suspend fun setMessageStatus(chatId: String, status: MessageStatus)
+    @Query("UPDATE messages SET receptionStatus = :status WHERE messageId = :chatId AND receptionStatus != :status")
+    suspend fun setMessageStatus(chatId: String, status: ReceptionStatus)
 
 
     @Query("DELETE FROM messages WHERE chatId = :chatId")

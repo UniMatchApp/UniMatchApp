@@ -12,7 +12,7 @@ import com.ulpgc.uniMatch.data.application.services.ChatService
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.ChatStatus
 import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.domain.models.Profile
@@ -29,7 +29,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.security.Provider
 
 
 open class ChatViewModel(
@@ -97,18 +96,22 @@ open class ChatViewModel(
                 errorViewModel.showError("User is not authenticated")
                 return@launch
             }
+
+            Log.i("ChatViewModel", "New message received: $message")
+
             val newMessage = Message(
                 messageId = message.id,
                 senderId = message.getSender(),
                 attachment = message.getThumbnail(),
                 content = message.getContent(),
                 timestamp = notification.date,
-                recipientId = userViewModel.userId!!
+                recipientId = userViewModel.userId!!,
+                receptionStatus = ReceptionStatus.RECEIVED
             )
 
             chatService.saveMessage(newMessage)
 
-            chatService.setMessageStatus(userViewModel.userId!!, message.id, MessageStatus.RECEIVED)
+            chatService.setMessageStatus(userViewModel.userId!!, message.id, ReceptionStatus.RECEIVED)
 
             _messages.value += newMessage
         }
@@ -213,12 +216,12 @@ open class ChatViewModel(
             messages.indices.forEach { index ->
                 val message = messages[index]
                 if (message.recipientId != userViewModel.userId ||
-                    message.status == MessageStatus.READ
+                    message.receptionStatus == ReceptionStatus.READ
                 ) return@forEach
                 val updatedMessage = chatService.setMessageStatus(
                     userViewModel.userId!!,
                     message.messageId,
-                    MessageStatus.READ
+                    ReceptionStatus.READ
                 ).getOrElse { return@forEach }
                 messages[index] = updatedMessage
             }
@@ -293,7 +296,7 @@ open class ChatViewModel(
         }
     }
 
-    fun setMessageStatus(messageId: String, status: MessageStatus) {
+    fun setMessageStatus(messageId: String, status: ReceptionStatus) {
         viewModelScope.launch {
             if (userViewModel.userId.isNullOrEmpty()) {
                 errorViewModel.showError("User is not authenticated")

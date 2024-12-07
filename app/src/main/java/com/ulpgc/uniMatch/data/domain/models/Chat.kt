@@ -4,6 +4,6 @@ data class Chat(
     val userId: String,
     val userName: String,
     val profilePictureUrl: String? = null,
-    val lastMessage: Message? = null,
-    val unreadMessagesCount: Int = 0
+    var lastMessage: Message? = null,
+    var unreadMessagesCount: Int = 0
 )

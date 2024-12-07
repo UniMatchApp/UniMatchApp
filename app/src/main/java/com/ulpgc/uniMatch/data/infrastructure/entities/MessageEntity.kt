@@ -4,8 +4,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.ulpgc.uniMatch.data.domain.enums.ContentStatus
 import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.domain.models.Message
 
 @Entity(
@@ -27,20 +28,30 @@ data class MessageEntity(
     val senderId: String,
     val recipientId: String,
     val timestamp: Long,
-    val status: MessageStatus,
+    val receptionStatus: ReceptionStatus,
+    val contentStatus: ContentStatus,
     val deletedStatus: DeletedMessageStatus,
     val attachment: String? = null
 ) {
     companion object {
-        fun fromDomain(message: Message): MessageEntity {
+
+        fun fromDomain(message: Message, loggedUserId: String): MessageEntity {
+            // Determina el otro participante del chat
+            val chatId = if (message.senderId == loggedUserId) {
+                message.recipientId
+            } else {
+                message.senderId
+            }
+
             return MessageEntity(
                 messageId = message.messageId,
-                chatId = message.senderId,
+                chatId = chatId,
                 content = message.content,
                 senderId = message.senderId,
                 recipientId = message.recipientId,
                 timestamp = message.timestamp,
-                status = message.status,
+                receptionStatus = message.receptionStatus,
+                contentStatus = message.contentStatus,
                 deletedStatus = message.deletedStatus,
                 attachment = message.attachment
             )
@@ -53,11 +64,11 @@ data class MessageEntity(
                 senderId = messageEntity.senderId,
                 recipientId = messageEntity.recipientId,
                 timestamp = messageEntity.timestamp,
-                status = messageEntity.status,
+                receptionStatus = messageEntity.receptionStatus,
+                contentStatus = messageEntity.contentStatus,
                 deletedStatus = messageEntity.deletedStatus,
                 attachment = messageEntity.attachment
             )
         }
     }
 }
-

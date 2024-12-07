@@ -5,7 +5,7 @@ import android.util.Log
 import com.ulpgc.uniMatch.data.application.services.ChatService
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
-import com.ulpgc.uniMatch.data.domain.enums.MessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.domain.models.ModifyMessageDTO
@@ -37,21 +37,22 @@ class ApiChatService(
                 content = content,
                 senderId = loggedUserId,
                 recipientId = chatId,
-                attachment = attachment
+                attachment = attachment,
+                receptionStatus = ReceptionStatus.SENDING
             )
-            chatMessageDao.insertMessages(listOf(MessageEntity.fromDomain(message)))
+            chatMessageDao.insertMessages(listOf(MessageEntity.fromDomain(message, loggedUserId)))
 
             val result = runCatching {
                 messageController.sendMessage(message)
             }
 
             if (result.isFailure) {
-                chatMessageDao.setMessageStatus(message.messageId, MessageStatus.FAILED)
-                message.status = MessageStatus.FAILED
+                chatMessageDao.setMessageStatus(message.messageId, ReceptionStatus.FAILED)
+                message.receptionStatus = ReceptionStatus.FAILED
                 Log.e("ApiChatService", "Message failed: $message")
             } else {
-                chatMessageDao.setMessageStatus(message.messageId, MessageStatus.SENT)
-                message.status = MessageStatus.SENT
+                chatMessageDao.setMessageStatus(message.messageId, ReceptionStatus.SENT)
+                message.receptionStatus = ReceptionStatus.SENT
                 Log.i("ApiChatService", "Message sent: $message")
             }
 
@@ -65,7 +66,7 @@ class ApiChatService(
     override suspend fun saveMessage(message: Message): Result<Unit> {
         return safeRequest {
             // Insert the message into the local database
-            chatMessageDao.insertMessage(MessageEntity.fromDomain(message))
+            chatMessageDao.insertMessage(MessageEntity.fromDomain(message, message.senderId))
         }
     }
 
@@ -103,11 +104,20 @@ class ApiChatService(
 
                 response.value.forEach { message ->
                     val userId = if (message.senderId != loggedUserId) message.senderId else message.recipientId
-                    val chatEntity = chatMessageDao.getChatByUserId(userId)
+                    if (message.senderId == loggedUserId && message.receptionStatus == ReceptionStatus.SENT) {
+                        message.receptionStatus = ReceptionStatus.RECEIVED
+                        chatMessageDao.setMessageStatus(message.messageId, ReceptionStatus.RECEIVED)
+                    }
+                    val chatEntity = chatMessageDao.getChatById(userId)
 
                     if (chatEntity != null) {
                         // Actualiza mensaje en chat existente
-                        chatMessageDao.insertMessage(MessageEntity.fromDomain(message))
+                        chatMessageDao.insertMessage(MessageEntity.fromDomain(message, loggedUserId))
+                        dbChats.find { it.userId == userId }?.let { chat ->
+                            chat.lastMessage = message
+                            chat.unreadMessagesCount += if (message.receptionStatus == ReceptionStatus.SENT && message.recipientId == loggedUserId) 1 else 0
+                        }
+
                     } else {
                         profileService.getProfile(userId).onSuccess { profile ->
                             val newChat = Chat(
@@ -143,7 +153,8 @@ class ApiChatService(
                         senderId = messageEntity.senderId,
                         recipientId = messageEntity.recipientId,
                         timestamp = messageEntity.timestamp,
-                        status = messageEntity.status,
+                        receptionStatus = messageEntity.receptionStatus,
+                        contentStatus = messageEntity.contentStatus,
                         deletedStatus = messageEntity.deletedStatus,
                         attachment = messageEntity.attachment
                     )
@@ -176,7 +187,8 @@ class ApiChatService(
                         senderId = it.senderId,
                         recipientId = it.recipientId,
                         timestamp = it.timestamp,
-                        status = it.status,
+                        receptionStatus = it.receptionStatus,
+                        contentStatus = it.contentStatus,
                         deletedStatus = it.deletedStatus,
                         attachment = it.attachment
                     )
@@ -197,7 +209,7 @@ class ApiChatService(
     override suspend fun setMessageStatus(
         loggedUserId: String,
         messageId: String,
-        status: MessageStatus
+        status: ReceptionStatus
     ): Result<Message> {
         return safeRequest {
             chatMessageDao.setMessageStatus(messageId, status)
@@ -217,7 +229,8 @@ class ApiChatService(
                 senderId = response.value.senderId,
                 recipientId = response.value.recipientId,
                 timestamp = response.value.timestamp,
-                status = response.value.status,
+                receptionStatus = response.value.receptionStatus,
+                contentStatus = response.value.contentStatus,
                 deletedStatus = response.value.deletedStatus,
                 attachment = response.value.attachment
             )
@@ -249,7 +262,8 @@ class ApiChatService(
                 senderId = response.value.senderId,
                 recipientId = response.value.recipientId,
                 timestamp = response.value.timestamp,
-                status = response.value.status,
+                receptionStatus = response.value.receptionStatus,
+                contentStatus = response.value.contentStatus,
                 deletedStatus = response.value.deletedStatus,
                 attachment = response.value.attachment
             )
@@ -280,7 +294,8 @@ class ApiChatService(
                 senderId = response.value.senderId,
                 recipientId = response.value.recipientId,
                 timestamp = response.value.timestamp,
-                status = response.value.status,
+                receptionStatus = response.value.receptionStatus,
+                contentStatus = response.value.contentStatus,
                 deletedStatus = response.value.deletedStatus,
                 attachment = response.value.attachment
             )
