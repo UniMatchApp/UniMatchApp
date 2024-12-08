@@ -30,4 +30,15 @@ interface MessageController {
         @Body message: ModifyMessageDTO
     ): ApiResponse<Message>
 
+    @POST("messages/read/{messageId}")
+    suspend fun messageHasBeenRead(
+        @Path("messageId") messageId: String
+    ): ApiResponse<Unit>
+
+    @POST("messages/received/{messageId}")
+    suspend fun messageHasBeenReceived(
+        @Path("messageId") messageId: String
+    ): ApiResponse<Unit>
+
+
 }

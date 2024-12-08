@@ -34,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,7 +57,7 @@ fun ChatDetailScreen(
     chatViewModel: ChatViewModel,
     userViewModel: UserViewModel,
 ) {
-    val messages by chatViewModel.messages.collectAsState()
+    val messages by chatViewModel.messages.observeAsState(emptyList())
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -65,8 +66,9 @@ fun ChatDetailScreen(
         chatViewModel.loadMessages(chatId, messages.size)
     }
 
+
     LaunchedEffect(messages) {
-        Log.i("ChatDetailScreen", "Messages: $messages")
+        chatViewModel.setMessagesAsRead(messages)
     }
 
     // Detectar si el usuario está cerca del final de la lista

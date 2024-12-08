@@ -10,7 +10,7 @@ interface ChatService {
         loggedUserId: String, chatId: String, content: String, attachment: String?
     ): Result<Message>
 
-    suspend fun saveMessage(message: Message): Result<Unit>
+    suspend fun saveMessage(message: Message, loggedUserId: String): Result<Unit>
 
     suspend fun getChats(loggedUserId: String): Result<List<Chat>>
 
@@ -21,6 +21,10 @@ interface ChatService {
     suspend fun setMessageStatus(
         loggedUserId: String, messageId: String, status: ReceptionStatus
     ): Result<Message>
+
+    suspend fun messageHasBeenRead(message: Message, loggedUserId: String): Result<Unit>
+
+    suspend fun messageHasBeenReceived(message: Message, loggedUserId: String): Result<Unit>
 
     suspend fun editMessageContent(
         userId: String,

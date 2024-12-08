@@ -29,6 +29,10 @@ class MockChatService : ChatService {
         )
     }
 
+    override suspend fun messageHasBeenRead(message: Message, loggedUserId: String): Result<Unit> {
+        return Result.success(Unit)
+    }
+
     override suspend fun getChats(loggedUserId: String): Result<List<Chat>> {
         val chats = emptyList<Chat>()
 
@@ -47,13 +51,17 @@ class MockChatService : ChatService {
         )
     }
 
+    override suspend fun messageHasBeenReceived(message: Message, loggedUserId: String): Result<Unit> {
+        return Result.success(Unit)
+    }
+
     override suspend fun getChatsByName(loggedUserId: String, filterName: String): Result<List<Chat>> {
         return Result.success(
             ChatPreviewDataMock.searchChatPreviewDataMocks(filterName)
         )
     }
 
-    override suspend fun saveMessage(message: Message): Result<Unit> {
+    override suspend fun saveMessage(message: Message, loggedUserId: String): Result<Unit> {
         return Result.success(Unit)
     }
 

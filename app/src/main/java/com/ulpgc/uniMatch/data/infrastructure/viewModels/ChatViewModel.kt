@@ -3,6 +3,8 @@ package com.ulpgc.uniMatch.data.infrastructure.viewModels
 import MessageNotificationPayload
 import UserStatusSocket
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.events.Event
@@ -51,14 +53,14 @@ open class ChatViewModel(
     private val _searchQuery = MutableStateFlow("Buscar chats")
     val searchQuery: StateFlow<String> get() = _searchQuery
 
-    private val _chatList = MutableStateFlow<List<Chat>>(emptyList())
-    val chatList: StateFlow<List<Chat>> get() = _chatList
+    private val _chatList = MutableLiveData<List<Chat>>(emptyList())
+    val chatList: LiveData<List<Chat>> get() = _chatList
 
     private val _usersStatus = MutableStateFlow<Map<String, ChatStatus>>(emptyMap())
     val usersStatus: StateFlow<Map<String, ChatStatus>> get() = _usersStatus
 
-    private val _messages = MutableStateFlow<List<Message>>(emptyList())
-    val messages: StateFlow<List<Message>> get() = _messages
+    private val _messages = MutableLiveData<List<Message>>(emptyList())
+    val messages: LiveData<List<Message>> get() = _messages
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
@@ -106,14 +108,32 @@ open class ChatViewModel(
                 content = message.getContent(),
                 timestamp = notification.date,
                 recipientId = userViewModel.userId!!,
-                receptionStatus = ReceptionStatus.RECEIVED
+                receptionStatus = message.getReceptionStatus(),
+                contentStatus = message.getContentStatus(),
+                deletedStatus = message.getDeletedStatus()
             )
 
-            chatService.saveMessage(newMessage)
+            chatService.saveMessage(newMessage, userViewModel.userId!!)
 
-            chatService.setMessageStatus(userViewModel.userId!!, message.id, ReceptionStatus.RECEIVED)
+            if (newMessage.senderId != userViewModel.userId && newMessage.receptionStatus != ReceptionStatus.RECEIVED) {
+                setMessagesAsReceived(listOf(newMessage))
+            }
 
-            _messages.value += newMessage
+            _messages.value?.find { it.messageId == newMessage.messageId }?.let {
+                _messages.value = _messages.value!!.toMutableList().apply {
+                    this[indexOf(it)] = newMessage
+                }
+            } ?: run {
+                _messages.value = _messages.value?.plus(newMessage)
+            }
+
+            _chatList.value?.find { it.userId == newMessage.senderId }?.let {
+                _chatList.value = _chatList.value?.toMutableList().apply {
+                    this?.set(indexOf(it),
+                        it.copy(lastMessage = newMessage, unreadMessagesCount = it.unreadMessagesCount + 1)
+                    )
+                }
+            }
         }
     }
 
@@ -212,22 +232,9 @@ open class ChatViewModel(
                     _isLoading.value = false
                 }.getOrDefault(emptyList())).toMutableList()
 
-            // Set all messages as received if the recipient is the logged user
-            messages.indices.forEach { index ->
-                val message = messages[index]
-                if (message.recipientId != userViewModel.userId ||
-                    message.receptionStatus == ReceptionStatus.READ
-                ) return@forEach
-                val updatedMessage = chatService.setMessageStatus(
-                    userViewModel.userId!!,
-                    message.messageId,
-                    ReceptionStatus.READ
-                ).getOrElse { return@forEach }
-                messages[index] = updatedMessage
-            }
 
-
-            this@ChatViewModel._messages.value = (this@ChatViewModel._messages.value + messages).distinctBy { it.messageId }.toMutableList()
+            this@ChatViewModel._messages.value = (this@ChatViewModel._messages.value?.plus(messages))?.distinctBy { it.messageId }
+                ?.toMutableList()
             _isLoading.value = false
         }
     }
@@ -248,7 +255,7 @@ open class ChatViewModel(
             }
 
             result.getOrNull()?.let { message ->
-                _messages.value += message
+                _messages.value = _messages.value?.plus(message)
             } ?: run {
                 Log.e("ChatViewModel", "Failed to send message: Result is null")
             }
@@ -310,6 +317,41 @@ open class ChatViewModel(
             result.onFailure { error ->
                 Log.e("ChatViewModel", "Error setting message status: ${error.message}")
             }
+        }
+    }
+
+    fun setMessagesAsRead(messages: List<Message>) {
+        viewModelScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
+
+            messages.forEach { message ->
+                val result = chatService.messageHasBeenRead(message, userViewModel.userId!!)
+
+                result.onFailure { error ->
+                    Log.e("ChatViewModel", "Error setting message status: ${error.message}")
+                }
+            }
+        }
+    }
+
+    fun setMessagesAsReceived(messages: List<Message>) {
+        viewModelScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
+
+            messages.forEach { message ->
+                val result = chatService.messageHasBeenReceived(message, userViewModel.userId!!)
+
+                result.onFailure { error ->
+                    Log.e("ChatViewModel", "Error setting message status: ${error.message}")
+                }
+            }
+
         }
     }
 

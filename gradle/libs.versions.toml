@@ -37,6 +37,7 @@ playServicesLocation = "21.3.0"
 coroutinesPlayServices = "1.6.0"
 bcryptVersion = "0.4"
 okhttp = "4.11.0"
+runtimeLivedata = "1.7.5"
 
 [libraries]
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanistFlowlayout" }
@@ -83,6 +84,7 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutinesPlayServices" }
 bcrypt = { module = "org.mindrot:jbcrypt", version.ref = "bcryptVersion" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

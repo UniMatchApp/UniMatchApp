@@ -63,11 +63,39 @@ class ApiChatService(
     }
 
 
-    override suspend fun saveMessage(message: Message): Result<Unit> {
+    override suspend fun saveMessage(message: Message, loggedUserId: String): Result<Unit> {
         return safeRequest {
             // Insert the message into the local database
-            chatMessageDao.insertMessage(MessageEntity.fromDomain(message, message.senderId))
+            chatMessageDao.insertMessage(MessageEntity.fromDomain(message, loggedUserId))
         }
+    }
+
+    override suspend fun messageHasBeenRead(message: Message, loggedUserId: String): Result<Unit> {
+        return safeRequest {
+            if ((message.receptionStatus == ReceptionStatus.RECEIVED || message.receptionStatus == ReceptionStatus.SENT) && message.recipientId == loggedUserId) {
+                Log.i("ApiChatService", "Message has been read: $message")
+                val result = messageController.messageHasBeenRead(message.messageId)
+                if (!result.success) {
+                    throw Throwable(result.errorMessage ?: "Unknown error occurred")
+                }
+
+                chatMessageDao.setMessageStatus(message.messageId, ReceptionStatus.READ)
+            }
+        }.mapCatching { }
+    }
+
+    override suspend fun messageHasBeenReceived(message: Message, loggedUserId: String): Result<Unit> {
+        return safeRequest {
+            if (message.receptionStatus == ReceptionStatus.SENT && message.recipientId == loggedUserId) {
+                Log.i("ApiChatService", "Message has been received: $message")
+                val result = messageController.messageHasBeenReceived(message.messageId)
+                if (!result.success) {
+                    throw Throwable(result.errorMessage ?: "Unknown error occurred")
+                }
+
+                chatMessageDao.setMessageStatus(message.messageId, ReceptionStatus.RECEIVED)
+            }
+        }.mapCatching { }
     }
 
     override suspend fun getChats(loggedUserId: String): Result<List<Chat>> {
@@ -105,7 +133,7 @@ class ApiChatService(
                 response.value.forEach { message ->
                     val userId = if (message.senderId != loggedUserId) message.senderId else message.recipientId
                     if (message.senderId == loggedUserId && message.receptionStatus == ReceptionStatus.SENT) {
-                        message.receptionStatus = ReceptionStatus.RECEIVED
+                        messageHasBeenReceived(message, loggedUserId)
                         chatMessageDao.setMessageStatus(message.messageId, ReceptionStatus.RECEIVED)
                     }
                     val chatEntity = chatMessageDao.getChatById(userId)
