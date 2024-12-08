@@ -108,7 +108,7 @@ open class ChatViewModel(
                 attachment = message.getThumbnail(),
                 content = message.getContent(),
                 createdAt = notification.date,
-                recipientId = userViewModel.userId!!,
+                recipientId = message.getRecipient(),
                 receptionStatus = message.getReceptionStatus(),
                 contentStatus = message.getContentStatus(),
                 deletedStatus = message.getDeletedStatus()
@@ -401,7 +401,7 @@ open class ChatViewModel(
             }
 
             val result = chatService.deleteMessage(
-                userViewModel.userId!!, messageId, DeletedMessageStatus.DELETED_BY_RECIPIENT
+                userViewModel.userId!!, messageId, DeletedMessageStatus.NOT_DELETED
             )
 
             result.onFailure { error ->

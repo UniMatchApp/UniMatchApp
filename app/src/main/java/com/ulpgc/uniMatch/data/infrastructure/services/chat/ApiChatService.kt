@@ -299,7 +299,7 @@ class ApiChatService(
     override suspend fun deleteMessage(
         userId: String,
         messageId: String,
-        deletedStatus: DeletedMessageStatus
+        deletedStatus: DeletedMessageStatus,
     ): Result<Message> {
         return safeRequest {
             chatMessageDao.setMessageDeletedStatus(messageId, deletedStatus)

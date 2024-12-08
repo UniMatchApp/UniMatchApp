@@ -1,4 +1,5 @@
 import android.util.Log
+import com.google.gson.Gson
 import com.ulpgc.uniMatch.data.application.events.Event
 import com.ulpgc.uniMatch.data.application.events.EventBus
 import com.ulpgc.uniMatch.data.domain.enums.ContentStatus
@@ -168,36 +169,42 @@ class NotificationSocket(
     ) {
         try {
             val messagePayload = JSONObject(payload)
+            val gson = Gson()
+
             val receptionStatusEnum =
                 ReceptionStatus.entries.find { it.status == messagePayload.getString("_receptionStatus") }
-            val deletedStatus =
-                DeletedMessageStatus.entries.find { it.status == messagePayload.getString("_deletedStatus") }
             val contentStatus =
                 ContentStatus.entries.find { it.status == messagePayload.getString("_contentStatus") }
 
-            if (receptionStatusEnum == null || deletedStatus == null || contentStatus == null) {
+            val deletedStatus =
+                DeletedMessageStatus.entries.find { it.status == messagePayload.getString("_deletedStatus") }
+
+            if (receptionStatusEnum == null || contentStatus == null || deletedStatus == null) {
                 Log.e("NotificationSocket", "Error parsing message status")
                 return
             }
 
+            Log.i("NotificationSocket", "Message Notification Payload: $messagePayload")
+
             val messagePayloadObject = MessageNotificationPayload(
-                messagePayload.getString("id"),
-                messagePayload.getString("_sender"),
-                messagePayload.getString("_content"),
-                messagePayload.optString("_thumbnail", ""),
-                receptionStatusEnum,
-                contentStatus,
-                deletedStatus
+                id = messagePayload.getString("id"),
+                sender = messagePayload.getString("_sender"),
+                recipient = recipient,
+                content = messagePayload.getString("_content"),
+                thumbnail = messagePayload.optString("_thumbnail", ""),
+                receptionStatus = receptionStatusEnum,
+                contentStatus = contentStatus,
+                deletedStatus = deletedStatus
             )
 
             val notification = statusEnum?.let {
                 Notification(
-                    id,
-                    it,
-                    messageId,
+                    id = id,
+                    status = it,
+                    contentId = messageId,
                     payload = messagePayloadObject,
                     date = date,
-                    recipient
+                    recipient = recipient
                 )
             }
 
@@ -208,6 +215,7 @@ class NotificationSocket(
             Log.e("NotificationSocket", "Error parsing message payload: ${e.message}")
         }
     }
+
 
     private fun handleMatchNotification(
         id: String,

@@ -42,13 +42,13 @@ data class Message(
 data class ModifyMessageDTO(
     @SerializedName("content") var content: String? = null,
     @SerializedName("status") var status: ReceptionStatus? = null,
-    @SerializedName("deletedStatus") var deletedStatus: DeletedMessageStatus? = null
+    @SerializedName("deletedStatus") var deletedStatus: DeletedMessageStatus = DeletedMessageStatus.NOT_DELETED
 ) {
     companion object {
         fun create(
             content: String? = null,
             status: ReceptionStatus? = null,
-            deletedStatus: DeletedMessageStatus? = null
+            deletedStatus: DeletedMessageStatus = DeletedMessageStatus.NOT_DELETED
         ): ModifyMessageDTO {
             return ModifyMessageDTO(
                 content = content,

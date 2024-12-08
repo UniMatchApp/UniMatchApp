@@ -102,7 +102,7 @@ class MockChatService : ChatService {
     override suspend fun deleteMessage(
         userId: String,
         messageId: String,
-        deletedStatus: DeletedMessageStatus
+        deletedStatus : DeletedMessageStatus
     ): Result<Message> {
         return Result.success(
             Message(
@@ -113,7 +113,7 @@ class MockChatService : ChatService {
                 null,
                 ReceptionStatus.READ,
                 ContentStatus.NOT_EDITED,
-                deletedStatus,
+                deletedStatus = deletedStatus
 
             )
         )

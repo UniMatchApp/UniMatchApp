@@ -35,6 +35,6 @@ interface ChatService {
     suspend fun deleteMessage(
         userId: String,
         messageId: String,
-        deletedStatus: DeletedMessageStatus
+        deletedStatus : DeletedMessageStatus
     ): Result<Message>
 }

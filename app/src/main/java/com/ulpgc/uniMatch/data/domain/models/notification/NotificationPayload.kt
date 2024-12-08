@@ -54,14 +54,19 @@ class MatchNotificationPayload(
 class MessageNotificationPayload(
     id: String,
     private val sender: String,
+    private val recipient: String,
     private val content: String,
     private val thumbnail: String?,
     private val receptionStatus: ReceptionStatus,
     private val contentStatus: ContentStatus,
-    private val deletedStatus: DeletedMessageStatus
+    private val deletedStatus : DeletedMessageStatus
 ) : NotificationPayload(id, NotificationType.MESSAGE) {
     fun getSender(): String {
         return sender
+    }
+
+    fun getRecipient(): String {
+        return recipient
     }
 
     fun getContent(): String {
@@ -80,7 +85,7 @@ class MessageNotificationPayload(
         return contentStatus
     }
 
-    fun getDeletedStatus(): DeletedMessageStatus {
+    fun getDeletedStatus() : DeletedMessageStatus {
         return deletedStatus
     }
 }
