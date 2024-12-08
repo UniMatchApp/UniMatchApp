@@ -7,7 +7,7 @@ import com.ulpgc.uniMatch.data.domain.enums.EventStatus
 import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
 import com.ulpgc.uniMatch.data.domain.enums.NotificationTypeEnum
-import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
+import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 import com.ulpgc.uniMatch.data.infrastructure.events.AppNotificationEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.EventNotificationEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.MatchNotificationEvent
@@ -160,7 +160,7 @@ class NotificationSocket(
 
     private fun handleMessageNotification(
         id: String,
-        contentId: String,
+        messageId: String,
         recipient: String,
         payload: String,
         statusEnum: NotificationStatus?,
@@ -191,10 +191,10 @@ class NotificationSocket(
             )
 
             val notification = statusEnum?.let {
-                Notifications(
+                Notification(
                     id,
                     it,
-                    contentId,
+                    messageId,
                     payload = messagePayloadObject,
                     date = date,
                     recipient
@@ -229,7 +229,7 @@ class NotificationSocket(
             )
 
             val notification = statusEnum?.let {
-                Notifications(
+                Notification(
                     id,
                     it,
                     contentId,
@@ -269,7 +269,7 @@ class NotificationSocket(
             )
 
             val notification = statusEnum?.let {
-                Notifications(
+                Notification(
                     id,
                     it,
                     contentId,
@@ -312,7 +312,7 @@ class NotificationSocket(
             )
 
             val notification = statusEnum?.let {
-                Notifications(
+                Notification(
                     id,
                     it,
                     contentId,

@@ -125,7 +125,7 @@ class ApiChatService(
             }
 
             // Obtener nuevos mensajes y actualizar chats
-            var lastMessageTime = dbChats.maxOfOrNull { it.lastMessage?.timestamp ?: 0 } ?: 0
+            var lastMessageTime = dbChats.maxOfOrNull { it.lastMessage?.createdAt ?: 0 } ?: 0
             while (true) {
                 val response = messageController.getMessages(lastMessageTime)
                 if (!response.success || response.value.isNullOrEmpty()) break
@@ -160,10 +160,11 @@ class ApiChatService(
                         }
                     }
                 }
-                lastMessageTime = response.value.maxOfOrNull { it.timestamp } ?: 0
+
+                lastMessageTime = response.value.maxOfOrNull { maxOf(it.createdAt, it.updatedAt) } ?: 0
             }
 
-            dbChats
+            return@safeRequest dbChats
         }
     }
 
@@ -180,7 +181,7 @@ class ApiChatService(
                         content = messageEntity.content,
                         senderId = messageEntity.senderId,
                         recipientId = messageEntity.recipientId,
-                        timestamp = messageEntity.timestamp,
+                        createdAt = messageEntity.timestamp,
                         receptionStatus = messageEntity.receptionStatus,
                         contentStatus = messageEntity.contentStatus,
                         deletedStatus = messageEntity.deletedStatus,
@@ -214,7 +215,7 @@ class ApiChatService(
                         content = it.content,
                         senderId = it.senderId,
                         recipientId = it.recipientId,
-                        timestamp = it.timestamp,
+                        createdAt = it.timestamp,
                         receptionStatus = it.receptionStatus,
                         contentStatus = it.contentStatus,
                         deletedStatus = it.deletedStatus,
@@ -243,7 +244,7 @@ class ApiChatService(
             chatMessageDao.setMessageStatus(messageId, status)
             val response = messageController.modifyMessage(
                 messageId,
-                ModifyMessageDTO.createModifyMessage(
+                ModifyMessageDTO.create(
                     loggedUserId,
                     status = status
                 )
@@ -256,7 +257,7 @@ class ApiChatService(
                 content = response.value.content,
                 senderId = response.value.senderId,
                 recipientId = response.value.recipientId,
-                timestamp = response.value.timestamp,
+                createdAt = response.value.createdAt,
                 receptionStatus = response.value.receptionStatus,
                 contentStatus = response.value.contentStatus,
                 deletedStatus = response.value.deletedStatus,
@@ -275,10 +276,7 @@ class ApiChatService(
             chatMessageDao.setMessageContent(messageId, newContent)
             val response = messageController.modifyMessage(
                 messageId,
-                ModifyMessageDTO.createModifyMessage(
-                    userId,
-                    content = newContent
-                )
+                ModifyMessageDTO.create(newContent)
             )
             if (!response.success || response.value == null) {
                 throw Throwable(response.errorMessage ?: "Unknown error occurred")
@@ -289,7 +287,7 @@ class ApiChatService(
                 content = response.value.content,
                 senderId = response.value.senderId,
                 recipientId = response.value.recipientId,
-                timestamp = response.value.timestamp,
+                createdAt = response.value.createdAt,
                 receptionStatus = response.value.receptionStatus,
                 contentStatus = response.value.contentStatus,
                 deletedStatus = response.value.deletedStatus,
@@ -307,7 +305,7 @@ class ApiChatService(
             chatMessageDao.setMessageDeletedStatus(messageId, deletedStatus)
             val response = messageController.modifyMessage(
                 messageId,
-                ModifyMessageDTO.createModifyMessage(
+                ModifyMessageDTO.create(
                     userId,
                     deletedStatus = deletedStatus
                 )
@@ -321,7 +319,7 @@ class ApiChatService(
                 content = response.value.content,
                 senderId = response.value.senderId,
                 recipientId = response.value.recipientId,
-                timestamp = response.value.timestamp,
+                createdAt = response.value.createdAt,
                 receptionStatus = response.value.receptionStatus,
                 contentStatus = response.value.contentStatus,
                 deletedStatus = response.value.deletedStatus,

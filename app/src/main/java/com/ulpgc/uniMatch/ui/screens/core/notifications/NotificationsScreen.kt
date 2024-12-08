@@ -4,7 +4,6 @@ import AppNotificationPayload
 import EventNotificationPayload
 import MatchNotificationPayload
 import MessageNotificationPayload
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,7 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
-import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
+import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import java.text.SimpleDateFormat
@@ -59,7 +58,7 @@ fun NotificationsScreen(
     val profileLoading by profileViewModel.isLoading.collectAsState()
     val showDeleteConfirmationDialog = remember { mutableStateOf(false) }
     val deleteAll = remember { mutableStateOf(false) }
-    val notificationToDelete = remember { mutableStateOf<Notifications?>(null) }
+    val notificationToDelete = remember { mutableStateOf<Notification?>(null) }
 
     LaunchedEffect(Unit) {
         notificationsViewModel.loadNotifications()
@@ -207,10 +206,10 @@ fun LoadingSkeleton() {
 
 @Composable
 fun NotificationCard(
-    notification: Notifications,
+    notification: Notification,
     date: Long,
     profileViewModel: ProfileViewModel,
-    onDeleteNotification: (Notifications) -> Unit
+    onDeleteNotification: (Notification) -> Unit
 ) {
     val profile by profileViewModel.profileData.collectAsState()
 

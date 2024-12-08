@@ -1,14 +1,14 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.notification
 
 import com.ulpgc.uniMatch.data.application.services.NotificationsService
-import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
+import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 import com.ulpgc.uniMatch.data.infrastructure.mocks.NotificationMock
 import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
 
 class MockNotificationService(
 ) : NotificationsService {
 
-    override suspend fun getNotifications(userId: String): Result<List<Notifications>> {
+    override suspend fun getNotifications(userId: String): Result<List<Notification>> {
         return safeRequest {
             val notifications = NotificationMock.getNotificationsForUser(userId)
             return@safeRequest notifications

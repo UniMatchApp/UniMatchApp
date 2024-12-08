@@ -4,7 +4,7 @@ import android.util.Log
 import com.ulpgc.uniMatch.data.application.services.NotificationsService
 import com.ulpgc.uniMatch.data.application.services.toDomainModel
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
-import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
+import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 import com.ulpgc.uniMatch.data.infrastructure.controllers.NotificationController
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.NotificationsDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.NotificationEntity
@@ -18,7 +18,7 @@ class ApiNotificationService (
     private val notificationDao: NotificationsDao
 ) : NotificationsService {
 
-    override suspend fun getNotifications(userId: String): Result<List<Notifications>> {
+    override suspend fun getNotifications(userId: String): Result<List<Notification>> {
         return safeRequest {
             val response = notificationController.getNotifications()
 

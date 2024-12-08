@@ -24,7 +24,7 @@ object MessageMock {
                 recipientId = mockSenderIds.random(),
                 senderId = mockSenderIds.random(),
                 content = "Message $it",
-                timestamp = System.currentTimeMillis(),
+                createdAt = System.currentTimeMillis(),
                 receptionStatus = mockStatuses.random()
             )
         }

@@ -21,7 +21,7 @@ inline fun <T> safeRequest(
     } catch (e: HttpException) {
         val errorMessage = e.response()?.errorBody()?.string() ?: "Unknown error occurred"
         Log.e("$simpleClassName::$methodName", "HTTP Exception: $errorMessage")
-        Result.failure(Exception("HTTP error: $errorMessage"))
+        Result.failure(Exception("HTTP Exception: $errorMessage"))
     } catch (e: SocketTimeoutException) {
         Log.e("$simpleClassName::$methodName", "Socket Timeout Exception: ${e.message}")
         Result.failure(Exception("Socket timeout: ${e.message}"))

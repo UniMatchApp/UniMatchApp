@@ -79,7 +79,7 @@ fun MessageBubble(message: Message, isCurrentUser: Boolean) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = formatTimestamp(message.timestamp),
+                        text = formatTimestamp(message.createdAt),
                         style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.End,
                         color = MaterialTheme.colorScheme.onTertiary,

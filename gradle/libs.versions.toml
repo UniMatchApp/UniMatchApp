@@ -3,6 +3,7 @@ accompanistFlowlayout = "0.20.0"
 agp = "8.7.1"
 coilCompose = "2.0.0"
 converterGson = "2.9.0"
+coreSplashscreen = "1.0.1"
 googlePlayServicesLocation = "21.0.1"
 gson = "2.10.1"
 imagepicker = "2.1"
@@ -42,6 +43,7 @@ runtimeLivedata = "1.7.5"
 [libraries]
 accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanistFlowlayout" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-material3-icons = { module = "androidx.compose.material3:material3-icons", version.ref = "material3Icons" }
