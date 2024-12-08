@@ -16,7 +16,8 @@ import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.domain.models.Profile
-import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
+import com.ulpgc.uniMatch.data.domain.models.notification.Notification
+
 import com.ulpgc.uniMatch.data.infrastructure.events.GetUserStatusEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.MessageNotificationEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.StoppedTypingEvent
@@ -89,7 +90,7 @@ open class ChatViewModel(
         }
     }
 
-    private fun handleNewMessage(notification: Notifications) {
+    private fun handleNewMessage(notification: Notification) {
         val message = notification.payload as MessageNotificationPayload
         viewModelScope.launch {
             if (userViewModel.userId.isNullOrEmpty()) {
@@ -104,7 +105,7 @@ open class ChatViewModel(
                 senderId = message.getSender(),
                 attachment = message.getThumbnail(),
                 content = message.getContent(),
-                timestamp = notification.date,
+                createdAt = notification.date,
                 recipientId = userViewModel.userId!!,
                 receptionStatus = ReceptionStatus.RECEIVED
             )

@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import com.ulpgc.uniMatch.data.domain.enums.ContentStatus
 import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
 import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
@@ -51,7 +52,54 @@ interface ChatMessageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMessages(messages: List<MessageEntity>)
 
-    // Inserta un solo mensaje y actualiza el conteo de mensajes no leídos en el chat correspondiente
+    @Query(
+        """
+    UPDATE messages SET
+    chatId = :chatId,
+    content = :content,
+    senderId = :senderId,
+    recipientId = :recipientId,
+    receptionStatus = :receptionStatus,
+    contentStatus = :contentStatus,
+    deletedStatus = :deletedStatus,
+    attachment = :attachment
+    WHERE messageId = :messageId
+    """
+    )
+    suspend fun updateMessage(
+        messageId: String,
+        chatId: String,
+        content: String,
+        senderId: String,
+        recipientId: String,
+        receptionStatus: ReceptionStatus,
+        deletedStatus: DeletedMessageStatus,
+        attachment: String?,
+        contentStatus: ContentStatus
+    )
+
+    suspend fun upsertMessage(message: MessageEntity) {
+        if (messageExists(message.messageId) <= 0) {
+            insertMessage(message)
+            return
+        }
+        updateMessage(
+            messageId = message.messageId,
+            chatId = message.chatId,
+            content = message.content,
+            senderId = message.senderId,
+            recipientId = message.recipientId,
+            receptionStatus = message.receptionStatus,
+            contentStatus = message.contentStatus,
+            deletedStatus = message.deletedStatus,
+            attachment = message.attachment,
+        )
+
+    }
+
+    @Query("SELECT COUNT(*) FROM messages WHERE messageId = :messageId")
+    suspend fun messageExists(messageId: String): Int
+
 
     // Inserta un único mensaje
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -95,4 +143,5 @@ interface ChatMessageDao {
 
     @Query("UPDATE messages SET deletedStatus = :deletedStatus WHERE messageId = :messageId")
     suspend fun setMessageDeletedStatus(messageId: String, deletedStatus: DeletedMessageStatus)
+
 }

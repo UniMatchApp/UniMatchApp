@@ -2,7 +2,8 @@ package com.ulpgc.uniMatch.data.application.services
 
 import NotificationPayload
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
-import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
+import com.ulpgc.uniMatch.data.domain.models.notification.Notification
+
 import java.time.Instant
 
 data class NotificationResponse(
@@ -15,8 +16,8 @@ data class NotificationResponse(
 )
 
 
-fun NotificationResponse.toDomainModel(): Notifications {
-    return Notifications(
+fun NotificationResponse.toDomainModel(): Notification {
+    return Notification(
         id = id,
         status = NotificationStatus.valueOf(status),
         contentId = contentId,
@@ -36,7 +37,7 @@ fun parseDateToTimestamp(date: String): Long {
 
 
 interface NotificationsService {
-    suspend fun getNotifications(userId: String): Result<List<Notifications>>
+    suspend fun getNotifications(userId: String): Result<List<Notification>>
     suspend fun markNotificationAsRead(notificationId: String): Result<Unit>
     suspend fun deleteNotification(notificationId: String): Result<Unit>
     suspend fun deleteAllNotifications(userId: String): Result<Unit>

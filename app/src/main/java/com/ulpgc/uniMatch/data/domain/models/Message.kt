@@ -17,7 +17,8 @@ data class Message(
     @SerializedName("receptionStatus") var receptionStatus: ReceptionStatus,
     @SerializedName("contentStatus") var contentStatus: ContentStatus = ContentStatus.NOT_EDITED,
     @SerializedName("deletedStatus") var deletedStatus: DeletedMessageStatus = DeletedMessageStatus.NOT_DELETED,
-    @SerializedName("timestamp") var timestamp: Long = Date().time
+    @SerializedName("createdAt") var createdAt: Long = Date().time,
+    @SerializedName("updatedAt") var updatedAt: Long = Date().time
 ) {
     companion object {
         fun createMessage(
@@ -39,21 +40,18 @@ data class Message(
 }
 
 data class ModifyMessageDTO(
-    @SerializedName("senderId") val senderId: String,
     @SerializedName("content") var content: String? = null,
     @SerializedName("status") var status: ReceptionStatus? = null,
     @SerializedName("deletedStatus") var deletedStatus: DeletedMessageStatus? = null
 ) {
     companion object {
-        fun createModifyMessage(
-            senderId: String,
+        fun create(
             content: String? = null,
             status: ReceptionStatus? = null,
             deletedStatus: DeletedMessageStatus? = null
         ): ModifyMessageDTO {
             return ModifyMessageDTO(
                 content = content,
-                senderId = senderId,
                 status = status,
                 deletedStatus = deletedStatus
             )

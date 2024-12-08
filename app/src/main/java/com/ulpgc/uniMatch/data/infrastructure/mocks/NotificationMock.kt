@@ -1,16 +1,16 @@
 package com.ulpgc.uniMatch.data.infrastructure.mocks
 
 import AppNotificationPayload
-import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
+import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
 import com.ulpgc.uniMatch.data.domain.enums.NotificationType
 
 object NotificationMock {
-    private val notificationsList = mutableListOf<Notifications>()
+    private val notificationList = mutableListOf<Notification>()
 
     init {
-        notificationsList.add(
-            Notifications(
+        notificationList.add(
+            Notification(
                 id = "1",
                 status = NotificationStatus.SENT,
                 contentId = "content1",
@@ -19,8 +19,8 @@ object NotificationMock {
                 recipient = "1"
             )
         )
-        notificationsList.add(
-            Notifications(
+        notificationList.add(
+            Notification(
                 id = "2",
                 status = NotificationStatus.SENT,
                 contentId = "content2",
@@ -31,21 +31,21 @@ object NotificationMock {
         )
     }
 
-    fun getNotificationsForUser(userId: String): List<Notifications> {
-        return notificationsList.filter { it.recipient == userId }
+    fun getNotificationsForUser(userId: String): List<Notification> {
+        return notificationList.filter { it.recipient == userId }
     }
 
     fun markNotificationAsRead(notificationId: String) {
-        notificationsList.find { it.id == notificationId }?.let {
+        notificationList.find { it.id == notificationId }?.let {
             it.status = NotificationStatus.READ
         }
     }
 
     fun deleteNotification(notificationId: String) {
-        notificationsList.removeAll { it.id == notificationId }
+        notificationList.removeAll { it.id == notificationId }
     }
 
     fun deleteAllNotifications(userId: String) {
-        notificationsList.removeAll { it.recipient == userId }
+        notificationList.removeAll { it.recipient == userId }
     }
 }

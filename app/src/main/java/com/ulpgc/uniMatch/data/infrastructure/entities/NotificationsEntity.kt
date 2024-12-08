@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.GsonBuilder
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
-import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
+import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 
 @Entity(tableName = "notifications")
 data class NotificationEntity(
@@ -21,7 +21,7 @@ data class NotificationEntity(
             .registerTypeAdapter(NotificationPayload::class.java, NotificationPayloadAdapter())
             .create()
 
-        fun fromDomain(notification: Notifications): NotificationEntity {
+        fun fromDomain(notification: Notification): NotificationEntity {
             return NotificationEntity(
                 id = notification.id,
                 status = notification.status,
@@ -32,8 +32,8 @@ data class NotificationEntity(
             )
         }
 
-        fun toDomain(notificationEntity: NotificationEntity): Notifications {
-            return Notifications(
+        fun toDomain(notificationEntity: NotificationEntity): Notification {
+            return Notification(
                 id = notificationEntity.id,
                 status = notificationEntity.status,
                 contentId = notificationEntity.contentId,

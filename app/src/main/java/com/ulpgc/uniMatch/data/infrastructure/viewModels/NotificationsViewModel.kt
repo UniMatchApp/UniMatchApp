@@ -8,7 +8,7 @@ import com.ulpgc.uniMatch.data.application.events.EventBus
 import com.ulpgc.uniMatch.data.application.events.EventListener
 import com.ulpgc.uniMatch.data.application.services.NotificationsService
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
-import com.ulpgc.uniMatch.data.domain.models.notification.Notifications
+import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 import com.ulpgc.uniMatch.data.infrastructure.events.AppNotificationEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.EventNotificationEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.MatchNotificationEvent
@@ -38,8 +38,8 @@ class NotificationsViewModel (
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
 
-    private val _notifications = MutableStateFlow<List<Notifications>>(emptyList())
-    val notifications: StateFlow<List<Notifications>> get() = _notifications
+    private val _notifications = MutableStateFlow<List<Notification>>(emptyList())
+    val notifications: StateFlow<List<Notification>> get() = _notifications
 
     private val _notificationsEnabled = MutableStateFlow(true)
     val notificationsEnabled: StateFlow<Boolean> get() = _notificationsEnabled
@@ -61,26 +61,26 @@ class NotificationsViewModel (
         }
     }
 
-    private fun handleAppNotification(notification: Notifications) {
+    private fun handleAppNotification(notification: Notification) {
         _notifications.value = _notifications.value.toMutableList().apply {
             add(0, notification)
         }
     }
 
-    private fun handleEventNotification(notification: Notifications) {
+    private fun handleEventNotification(notification: Notification) {
         _notifications.value = _notifications.value.toMutableList().apply {
             add(0, notification)
         }
     }
 
-    private fun handleMatchNotification(notification: Notifications) {
+    private fun handleMatchNotification(notification: Notification) {
         Log.d("NotificationsViewModel", "Notification received: $notification")
         _notifications.value = _notifications.value.toMutableList().apply {
             add(0, notification)
         }
     }
 
-    private fun handleMessageNotification(notification: Notifications) {
+    private fun handleMessageNotification(notification: Notification) {
         _notifications.value = _notifications.value.toMutableList().apply {
             add(0, notification)
         }
