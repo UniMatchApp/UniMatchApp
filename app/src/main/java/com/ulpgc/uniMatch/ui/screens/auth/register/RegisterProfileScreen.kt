@@ -45,6 +45,7 @@ import androidx.core.content.ContextCompat
 import coil.compose.rememberAsyncImagePainter
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.enums.Facts
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
@@ -53,6 +54,7 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.ui.components.DatePickerComponent
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
 import com.ulpgc.uniMatch.ui.components.InputField
+import com.ulpgc.uniMatch.ui.screens.utils.stringToEnum
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -75,6 +77,23 @@ fun RegisterProfileScreen(
     var birthday by remember { mutableStateOf("") }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
+    val context = LocalContext.current
+
+    val genderMap =
+        context.resources.getStringArray(R.array.genders).mapIndexed { index, name ->
+            Gender.entries[index] to name
+        }.toMap()
+
+    val sexualOrientationMap =
+        context.resources.getStringArray(R.array.sexual_orientation).mapIndexed { index, name ->
+            SexualOrientation.entries[index] to name
+        }.toMap()
+
+    val relationshipTypeMap =
+        context.resources.getStringArray(R.array.relationship_type).mapIndexed { index, name ->
+            RelationshipType.entries[index] to name
+        }.toMap()
+
     val imagePickerLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -85,7 +104,6 @@ fun RegisterProfileScreen(
         }
 
     val activity = LocalContext.current as Activity
-    val context = LocalContext.current
     val REQUEST_CODE_READ_STORAGE = 1
     val permissionGranted = remember { mutableStateOf(false) }
 
@@ -204,9 +222,13 @@ fun RegisterProfileScreen(
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = stringResource(R.string.gender))
             DropdownMenu(
-                items = Gender.entries.map { it.name },
+                items = genderMap.values.toList(),
                 selectedItem = gender.name,
-                onItemSelected = { gender = Gender.valueOf(it ?: Gender.OTHER.name) },
+                onItemSelected = { selected ->
+                    genderMap.entries.find { it.value == selected }?.key?.let {
+                        gender = it
+                    }
+                },
                 includeNullOption = false
             )
         }
@@ -215,9 +237,13 @@ fun RegisterProfileScreen(
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = stringResource(R.string.sexual_orientation))
             DropdownMenu(
-                items = SexualOrientation.entries.map { it.name },
+                items = sexualOrientationMap.values.toList(),
                 selectedItem = sexualOrientation.name,
-                onItemSelected = { sexualOrientation = SexualOrientation.valueOf(it ?: SexualOrientation.OTHER.name) },
+                onItemSelected = { selected ->
+                    sexualOrientationMap.entries.find { it.value == selected }?.key?.let {
+                        sexualOrientation = it
+                    }
+                },
                 includeNullOption = false
             )
         }
@@ -226,9 +252,13 @@ fun RegisterProfileScreen(
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = stringResource(R.string.relationship_type_title))
             DropdownMenu(
-                items = RelationshipType.entries.map { it.name },
+                items = relationshipTypeMap.values.toList(),
                 selectedItem = relationshipType.name,
-                onItemSelected = { relationshipType = RelationshipType.valueOf(it ?: RelationshipType.FRIENDSHIP.name) },
+                onItemSelected = { selected ->
+                    relationshipTypeMap.entries.find { it.value == selected }?.key?.let {
+                        relationshipType = it
+                    }
+                },
                 includeNullOption = false
             )
         }

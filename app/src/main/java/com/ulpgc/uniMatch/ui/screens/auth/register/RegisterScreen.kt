@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -112,15 +113,19 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                ButtonComponent(
+                Button(
                     onClick = onBackClick,
-                    text = stringResource(R.string.back),
                     modifier = Modifier.weight(1f)
-                )
+                ) {
+                    Text(
+                        text = stringResource(R.string.back),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                ButtonComponent(
+                Button(
                     onClick = {
                         if (password != confirmPassword) {
                             errorViewModel.showError(passwordsDoNotMatch)
@@ -130,10 +135,15 @@ fun RegisterScreen(
                             userViewModel.register(email, password)
                         }
                     },
-                    text = stringResource(R.string.register_button),
                     modifier = Modifier.weight(1f)
-                )
+                ) {
+                    Text(
+                        text = stringResource(R.string.register_button),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
+
 
             Spacer(modifier = Modifier.height(16.dp))
 
