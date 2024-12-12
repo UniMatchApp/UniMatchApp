@@ -81,6 +81,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.foundation.layout.android)
     ksp(libs.androidx.room.compiler.v261)
 
     implementation(libs.androidx.core.ktx)
