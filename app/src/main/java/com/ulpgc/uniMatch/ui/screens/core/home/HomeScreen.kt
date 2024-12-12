@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Profile
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
@@ -42,19 +43,12 @@ fun HomeScreen(
     var selectedProfile: Profile? by remember { mutableStateOf(null) }
     var retryCount by remember { mutableIntStateOf(0) }
     val maxRetries = 1
-
+    val authState by userViewModel.authState.collectAsState()
     val isLoading by homeViewModel.isLoading.collectAsState()
 
-    LaunchedEffect(Unit) {
-        homeViewModel.loadMatchingUsers()
-    }
-
-    if (matchingProfiles.isEmpty() && !isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                text = "No profiles found",
-                textAlign = TextAlign.Center
-            )
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Authenticated) {
+            homeViewModel.loadMatchingUsers()
         }
     }
 

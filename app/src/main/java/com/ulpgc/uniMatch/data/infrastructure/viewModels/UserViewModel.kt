@@ -240,7 +240,6 @@ open class UserViewModel(
 
 }
 
-
 sealed class AuthState {
     data object Unauthenticated : AuthState()
     data class Authenticated(val user: User) : AuthState()

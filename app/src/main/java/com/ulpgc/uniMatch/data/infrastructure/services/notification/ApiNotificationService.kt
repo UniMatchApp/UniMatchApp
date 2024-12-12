@@ -33,7 +33,7 @@ class ApiNotificationService (
             if (notifications != null) {
                 notificationDao.insertNotifications(notifications.map(NotificationEntity::fromDomain))
             }
-
+            Log.i("getNotifications", "notifications: $notifications")
             return@safeRequest notifications ?: emptyList()
         }
     }
