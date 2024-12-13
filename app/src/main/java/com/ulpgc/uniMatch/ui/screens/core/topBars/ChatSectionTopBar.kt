@@ -41,7 +41,6 @@ fun ChatSectionTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Contenido de la barra de título o barra de búsqueda
                 if (!isSearchActive.value) {
                     TopBarTitle()
                 } else {
