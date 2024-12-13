@@ -119,6 +119,7 @@
     <!--HOME SCREEN-->
     <string name="loading_profiles">Loading profiles...</string>
     <string name="like">Me gusta</string>
+    <string name="no_founded_profiles">No se han encontrado perfiles</string>
 
     <!--PROFILE INFO SCREEN-->
     <string name="about_me">Sobre mí</string>
