@@ -43,17 +43,10 @@ fun HomeScreen(
     var selectedProfile: Profile? by remember { mutableStateOf(null) }
     var retryCount by remember { mutableIntStateOf(0) }
     val maxRetries = 1
-    val authState by userViewModel.authState.collectAsState()
     val isLoading by homeViewModel.isLoading.collectAsState()
 
-    LaunchedEffect(authState) {
-        if (authState is AuthState.Authenticated) {
-            homeViewModel.loadMatchingUsers()
-        }
-    }
-
-    if (isLoading && matchingProfiles.isEmpty()) {
-        LoadingIndicator()
+    LaunchedEffect(Unit) {
+        homeViewModel.loadMatchingUsers()
     }
 
     LaunchedEffect(matchingProfiles.size) {
@@ -63,21 +56,22 @@ fun HomeScreen(
         }
     }
 
+    if (isLoading && matchingProfiles.isEmpty()) {
+        LoadingIndicator()
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             if (matchingProfiles.isNotEmpty()) {
                 val profileToDisplay = matchingProfiles.first()
-                Log.i("HomeScreen", "Displaying profile: $profileToDisplay")
                 profileToDisplay.let { profile ->
                     key(profile.userId) {
                         ProfileCard(
                             profile = profile,
                             onSwipeLeft = {
-                                Log.i("HomeScreen", "Dislike profile: $profile")
                                 homeViewModel.dislikeUser(profile.userId)
                             },
                             onSwipeRight = {
-                                Log.i("HomeScreen", "Like profile: $profile")
                                 homeViewModel.likeUser(profile.userId)
                             },
                             onOpenProfile = { selectedProfile = profile; isModalOpen = true }
