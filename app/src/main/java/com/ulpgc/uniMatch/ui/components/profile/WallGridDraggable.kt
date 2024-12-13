@@ -81,14 +81,14 @@ fun WallGridDraggable(
     var showDialog by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp
-    val imgHeight = (screenHeight - 56 - 16 - 32 ).div(3).dp // 56dp = AppBar , 16dp = padding, 32dp = 2*16dp de padding entre ellos
+    val imgHeight = (screenHeight - 56 - 16 - 32 ).div(3).dp
 
     val state = rememberReorderableLazyGridState(dragCancelledAnimation = NoDragCancelledAnimation(),
         onMove = { from, to ->
             Log.i("WallGrid", "From: ${from.index} To: ${to.index}")
-            if (from.index != to.index) { // Verifica que no es un movimiento redundante
+            if (from.index != to.index) {
                 profileImages.add(to.index, profileImages.removeAt(from.index))
-                onUpdateWallOrder(profileImages) // Notifica el nuevo orden
+                onUpdateWallOrder(profileImages)
             }
         }
     )
