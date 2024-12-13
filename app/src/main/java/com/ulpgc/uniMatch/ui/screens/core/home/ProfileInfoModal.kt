@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -94,13 +95,13 @@ fun ProfileInfoModal(
                             modifier = Modifier
                                 .size(32.dp)
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f))
+                                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f))
                                 .clickable { onClose() }
                         ) {
                             Icon(
                                 imageVector = Icons.Default.ArrowDownward,
                                 contentDescription = stringResource(R.string.close),
-                                tint = MaterialTheme.colorScheme.onPrimary,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(16.dp)
                             )
                         }
@@ -220,7 +221,7 @@ fun ProfileInfoModal(
                             onClick = { onBlock() },
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                         ) {
-                            Text(stringResource(R.string.block), color = MaterialTheme.colorScheme.onSecondary)
+                            Text(stringResource(R.string.block), color = MaterialTheme.colorScheme.background)
                         }
                     }
 

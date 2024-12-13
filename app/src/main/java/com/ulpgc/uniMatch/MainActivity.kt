@@ -101,6 +101,7 @@ class MainActivity : ComponentActivity() {
                 if (errorState is ErrorState.Error) {
                     ErrorDialog(
                         errorMessage = (errorState as ErrorState.Error).message,
+
                         onDismiss = {
                             app.errorViewModel.clearError()
                         }

@@ -38,15 +38,15 @@ fun SearchTopBar() {
                     contentScale = ContentScale.Fit
                 )
                 Text(
-                    text = stringResource(id = R.string.search),
-                    color = MaterialTheme.colorScheme.onBackground,
+                    text = stringResource(id = R.string.events),
+                    color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.padding(start = AppPadding.Small)
                 )
             }
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = MaterialTheme.colorScheme.background
         )
     )
 }

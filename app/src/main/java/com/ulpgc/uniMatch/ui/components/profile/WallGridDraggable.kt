@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -178,27 +179,33 @@ fun WallGridDraggable(
             title = { Text(stringResource(R.string.upload_image), color = MaterialTheme.colorScheme.onBackground) },
             text = { Text(stringResource(R.string.where_do_you_wanna_get_image)) },
             confirmButton = {
-                Button(onClick = {
-                    showDialog = false
-                    ImagePicker.with(activity)
-                        .cameraOnly()
-                        .compress(1024)
-                        .maxResultSize(1080, 1080)
-                        .createIntent { intent -> imagePickerLauncher.launch(intent) }
-                }) {
-                    Text(stringResource(R.string.camera))
+                Button(
+                    onClick = {
+                        showDialog = false
+                        ImagePicker.with(activity)
+                            .cameraOnly()
+                            .compress(1024)
+                            .maxResultSize(1080, 1080)
+                            .createIntent { intent -> imagePickerLauncher.launch(intent) }
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(stringResource(R.string.camera), color = Color.White)
                 }
             },
             dismissButton = {
-                Button(onClick = {
-                    showDialog = false
-                    ImagePicker.with(activity)
-                        .galleryOnly()
-                        .compress(1024)
-                        .maxResultSize(1080, 1080)
-                        .createIntent { intent -> imagePickerLauncher.launch(intent) }
-                }) {
-                    Text(stringResource(R.string.gallery))
+                Button(
+                    onClick = {
+                        showDialog = false
+                        ImagePicker.with(activity)
+                            .galleryOnly()
+                            .compress(1024)
+                            .maxResultSize(1080, 1080)
+                            .createIntent { intent -> imagePickerLauncher.launch(intent) }
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(stringResource(R.string.gallery), color = Color.White)
                 }
             }
         )

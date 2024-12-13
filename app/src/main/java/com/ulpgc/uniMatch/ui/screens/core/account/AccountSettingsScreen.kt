@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
+import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @Composable
 fun AccountSettingsScreen(
@@ -115,14 +117,17 @@ fun ChangePasswordDialog(
                 onClick = {
                     onConfirm(newPassword)
                 },
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                 enabled = newPassword.isNotBlank()
             ) {
-                Text(text = stringResource(R.string.confirm))
+                Text(text = stringResource(R.string.confirm), color = Color.White)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(text = stringResource(R.string.cancel))
+            TextButton(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),) {
+                Text(text = stringResource(R.string.cancel), color = Color.White)
             }
         }
     )
@@ -167,14 +172,18 @@ fun DeleteAccountDialog(
                         onConfirm()
                     }
                 },
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                 enabled = inputText == requiredText
             ) {
-                Text(text = stringResource(R.string.confirm))
+                Text(text = stringResource(R.string.confirm), color = Color.White)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(text = stringResource(R.string.cancel))
+            TextButton(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                ) {
+                Text(text = stringResource(R.string.cancel), color = Color.White)
             }
         }
     )
@@ -204,13 +213,15 @@ fun ConfirmationDialog(
             )
         },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(text = stringResource(R.string.confirm))
+            TextButton(onClick = onConfirm,
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),) {
+                Text(text = stringResource(R.string.confirm), color = Color.White)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(text = stringResource(R.string.cancel))
+            TextButton(onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(MainColor),) {
+                Text(text = stringResource(R.string.cancel), color = Color.White)
             }
         }
     )

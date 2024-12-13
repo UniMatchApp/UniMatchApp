@@ -40,7 +40,7 @@ fun ProfileSettingsTopBar(
                         painter = painterResource(id = R.drawable.ic_arrow_back),
                         contentDescription = "Back",
                         modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onBackground
+                        tint = MaterialTheme.colorScheme.secondary
                     )
                 }
 
@@ -48,13 +48,13 @@ fun ProfileSettingsTopBar(
 
                 Text(
                     text = stringResource(R.string.edit_profile),
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.secondary
                 )
             }
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = MaterialTheme.colorScheme.background
         )
     )
 }

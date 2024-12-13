@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.graphics.Color
 import com.ulpgc.uniMatch.R
 
 @Composable
@@ -30,10 +31,9 @@ fun ConfirmBlockDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
                 onClick = onConfirm,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text(stringResource(id = R.string.block_user_confirm))
+                Text(stringResource(id = R.string.block_user_confirm), color = Color.White)
             }
         },
         dismissButton = {

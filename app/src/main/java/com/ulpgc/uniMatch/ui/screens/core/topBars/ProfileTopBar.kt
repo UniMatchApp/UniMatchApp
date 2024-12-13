@@ -42,7 +42,7 @@ fun ProfileTopBar(navController : NavController) {
                 )
                 Text(
                     text = stringResource(id = R.string.profile),
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .weight(1f)
@@ -53,7 +53,7 @@ fun ProfileTopBar(navController : NavController) {
                         painter = painterResource(id = R.drawable.ic_settings),
                         contentDescription = "Account",
                         modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onBackground
+                        tint = MaterialTheme.colorScheme.secondary
                     )
                 }
 
@@ -61,7 +61,7 @@ fun ProfileTopBar(navController : NavController) {
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = MaterialTheme.colorScheme.background
         )
     )
 }

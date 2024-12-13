@@ -44,7 +44,7 @@ fun HomeTopBar(navController: NavHostController) {
                 )
                 Text(
                     text = stringResource(id = R.string.home),
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.secondary
                 )
             }
         },
@@ -54,7 +54,7 @@ fun HomeTopBar(navController: NavHostController) {
                     painter = painterResource(id = R.drawable.icon_bell),
                     contentDescription = "Notifications",
                     modifier = Modifier.size(AppSize.iconSize),
-                    tint = MaterialTheme.colorScheme.onBackground
+                    tint = MaterialTheme.colorScheme.secondary
                 )
 
             }
@@ -63,13 +63,13 @@ fun HomeTopBar(navController: NavHostController) {
                     painter = painterResource(id = R.drawable.icon_filter),
                     contentDescription = "Filter",
                     modifier = Modifier.size(AppSize.iconSize),
-                    tint = MaterialTheme.colorScheme.onBackground
+                    tint = MaterialTheme.colorScheme.secondary
                 )
             }
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = MaterialTheme.colorScheme.background
         )
     )
 }

@@ -50,7 +50,7 @@ fun ChatDetailTopBar(
                         painter = painterResource(id = R.drawable.ic_arrow_back),
                         contentDescription = "Back",
                         modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onBackground
+                        tint = MaterialTheme.colorScheme.secondary
                     )
                 }
 
@@ -75,13 +75,13 @@ fun ChatDetailTopBar(
 
                 Text(
                     text = chatViewModel.otherUser.collectAsState().value?.name ?: "",
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.secondary
                 )
             }
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = MaterialTheme.colorScheme.background
         )
     )
 }

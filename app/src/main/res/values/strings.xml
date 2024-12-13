@@ -485,5 +485,6 @@
     <string name="no_chats">No tienes chats disponibles</string>
     <string name="start_chat">Empieza una conversación</string>
     <string name="typing">Escribiendo…</string>
+    <string name="events">Eventos</string>
 
 </resources>

@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -65,6 +66,7 @@ import com.ulpgc.uniMatch.ui.components.profile.ProfileInputField
 import com.ulpgc.uniMatch.ui.components.profile.ProfileSection
 import com.ulpgc.uniMatch.ui.screens.utils.enumToStringReplace
 import com.ulpgc.uniMatch.ui.screens.utils.stringToEnum
+import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @Composable
 fun ProfileScreen(
@@ -93,7 +95,7 @@ fun ProfileScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
         }
     }
     else if (profile != null) {
@@ -485,9 +487,10 @@ fun ProfileScreen(
                 onClick = {
                     profileViewModel.updateProfile()
                 },
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(R.string.save))
+                Text(stringResource(R.string.save), color = Color.White)
             }
         }
     } else {
@@ -526,13 +529,17 @@ fun ConfirmationDialog(
         title = { Text(text = stringResource(R.string.unsaved_changes), color = MaterialTheme.colorScheme.onBackground) },
         text = { Text(text = stringResource(R.string.save_changes_confirmation), color = MaterialTheme.colorScheme.onBackground) },
         confirmButton = {
-            Button(onClick = { onConfirm() }) {
-                Text(text = stringResource(R.string.save))
+            Button(
+                onClick = { onConfirm() },
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),) {
+                Text(text = stringResource(R.string.save), color = Color.White)
             }
         },
         dismissButton = {
-            Button(onClick = { onDismiss() }) {
-                Text(text = stringResource(R.string.cancel))
+            Button(
+                onClick = { onDismiss() },
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),) {
+                Text(text = stringResource(R.string.cancel), color = Color.White)
             }
         }
     )

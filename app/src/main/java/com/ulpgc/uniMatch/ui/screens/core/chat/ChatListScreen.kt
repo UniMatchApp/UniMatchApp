@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.ui.components.chats.ChatList
+import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @Composable
 fun ChatListScreen(
@@ -44,7 +45,7 @@ fun ChatListScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
         } else if (chatList.isEmpty()) {
             Box(

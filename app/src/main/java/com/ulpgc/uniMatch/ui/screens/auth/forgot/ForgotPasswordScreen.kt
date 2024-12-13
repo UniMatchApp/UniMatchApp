@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
+import com.ulpgc.uniMatch.ui.components.ButtonComponent
 
 @Composable
 fun ForgotPasswordScreen(
@@ -127,26 +128,26 @@ fun ForgotPasswordContent(
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
+        ButtonComponent(
             onClick = { onSubmit(emailOrPhone.text) },
+            text = stringResource(R.string.submit),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .height(48.dp)
-        ) {
-            Text(text = stringResource(R.string.submit), fontSize = 16.sp)
-        }
+                .height(48.dp),
+            color = MaterialTheme.colorScheme.primary
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
+        ButtonComponent(
             onClick = { onBack() },
+            text = stringResource(R.string.back),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .height(48.dp)
-        ) {
-            Text(text = stringResource(R.string.back), fontSize = 16.sp)
-        }
+                .height(48.dp),
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }

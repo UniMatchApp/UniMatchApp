@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -199,7 +201,8 @@ fun RegisterProfileScreen(
                 onDateSelected = {
                     birthday = it
                     age = calculateAge(it)
-                }
+                },
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
@@ -274,9 +277,10 @@ fun RegisterProfileScreen(
                         .maxResultSize(1080, 1080)
                         .createIntent { intent -> imagePickerLauncher.launch(intent) }
                 },
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(R.string.select_image))
+                Text(stringResource(R.string.select_image), color = Color.White)
             }
 
             selectedImageUri?.let { uri ->
@@ -320,9 +324,10 @@ fun RegisterProfileScreen(
                         )
                     }
                 },
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(R.string.complete_profile))
+                Text(stringResource(R.string.complete_profile), color = Color.White)
             }
         }
     }

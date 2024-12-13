@@ -158,7 +158,7 @@ fun VerifyCodeContent(
                 .padding(horizontal = 16.dp)
                 .height(48.dp)
         ) {
-            Text(text = stringResource(R.string.submit), fontSize = 16.sp)
+            Text(text = stringResource(R.string.submit), fontSize = 16.sp, color = Color.White)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -170,7 +170,7 @@ fun VerifyCodeContent(
                 .padding(horizontal = 16.dp)
                 .height(48.dp)
         ) {
-            Text(text = stringResource(R.string.back), fontSize = 16.sp)
+            Text(text = stringResource(R.string.back), fontSize = 16.sp, color = Color.White)
         }
     }
 }

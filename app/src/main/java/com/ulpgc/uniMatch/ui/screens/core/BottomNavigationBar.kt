@@ -105,7 +105,7 @@ sealed class BottomNavItem(
         CoreRoutes.SEARCH,
         R.drawable.icon_search_clear,
         R.drawable.icon_search_filled,
-        R.string.search
+        R.string.events
     )
 
     data object Chat : BottomNavItem(

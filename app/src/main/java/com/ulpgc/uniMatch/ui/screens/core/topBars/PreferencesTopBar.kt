@@ -39,7 +39,7 @@ fun PreferencesTopBar(navController: NavController) {
                     Icon(
                         painterResource(id = R.drawable.ic_arrow_back),
                         contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.onBackground,
+                        tint = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.size(24.dp),
 
                         )
@@ -49,13 +49,13 @@ fun PreferencesTopBar(navController: NavController) {
 
                 Text(
                     text = stringResource(id = R.string.edit_preferences),
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.secondary
                 )
             }
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = MaterialTheme.colorScheme.background
         )
     )
 }

@@ -57,8 +57,10 @@ fun AuthOptionsScreen(
                 onClick = onLoginClick,
                 text = stringResource(R.string.login),
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primary
             )
+
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -66,7 +68,8 @@ fun AuthOptionsScreen(
                 onClick = onRegisterClick,
                 text = stringResource(R.string.register),
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primary
             )
         }
     }

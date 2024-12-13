@@ -5,11 +5,13 @@ import android.widget.DatePicker
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.ulpgc.uniMatch.R
@@ -18,7 +20,8 @@ import java.util.Calendar
 @Composable
 fun DatePickerComponent(
     selectedDate: String,
-    onDateSelected: (String) -> Unit
+    onDateSelected: (String) -> Unit,
+    color: Color
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
@@ -46,9 +49,10 @@ fun DatePickerComponent(
         Button(
             modifier = Modifier
                 .fillMaxWidth(),
-            onClick = { datePickerDialog.show() }
+            onClick = { datePickerDialog.show() },
+            colors = ButtonDefaults.buttonColors(color)
         ) {
-            Text(text = stringResource(R.string.select_date))
+            Text(text = stringResource(R.string.select_date), color = Color.White)
         }
     }
 }

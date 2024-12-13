@@ -32,6 +32,7 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.DropdownMenu
 import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
+import com.ulpgc.uniMatch.ui.theme.MainColor
 
 
 @Composable
@@ -178,7 +179,7 @@ fun PreferencesScreen(
                     thumbColor = MaterialTheme.colorScheme.primary,
                     activeTrackColor = MaterialTheme.colorScheme.primary,
                     inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                )
+                ),
             )
             Spacer(modifier = Modifier.height(16.dp))
 

@@ -113,19 +113,16 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Button(
-                    onClick = onBackClick,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = stringResource(R.string.back),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
 
+                ButtonComponent(
+                    onClick = onBackClick,
+                    text = stringResource(R.string.back),
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.primary
+                )
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Button(
+                ButtonComponent(
                     onClick = {
                         if (password != confirmPassword) {
                             errorViewModel.showError(passwordsDoNotMatch)
@@ -135,13 +132,10 @@ fun RegisterScreen(
                             userViewModel.register(email, password)
                         }
                     },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = stringResource(R.string.register_button),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
+                    text = stringResource(R.string.register_button),
+                    color = MaterialTheme.colorScheme.primary
+                )
+
             }
 
 

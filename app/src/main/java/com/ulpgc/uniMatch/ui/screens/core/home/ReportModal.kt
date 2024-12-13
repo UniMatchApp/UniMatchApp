@@ -179,7 +179,7 @@ fun ReasonScreen(onNext: (String) -> Unit, onDismiss: () -> Unit) {
             ) {
                 Text(
                     text = stringResource(R.string.next),
-                    color = if (selectedReason.isNotEmpty()) Color.White else MaterialTheme.colorScheme.onPrimary
+                    color = if (selectedReason.isNotEmpty()) Color.White else MaterialTheme.colorScheme.secondary
                 )
             }
         }
@@ -251,7 +251,7 @@ fun DetailsScreen(reason: String, onNext: (String) -> Unit, onBack: () -> Unit) 
             ) {
                 Text(
                     stringResource(R.string.next),
-                    color = if (selectedDetail.isNotEmpty()) Color.White else MaterialTheme.colorScheme.onPrimary
+                    color = if (selectedDetail.isNotEmpty()) Color.White else MaterialTheme.colorScheme.secondary
                 )
             }
         }
