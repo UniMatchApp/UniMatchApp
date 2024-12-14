@@ -103,7 +103,7 @@ open class ChatViewModel(
             Log.i("ChatViewModel", "New message received: $message")
 
             val newMessage = Message(
-                messageId = message.id,
+                messageId = notification.contentId,
                 senderId = message.getSender(),
                 attachment = message.getThumbnail(),
                 content = message.getContent(),

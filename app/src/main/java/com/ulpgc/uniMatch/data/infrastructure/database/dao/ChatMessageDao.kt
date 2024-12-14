@@ -23,6 +23,10 @@ interface ChatMessageDao {
         insertMessages(messages)
     }
 
+    // Cambia el id generado localmente por el id del chat en la base de datos
+    @Query("UPDATE chats SET id = :chatId WHERE id = :localId")
+    suspend fun updateChatId(localId: String, chatId: String)
+
     @Query("SELECT * FROM chats WHERE id = :senderId")
     suspend fun getChatByUserId(senderId: String): ChatEntity?
 

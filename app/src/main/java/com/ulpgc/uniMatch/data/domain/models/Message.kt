@@ -9,7 +9,7 @@ import java.util.UUID
 
 
 data class Message(
-    @SerializedName("messageId") val messageId: String,
+    @SerializedName("messageId") var messageId: String,
     @SerializedName("content") var content: String,
     @SerializedName("senderId") val senderId: String,
     @SerializedName("recipientId") val recipientId: String,

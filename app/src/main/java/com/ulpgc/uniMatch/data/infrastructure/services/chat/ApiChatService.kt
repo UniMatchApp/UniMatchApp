@@ -51,8 +51,12 @@ class ApiChatService(
                 message.receptionStatus = ReceptionStatus.FAILED
                 Log.e("ApiChatService", "Message failed: $message")
             } else {
+                val response = result.getOrNull()
+                val messageId = response?.value?.messageId
                 chatMessageDao.setMessageStatus(message.messageId, ReceptionStatus.SENT)
                 message.receptionStatus = ReceptionStatus.SENT
+                chatMessageDao.updateChatId(message.messageId, messageId ?: message.messageId)
+                message.messageId = messageId ?: message.messageId
                 Log.i("ApiChatService", "Message sent: $message")
             }
 
