@@ -22,7 +22,7 @@ val shapes = Shapes(
 // Define los esquemas de color para los temas claros y oscuros con tonalidades rosadas
 private val DarkColorScheme = darkColorScheme(
     primary = MainColor,   // Rosado fuerte
-    onPrimary = Color(0xFFDB5FFF),
+    onPrimary = Color.DarkGray,
     secondary= Color(0xFFFFFFFF),  // Gris oscuro
     onSecondary = Color.LightGray,
     tertiary = Color(0xFFF1C9FF), // Rosado pastel
@@ -37,7 +37,7 @@ private val DarkColorScheme = darkColorScheme(
 
 private val LightColorScheme = lightColorScheme(
     primary = MainColor,   // Rosado fuerte
-    onPrimary = Color(0xFFDB5FFF),
+    onPrimary = Color.White,
     secondary = Color(0xFF545454),  // Gris oscuro
     onSecondary =  Color(0xFFABABAB), // Rosado pastel
     tertiary = Color(0xFFDADADA), // Rosado pastel

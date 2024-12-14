@@ -4,6 +4,8 @@ import AppNotificationPayload
 import EventNotificationPayload
 import MatchNotificationPayload
 import MessageNotificationPayload
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,9 +14,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
@@ -25,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -35,10 +40,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
@@ -54,6 +61,7 @@ fun NotificationsScreen(
 ) {
     val notifications by notificationsViewModel.notifications.collectAsState()
     val notificationsEnabled by notificationsViewModel.notificationsEnabled.collectAsState()
+    val profiles by profileViewModel.profiles.collectAsState()
     val isLoading by notificationsViewModel.isLoading.collectAsState()
     val profileLoading by profileViewModel.isLoading.collectAsState()
     val showDeleteConfirmationDialog = remember { mutableStateOf(false) }
@@ -110,7 +118,11 @@ fun NotificationsScreen(
                 onCheckedChange = {
                     notificationsViewModel.toggleNotifications(it)
                 },
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.align(Alignment.CenterVertically),
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.primary,
+                    checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                )
             )
         }
 
@@ -221,66 +233,74 @@ fun NotificationCard(
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                when (notification.payload) {
-                    is AppNotificationPayload -> {
-                        Text(
-                            text = notification.payload.getTitle(),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Text(
-                            text = notification.payload.getDescription(),
-                            style = MaterialTheme.typography.bodyMedium,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 2
-                        )
-                    }
-
-                    is EventNotificationPayload -> {
-                        Text(
-                            text = notification.payload.getTitle(),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Text(
-                            text = "Status: ${notification.payload.getStatus()}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-
-                    is MatchNotificationPayload -> {
-                        profileViewModel.loadProfile()
-                        Text(
-                            text = if (notification.payload.isLiked()) "${profile?.name} ${stringResource(R.string.liked_you)}" else "${profile?.name} ${stringResource(R.string.unliked_you)}",
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-
-                    is MessageNotificationPayload -> {
-                        Text(
-                            text = "${stringResource(R.string.you_have_a_new_message_from)} ${profile?.name}",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Text(
-                            text = notification.payload.getContent(),
-                            style = MaterialTheme.typography.bodyMedium,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 2
-                        )
-                        notification.payload.getThumbnail()?.let {
+                Log.i("NotificationCard", "NotificationCard: $notification")
+                notification.payload.let {
+                    when (it) {
+                        is AppNotificationPayload -> {
                             Text(
-                                text = stringResource(R.string.thumbnail_available),
+                                text = it.getTitle(),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                text = it.getDescription(),
+                                style = MaterialTheme.typography.bodyMedium,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 2
+                            )
+                        }
+
+                        is EventNotificationPayload -> {
+                            Text(
+                                text = it.getTitle(),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                text = "Status: ${it.getStatus()}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                        is MatchNotificationPayload -> {
+                            profileViewModel.loadProfile()
+                            Text(
+                                text = if (it.isLiked()) "${profile?.name} ${stringResource(R.string.liked_you)}" else "${profile?.name} ${stringResource(R.string.unliked_you)}",
                                 style = MaterialTheme.typography.bodySmall
                             )
                         }
-                    }
 
-                    else -> {
-                        Text(
-                            text = stringResource(R.string.unknown_notification),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        is MessageNotificationPayload -> {
+                            profileViewModel.getProfileInfo(it.getSender())
+
+                            val profile = profileViewModel.profiles.value.find { profile -> profile.userId == it.getSender() }
+
+                            profile?.preferredImage?.let { image ->
+                                Image(
+                                    painter = rememberImagePainter(image),
+                                    contentDescription = "Profile image",
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(CircleShape)
+                                )
+                            }
+                            Text(
+                                text = "${stringResource(R.string.you_have_a_new_message_from)} ${profile?.name}",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                text = it.getContent(),
+                                style = MaterialTheme.typography.bodyMedium,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 2
+                            )
+                            it.getThumbnail()?.let {
+                                Text(
+                                    text = stringResource(R.string.thumbnail_available),
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                        }
                     }
                 }
-
             }
 
             Row(
@@ -301,10 +321,10 @@ fun NotificationCard(
                     Icon(Icons.Default.Delete, contentDescription = "Delete notification")
                 }
             }
-
         }
     }
 }
+
 
 private fun formatDate(date: Long): String {
     val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())

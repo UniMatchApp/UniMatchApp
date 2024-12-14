@@ -176,7 +176,8 @@ private fun ScrollToBottomButton(
         Icon(
             imageVector = Icons.Default.ArrowDropDown,
             contentDescription = "Scroll to bottom",
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(24.dp),
+            tint = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
@@ -197,7 +198,7 @@ private fun MessageInput(
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.padding(horizontal = 16.dp)
+        modifier = modifier.padding(horizontal = 16.dp).padding(bottom = 16.dp)
     ) {
         TextField(
             value = newMessage,
@@ -247,7 +248,8 @@ private fun MessageInput(
             Icon(
                 Icons.AutoMirrored.Filled.Send,
                 modifier = Modifier.size(24.dp),
-                contentDescription = "Send message"
+                contentDescription = "Send message",
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

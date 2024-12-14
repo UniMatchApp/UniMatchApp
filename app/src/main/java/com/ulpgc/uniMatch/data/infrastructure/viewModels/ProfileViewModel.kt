@@ -31,6 +31,9 @@ open class ProfileViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
 
+    private val _profiles = MutableStateFlow<List<Profile>>(emptyList())
+    val profiles: StateFlow<List<Profile>> get() = _profiles
+
     fun loadProfile() {
         performLoadingAction {
             val result = profileService.getProfile(userViewModel.userId!!)
@@ -386,6 +389,15 @@ open class ProfileViewModel(
                 }
             }.onFailure { error ->
                 errorViewModel.showError(error.message ?: "Error deleting image")
+            }
+        }
+    }
+
+    fun getProfileInfo(userId: String) {
+        performLoadingAction {
+            val result = profileService.getProfile(userId)
+            result.onSuccess { profile ->
+                _profiles.value += profile
             }
         }
     }

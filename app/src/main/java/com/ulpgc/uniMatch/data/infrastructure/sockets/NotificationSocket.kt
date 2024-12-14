@@ -172,12 +172,12 @@ class NotificationSocket(
             val gson = Gson()
 
             val receptionStatusEnum =
-                ReceptionStatus.entries.find { it.status == messagePayload.getString("_receptionStatus") }
+                ReceptionStatus.entries.find { it.status == messagePayload.getString("receptionStatus") }
             val contentStatus =
-                ContentStatus.entries.find { it.status == messagePayload.getString("_contentStatus") }
+                ContentStatus.entries.find { it.status == messagePayload.getString("contentStatus") }
 
             val deletedStatus =
-                DeletedMessageStatus.entries.find { it.status == messagePayload.getString("_deletedStatus") }
+                DeletedMessageStatus.entries.find { it.status == messagePayload.getString("deletedStatus") }
 
             if (receptionStatusEnum == null || contentStatus == null || deletedStatus == null) {
                 Log.e("NotificationSocket", "Error parsing message status")
@@ -188,10 +188,10 @@ class NotificationSocket(
 
             val messagePayloadObject = MessageNotificationPayload(
                 id = messagePayload.getString("id"),
-                sender = messagePayload.getString("_sender"),
+                sender = messagePayload.getString("sender"),
                 recipient = recipient,
-                content = messagePayload.getString("_content"),
-                thumbnail = messagePayload.optString("_thumbnail", ""),
+                content = messagePayload.getString("content"),
+                thumbnail = messagePayload.optString("thumbnail", ""),
                 receptionStatus = receptionStatusEnum,
                 contentStatus = contentStatus,
                 deletedStatus = deletedStatus
@@ -227,8 +227,8 @@ class NotificationSocket(
     ) {
         try {
             val matchPayload = JSONObject(payload)
-            val userMatched = matchPayload.getString("_userMatched")
-            val isLiked = matchPayload.getBoolean("_isLiked")
+            val userMatched = matchPayload.getString("userMatched")
+            val isLiked = matchPayload.getBoolean("isLiked")
 
             val matchPayloadObject = MatchNotificationPayload(
                 matchPayload.getString("id"),
@@ -267,8 +267,8 @@ class NotificationSocket(
     ) {
         try {
             val appPayload = JSONObject(payload)
-            val title = appPayload.getString("_title")
-            val description = appPayload.getString("_description")
+            val title = appPayload.getString("title")
+            val description = appPayload.getString("description")
 
             val appPayloadObject = AppNotificationPayload(
                 appPayload.getString("id"),
@@ -305,7 +305,7 @@ class NotificationSocket(
     ) {
         try {
             val eventPayload = JSONObject(payload)
-            val title = eventPayload.getString("_title")
+            val title = eventPayload.getString("title")
             val status = EventStatus.entries.find { it.status == eventPayload.getString("status") }
 
             if (status == null) {
