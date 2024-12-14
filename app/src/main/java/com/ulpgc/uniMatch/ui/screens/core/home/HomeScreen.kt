@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -95,7 +96,7 @@ fun HomeScreen(
                         imageVector = Icons.Default.SearchOff,
                         contentDescription = "No matches found",
                         modifier = Modifier.size(96.dp),
-                        tint = MainColor
+                        tint = MaterialTheme.colorScheme.primary
                     )
                     Text(
                         text = stringResource(R.string.no_founded_profiles),
@@ -106,10 +107,10 @@ fun HomeScreen(
                     )
                     Button(
                         onClick = { homeViewModel.loadMatchingUsers() },
-                        colors = ButtonDefaults.buttonColors(MainColor),
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
                         modifier = Modifier.padding(top = 16.dp)
                     ) {
-                        Text(text = stringResource(R.string.try_again))
+                        Text(text = stringResource(R.string.try_again), color = Color.White)
                     }
                 }
             }

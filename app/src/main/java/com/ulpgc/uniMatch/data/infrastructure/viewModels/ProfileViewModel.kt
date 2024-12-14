@@ -370,12 +370,25 @@ open class ProfileViewModel(
         performLoadingAction {
             val result = profileService.removeImage(imageUrl)
             result.onSuccess {
-                _profileData.value = _profileData.value?.copy(wall = (_profileData.value?.wall.orEmpty() - imageUrl))
-                _editedProfile.value = _editedProfile.value?.copy(wall = (_editedProfile.value?.wall.orEmpty() - imageUrl))
+                val updatedWall = _profileData.value?.wall.orEmpty() - imageUrl
+                _profileData.value = _profileData.value?.copy(wall = updatedWall)
+                _editedProfile.value = _editedProfile.value?.copy(wall = updatedWall)
+
+                // Si la imagen eliminada era la preferredImage, asignamos la siguiente imagen en el wall
+                if (_profileData.value?.preferredImage == imageUrl) {
+                    // Encuentra la siguiente imagen en la lista (si existe)
+                    val nextPreferredImage = updatedWall.firstOrNull() // Primera imagen si hay alguna
+                    if (nextPreferredImage != null) {
+                        // Actualiza preferredImage
+                        _profileData.value = _profileData.value?.copy(preferredImage = nextPreferredImage)
+                        _editedProfile.value = _editedProfile.value?.copy(preferredImage = nextPreferredImage)
+                    }
+                }
             }.onFailure { error ->
                 errorViewModel.showError(error.message ?: "Error deleting image")
             }
         }
     }
+
 }
 
