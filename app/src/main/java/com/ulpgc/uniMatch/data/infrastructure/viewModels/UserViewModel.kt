@@ -110,6 +110,7 @@ open class UserViewModel(
             authToken = null
             _authState.value = AuthState.Unauthenticated
             _email.value = null
+            secureStorage.clearUser()
         }
     }
 

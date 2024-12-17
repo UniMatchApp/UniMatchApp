@@ -6,6 +6,8 @@ import MatchNotificationPayload
 import MessageNotificationPayload
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,11 +44,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
@@ -57,7 +62,8 @@ import java.util.Locale
 @Composable
 fun NotificationsScreen(
     notificationsViewModel: NotificationsViewModel,
-    profileViewModel: ProfileViewModel
+    profileViewModel: ProfileViewModel,
+    navController: NavController
 ) {
     val notifications by notificationsViewModel.notifications.collectAsState()
     val notificationsEnabled by notificationsViewModel.notificationsEnabled.collectAsState()
@@ -75,6 +81,12 @@ fun NotificationsScreen(
     LaunchedEffect(notifications) {
         notifications.forEach { notification ->
             notificationsViewModel.markNotificationAsRead(notification.id)
+            val payload = notification.payload
+            if (payload is MatchNotificationPayload) {
+                profileViewModel.getProfileInfo(payload.getUserMatched())
+            } else if (payload is MessageNotificationPayload) {
+                profileViewModel.getProfileInfo(payload.getSender())
+            }
         }
     }
 
@@ -128,21 +140,24 @@ fun NotificationsScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.weight(1f)
-        ) {
-            items(notifications) { notification ->
-                NotificationCard(
-                    notification = notification,
-                    date = notification.date,
-                    profileViewModel = profileViewModel,
-                    onDeleteNotification = { deletedNotification ->
-                        notificationToDelete.value = deletedNotification
-                        deleteAll.value = false
-                        showDeleteConfirmationDialog.value = true
-                    }
-                )
+        if (!isLoading && !profileLoading) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                items(notifications) { notification ->
+                    NotificationCard(
+                        notification = notification,
+                        date = notification.date,
+                        profiles = profiles,
+                        onDeleteNotification = { deletedNotification ->
+                            notificationToDelete.value = deletedNotification
+                            deleteAll.value = false
+                            showDeleteConfirmationDialog.value = true
+                        },
+                        navController = navController
+                    )
+                }
             }
         }
 
@@ -164,9 +179,9 @@ fun NotificationsScreen(
         }
     }
 
-//    if (isLoading || profileLoading) {
-//        LoadingSkeleton()
-//    }
+    if (isLoading || profileLoading) {
+        LoadingSkeleton()
+    }
 }
 
 @Composable
@@ -219,11 +234,11 @@ fun LoadingSkeleton() {
 @Composable
 fun NotificationCard(
     notification: Notification,
+    navController: NavController,
     date: Long,
-    profileViewModel: ProfileViewModel,
+    profiles : List<Profile>,
     onDeleteNotification: (Notification) -> Unit
 ) {
-    val profile by profileViewModel.profileData.collectAsState()
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -247,6 +262,7 @@ fun NotificationCard(
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 2
                             )
+                            DateWidget(date, notification, onDeleteNotification)
                         }
 
                         is EventNotificationPayload -> {
@@ -258,69 +274,100 @@ fun NotificationCard(
                                 text = "Status: ${it.getStatus()}",
                                 style = MaterialTheme.typography.bodyMedium
                             )
+                            DateWidget(date, notification, onDeleteNotification)
                         }
 
                         is MatchNotificationPayload -> {
-                            profileViewModel.loadProfile()
-                            Text(
-                                text = if (it.isLiked()) "${profile?.name} ${stringResource(R.string.liked_you)}" else "${profile?.name} ${stringResource(R.string.unliked_you)}",
-                                style = MaterialTheme.typography.bodySmall
-                            )
+                            val profile = profiles.find { profile -> profile.userId == it.getUserMatched() }
+
+                            if (profile != null) {
+                                Text(
+                                    text = if (it.isLiked()) "${profile.name} ${stringResource(R.string.liked_you)}"
+                                    else "${profile.name} ${stringResource(R.string.unliked_you)}",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                DateWidget(date, notification, onDeleteNotification)
+                            }
                         }
 
                         is MessageNotificationPayload -> {
-                            profileViewModel.getProfileInfo(it.getSender())
+                            val profile = profiles.find { profile -> profile.userId == it.getSender() }
 
-                            val profile = profileViewModel.profiles.value.find { profile -> profile.userId == it.getSender() }
-
-                            profile?.preferredImage?.let { image ->
-                                Image(
-                                    painter = rememberImagePainter(image),
-                                    contentDescription = "Profile image",
+                            if (profile != null) {
+                                Column (
                                     modifier = Modifier
-                                        .size(40.dp)
-                                        .clip(CircleShape)
-                                )
-                            }
-                            Text(
-                                text = "${stringResource(R.string.you_have_a_new_message_from)} ${profile?.name}",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Text(
-                                text = it.getContent(),
-                                style = MaterialTheme.typography.bodyMedium,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 2
-                            )
-                            it.getThumbnail()?.let {
-                                Text(
-                                    text = stringResource(R.string.thumbnail_available),
-                                    style = MaterialTheme.typography.bodySmall
-                                )
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            // Navegar a la pantalla del chat
+                                            navController.navigate("chatDetail/${it.getSender()}")
+                                        },
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    profile.preferredImage.let { image ->
+                                        Image(
+                                            painter = rememberImagePainter(image),
+                                            contentDescription = "Profile image",
+                                            modifier = Modifier
+                                                .size(40.dp)
+                                                .clip(CircleShape)
+                                                .background(Color.Gray),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                    }
+                                    Column {
+                                        Text(
+                                            text = "${stringResource(R.string.you_have_a_new_message_from)} ${profile.name}",
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
+                                        Text(
+                                            text = it.getContent(),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            overflow = TextOverflow.Ellipsis,
+                                            maxLines = 2
+                                        )
+                                        it.getThumbnail()?.let {
+                                            Text(
+                                                text = stringResource(R.string.thumbnail_available),
+                                                style = MaterialTheme.typography.bodySmall
+                                            )
+                                        }
+                                    }
+                                }
+
+                                DateWidget(date, notification, onDeleteNotification)
                             }
                         }
+
                     }
                 }
             }
+        }
+    }
+}
 
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = formatDate(date),
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                )
+@Composable
+fun DateWidget(
+    date: Long,
+    notification: Notification,
+    onDeleteNotification: (Notification) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = formatDate(date),
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+        )
 
-                IconButton(
-                    onClick = { onDeleteNotification(notification) },
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                ) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete notification")
-                }
-            }
+        IconButton(
+            onClick = { onDeleteNotification(notification) },
+            modifier = Modifier.align(Alignment.CenterVertically)
+        ) {
+            Icon(Icons.Default.Delete, contentDescription = "Delete notification")
         }
     }
 }
