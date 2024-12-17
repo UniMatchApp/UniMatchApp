@@ -213,7 +213,8 @@ fun CoreNavHost(
         composable(CoreRoutes.NOTIFICATIONS) {
             NotificationsScreen(
                 notificationsViewModel = notificationsViewModel,
-                profileViewModel = profileViewModel
+                profileViewModel = profileViewModel,
+                navController = navController
             )
         }
 
