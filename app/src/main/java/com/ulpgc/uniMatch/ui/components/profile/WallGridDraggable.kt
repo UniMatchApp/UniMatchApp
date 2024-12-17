@@ -36,6 +36,7 @@ import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.rememberReorderableLazyGridState
 import org.burnoutcrew.reorderable.reorderable
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
@@ -63,15 +64,20 @@ fun WallGridDraggable(
     onUpdateWallOrder: (List<String>) -> Unit
 ) {
 
-    val profileImages = remember { mutableStateListOf(*initialProfileImages.toTypedArray()) }
+    val profileImages = remember { mutableStateListOf<String>() }
+
+    LaunchedEffect(initialProfileImages) {
+        profileImages.clear()
+        profileImages.addAll(initialProfileImages)
+    }
+
 
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data = result.data
             val imageUri: Uri? = data?.data
             imageUri?.let {
-                if (profileImages.size < 9) {
-                    profileImages.add(it.toString())
+                if (initialProfileImages.size < 9) {
                     onAddImageClick(it)
                 }
             }
@@ -134,11 +140,17 @@ fun WallGridDraggable(
                                     .size(24.dp)
                                     .background(Color.White, CircleShape)
                                     .border(2.dp, Color.Black, CircleShape)
+                                    .then(
+                                        if (profileImages.size >= 2) {
+                                            Modifier.clickable {
+                                                profileImages.remove(item)
+                                                onDeleteImageClick(item)
+                                            }
+                                        } else {
+                                            Modifier
+                                        }
+                                    )
                                     .align(Alignment.TopEnd)
-                                    .clickable {
-                                        profileImages.remove(item)
-                                        onDeleteImageClick(item)
-                                    }
                             ) {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.icon_remove),
@@ -147,6 +159,7 @@ fun WallGridDraggable(
                                     modifier = Modifier.fillMaxSize()
                                 )
                             }
+
                         }
                     }
                 }

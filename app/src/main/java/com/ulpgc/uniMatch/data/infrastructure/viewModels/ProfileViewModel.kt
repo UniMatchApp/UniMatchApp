@@ -357,7 +357,6 @@ open class ProfileViewModel(
     )
 
     fun addImage(imageUrl: Uri) {
-        Log.i("ProfileViewModel", "Adding image $imageUrl")
         performLoadingAction {
             val result = profileService.addImage(imageUrl)
             result.onSuccess { imageUrlApi ->
@@ -376,13 +375,9 @@ open class ProfileViewModel(
                 val updatedWall = _profileData.value?.wall.orEmpty() - imageUrl
                 _profileData.value = _profileData.value?.copy(wall = updatedWall)
                 _editedProfile.value = _editedProfile.value?.copy(wall = updatedWall)
-
-                // Si la imagen eliminada era la preferredImage, asignamos la siguiente imagen en el wall
                 if (_profileData.value?.preferredImage == imageUrl) {
-                    // Encuentra la siguiente imagen en la lista (si existe)
-                    val nextPreferredImage = updatedWall.firstOrNull() // Primera imagen si hay alguna
+                    val nextPreferredImage = updatedWall.firstOrNull()
                     if (nextPreferredImage != null) {
-                        // Actualiza preferredImage
                         _profileData.value = _profileData.value?.copy(preferredImage = nextPreferredImage)
                         _editedProfile.value = _editedProfile.value?.copy(preferredImage = nextPreferredImage)
                     }

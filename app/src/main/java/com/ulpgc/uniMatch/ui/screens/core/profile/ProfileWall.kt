@@ -29,8 +29,8 @@ fun ProfileWall(
     }
 
     val profile = profileViewModel.profileData.collectAsState().value
-    val profileImages = profile?.wall ?: emptyList()
     val activity = LocalContext.current as? ComponentActivity
+
 
      if( profile != null) {
         Column(
@@ -41,7 +41,7 @@ fun ProfileWall(
 
             WallGridDraggable(
                 activity!!,
-                initialProfileImages = profileImages,
+                initialProfileImages = profile.wall,
                 onAddImageClick = { imageUrl ->
                     profileViewModel.addImage(imageUrl)
                 },
@@ -50,7 +50,7 @@ fun ProfileWall(
                 },
                 onUpdateWallOrder = { newOrder ->
                     profileViewModel.updateWall(newOrder)
-                }
+                },
             )
         }
     } else {
