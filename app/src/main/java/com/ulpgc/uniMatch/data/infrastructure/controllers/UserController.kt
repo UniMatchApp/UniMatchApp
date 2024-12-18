@@ -33,8 +33,8 @@ interface UserController {
     @POST("users/auth/{email}/verify-code/{code}")
     suspend fun verifyCode(@Path("email") userId: String, @Path("code") code: String): ApiResponse<Boolean>
 
-    @PUT("users/password")
-    suspend fun resetPassword(@Body passwordRequest: PasswordRequest): ApiResponse<Unit>
+    @PUT("users/password/{id}")
+    suspend fun resetPassword(@Body passwordRequest: PasswordRequest, @Path("id") userId: String): ApiResponse<Unit>
 
     @POST("users/auth/{email}/resend-code")
     suspend fun resendCode(@Path("email") email: String): ApiResponse<Boolean>

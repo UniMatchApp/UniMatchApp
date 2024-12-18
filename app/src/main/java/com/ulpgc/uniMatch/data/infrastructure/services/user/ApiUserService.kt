@@ -144,10 +144,10 @@ class ApiUserService(
         }.mapCatching {  }
     }
 
-    override suspend fun resetPassword(newPassword: String): Result<Unit> {
+    override suspend fun resetPassword(newPassword: String,  userId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             safeApiCall {
-                userController.resetPassword(PasswordRequest(newPassword))
+                userController.resetPassword(PasswordRequest(newPassword), userId)
             }
         }.mapCatching { Unit }
     }

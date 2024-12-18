@@ -83,7 +83,7 @@ class MockUserService : UserService {
         }
     }
 
-    override suspend fun resetPassword(newPassword: String): Result<Unit> {
+    override suspend fun resetPassword(newPassword: String, userId: String): Result<Unit> {
         return withContext(Dispatchers.IO) {
             safeRequest {
                 return@safeRequest

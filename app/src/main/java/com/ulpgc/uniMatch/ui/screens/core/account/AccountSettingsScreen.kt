@@ -55,7 +55,7 @@ fun AccountSettingsScreen(
     if (showChangePasswordDialog) {
         ChangePasswordDialog(
             onConfirm = { newPassword ->
-                userViewModel.resetPassword(newPassword)
+                userViewModel.resetPassword(newPassword, userViewModel.userId!!)
                 showChangePasswordDialog = false
             },
             onDismiss = { showChangePasswordDialog = false }

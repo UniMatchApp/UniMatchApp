@@ -22,7 +22,7 @@ interface UserService {
     suspend fun blockUser(blockedUserId: String): Result<Unit>
     suspend fun forgotPassword(email: String): Result<String>
     suspend fun verifyCode(email: String, code: String): Result<Unit>
-    suspend fun resetPassword(newPassword: String): Result<Unit>
+    suspend fun resetPassword(newPassword: String, userId: String): Result<Unit>
     suspend fun resendCode(email: String): Result<Boolean>
     suspend fun deleteAccount(userId: String): Result<Unit>
 }

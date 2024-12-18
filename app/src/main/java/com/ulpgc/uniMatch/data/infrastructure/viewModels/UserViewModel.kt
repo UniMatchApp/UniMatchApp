@@ -154,9 +154,9 @@ open class UserViewModel(
         }
     }
 
-    fun resetPassword(newPassword: String) {
+    fun resetPassword(newPassword: String, inputUserId: String?) {
         viewModelScope.launch {
-            val result = userService.resetPassword(newPassword)
+            val result = userService.resetPassword(newPassword, inputUserId ?: userId!!)
             result.onSuccess {
                 _resetPasswordResult.value = true
             }.onFailure {
