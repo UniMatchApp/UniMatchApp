@@ -58,17 +58,21 @@ fun ChatDetailScreen(
     userViewModel: UserViewModel,
 ) {
     val messages by chatViewModel.messages.observeAsState(emptyList())
+    val filteredMessages = messages.filter { it.senderId == chatId || it.recipientId == chatId }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
     // Cargar mensajes al iniciar
     LaunchedEffect(chatId) {
-        chatViewModel.loadMessages(chatId, messages.size)
+        Log.i("ChatDetailScreen", messages.toString())
+        chatViewModel.loadMessages(chatId, filteredMessages.size)
     }
 
 
-    LaunchedEffect(messages) {
-        chatViewModel.setMessagesAsRead(messages)
+    LaunchedEffect(filteredMessages) {
+        // Show last two messages from filteredMessages
+        Log.i("ChatDetailScreen", filteredMessages.takeLast(2).toString())
+        chatViewModel.setMessagesAsRead(filteredMessages)
     }
 
     // Detectar si el usuario está cerca del final de la lista
@@ -76,20 +80,20 @@ fun ChatDetailScreen(
         derivedStateOf {
             val lastVisibleItemIndex =
                 listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-            lastVisibleItemIndex >= messages.size - 8
+            lastVisibleItemIndex >= filteredMessages.size - 8
         }
     }
 
     val showScrollToBottomButton by remember {
         derivedStateOf {
-            isFarFromBottom.value && messages.isNotEmpty()
+            isFarFromBottom.value && filteredMessages.isNotEmpty()
         }
     }
 
     // Desplazar automáticamente hacia abajo cuando llegan nuevos mensajes
-    LaunchedEffect(messages.size) {
-        if (isFarFromBottom.value && messages.isNotEmpty()) {
-            listState.animateScrollToItem(messages.size - 1)
+    LaunchedEffect(filteredMessages.size) {
+        if (isFarFromBottom.value && filteredMessages.isNotEmpty()) {
+            listState.animateScrollToItem(filteredMessages.size - 1)
         }
     }
 
@@ -111,7 +115,7 @@ fun ChatDetailScreen(
                     .fillMaxWidth()
                     .weight(1f), // Ocupa el espacio sobrante
             ) {
-                items(messages) { message ->
+                items(filteredMessages) { message ->
                     MessageBubble(
                         message = message,
                         isCurrentUser = message.senderId == userViewModel.userId
@@ -120,12 +124,12 @@ fun ChatDetailScreen(
                 }
             }
 
-            if (messages.isNotEmpty() && !showScrollToBottomButton) {
+            if (filteredMessages.isNotEmpty() && !showScrollToBottomButton) {
                 ScrollToBottomButton(
                     onClick = {
                         coroutineScope.launch {
-                            if (messages.isNotEmpty()) {
-                                listState.animateScrollToItem(messages.size - 1)
+                            if (filteredMessages.isNotEmpty()) {
+                                listState.animateScrollToItem(filteredMessages.size - 1)
                             }
                         }
                     },

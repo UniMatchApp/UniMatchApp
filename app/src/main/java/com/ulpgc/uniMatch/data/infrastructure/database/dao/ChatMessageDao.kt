@@ -135,8 +135,8 @@ interface ChatMessageDao {
         setMessageStatus(chatId, ReceptionStatus.READ)
     }
 
-    @Query("UPDATE messages SET receptionStatus = :status WHERE messageId = :chatId AND receptionStatus != :status")
-    suspend fun setMessageStatus(chatId: String, status: ReceptionStatus)
+    @Query("UPDATE messages SET receptionStatus = :status WHERE messageId = :messageId AND receptionStatus != :status")
+    suspend fun setMessageStatus(messageId: String, status: ReceptionStatus)
 
 
     @Query("DELETE FROM messages WHERE chatId = :chatId")
