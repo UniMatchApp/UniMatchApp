@@ -1,5 +1,17 @@
 <resources>
+    <!--GENERAL-->
     <string name="app_name">UniMatch</string>
+    <string name="home">Inicio</string>
+    <string name="search">Búsqueda</string>
+    <string name="chat">Chat</string>
+    <string name="profile">Perfil</string>
+    <string name="edit_profile">Editar Perfil</string>
+    <string name="notifications">Notificaciones</string>
+    <string name="user_filters">user filters</string>
+    <string name="account">Cuenta</string>
+    <string name="policies">Políticas</string>
+
+    <!--LOGIN SCREEN-->
     <string name="login">Iniciar sesión</string>
     <string name="register">Registrar</string>
     <string name="enter_email">Introduce tu email</string>
@@ -9,14 +21,470 @@
     <string name="register_button">Registrarse</string>
     <string name="switch_to_register">¿No tienes cuenta? Regístrate</string>
     <string name="switch_to_login">¿Ya tienes cuenta? Inicia sesión</string>
-    <string name="cancel">Cancelar</string>
-    <string name="remember_me">Remember me</string>
-    <string name="forgot_password">Forgot Password?\t\t\t\t</string>
+    <string name="remember_me">Recordarme</string>
+    <string name="forgot_password">¿Has olvidado tu contraseña?</string>
     <string name="find_your_ideal_partner_near_you">Encuentra a la persona ideal cerca de ti.</string>
-    <string name="enter_your_email_and_password_to_log_in">Enter your email and password to log in</string>
-    <string name="sign_in_to_unimatch">Sign in to UniMatch</string>
-    <string name="home">Home</string>
-    <string name="search">Search</string>
-    <string name="chat">Chat</string>
-    <string name="profile">Profile</string>
+    <string name="enter_your_email_and_password_to_log_in">Introduce tu email y contraseña para iniciar sesión</string>
+    <string name="sign_in_to_unimatch">Inicia sesión en UniMatch</string>
+    <string name="verify_code">Verificar código</string>
+    <string name="introduce_code">Introduce el código de verificación</string>
+    <string name="introduce_digits">Introduce los 6 dígitos que has recibido en tu email</string>
+    <string name="resend_code">Reenviar código</string>
+    <string name="code_sent">Código enviado</string>
+    <string name="invalid_code">Código inválido</string>
+    <string name="please_enter_valid_code">Por favor, introduce un código válido</string>
+    <string name="forgot_password_cheers">No te preocupes, suele ocurrir. Introduce el email asociado con tu cuenta</string>
+    <string name="reset_password_failed">La recuperación de contraseña ha fallado. Inténtalo de nuevo.</string>
+    <string name="password_too_short">La contraseña debe tener al menos 6 caracteres</string>
+    <string name="passwords_do_not_match">Las contraseñas no coinciden</string>
+    <string name="there_was_an_error_changing_password">Ha habido un error al cambiar la contraseña</string>
+    <string name="reset_password">Restablecer contraseña</string>
+    <string name="new_password">Nueva contraseña</string>
+    <string name="dont_have_an_account">¿No tienes una cuenta?</string>
+    <string name="password_required">La contraseña es obligatoria</string>
+    <string name="login_failed">Inicio de sesión fallido</string>
+    <string name="already_have_an_account">¿Ya tienes una cuenta?</string>
+    <string name="registration_failed">Registro fallido</string>
+    <string name="create_account">Crear cuenta</string>
+    <string name="enter_your_details_to_register">Introduce tus datos para registrarte</string>
+    <string name="password_empty_error">La contraseña no puede estar vacía</string>
+    <string name="fields_empty_error">Algunos campos están vacíos</string>
+    <string name="create_profile">Crear perfil</string>
+    <string name="full_name">Nombre completo</string>
+    <string name="complete_profile">Completa tu perfil</string>
+    <string name="selected_image">Imagen seleccionada</string>
+    <string name="full_name_and_age_required">El nombre y la edad son obligatorios</string>
+    <string name="selected_date">Fecha seleccionada</string>
+    <string name="select_date">Selecciona una fecha</string>
+    <string name="email_empty_error">El email no puede estar vacío</string>
+    <string name="age_error">La edad no puede ser menor de 18 y mayor de 100</string>
+
+    <!--PROFILE-->
+    <string name="horoscope">Horóscopo</string>
+    <string name="education">Educación</string>
+    <string name="personality_type">Personalidad</string>
+    <string name="pets">Mascotas</string>
+    <string name="drinks">Beber</string>
+    <string name="smokes">¿Fumas?</string>
+    <string name="sports">¿Haces deporte?</string>
+    <string name="religion">Valores y creencias</string>
+    <string name="interests">Intereses</string>
+    <string name="what_type_of_relationship">¿Qué tipo de relación estás buscando?</string>
+    <string name="job">Trabajo</string>
+    <string name="sexual_orientation">Orientación sexual</string>
+    <string name="weight">Peso en Kg</string>
+    <string name="height">Altura en cm</string>
+    <string name="gender">Sexo</string>
+    <string name="questions">Preguntas</string>
+    <string name="age">Edad</string>
+    <string name="select_image">Seleccionar imagen</string>
+    <string name="birthday">Cumpleaños</string>
+    <string name="cookies_policy">Política de cookies</string>
+    <string name="privacy_policy">Política de privacidad</string>
+    <string name="session_data">Datos de sesión</string>
+    <string name="change_password">Cambiar contraseña</string>
+    <string name="unsaved_changes">Cambios no guardados</string>
+    <string name="save_changes_confirmation">Está a punto de salir sin guardar los cambios. ¿Desea guardar?</string>
+
+
+
+    <!--PROFILE WALL -->
+    <string name="upload_image">Subir imagen</string>
+    <string name="where_do_you_wanna_get_image">¿De dónde quieres obtener la imagen?</string>
+    <string name="camera">Cámara</string>
+    <string name="gallery">Galería</string>
+
+
+    <!--PREFERENCES SCREEN-->
+    <string name="edit_preferences">Editar preferencias</string>
+    <string name="preferences_title">Preferencias</string>
+    <string name="no_preferences_info">No hay información de preferencias disponible.</string>
+    <string name="max_distance">Distancia Máxima: %d km</string>
+    <string name="gender_priority_title">Prioridad de Género</string>
+    <string name="age_range_title">Rango de Edad: %d - %d</string>
+    <string name="relationship_type_title">Tipo de Relación</string>
+    <string name="preferences_explanation">Unimatch utiliza estas preferencias para sugerir coincidencias. Algunas sugerencias pueden no estar dentro de tus parámetros.</string>
+    <string name="location_permission_required">Para cambiar la distancia máxima, necesitas habilitar los permisos de ubicación.</string>
+
+    <!--DROPDOWN MENU-->
+    <string name="dropdown_empty_option">Ninguno</string>
+    <string name="select">Seleccionar</string>
+
+    <!--BLOCK DIALOG-->
+    <string name="block_user_title">Bloquear usuario</string>
+    <string name="block_user_message">¿Estás seguro de que deseas bloquear a este usuario?</string>
+    <string name="block_user_confirm">Bloquear</string>
+    <string name="block_user_cancel">Cancelar</string>
+
+    <!--HOME SCREEN-->
+    <string name="loading_profiles">Loading profiles...</string>
+    <string name="like">Me gusta</string>
+    <string name="no_founded_profiles">No se han encontrado perfiles</string>
+
+    <!--PROFILE INFO SCREEN-->
+    <string name="about_me">Sobre mí</string>
+    <string name="about_me_label">Sobre mí</string>
+    <string name="searching">Buscando</string>
+    <string name="looking_for">Busco...</string>
+    <string name="relationship">Relación</string>
+    <string name="more_about_me">Más sobre mí</string>
+    <string name="lifestyle">Estilo de vida</string>
+    <string name="report">Denunciar</string>
+    <string name="block">Bloquear</string>
+
+    <!--Funny questions-->
+    <string-array name="facts">
+        <item>La Tierra no es una esfera perfecta</item>
+        <item>La luz viaja más rápido que el sonido</item>
+        <item>Los pulpos tienen tres corazones</item>
+        <item>El agua puede hervir y congelarse al mismo tiempo</item>
+        <item>Los tiburones han existido más tiempo que los árboles</item>
+        <item>Un día en Venus es más largo que un año en Venus</item>
+    </string-array>
+
+
+    <!--Género-->
+    <string-array name="genders">
+        <item>Hombre</item>
+        <item>Mujer</item>
+        <item>Otro</item>
+    </string-array>
+
+    <!--Edad-->
+    <string-array name="sexual_orientation">
+        <item>Heterosexual</item>
+        <item>Homosexual</item>
+        <item>Bisexual</item>
+        <item>Otro</item>
+    </string-array>
+
+    <!--Tipo de relación-->
+    <string-array name="relationship_type">
+        <item>Amigos</item>
+        <item>Casual</item>
+        <item>Relación</item>
+        <item>Abierta</item>
+        <item>Otro</item>
+    </string-array>
+
+    <!--Horóscopo-->
+    <string-array name="horoscope">
+        <item>Aries</item>
+        <item>Tauro</item>
+        <item>Géminis</item>
+        <item>Cáncer</item>
+        <item>Leo</item>
+        <item>Virgo</item>
+        <item>Libra</item>
+        <item>Escorpio</item>
+        <item>Sagitario</item>
+        <item>Capricornio</item>
+        <item>Acuario</item>
+        <item>Piscis</item>
+    </string-array>
+
+    <!-- Educación -->
+    <string-array name="education">
+        <item>Contabilidad</item>
+        <item>Agricultura</item>
+        <item>Ciencias Animales</item>
+        <item>Arquitectura</item>
+        <item>Arte</item>
+        <item>Bioquímica</item>
+        <item>Biología</item>
+        <item>Administración de Empresas</item>
+        <item>Ingeniería Química</item>
+        <item>Química</item>
+        <item>Ingeniería Civil</item>
+        <item>Ciencias de la Comunicación</item>
+        <item>Ciencias de la Computación</item>
+        <item>Criminología</item>
+        <item>Economía</item>
+        <item>Educación</item>
+        <item>Ingeniería Eléctrica</item>
+        <item>Inglés</item>
+        <item>Ciencias Ambientales</item>
+        <item>Finanzas</item>
+        <item>Bellas Artes</item>
+        <item>Geografía</item>
+        <item>Geología</item>
+        <item>Historia</item>
+        <item>Gestión Hotelera</item>
+        <item>Recursos Humanos</item>
+        <item>Ingeniería Industrial</item>
+        <item>Sistemas de Información</item>
+        <item>Diseño de Interiores</item>
+        <item>Relaciones Internacionales</item>
+        <item>Periodismo</item>
+        <item>Derecho</item>
+        <item>Lingüística</item>
+        <item>Marketing</item>
+        <item>Matemáticas</item>
+        <item>Medicina</item>
+        <item>Ingeniería Mecánica</item>
+        <item>Enfermería</item>
+        <item>Optometría</item>
+        <item>Farmacia</item>
+        <item>Filosofía</item>
+        <item>Física</item>
+        <item>Ciencias Políticas</item>
+        <item>Psicología</item>
+        <item>Relaciones Públicas</item>
+        <item>Radiología</item>
+        <item>Ciencias Sociales</item>
+        <item>Sociología</item>
+        <item>Ingeniería de Telecomunicaciones</item>
+        <item>Veterinaria</item>
+        <item>Zoología</item>
+    </string-array>
+
+
+    <!-- Tipo de personalidad -->
+    <string-array name="personality_type">
+        <item>Introvertido</item>
+        <item>Extrovertido</item>
+        <item>Ambivertido</item>
+    </string-array>
+
+    <!-- Mascotas -->
+    <string-array name="pets">
+        <item>No tengo mascotas</item>
+        <item>Perro</item>
+        <item>Gato</item>
+        <item>Roedor</item>
+        <item>Pez</item>
+        <item>Otro</item>
+    </string-array>
+
+
+    <!-- Beber -->
+    <string-array name="drinks">
+        <item>Nunca</item>
+        <item>Ocasionalmente</item>
+        <item>Frecuentemente</item>
+        <item>A diario</item>
+    </string-array>
+
+    <!-- ¿Fumas? -->
+    <string-array name="smokes">
+        <item>Nunca</item>
+        <item>Ocasionalmente</item>
+        <item>Frecuentemente</item>
+        <item>A diario</item>
+    </string-array>
+
+    <!-- ¿Haces deporte? -->
+    <string-array name="sports">
+        <item>Nunca</item>
+        <item>Ocasionalmente</item>
+        <item>Frecuentemente</item>
+        <item>A diario</item>
+    </string-array>
+
+    <string-array name="habits">
+        <item>Nunca</item>
+        <item>Ocasionalmente</item>
+        <item>Frecuentemente</item>
+        <item>A diario</item>
+    </string-array>
+
+    <!-- Valores y creencias -->
+    <string-array name="religion">
+        <item>Agnostico</item>
+        <item>Ateo</item>
+        <item>Budista</item>
+        <item>Católico</item>
+        <item>Cristiano</item>
+        <item>Islam</item>
+        <item>Hindú</item>
+        <item>Judío</item>
+        <item>Musulmán</item>
+        <item>Protestante</item>
+        <item>Otro</item>
+    </string-array>
+
+    <!-- Intereses -->
+    <string-array name="interests">
+        <item>Deportes</item>
+        <item>Música</item>
+        <item>Cine</item>
+        <item>Viajes</item>
+        <item>Lectura</item>
+        <item>Gastronomía</item>
+        <item>Tecnología</item>
+        <item>Arte</item>
+        <item>Fotografía</item>
+        <item>Moda</item>
+        <item>Juegos de mesa</item>
+        <item>Yoga</item>
+        <item>Senderismo</item>
+        <item>Voluntariado</item>
+        <item>Emprendimiento</item>
+    </string-array>
+
+    <string-array name="jobs">
+        <item>Estudiante</item>
+        <item>Ingeniero</item>
+        <item>Médico</item>
+        <item>Profesor</item>
+        <item>Diseñador</item>
+        <item>Artista</item>
+        <item>Fotógrafo</item>
+        <item>Músico</item>
+        <item>Escritor</item>
+        <item>Emprendedor</item>
+        <item>Científico</item>
+        <item>Abogado</item>
+        <item>Contador</item>
+        <item>Psicólogo</item>
+        <item>Terapeuta</item>
+        <item>Consultor</item>
+        <item>Gerente</item>
+        <item>Desarrollador</item>
+        <item>Analista</item>
+        <item>Mercadero</item>
+        <item>Comerciante</item>
+        <item>Otro</item>
+    </string-array>
+
+    <!-- Meses -->
+    <string-array name="months">
+        <item>Enero</item>
+        <item>Febrero</item>
+        <item>Marzo</item>
+        <item>Abril</item>
+        <item>Mayo</item>
+        <item>Junio</item>
+        <item>Julio</item>
+        <item>Agosto</item>
+        <item>Septiembre</item>
+        <item>Octubre</item>
+        <item>Noviembre</item>
+        <item>Diciembre</item>
+    </string-array>
+
+
+    <!--REPORT-->
+    <string name="report_title">Reportar Perfil</string>
+    <string name="send_title">Revisa y envía tu denuncia</string>
+    <string name="extra_details_label">Detalles adicionales</string>
+    <string name="report_profile">Reportar Perfil</string>
+    <string name="reason_step">Razón</string>
+    <string name="details_step">Detalles</string>
+    <string name="send_step">Enviar</string>
+
+    <string-array name="report_reasons">
+        <item>Spam</item>
+        <item>Contenido inapropiado</item>
+        <item>Acoso</item>
+        <item>Otro</item>
+    </string-array>
+
+    <string-array name="details_options_spam">
+        <item>Mensajes no deseados</item>
+        <item>Cuentas falsas</item>
+    </string-array>
+
+    <string-array name="details_options_inappropriate_content">
+        <item>Desnudez</item>
+        <item>Violencia</item>
+        <item>Discurso de odio</item>
+    </string-array>
+
+    <string-array name="details_options_harassment">
+        <item>Amenazas</item>
+        <item>Bullying</item>
+    </string-array>
+
+    <string-array name="details_options_other">
+        <item>Otro problema</item>
+    </string-array>
+
+    <!--NOTIFICATIONS-->
+    <string name="notifications_title">Notificaciones</string>
+    <string name="delete_all_notifications">Eliminar todas las notificaciones</string>
+    <string name="delete_notification_confirmation">¿Estás seguro de que deseas eliminar esta notificación?</string>
+    <string name="liked_you">le ha dado me gusta a tu perfil</string>
+    <string name="unliked_you">no le ha gustado tu perfil</string>
+    <string name="new_message">Nuevo mensaje</string>
+    <string name="you_have_a_new_message_from">Tienes un nuevo mensaje de</string>
+    <string name="thumbnail_available">Thumbnail disponible</string>"
+    <string name="unknown_notification">Notificación desconocida</string>
+    <string name="friend_request">Petición de Amistad</string>
+    <string name="friend_request_sended">te ha enviado una solicitud de amistad</string>
+
+
+    <!-- POLICIES -->
+    <string name="privacy_policy_title">Política de Privacidad</string>
+    <string name="information_collection_title">1. Recopilación de Información</string>
+    <string name="information_collection_content">Recopilamos información personal que nos proporcionas directamente, como nombre, dirección de correo electrónico y otra información relevante cuando creas una cuenta o usas nuestros servicios.</string>
+    <string name="use_of_information_title">2. Uso de la Información</string>
+    <string name="use_of_information_content">Utilizamos la información recopilada para proporcionar, mejorar y personalizar nuestros servicios, así como para comunicarte sobre actualizaciones y ofertas promocionales.</string>
+    <string name="sharing_of_information_title">3. Compartir Información</string>
+    <string name="sharing_of_information_content">Podemos compartir tu información con terceros solo cuando sea necesario para brindar nuestros servicios o según lo requiera la ley.</string>
+    <string name="data_security_title">4. Seguridad de los Datos</string>
+    <string name="data_security_content">Implementamos medidas de seguridad para proteger tus datos. Sin embargo, no podemos garantizar la seguridad completa de tu información.</string>
+    <string name="user_rights_title">5. Derechos del Usuario</string>
+    <string name="user_rights_content">Tienes el derecho de acceder, modificar o eliminar tu información personal contactándonos en support@example.com.</string>
+    <string name="changes_to_policy_title">6. Cambios en Esta Política</string>
+    <string name="changes_to_policy_content">Podemos actualizar nuestra política de privacidad de vez en cuando. Te notificaremos sobre cualquier cambio significativo.</string>
+
+    <string name="cookies_policy_title">Política de Cookies</string>
+    <string name="what_are_cookies_title">1. ¿Qué Son las Cookies?</string>
+    <string name="what_are_cookies_content">Las cookies son pequeños archivos que se almacenan en tu dispositivo cuando visitas un sitio web. Nos ayudan a recordar tus preferencias y mejorar tu experiencia en nuestro sitio.</string>
+    <string name="types_of_cookies_title">2. Tipos de Cookies que Usamos</string>
+    <string name="types_of_cookies_content">Usamos tanto cookies de sesión como persistentes. Las cookies de sesión se eliminan al cerrar el navegador, mientras que las cookies persistentes permanecen hasta que las elimines o expiren.</string>
+    <string name="why_we_use_cookies_title">3. Por Qué Usamos Cookies</string>
+    <string name="why_we_use_cookies_content">Las cookies nos ayudan a mejorar nuestros servicios al registrar tus preferencias, lo que nos permite ofrecer contenido personalizado y entender cómo interactúas con nuestro sitio web.</string>
+    <string name="managing_cookies_title">4. Gestión de Cookies</string>
+    <string name="managing_cookies_content">Puedes controlar o eliminar las cookies desde la configuración de tu navegador. Sin embargo, desactivar las cookies puede afectar tu experiencia en nuestro sitio.</string>
+    <string name="changes_to_cookies_policy_title">5. Cambios en Esta Política</string>
+    <string name="changes_to_cookies_policy_content">Podemos actualizar nuestra política de cookies periódicamente. Cualquier cambio se publicará en esta página.</string>
+
+    <!--ACCOUNT-->
+    <string name="log_out">Cerrar Sesión</string>
+    <string name="delete_account">Eliminar Cuenta</string>
+    <string name="log_out_confirmation">¿Estás seguro de que deseas cerrar sesión?</string>
+    <string name="delete_account_title">¿Estás seguro de que deseas eliminar la cuenta?</string>
+    <string name="delete_account_confirmation">DELETE</string>
+    <string name="delete_account_confirmation_text">Introduce DELETE para confirmar la eliminación de tu cuenta.</string>
+    <string name="change_password_title">Cambiar contraseña</string>
+    <string name="current_password">Contraseña actual</string>
+
+
+    <!--MISC-->
+    <string name="error_title">Error</string>
+    <string name="success_title">Éxito</string>
+    <string name="no_internet">No hay conexión a Internet disponible.</string>
+    <string name="try_again">Por favor, inténtalo de nuevo.</string>
+    <string name="loading">Cargando...</string>
+    <string name="clear_all">Borrar todo</string>
+    <string name="empty_list">No hay elementos para mostrar.</string>
+    <string name="welcome">¡Bienvenido a UniMatch!</string>
+    <string name="version">Versión 1.0</string>
+    <string name="app_description">Una aplicación de citas diseñada para que los estudiantes universitarios se conecten, chateen y encuentren a su pareja ideal.</string>
+    <string name="close">Cerrar</string>
+    <string name="next">Siguiente</string>
+    <string name="cancel">Cancelar</string>
+    <string name="back">Volver</string>
+    <string name="delete">Eliminar</string>
+    <string name="edit">Editar</string>
+    <string name="save">Guardar</string>
+    <string name="add">Añadir</string>
+    <string name="send">Enviar</string>
+    <string name="delete_confirmation">¿Estás seguro de que deseas eliminar?</string>
+    <string name="confirm">Confirmar</string>
+    <string name="loading_error">Ha habido un error a la hora de cargar los recursos.</string>
+    <string name="none">Ninguno</string>
+    <string name="submit">Enviar</string>
+    <string name="ok">Aceptar</string>
+    <string name="location_error">Ha habido un error al buscar su ubicación</string>
+    <string name="fetch_location">Obtener ubicación</string>
+
+    <!--CHAT-->
+    <string name="no_chats">No tienes chats disponibles</string>
+    <string name="start_chat">Empieza una conversación</string>
+    <string name="typing">Escribiendo…</string>
+    <string name="events">Eventos</string>
+
 </resources>

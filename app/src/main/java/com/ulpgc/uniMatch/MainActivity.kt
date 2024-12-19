@@ -1,61 +1,109 @@
 package com.ulpgc.uniMatch
 
+import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.ulpgc.uniMatch.data.application.ApiClient
-import com.ulpgc.uniMatch.data.application.ApiEndpoints
-import com.ulpgc.uniMatch.data.infrastructure.services.auth.MockAuthService
-import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthViewModel
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorState
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
 import com.ulpgc.uniMatch.ui.components.ErrorDialog
 import com.ulpgc.uniMatch.ui.screens.AuthScreen
 import com.ulpgc.uniMatch.ui.screens.CoreScreen
+import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 import com.ulpgc.uniMatch.ui.theme.UniMatchTheme
+import dev.shreyaspatil.permissionFlow.PermissionFlow
+
 
 class MainActivity : ComponentActivity() {
 
+    val permissionsViewModel = PermissionsViewModel()
+
+    val permissionFlow = PermissionFlow.getInstance()
+
+    private val requestLocationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            permissionFlow.notifyPermissionsChanged(Manifest.permission.ACCESS_FINE_LOCATION)
+            if (isGranted) {
+                permissionsViewModel.updateLocationPermissionStatus(true)
+            } else {
+                permissionsViewModel.updateLocationPermissionStatus(false)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val app = application as UniMatchApplication
 
-        // Manual DI: Crear instancias de las dependencias
-        val apiEndpoints = ApiClient.retrofit.create(ApiEndpoints::class.java)
-        val authService = MockAuthService() // ApiAuthService(apiEndpoints)
-        val errorViewModel = ErrorViewModel()
-        val authViewModel = AuthViewModel(authService, errorViewModel)
+        app.userViewModel.checkUserSession()
 
-        val chatService = MockChatService()
-        val chatViewModel = ChatViewModel(chatService, errorViewModel)
+        // Utiliza la API de SplashScreen
+        installSplashScreen().setKeepOnScreenCondition {
+            app.userViewModel.isCheckingSession.value
+        }
+
+        // Se lanza el observable del permiso de ubicación
+        lifecycleScope.launchWhenStarted {
+            permissionFlow.getPermissionState(Manifest.permission.ACCESS_FINE_LOCATION).collect { state ->
+                if (state.isGranted) {
+                    permissionsViewModel.updateLocationPermissionStatus(true)
+                } else {
+                    permissionsViewModel.updateLocationPermissionStatus(false)
+                }
+            }
+        }
+
 
         enableEdgeToEdge()
-
         setContent {
             UniMatchTheme {
-                // Observar el estado de autenticación usando collectAsState
-                val authState by authViewModel.authState.collectAsState()
-                val errorState by errorViewModel.errorState.collectAsState()
+                val authState by app.userViewModel.authState.collectAsState()
+                val errorState by app.errorViewModel.errorState.collectAsState()
 
-                // Decidir si mostrar AuthScreen o CoreScreen basado en el estado
                 when (authState) {
-                    is AuthState.Authenticated -> CoreScreen(authViewModel, chatViewModel)
-                    is AuthState.Unauthenticated -> AuthScreen(authViewModel)
+
+                    is AuthState.Authenticated -> {
+
+                        val userId = (authState as AuthState.Authenticated).user.id
+                        app.initializeWebSocket(userId, app.eventbus)
+
+                        if (!LocationHelper.checkLocationPermission(this)) {
+                            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                        }
+                        else {
+                            permissionsViewModel.updateLocationPermissionStatus(true)
+                        }
+
+                        CoreScreen(
+                            app.userViewModel,
+                            app.chatViewModel,
+                            app.profileViewModel,
+                            app.homeViewModel,
+                            app.notificationsViewModel,
+                            app.errorViewModel,
+                            permissionsViewModel
+                        )
+                    }
+
+                    is AuthState.Unauthenticated -> AuthScreen(
+                        app.userViewModel,
+                        app.errorViewModel,
+                        permissionsViewModel
+                    )
                 }
 
-                // Mostrar popup cuando hay un error en el estado de autenticación
                 if (errorState is ErrorState.Error) {
                     ErrorDialog(
                         errorMessage = (errorState as ErrorState.Error).message,
+
                         onDismiss = {
-                            errorViewModel.clearError()
-                            authViewModel.logout()
+                            app.errorViewModel.clearError()
                         }
                     )
                 }
@@ -63,21 +111,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//
-//        // Manual DI: Crear instancias de las dependencias
-//        val authService = ApiClient.retrofit.create(AuthService::class.java)
-//        val inMemoryAuthRepository = InMemoryAuthRepository(authService)
-//        val authViewModel = AuthViewModel(inMemoryAuthRepository)
-//        enableEdgeToEdge()
-//
-//        setContent {
-//            UniMatchTheme {
-//                // Pasar el authViewModel manualmente a la pantalla
-//                AuthScreen(authViewModel = authViewModel)
-//            }
-//        }
-//    }

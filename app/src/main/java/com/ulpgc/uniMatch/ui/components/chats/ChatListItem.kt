@@ -1,3 +1,5 @@
+package com.ulpgc.uniMatch.ui.components.chats
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,11 +22,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.enums.ChatStatus
 
 @Composable
 fun ChatListItem(
@@ -33,7 +37,8 @@ fun ChatListItem(
     lastMessage: String,
     lastMessageTime: String,
     unreadMessagesCount: Int,
-    onChatClick: () -> Unit
+    onChatClick: () -> Unit,
+    userStatus: ChatStatus? // Estado del usuario (Online, Offline, etc.)
 ) {
     val painter = rememberAsyncImagePainter(
         model = profileImageUrl ?: R.drawable.icon_user_filled,
@@ -49,15 +54,33 @@ fun ChatListItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Imagen de perfil
-        Image(
-            painter = painter,
-            contentDescription = "$userName profile picture",
-            modifier = Modifier
-                .size(56.dp)
-                .clip(CircleShape)
-                .background(Color.Gray, CircleShape),
-            contentScale = ContentScale.Crop
-        )
+        Box {
+            Image(
+                painter = painter,
+                contentDescription = "$userName profile picture",
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(Color.Gray, CircleShape),
+                contentScale = ContentScale.Crop
+            )
+
+            // Indicador de estado del usuario
+            userStatus?.let {
+                val color = when (it) {
+                    ChatStatus.ONLINE -> Color.Green
+                    ChatStatus.OFFLINE -> Color.Gray
+                    ChatStatus.TYPING -> Color.Green
+                }
+                Box(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .background(color, CircleShape)
+                        .align(Alignment.BottomEnd)
+                        .padding(2.dp)
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.width(12.dp))
 
@@ -73,11 +96,15 @@ fun ChatListItem(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = lastMessage,
+                text = if (userStatus == ChatStatus.TYPING) {
+                    stringResource(R.string.typing)
+                } else {
+                    lastMessage
+                },
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.SemiBold
                 ),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                color = if (userStatus == ChatStatus.TYPING) Color.Green else MaterialTheme.colorScheme.onTertiary,
                 maxLines = 1
             )
         }

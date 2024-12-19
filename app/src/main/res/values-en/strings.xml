@@ -1,22 +1,489 @@
 <resources>
+    <!--GENERAL-->
     <string name="app_name">UniMatch</string>
-    <string name="login">Login</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="chat">Chat</string>
+    <string name="profile">Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="notifications">Notifications</string>
+    <string name="user_filters">User Filters</string>
+    <string name="account">Account</string>
+    <string name="policies">Policies</string>
+
+    <!--LOGIN SCREEN-->
+    <string name="login">Log In</string>
     <string name="register">Register</string>
     <string name="enter_email">Enter your email</string>
     <string name="enter_password">Enter your password</string>
     <string name="confirm_password">Confirm your password</string>
     <string name="login_button">Log In</string>
-    <string name="register_button">Sign Up</string>
-    <string name="switch_to_register">Don\'t have an account? Sign up</string>
-    <string name="switch_to_login">Already have an account? Log in</string>
+    <string name="register_button">Register</string>
+    <string name="switch_to_register">Don\'t have an account? Register</string>
+    <string name="switch_to_login">Already have an account? Log In</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="find_your_ideal_partner_near_you">Find your ideal partner near you.</string>
+    <string name="enter_your_email_and_password_to_log_in">Enter your email and password to log in</string>
+    <string name="sign_in_to_unimatch">Sign In to UniMatch</string>
+    <string name="verify_code">Verify Code</string>
+    <string name="introduce_code">Introduce the code sent to your email</string>
+    <string name="introduce_digits">Introduce the 6 digits code</string>
+    <string name="resend_code">Resend Code</string>
+    <string name="code_sent">Code sent to your email</string>
+    <string name="invalid_code">Invalid code</string>
+    <string name="please_enter_valid_code">Please enter a valid code</string>
+    <string name="forgot_password_cheers">Don\'t worry! It happens. Please enter the address associated with your account.</string>
+    <string name="reset_password_failed">Reset password failed</string>
+    <string name="password_too_short">Password must be at least 6 characters</string>"
+    <string name="passwords_do_not_match">Passwords do not match</string>
+    <string name="there_was_an_error_changing_password">Here was an error changing your password</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="new_password">New Password</string>
+    <string name="dont_have_an_account">Don\'t have an account?</string>
+    <string name="password_required">Password is required</string>
+    <string name="login_failed">Login failed</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="registration_failed">Registration failed</string>
+    <string name="create_account">Create Account</string>
+    <string name="enter_your_details_to_register">Enter your details to register</string>
+    <string name="password_empty_error">Password cannot be empty</string>
+    <string name="fields_empty_error">All fields are required</string>
+    <string name="create_profile">Create Profile</string>
+    <string name="full_name">Full Name</string>
+    <string name="age">Age</string>
+    <string name="complete_profile">Complete Profile</string>
+    <string name="selected_image">Selected Image</string>
+    <string name="full_name_and_age_required">Full name and age are required</string>
+    <string name="selected_date">Selected Date</string>
+    <string name="select_date">Select Date</string>
+    <string name="email_empty_error">Email cannot be empty</string>
+    <string name="age_error">Age must be between 18 and 100</string>
+
+    <!--PROFILE-->
+    <string name="horoscope">Horoscope</string>
+    <string name="education">Education</string>
+    <string name="personality_type">Personality Type</string>
+    <string name="pets">Pets</string>
+    <string name="drinks">Drinks</string>
+    <string name="smokes">Do you smoke?</string>
+    <string name="sports">Do you exercise?</string>
+    <string name="religion">Values and Beliefs</string>
+    <string name="interests">Interests</string>
+    <string name="what_type_of_relationship">What type of relationship are you looking for?</string>
+    <string name="job">Job</string>
+    <string name="sexual_orientation">Sexual Orientation</string>
+    <string name="weight">Weight in Kg</string>
+    <string name="height">Height in cm</string>
+    <string name="gender">Gender</string>
+    <string name="questions">Questions</string>
+    <string name="select_image">Select Image</string>
+    <string name="birthday">Birthday</string>
+    <string name="cookies_policy">Cookies Policy</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="session_data">Session data</string>
+    <string name="change_password">Change password</string>
+    <string name="unsaved_changes">Unsaved Changes</string>
+    <string name="save_changes_confirmation">Do you want to save the changes?</string>
+
+
+    <!--PROFILE WALL -->
+    <string name="upload_image">Upload Image</string>
+    <string name="where_do_you_wanna_get_image">Where do you want to upload the file from?</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+
+
+    <!--PREFERENCES SCREEN-->
+    <string name="edit_preferences">Edit Preferences</string>
+    <string name="preferences_title">Preferences</string>
+    <string name="no_preferences_info">No preferences information available.</string>
+    <string name="max_distance">Maximum Distance: %d km</string>
+    <string name="gender_priority_title">Gender Priority</string>
+    <string name="age_range_title">Age Range: %d - %d</string>
+    <string name="relationship_type_title">Relationship Type</string>
+    <string name="preferences_explanation">UniMatch uses these preferences to suggest matches. Some suggestions may not be within your parameters.</string>
+    <string name="location_permission_required">To change the maximum distance, you must grant location permissions.</string>
+
+
+    <!--DROPDOWN MENU-->
+    <string name="dropdown_empty_option">None</string>
+    <string name="select">Select</string>
+
+    <!--BLOCK DIALOG-->
+    <string name="block_user_title">Block User</string>
+    <string name="block_user_message">Are you sure you want to block this user?</string>
+    <string name="block_user_confirm">Block</string>
+    <string name="block_user_cancel">Cancel</string>
+
+    <!--HOME SCREEN-->
+    <string name="loading_profiles">Loading profiles...</string>
+    <string name="like">Like</string>
+    <string name="no_founded_profiles">No profiles found</string>
+
+    <!--PROFILE INFO SCREEN-->
+    <string name="about_me">About Me</string>
+    <string name="about_me_label">About Me</string>
+    <string name="searching">Searching</string>
+    <string name="looking_for">I am looking for...</string>
+    <string name="relationship">Relationship</string>
+    <string name="more_about_me">More About Me</string>
+    <string name="lifestyle">Lifestyle</string>
+    <string name="report">Report</string>
+    <string name="block">Block</string>
+
+    <!--Funny questions-->
+    <string-array name="facts">
+        <item>The Earth is not a perfect sphere</item>
+        <item>Light travels faster than sound</item>
+        <item>Octopuses have three hearts</item>
+        <item>Water can boil and freeze at the same time</item>
+        <item>Sharks have been around longer than trees</item>
+        <item>A day on Venus is longer than a year on Venus</item>
+    </string-array>
+
+
+    <!--Gender-->
+    <string-array name="genders">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
+
+    <!--Age-->
+    <string-array name="sexual_orientation">
+        <item>Heterosexual</item>
+        <item>Homosexual</item>
+        <item>Bisexual</item>
+        <item>Other</item>
+    </string-array>
+
+    <!--Relationship type-->
+    <string-array name="relationship_type">
+        <item>Friends</item>
+        <item>Casual</item>
+        <item>Relationship</item>
+        <item>Open</item>
+        <item>Other</item>
+    </string-array>
+
+    <!--Horoscope-->
+    <string-array name="horoscope">
+        <item>Aries</item>
+        <item>Taurus</item>
+        <item>Gemini</item>
+        <item>Cancer</item>
+        <item>Leo</item>
+        <item>Virgo</item>
+        <item>Libra</item>
+        <item>Scorpio</item>
+        <item>Sagittarius</item>
+        <item>Capricorn</item>
+        <item>Aquarius</item>
+        <item>Pisces</item>
+    </string-array>
+
+    <string-array name="education">
+        <item>Accounting</item>
+        <item>Agriculture</item>
+        <item>Animal Science</item>
+        <item>Architecture</item>
+        <item>Art</item>
+        <item>Biochemistry</item>
+        <item>Biology</item>
+        <item>Business Administration</item>
+        <item>Chemical Engineering</item>
+        <item>Chemistry</item>
+        <item>Civil Engineering</item>
+        <item>Communication Studies</item>
+        <item>Computer Science</item>
+        <item>Criminology</item>
+        <item>Economics</item>
+        <item>Education</item>
+        <item>Electrical Engineering</item>
+        <item>English</item>
+        <item>Environmental Science</item>
+        <item>Finance</item>
+        <item>Fine Arts</item>
+        <item>Geography</item>
+        <item>Geology</item>
+        <item>History</item>
+        <item>Hospitality Management</item>
+        <item>Human Resources</item>
+        <item>Industrial Engineering</item>
+        <item>Information Systems</item>
+        <item>Interior Design</item>
+        <item>International Relations</item>
+        <item>Journalism</item>
+        <item>Law</item>
+        <item>Linguistics</item>
+        <item>Marketing</item>
+        <item>Mathematics</item>
+        <item>Medicine</item>
+        <item>Mechanical Engineering</item>
+        <item>Nursing</item>
+        <item>Optometry</item>
+        <item>Pharmacy</item>
+        <item>Philosophy</item>
+        <item>Physics</item>
+        <item>Political Science</item>
+        <item>Psychology</item>
+        <item>Public Relations</item>
+        <item>Radiology</item>
+        <item>Social Sciences</item>
+        <item>Sociology</item>
+        <item>Telecommunications Engineering</item>
+        <item>Veterinary</item>
+        <item>Zoology</item>
+    </string-array>
+
+
+    <!--Personality type-->
+    <string-array name="personality_type">
+        <item>Introverted</item>
+        <item>Extroverted</item>
+        <item>Ambiverted</item>
+    </string-array>
+
+    <!--Pets-->
+    <string-array name="pets">
+        <item>I have no pets</item>
+        <item>Dog</item>
+        <item>Cat</item>
+        <item>Rodent</item>
+        <item>Fish</item>
+        <item>Other</item>
+    </string-array>
+
+    <!--Drinks-->
+    <string-array name="drinks">
+        <item>Never</item>
+        <item>Occasionally</item>
+        <item>Frequently</item>
+        <item>Daily</item>
+    </string-array>
+
+    <!--Do you smoke?-->
+    <string-array name="smokes">
+        <item>Never</item>
+        <item>Occasionally</item>
+        <item>Frequently</item>
+        <item>Daily</item>
+    </string-array>
+
+    <!--Do you exercise?-->
+    <string-array name="sports">
+        <item>Never</item>
+        <item>Occasionally</item>
+        <item>Frequently</item>
+        <item>Daily</item>
+    </string-array>
+
+    <string-array name="habits">
+        <item>Never</item>
+        <item>Occasionally</item>
+        <item>Frequently</item>
+        <item>Daily</item>
+    </string-array>
+
+
+    <!--Values and beliefs-->
+    <string-array name="religion">
+        <item>Agnostic</item>
+        <item>Atheist</item>
+        <item>Buddhist</item>
+        <item>Catholic</item>
+        <item>Christian</item>
+        <item>Islam</item>
+        <item>Hindu</item>
+        <item>Jewish</item>
+        <item>Muslim</item>
+        <item>Protestant</item>
+        <item>Other</item>
+    </string-array>
+
+    <!--Interests-->
+    <string-array name="interests">
+        <item>Sports</item>
+        <item>Music</item>
+        <item>Movies</item>
+        <item>Traveling</item>
+        <item>Reading</item>
+        <item>Cuisine</item>
+        <item>Technology</item>
+        <item>Art</item>
+        <item>Photography</item>
+        <item>Fashion</item>
+        <item>Board games</item>
+        <item>Yoga</item>
+        <item>Hiking</item>
+        <item>Volunteering</item>
+        <item>Entrepreneurship</item>
+    </string-array>
+
+    <string-array name="jobs">
+        <item>Student</item>
+        <item>Engineer</item>
+        <item>Doctor</item>
+        <item>Teacher</item>
+        <item>Designer</item>
+        <item>Artist</item>
+        <item>Photographer</item>
+        <item>Musician</item>
+        <item>Writer</item>
+        <item>Entrepreneur</item>
+        <item>Scientist</item>
+        <item>Lawyer</item>
+        <item>Accountant</item>
+        <item>Psychologist</item>
+        <item>Therapist</item>
+        <item>Consultant</item>
+        <item>Manager</item>
+        <item>Developer</item>
+        <item>Analyst</item>
+        <item>Marketer</item>
+        <item>Trader</item>
+        <item>Other</item>
+    </string-array>
+
+    <!--Months-->
+    <string-array name="months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+
+    <!--REPORT-->
+    <string name="report_title">Report User</string>
+    <string name="send_title">Review and submit your report</string>
+    <string name="extra_details_label">Additional details</string>
+    <string name="report_profile">Report Profile</string>
+    <string name="reason_step">Reason</string>
+    <string name="details_step">Details</string>
+    <string name="send_step">Send</string>
+
+    <string-array name="report_reasons">
+        <item>Spam</item>
+        <item>Inappropriate content</item>
+        <item>Harassment</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="details_options_spam">
+        <item>Unwanted messages</item>
+        <item>Fake accounts</item>
+    </string-array>
+
+    <string-array name="details_options_inappropriate_content">
+        <item> Nudity </item>
+        <item>Violence</item>
+        <item>Hate speech</item>
+    </string-array>
+
+    <string-array name="details_options_harassment">
+        <item>Threats</item>
+        <item>Persistent messages</item>
+    </string-array>
+
+    <string-array name="details_options_other">
+        <item>Other problem</item>
+    </string-array>
+
+    <!--NOTIFICATIONS-->
+    <string name="notifications_title">Notifications</string>
+    <string name="delete_all_notifications">Delete All Notifications</string>
+    <string name="delete_notification_confirmation">Are you sure you want to delete this notification?</string>
+    <string name="liked_you">liked you</string>
+    <string name="unliked_you">unliked you</string>
+    <string name="new_message">New Message</string>
+    <string name="you_have_a_new_message_from">You have a new message from</string>
+    <string name="thumbnail_available">Thumbnail available</string>
+    <string name="unknown_notification">Unknown notification</string>
+    <string name="friend_request">Friend Request</string>
+    <string name="friend_request_sended">sent you a friend request</string>
+
+
+    <!-- POLICIES -->
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="information_collection_title">1. Information Collection</string>
+    <string name="information_collection_content">We collect personal information that you provide to us directly, such as name, email address, and other relevant information when you create an account or use our services.</string>
+    <string name="use_of_information_title">2. Use of Information</string>
+    <string name="use_of_information_content">We use the information collected to provide, improve, and personalize our services, as well as to communicate with you about updates and promotional offers.</string>
+    <string name="sharing_of_information_title">3. Sharing of Information</string>
+    <string name="sharing_of_information_content">We may share your information with third parties only as necessary to provide our services or as required by law.</string>
+    <string name="data_security_title">4. Data Security</string>
+    <string name="data_security_content">We implement security measures to protect your data. However, we cannot guarantee complete security of your information.</string>
+    <string name="user_rights_title">5. User Rights</string>
+    <string name="user_rights_content">You have the right to access, modify, or delete your personal information by contacting us at support@example.com.</string>
+    <string name="changes_to_policy_title">6. Changes to This Policy</string>
+    <string name="changes_to_policy_content">We may update our privacy policy from time to time. We will notify you of any significant changes.</string>
+
+    <string name="cookies_policy_title">Cookies Policy</string>
+    <string name="what_are_cookies_title">1. What Are Cookies?</string>
+    <string name="what_are_cookies_content">Cookies are small files that are stored on your device when you visit a website. They help us remember your preferences and enhance your experience on our site.</string>
+    <string name="types_of_cookies_title">2. Types of Cookies We Use</string>
+    <string name="types_of_cookies_content">We use both session and persistent cookies. Session cookies are deleted when you close the browser, while persistent cookies remain until you delete them or they expire.</string>
+    <string name="why_we_use_cookies_title">3. Why We Use Cookies</string>
+    <string name="why_we_use_cookies_content">Cookies help us improve our services by tracking your preferences, allowing us to provide personalized content, and understanding how you interact with our website.</string>
+    <string name="managing_cookies_title">4. Managing Cookies</string>
+    <string name="managing_cookies_content">You can control or delete cookies through your browser settings. However, disabling cookies may affect your experience on our site.</string>
+    <string name="changes_to_cookies_policy_title">5. Changes to This Policy</string>
+    <string name="changes_to_cookies_policy_content">We may update our cookies policy periodically. Any changes will be posted on this page.</string>
+
+    <!--ACCOUNT-->
+    <string name="log_out">Log Out</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="log_out_confirmation">Are you sure you want to log out?</string>
+    <string name="delete_account_title">Are you sure you want to delete the account</string>
+    <string name="delete_account_confirmation">DELETE</string>
+    <string name="delete_account_confirmation_text">Introduce DELETE to confirm the deletion of your account.</string>
+    <string name="change_password_title">Change password</string>
+    <string name="current_password">Current password</string>
+
+
+
+    <!--MISC-->
+    <string name="error_title">Error</string>
+    <string name="success_title">Success</string>
+    <string name="no_internet">No internet connection available.</string>
+    <string name="try_again">Please try again.</string>
+    <string name="loading">Loading...</string>
+    <string name="clear_all">Clear All</string>
+    <string name="empty_list">No items to display.</string>
+    <string name="welcome">Welcome to UniMatch!</string>
+    <string name="version">Version 1.0</string>
+    <string name="app_description">A dating app designed for university students to connect, chat, and find their ideal partner.</string>
+    <string name="close">Close</string>
+    <string name="next">Next</string>
     <string name="cancel">Cancel</string>
-    <string name="remember_me">Remember me</string>
-    <string name="forgot_password">Forgot Password?\t\t\t\t</string>
-    <string name="find_your_ideal_partner_near_you">Encuentra a la persona ideal cerca de ti.</string>
-    <string name="enter_your_email_and_password_to_log_in">Enter your email and password to log in\t\t\t\t</string>
-    <string name="sign_in_to_unimatch">Sign in to UniMatch</string>
-    <string name="home">Home</string>
-    <string name="search">Search</string>
-    <string name="chat">Chat</string>
-    <string name="profile">Profile</string>
+    <string name="back">Back</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+    <string name="add">Add</string>
+    <string name="send">Send</string>
+    <string name="delete_confirmation">Are you sure you want to delete?</string>
+    <string name="confirm">Confirm</string>
+    <string name="loading_error">An error occurred while loading the data.</string>
+    <string name="none">None</string>
+    <string name="submit">Submit</string>
+    <string name="ok">OK</string>
+    <string name="location_error">An error occurred while retrieving your location.</string>
+    <string name="fetch_location">Fetch Location</string>
+
+    <!--CHAT-->
+    <string name="no_chats">No chats available.</string>
+    <string name="start_chat">Enter a message to start the chat.</string>
+    <string name="typing">Typing…</string>
+    <string name="events">Events</string>
+
 </resources>

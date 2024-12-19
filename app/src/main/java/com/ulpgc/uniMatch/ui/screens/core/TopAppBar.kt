@@ -1,61 +1,80 @@
 package com.ulpgc.uniMatch.ui.screens.core
 
+
 import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.ulpgc.uniMatch.R
+import androidx.navigation.NavHostController
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.ui.screens.CoreRoutes
+import com.ulpgc.uniMatch.ui.screens.core.topBars.AccountTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatDetailTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatSectionTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.HomeTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.NotificationTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.PoliciesTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.PreferencesTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.ProfileSettingsTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.ProfileTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.SearchTopBar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(currentRoute: String?) {
+fun TopBar(
+    currentRoute: String?,
+    navController: NavHostController,
+    chatViewModel: ChatViewModel
+) {
     Log.i("TopBar", "Current route: $currentRoute")
-    val title = when (currentRoute) {
-        CoreRoutes.HOME -> stringResource(id = R.string.home)
-        CoreRoutes.SEARCH -> stringResource(id = R.string.search)
-        CoreRoutes.CHAT_DETAIL -> stringResource(id = R.string.chat)
-        CoreRoutes.PROFILE -> stringResource(id = R.string.profile)
-        else -> stringResource(id = R.string.app_name) // Default title
-    }
 
-    TopAppBar(
-        title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth() // Asegura que el contenido ocupe todo el ancho
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.unimatch_logo),
-                    contentDescription = stringResource(id = R.string.app_name),
-                    modifier = Modifier
-                        .size(48.dp)
-                        .padding(0.dp),
-                    contentScale = ContentScale.Fit
-                )
-                Text(
-                    text = title,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(start = 8.dp) // Ajusta el padding si es necesario
-                )
-            }
-        },
-        modifier = Modifier.fillMaxWidth() // Hace que la TopAppBar ocupe todo el ancho
-    )
+
+    when (currentRoute) {
+        CoreRoutes.HOME -> HomeTopBar(navController)
+        CoreRoutes.SEARCH -> SearchTopBar()
+        CoreRoutes.CHAT_LIST -> ChatSectionTopBar(
+            chatViewModel = chatViewModel
+        )
+
+        CoreRoutes.PROFILE -> ProfileTopBar(
+            navController
+        )
+
+        CoreRoutes.PREFERENCES -> PreferencesTopBar(
+            navController
+        )
+
+        CoreRoutes.NOTIFICATIONS -> NotificationTopBar(
+            navController
+        )
+
+        CoreRoutes.CHAT_DETAIL -> ChatDetailTopBar(
+            navController,
+            chatViewModel
+        )
+
+        CoreRoutes.COOKIESPOLICIES -> PoliciesTopBar(
+            navController
+        )
+
+        CoreRoutes.PRIVACYPOLICIES -> PoliciesTopBar(
+            navController
+        )
+
+        CoreRoutes.PROFILE_INTERESTS -> ProfileSettingsTopBar(
+            navController
+        )
+
+        CoreRoutes.PROFILE_WALL -> ProfileSettingsTopBar(
+            navController
+        )
+
+        CoreRoutes.ACCOUNT -> AccountTopBar(
+            navController
+        )
+
+        else -> {
+            Modifier.padding(0.dp)
+        }
+    }
 }

@@ -2,6 +2,7 @@ package com.ulpgc.uniMatch.ui.components.chats
 
 // Función auxiliar para formatear el timestamp
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,8 +31,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.ulpgc.uniMatch.data.infrastructure.entities.Message
-import com.ulpgc.uniMatch.data.infrastructure.entities.db.MessageStatus
+import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
+import com.ulpgc.uniMatch.data.domain.models.Message
+
+import com.ulpgc.uniMatch.ui.theme.Bone
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -40,11 +43,14 @@ import java.util.Locale
 fun formatTimestamp(timestamp: Long): String {
     val date = Date(timestamp)
     val sdf = SimpleDateFormat("HH:mm", Locale.getDefault()) // Usa el locale del dispositivo
+    // Print the timestamp in the format "HH:mm"
+    Log.d("MessageBubble", "timestamp: $timestamp -> formatTimestamp: ${sdf.format(date)}")
     return sdf.format(date)
 }
 
 @Composable
 fun MessageBubble(message: Message, isCurrentUser: Boolean) {
+    Log.d("MessageBubble", "MessageBubble: $message")
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = if (isCurrentUser) Arrangement.End else Arrangement.Start,
@@ -54,7 +60,7 @@ fun MessageBubble(message: Message, isCurrentUser: Boolean) {
                 .wrapContentWidth() // El ancho de la burbuja se ajusta al contenido
                 .widthIn(max = LocalConfiguration.current.screenWidthDp.dp * 0.8f) // Limita el ancho de la burbuja al 80% del ancho de la pantalla
                 .background(
-                    color = if (isCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                    color = if (isCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary,
                     shape = MaterialTheme.shapes.medium
                 )
                 .padding(8.dp)
@@ -64,7 +70,7 @@ fun MessageBubble(message: Message, isCurrentUser: Boolean) {
             ) {
                 Text(
                     text = message.content,
-                    color = if (isCurrentUser) Color.White else MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onTertiary,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
 
@@ -73,14 +79,16 @@ fun MessageBubble(message: Message, isCurrentUser: Boolean) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = formatTimestamp(message.timestamp),
+                        text = formatTimestamp(message.createdAt),
                         style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.End,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onTertiary,
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     // Mostrar el ícono basado en el estado del mensaje
-                    MessageStatusIcon(status = message.status)
+                    if (isCurrentUser) {
+                        MessageStatusIcon(message.receptionStatus)
+                    }
                 }
             }
         }
@@ -88,36 +96,36 @@ fun MessageBubble(message: Message, isCurrentUser: Boolean) {
 }
 
 @Composable
-fun MessageStatusIcon(status: MessageStatus) {
+fun MessageStatusIcon(status: ReceptionStatus) {
     when (status) {
-        MessageStatus.SENDING -> {
+        ReceptionStatus.SENDING -> {
             Icon(
                 imageVector = Icons.Default.Schedule, // Icono de "Enviando"
                 contentDescription = "Sending",
-                tint = Color.Gray,
+                tint = Bone,
                 modifier = Modifier.size(16.dp)
             )
         }
 
-        MessageStatus.SENT -> {
+        ReceptionStatus.SENT -> {
             Icon(
                 imageVector = Icons.Default.Check, // Icono de "Enviado"
                 contentDescription = "Sent",
-                tint = Color.Gray,
+                tint = Bone,
                 modifier = Modifier.size(16.dp)
             )
         }
 
-        MessageStatus.RECEIVED -> {
+        ReceptionStatus.RECEIVED -> {
             Icon(
                 imageVector = Icons.Default.DoneAll, // Icono de "Recibido"
                 contentDescription = "Received",
-                tint = Color.Gray,
+                tint = Bone,
                 modifier = Modifier.size(16.dp)
             )
         }
 
-        MessageStatus.READ -> {
+        ReceptionStatus.READ -> {
             Icon(
                 imageVector = Icons.Default.DoneAll, // Icono de "Leído"
                 contentDescription = "Read",
@@ -126,7 +134,7 @@ fun MessageStatusIcon(status: MessageStatus) {
             )
         }
 
-        MessageStatus.FAILED -> {
+        ReceptionStatus.FAILED -> {
             Icon(
                 imageVector = Icons.Default.Close, // Icono de "Fallido"
                 contentDescription = "Failed",
