@@ -486,4 +486,15 @@
     <string name="typing">Typing…</string>
     <string name="events">Events</string>
 
+    <!--EVENTS-->
+    <string name="event_title">Title</string>
+    <string name="event_description">Description</string>
+    <string name="event_date">Date</string>
+    <string name="event_time">Hour</string>
+    <string name="event_location">Location</string>
+    <string name="event_participants">Participants</string>
+    <string name="event_participants_count">Participants: %d</string>
+    <string name="event_participants_empty">No Participants</string>
+    <string name="add_event">Add event</string>
+
 </resources>

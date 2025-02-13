@@ -31,7 +31,7 @@ fun TopBar(
 
     when (currentRoute) {
         CoreRoutes.HOME -> HomeTopBar(navController)
-        CoreRoutes.SEARCH -> SearchTopBar()
+        CoreRoutes.EVENTS -> SearchTopBar()
         CoreRoutes.CHAT_LIST -> ChatSectionTopBar(
             chatViewModel = chatViewModel
         )

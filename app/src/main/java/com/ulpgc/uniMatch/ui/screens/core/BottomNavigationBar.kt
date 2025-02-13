@@ -102,7 +102,7 @@ sealed class BottomNavItem(
     )
 
     data object Search : BottomNavItem(
-        CoreRoutes.SEARCH,
+        CoreRoutes.EVENTS,
         R.drawable.icon_search_clear,
         R.drawable.icon_search_filled,
         R.string.events

@@ -36,6 +36,8 @@ import com.ulpgc.uniMatch.ui.screens.core.TopBar
 import com.ulpgc.uniMatch.ui.screens.core.account.AccountSettingsScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatListScreen
+import com.ulpgc.uniMatch.ui.screens.core.events.EventDetailScreen
+import com.ulpgc.uniMatch.ui.screens.core.events.EventsScreen
 import com.ulpgc.uniMatch.ui.screens.core.home.HomeScreen
 import com.ulpgc.uniMatch.ui.screens.core.notifications.NotificationsScreen
 import com.ulpgc.uniMatch.ui.screens.core.policies.CookiesPolicyScreen
@@ -233,9 +235,12 @@ fun CoreNavHost(
             )
         }
 
+        composable(CoreRoutes.EVENTS) {
+             EventsScreen(eventViewModel = eventViewModel)
+        }
         composable(CoreRoutes.EVENT) { backStackEntry ->
             val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
-            EventDetailsScreen(
+            EventDetailScreen(
                 eventId = eventId,
                 eventViewModel = eventViewModel,
                 userViewModel = userViewModel

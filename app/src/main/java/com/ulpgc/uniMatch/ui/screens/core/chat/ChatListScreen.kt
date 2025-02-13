@@ -13,12 +13,16 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.ui.components.chats.ChatList
+import com.ulpgc.uniMatch.ui.components.chats.SearchBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatSectionTopBar
 import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @Composable
@@ -28,6 +32,8 @@ fun ChatListScreen(
 ) {
 
     val usersStatus = viewModel.usersStatus.collectAsState()
+    val searchText = remember { mutableStateOf("") }
+    val isSearchActive = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.loadChats()
@@ -62,6 +68,7 @@ fun ChatListScreen(
                 },
                 userStatusMap = usersStatus.value
             )
+
         }
     }
 }
