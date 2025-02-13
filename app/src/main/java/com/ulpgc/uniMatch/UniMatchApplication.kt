@@ -138,6 +138,10 @@ class UniMatchApplication : Application() {
     private val eventService by lazy { mockEventService }
 
     // ----------------------------------- ViewModels -----------------------------------
+    val eventViewModel: EventViewModel by lazy {
+        EventViewModel(eventService)
+    }
+
     val errorViewModel: ErrorViewModel by lazy { ErrorViewModel() }
 
     val userViewModel: UserViewModel by lazy {
@@ -166,7 +170,7 @@ class UniMatchApplication : Application() {
     }
 
     val eventsViewModel: EventViewModel by lazy {
-        EventViewModel()
+        EventViewModel(eventService)
     }
 
     val chatViewModel: ChatViewModel by lazy {

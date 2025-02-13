@@ -3,14 +3,19 @@ package com.ulpgc.uniMatch.data.infrastructure.services.event
 import com.ulpgc.uniMatch.data.application.services.EventService
 import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.domain.models.Survey
+import com.ulpgc.uniMatch.data.infrastructure.mocks.EventsMocks
 
 class MockEventService : EventService {
     override suspend fun getAll(): Result<List<Event>> {
-        TODO("Not yet implemented")
+        return Result.success(
+            EventsMocks.createMockEvents()
+        )
     }
 
     override suspend fun getOne(id: String): Result<Event> {
-        TODO("Not yet implemented")
+        return Result.success(
+            EventsMocks.createMockEvent()
+        )
     }
 
     override suspend fun create(event: Event): Result<Event> {
