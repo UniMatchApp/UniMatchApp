@@ -5,6 +5,8 @@ package com.ulpgc.uniMatch.ui.screens.core.chat
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.infrastructure.mocks.ChatPreviewDataMock.createChatPreviewDataMocks
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.ui.components.chats.ChatList
 import com.ulpgc.uniMatch.ui.components.chats.SearchBar
@@ -68,7 +71,15 @@ fun ChatListScreen(
                 },
                 userStatusMap = usersStatus.value
             )
-
+            Button(
+                onClick = {
+                    createChatPreviewDataMocks(2)
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+            ) {
+                Text(text = "Generate random chat")
+            }
         }
     }
 }
