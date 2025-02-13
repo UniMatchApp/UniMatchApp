@@ -30,7 +30,8 @@ import com.ulpgc.uniMatch.R
 fun SearchBar(
     searchText: String,
     onSearchTextChange: (String) -> Unit,
-    onArrowBackCallback: () -> Unit
+    onArrowBackCallback: () -> Unit,
+    backgroundColor: Color = MaterialTheme.colorScheme.onSurface
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -38,7 +39,7 @@ fun SearchBar(
 //            .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 0.dp)
             .background(
-                color = MaterialTheme.colorScheme.onSurface,
+                color = backgroundColor,
                 shape = RoundedCornerShape(56.dp)
             ) // Fondo con bordes redondeados
             .padding(horizontal = 8.dp, vertical = 0.dp) // Padding interno de la barra

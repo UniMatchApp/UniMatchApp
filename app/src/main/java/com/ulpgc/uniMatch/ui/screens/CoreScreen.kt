@@ -51,7 +51,7 @@ import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 object CoreRoutes {
     const val HOME = "home"
     const val EVENTS = "events"
-    const val EVENT = "eventS/{eventId}"
+    const val EVENT = "events/{eventId}"
     const val CHAT_LIST = "chatList"
     const val CHAT_DETAIL = "chatDetail/{chatId}"
     const val PROFILE = "profile"

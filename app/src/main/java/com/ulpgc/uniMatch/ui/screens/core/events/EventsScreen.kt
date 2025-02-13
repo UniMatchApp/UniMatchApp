@@ -1,5 +1,7 @@
 package com.ulpgc.uniMatch.ui.screens.core.events
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -25,7 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
+import com.ulpgc.uniMatch.ui.components.ButtonComponent
 import com.ulpgc.uniMatch.ui.components.chats.SearchBar
+import com.ulpgc.uniMatch.ui.screens.CoreRoutes
 
 
 @Composable
@@ -37,19 +43,31 @@ fun EventsScreen(
     val searchText = remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        Row() {
-            SearchBar(searchText = searchText.value,
-                onSearchTextChange = {
-                    searchText.value = it
-                },
-                onArrowBackCallback = {
-                    isSearchActive.value = false
-                    searchText.value = ""
-            })
-            // Hazme un button que añada eventos
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(modifier = Modifier.weight(1f)) {
+                SearchBar(
+                    searchText = searchText.value,
+                    onSearchTextChange = {
+                        searchText.value = it
+                    },
+                    onArrowBackCallback = {
+                        isSearchActive.value = false
+                        searchText.value = ""
+                    },
+                    backgroundColor = MaterialTheme.colorScheme.tertiary
+                )
+            }
+
             Button(
                 onClick = { },
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),) {
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                modifier = Modifier.wrapContentWidth()
+            ) {
                 Text(text = stringResource(R.string.add_event), color = Color.White)
             }
         }
@@ -57,9 +75,6 @@ fun EventsScreen(
         EventsList()
     }
 }
-
-
-
 
 @Composable
 fun EventsList() {
@@ -89,3 +104,4 @@ fun EventCard() {
         }
     }
 }
+
