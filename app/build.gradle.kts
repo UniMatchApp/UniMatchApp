@@ -3,8 +3,8 @@ import com.android.build.api.dsl.Optimization
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.google.devtools.ksp") version "1.9.20-1.0.14"
-//    id("org.jetbrains.kotlin.android") version "1.9.20"
+    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 
     // Google services Gradle plugin
     id("com.google.gms.google-services")
@@ -85,6 +85,7 @@ android {
 dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.firebase.messaging.ktx)
     ksp(libs.androidx.room.compiler.v261)
 
     implementation(libs.androidx.core.ktx)

@@ -4,6 +4,7 @@ import android.content.Context
 import android.icu.text.DateFormat
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
+import com.google.firebase.messaging.FirebaseMessaging
 import com.ulpgc.uniMatch.data.domain.models.User
 import java.util.Date
 
@@ -18,6 +19,18 @@ class SecureStorage(context: Context) {
         EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     )
+
+    init {
+        FirebaseMessaging.getInstance().getToken()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val token = task.result
+                    saveFCMToken(token)
+                } else {
+                    saveFCMToken(null)
+                }
+            }
+    }
 
     fun saveUser(
         userId: String,
@@ -68,9 +81,20 @@ class SecureStorage(context: Context) {
         return sharedPreferences.getString("token", null)
     }
 
+    fun getFCMToken(): String? {
+        return sharedPreferences.getString("fcmtoken", null)
+    }
+
     fun saveToken(token: String) {
         with(sharedPreferences.edit()) {
             putString("token", token)
+            apply()
+        }
+    }
+
+    fun saveFCMToken(token: String?) {
+        with(sharedPreferences.edit()) {
+            putString("fcmtoken", token)
             apply()
         }
     }
