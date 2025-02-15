@@ -31,7 +31,7 @@ object EventsMocks {
             ownerId = "user567",
             participants = listOf("user123", "user234", "user345"),
             likes = listOf("user567", "user123"),
-            attachment = "https://lasterrazasoutlet.com/wp-content/uploads/2025/01/56o-Imagen-2-580x390.jpg",
+            attachment = "http://example.com/attachment.pdf",
             surveys = listOf(createMockSurvey())
         )
     }
