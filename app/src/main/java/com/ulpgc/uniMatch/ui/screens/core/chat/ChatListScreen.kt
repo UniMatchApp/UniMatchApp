@@ -24,9 +24,6 @@ import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.mocks.ChatPreviewDataMock.createChatPreviewDataMocks
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.ui.components.chats.ChatList
-import com.ulpgc.uniMatch.ui.components.chats.SearchBar
-import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatSectionTopBar
-import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @Composable
 fun ChatListScreen(

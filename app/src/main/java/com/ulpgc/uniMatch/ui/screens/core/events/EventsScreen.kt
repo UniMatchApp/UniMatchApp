@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.screens.core.events
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,7 +35,8 @@ import com.ulpgc.uniMatch.ui.components.chats.SearchBar
 
 @Composable
 fun EventsScreen(
-    eventViewModel: EventViewModel
+    eventViewModel: EventViewModel,
+    onEventClick: (String) -> Unit
 ) {
 
     val isSearchActive = remember { mutableStateOf(false) }
@@ -74,7 +76,12 @@ fun EventsScreen(
             }
         }
 
-        EventsList()
+        EventsList(
+            events = events,
+            onEventClick = { event ->
+                onEventClick(event.eventId)
+            }
+        )
     }
 }
 
@@ -82,20 +89,31 @@ fun EventsScreen(
 
 
 @Composable
-fun EventsList(events: List<Event>? = emptyList()) {
+fun EventsList(
+    events: List<Event>? = emptyList(),
+    onEventClick: (Event) -> Unit
+) {
     Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
         events?.forEach { event ->
-            EventCard(event = event)
+            EventCard(
+                event = event,
+                onEventClick = { onEventClick(event) }
+                )
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
 
 @Composable
-fun EventCard(event: Event) {
+fun EventCard(
+    event: Event,
+    onEventClick: () -> Unit
+) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onEventClick() },
+        shape = RoundedCornerShape(8.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
 //            Image(painter = painterResource(id = R.drawable.event_placeholder), contentDescription = "Event Image")

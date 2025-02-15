@@ -211,6 +211,15 @@ fun CoreNavHost(
             )
         }
 
+        composable(CoreRoutes.EVENTS) {
+            EventsScreen(
+                eventViewModel = eventViewModel,
+                onEventClick = { eventId ->
+                    navController.navigate(CoreRoutes.EVENT.replace("{eventId}", eventId))
+                }
+            )
+        }
+
         composable(CoreRoutes.PREFERENCES) {
             PreferencesScreen(
                 profileViewModel = profileViewModel,
@@ -235,9 +244,7 @@ fun CoreNavHost(
             )
         }
 
-        composable(CoreRoutes.EVENTS) {
-             EventsScreen(eventViewModel = eventViewModel)
-        }
+
         composable(CoreRoutes.EVENT) { backStackEntry ->
             val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
             EventDetailScreen(

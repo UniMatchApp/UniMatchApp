@@ -171,22 +171,22 @@ dependencies {
 
 }
 
-tasks.register("reverseDevicePorts") {
-    doLast {
-        exec {
-            commandLine("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "../reverse_device_ports.ps1")
-        }
-    }
-}
+//tasks.register("reverseDevicePorts") {
+//    doLast {
+//        exec {
+//            commandLine("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "../reverse_device_ports.ps1")
+//        }
+//    }
+//}
 
-tasks.whenTaskAdded {
-    if (name == "compileDebugKotlin") {
-        dependsOn("reverseDevicePorts")
-    }
-}
+//tasks.whenTaskAdded {
+//    if (name == "compileDebugKotlin") {
+//        dependsOn("reverseDevicePorts")
+//    }
+//}
 
 
-
+//
 //tasks.whenTaskAdded {
 //    if (name == "compileDebugKotlin") {
 //        dependsOn("generateDebugResources")
@@ -200,22 +200,22 @@ tasks.whenTaskAdded {
 //    }
 //}
 
-//gradle.taskGraph.whenReady {
-//    allTasks.forEach { task ->
-//        val adbCommand = "adb reverse tcp:3000 tcp:3000"
-//        val adbCommand2 = "adb reverse tcp:8080 tcp:8080"
-//        val adbCommand3 = "adb reverse tcp:8081 tcp:8081"
-//        task.doFirst {
-//            println("Running adb reverse...")
-//            exec {
-//                commandLine("cmd", "/c", adbCommand)
-//            }
-//            exec {
-//                commandLine("cmd", "/c", adbCommand2)
-//            }
-//            exec {
-//                commandLine("cmd", "/c", adbCommand3)
-//            }
-//        }
-//    }
-//}
+gradle.taskGraph.whenReady {
+    allTasks.forEach { task ->
+        val adbCommand = "adb reverse tcp:3000 tcp:3000"
+        val adbCommand2 = "adb reverse tcp:8080 tcp:8080"
+        val adbCommand3 = "adb reverse tcp:8081 tcp:8081"
+        task.doFirst {
+            println("Running adb reverse...")
+            exec {
+                commandLine("cmd", "/c", adbCommand)
+            }
+            exec {
+                commandLine("cmd", "/c", adbCommand2)
+            }
+            exec {
+                commandLine("cmd", "/c", adbCommand3)
+            }
+        }
+    }
+}
