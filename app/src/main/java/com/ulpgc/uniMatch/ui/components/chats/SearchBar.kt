@@ -36,15 +36,12 @@ fun SearchBar(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(horizontal = 8.dp, vertical = 0.dp)
             .background(
                 color = backgroundColor,
                 shape = RoundedCornerShape(56.dp)
             )
-//            .padding(horizontal = 8.dp, vertical = 0.dp) // Padding interno de la barra
+            .padding(horizontal = 8.dp, vertical = 0.dp) // Padding interno de la barra
     ) {
-        // Icono de flecha
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = stringResource(id = R.string.back),
