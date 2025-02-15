@@ -8,7 +8,6 @@ import com.ulpgc.uniMatch.data.domain.models.Profile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
 open class EventViewModel(
     private val eventService: EventService
 ) : ViewModel() {
@@ -20,12 +19,22 @@ open class EventViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
 
+    private val _eventData = MutableStateFlow<Event?>(null)
+    val eventData: StateFlow<Event?> get() = _eventData
+
     fun loadEvents() {
         performLoadingAction {
             _eventsData.value = eventService.getAll().getOrThrow()
         }
-
     }
+
+    fun loadEvent(eventId: String) {
+        performLoadingAction {
+            _eventData.value = eventService.getOne(eventId).getOrThrow()
+        }
+    }
+
+
 
     private fun performLoadingAction(action: suspend () -> Unit) {
         viewModelScope.launch {
@@ -39,3 +48,4 @@ open class EventViewModel(
     }
 
 }
+
