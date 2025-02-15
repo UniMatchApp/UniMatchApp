@@ -50,7 +50,8 @@ import java.util.Locale
 @Composable
 fun EventsScreen(
     eventViewModel: EventViewModel,
-    onEventClick: (String) -> Unit
+    onEventClick: (String) -> Unit,
+    onAddEventClick: () -> Unit
 ) {
 
     val isSearchActive = remember { mutableStateOf(false) }
@@ -88,7 +89,7 @@ fun EventsScreen(
             Spacer(modifier = Modifier.width(16.dp))
 
             Button(
-                onClick = { },
+                onClick = { onAddEventClick() },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),) {
                 Text(text = stringResource(R.string.add_event), color = Color.White)
             }

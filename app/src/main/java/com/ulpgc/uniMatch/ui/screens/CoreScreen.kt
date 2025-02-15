@@ -36,6 +36,7 @@ import com.ulpgc.uniMatch.ui.screens.core.TopBar
 import com.ulpgc.uniMatch.ui.screens.core.account.AccountSettingsScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatListScreen
+import com.ulpgc.uniMatch.ui.screens.core.events.AddEventScreen
 import com.ulpgc.uniMatch.ui.screens.core.events.EventDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.events.EventsScreen
 import com.ulpgc.uniMatch.ui.screens.core.home.HomeScreen
@@ -63,6 +64,7 @@ object CoreRoutes {
     const val PRIVACYPOLICIES = "privacy-policies"
     const val COOKIESPOLICIES = "cookies-policies"
     const val ACCOUNT = "account"
+    const val ADD_EVENT = "add-event"
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -89,7 +91,7 @@ fun CoreScreen(
     val currentRoute = navBackStackEntry?.destination?.route
 
     val isPaddingRequired = when (currentRoute) {
-        CoreRoutes.HOME, CoreRoutes.EVENTS, CoreRoutes.EVENT, CoreRoutes.CHAT_LIST, CoreRoutes.CHAT_DETAIL, CoreRoutes.PROFILE,
+        CoreRoutes.HOME, CoreRoutes.EVENTS, CoreRoutes.EVENT, CoreRoutes.ADD_EVENT, CoreRoutes.CHAT_LIST, CoreRoutes.CHAT_DETAIL, CoreRoutes.PROFILE,
         CoreRoutes.PREFERENCES, CoreRoutes.NOTIFICATIONS, CoreRoutes.PRIVACYPOLICIES,
         CoreRoutes.COOKIESPOLICIES, CoreRoutes.PROFILE_INTERESTS, CoreRoutes.PROFILE_WALL,
         CoreRoutes.ACCOUNT -> true
@@ -117,7 +119,6 @@ fun CoreScreen(
 
     LaunchedEffect(Unit) {
         profileViewModel.updateLocation(getLocation())
-
     }
 
 
@@ -218,7 +219,16 @@ fun CoreNavHost(
                 eventViewModel = eventViewModel,
                 onEventClick = { eventId ->
                     navController.navigate(CoreRoutes.EVENT.replace("{eventId}", eventId))
+                },
+                onAddEventClick = {
+                    navController.navigate(CoreRoutes.ADD_EVENT)
                 }
+            )
+        }
+
+        composable(CoreRoutes.ADD_EVENT) {
+            AddEventScreen(
+                eventViewModel = eventViewModel
             )
         }
 
