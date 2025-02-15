@@ -121,8 +121,6 @@ fun CoreScreen(
         profileViewModel.updateLocation(getLocation())
     }
 
-
-
     Scaffold(
         topBar = {
             TopBar(

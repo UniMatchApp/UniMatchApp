@@ -28,7 +28,7 @@ import com.ulpgc.uniMatch.ui.theme.MainColor
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         BottomNavItem.Home,
-        BottomNavItem.Event,
+        BottomNavItem.Events,
         BottomNavItem.Chat,
         BottomNavItem.Profile
     )
@@ -43,14 +43,22 @@ fun BottomNavigationBar(navController: NavController) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
 
-
-        if (items.any { it.route == currentRoute }) {
+        if (items.any { item ->
+                when (item) {
+                    is BottomNavItem.Events -> listOf(CoreRoutes.EVENTS, CoreRoutes.EVENT, CoreRoutes.ADD_EVENT).contains(currentRoute)
+                    else -> item.route == currentRoute
+                }
+            }) {
             NavigationBar(
                 containerColor = MainColor,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 items.forEach { item ->
-                    val isSelected = currentRoute == item.route
+                    val isSelected = when (item) {
+                        is BottomNavItem.Events -> listOf(CoreRoutes.EVENTS, CoreRoutes.EVENT, CoreRoutes.ADD_EVENT).contains(currentRoute)
+                        else -> currentRoute == item.route
+                    }
+
                     NavigationBarItem(
                         icon = {
                             Icon(
@@ -101,8 +109,8 @@ sealed class BottomNavItem(
         R.string.home
     )
 
-    data object Event : BottomNavItem(
-        CoreRoutes.EVENTS,
+    data object Events : BottomNavItem(
+        CoreRoutes.EVENTS,  // Primary route, others are handled by logic in BottomNavigationBar
         R.drawable.icon_search_clear,
         R.drawable.icon_search_filled,
         R.string.events

@@ -496,5 +496,6 @@
     <string name="event_participants_count">Participants: %d</string>
     <string name="event_participants_empty">No Participants</string>
     <string name="add_event">Add event</string>
+    <string name="event_details">Event Details</string>
 
 </resources>

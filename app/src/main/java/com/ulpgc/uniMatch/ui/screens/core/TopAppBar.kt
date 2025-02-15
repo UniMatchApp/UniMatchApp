@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.ui.screens.CoreRoutes
 import com.ulpgc.uniMatch.ui.screens.core.topBars.AccountTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.AddEventTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatDetailTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatSectionTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.EventTopBar
@@ -35,7 +36,9 @@ fun TopBar(
         CoreRoutes.HOME -> HomeTopBar(navController)
         CoreRoutes.EVENTS -> EventsTopBar()
 
-        CoreRoutes.EVENTS -> EventTopBar(navController)
+        CoreRoutes.EVENT -> EventTopBar(navController)
+
+        CoreRoutes.ADD_EVENT -> AddEventTopBar(navController)
 
         CoreRoutes.CHAT_LIST -> ChatSectionTopBar(
             chatViewModel = chatViewModel

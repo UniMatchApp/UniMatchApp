@@ -25,7 +25,7 @@ import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EventTopBar(navController: NavController) {
+fun AddEventTopBar(navController: NavController) {
     TopAppBar(
         title = {
             Row(
