@@ -12,13 +12,15 @@ import com.ulpgc.uniMatch.ui.screens.CoreRoutes
 import com.ulpgc.uniMatch.ui.screens.core.topBars.AccountTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatDetailTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatSectionTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.EventTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.EventsTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.HomeTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.NotificationTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.PoliciesTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.PreferencesTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ProfileSettingsTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ProfileTopBar
-import com.ulpgc.uniMatch.ui.screens.core.topBars.SearchTopBar
+
 
 @Composable
 fun TopBar(
@@ -31,7 +33,10 @@ fun TopBar(
 
     when (currentRoute) {
         CoreRoutes.HOME -> HomeTopBar(navController)
-        CoreRoutes.EVENTS -> SearchTopBar()
+        CoreRoutes.EVENTS -> EventsTopBar()
+
+        CoreRoutes.EVENTS -> EventTopBar(navController)
+
         CoreRoutes.CHAT_LIST -> ChatSectionTopBar(
             chatViewModel = chatViewModel
         )

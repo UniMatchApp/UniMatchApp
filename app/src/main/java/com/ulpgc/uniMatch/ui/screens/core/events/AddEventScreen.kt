@@ -9,5 +9,4 @@ fun AddEventScreen(
     eventViewModel: EventViewModel
 ) {
     Text(text = "Add Event Screen")
-
 }

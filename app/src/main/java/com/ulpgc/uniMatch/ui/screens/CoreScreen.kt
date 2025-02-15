@@ -186,8 +186,6 @@ fun CoreNavHost(
             )
         }
 
-
-
         composable(CoreRoutes.PROFILE) {
             ProfileScreen(
                 profileViewModel = profileViewModel,

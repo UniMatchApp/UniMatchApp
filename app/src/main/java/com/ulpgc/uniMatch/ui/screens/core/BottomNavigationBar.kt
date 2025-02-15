@@ -28,7 +28,7 @@ import com.ulpgc.uniMatch.ui.theme.MainColor
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         BottomNavItem.Home,
-        BottomNavItem.Search,
+        BottomNavItem.Event,
         BottomNavItem.Chat,
         BottomNavItem.Profile
     )
@@ -101,7 +101,7 @@ sealed class BottomNavItem(
         R.string.home
     )
 
-    data object Search : BottomNavItem(
+    data object Event : BottomNavItem(
         CoreRoutes.EVENTS,
         R.drawable.icon_search_clear,
         R.drawable.icon_search_filled,
