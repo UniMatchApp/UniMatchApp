@@ -47,13 +47,13 @@ import com.ulpgc.uniMatch.ui.screens.core.preferences.PreferencesScreen
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileInterests
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileScreen
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileWall
-import com.ulpgc.uniMatch.ui.screens.utils.DatesParser
 import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 
 object CoreRoutes {
     const val HOME = "home"
     const val EVENTS = "events"
     const val EVENT = "events/{eventId}"
+    const val ADD_EVENT = "events/add"
     const val CHAT_LIST = "chatList"
     const val CHAT_DETAIL = "chatDetail/{chatId}"
     const val PROFILE = "profile"
@@ -64,7 +64,6 @@ object CoreRoutes {
     const val PRIVACYPOLICIES = "privacy-policies"
     const val COOKIESPOLICIES = "cookies-policies"
     const val ACCOUNT = "account"
-    const val ADD_EVENT = "add-event"
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -102,7 +101,6 @@ fun CoreScreen(
 
     val localContext = LocalContext.current
     val locationHelper = LocationHelper(localContext)
-    val datesParser = DatesParser(localContext)
 
     suspend fun getLocation(): Profile.Location? {
         val location = locationHelper.getCurrentLocation()
@@ -119,6 +117,7 @@ fun CoreScreen(
 
     LaunchedEffect(Unit) {
         profileViewModel.updateLocation(getLocation())
+
     }
 
     Scaffold(
@@ -183,6 +182,8 @@ fun CoreNavHost(
                 errorViewModel = errorViewModel,
             )
         }
+
+
 
         composable(CoreRoutes.PROFILE) {
             ProfileScreen(

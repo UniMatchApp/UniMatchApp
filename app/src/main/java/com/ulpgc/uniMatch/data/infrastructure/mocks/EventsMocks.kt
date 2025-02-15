@@ -13,10 +13,6 @@ object EventsMocks {
         return listOf(
             createMockEvent(),
             createMockEvent(),
-            createMockEvent(),
-            createMockEvent(),
-            createMockEvent(),
-            createMockEvent(),
             createMockEvent()
         )
     }
@@ -27,15 +23,15 @@ object EventsMocks {
             title = "Tech Conference 2025",
             price = 150.0,
             location = Profile.Location(
-                27.997550,
-                -15.411320,
-                0.0
+                latitude = 37.7749,
+                longitude = -122.4194,
+                altitude = 0.0
             ),
             date = Date(2025 - 1900, 1, 25), // February 25, 2025 (adjust for Date constructor)
             ownerId = "user567",
             participants = listOf("user123", "user234", "user345"),
             likes = listOf("user567", "user123"),
-            attachment = "https://lasterrazasoutlet.com/wp-content/uploads/2025/01/56o-Imagen-2-580x390.jpg",
+            attachment = "http://example.com/attachment.pdf",
             surveys = listOf(createMockSurvey())
         )
     }

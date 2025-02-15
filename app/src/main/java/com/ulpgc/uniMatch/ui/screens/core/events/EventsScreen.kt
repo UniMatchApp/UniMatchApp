@@ -1,7 +1,4 @@
 package com.ulpgc.uniMatch.ui.screens.core.events
-
-import android.icu.text.SimpleDateFormat
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -13,8 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,22 +24,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
 import com.ulpgc.uniMatch.ui.components.chats.SearchBar
-import com.ulpgc.uniMatch.ui.screens.utils.DatesParser
-import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
-import java.util.Date
-import java.util.Locale
 
 
 @Composable
@@ -70,9 +57,7 @@ fun EventsScreen(
                 .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(modifier = Modifier
-                .weight(1f)
-            ) {
+            Box(modifier = Modifier.weight(1f)) {
                 SearchBar(
                     searchText = searchText.value,
                     onSearchTextChange = {
@@ -112,16 +97,17 @@ fun EventsList(
     events: List<Event>? = emptyList(),
     onEventClick: (Event) -> Unit
 ) {
-    LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-        items(events ?: emptyList()) { event ->
+    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        events?.forEach { event ->
             EventCard(
                 event = event,
                 onEventClick = { onEventClick(event) }
-            )
+                )
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
+
 @Composable
 fun EventCard(
     event: Event,
@@ -131,34 +117,14 @@ fun EventCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onEventClick() },
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            val painter = rememberAsyncImagePainter(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(event.attachment)
-                    .build()
-            )
-
-            Image(
-                painter = painter,
-                contentDescription = "Event image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(event.title, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                event.location.latitude?.let {
-                    event.location.longitude?.let { it1 ->
-                        LocationHelper.getAddressFromCoordinates(it, it1)
-                            ?.let { Text(it, fontSize = 14.sp, color = Color.Gray) }
-                    }
-                }
-                Text(DatesParser.formatDateToString(event.date), fontSize = 14.sp, color = Color.White)
-            }
+        Column(modifier = Modifier.padding(16.dp)) {
+//            Image(painter = painterResource(id = R.drawable.event_placeholder), contentDescription = "Event Image")
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(event.title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(event.location.toString(), fontSize = 14.sp, color = Color.Gray)
+            Text(event.date.toString(), fontSize = 14.sp)
         }
     }
 }
-
-
