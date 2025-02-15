@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "331041759221",
-    "project_id": "unimatch-6d9f9",
-    "storage_bucket": "unimatch-6d9f9.firebasestorage.app"
+    "project_number": "272536925458",
+    "project_id": "unimatch-62830",
+    "storage_bucket": "unimatch-62830.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:331041759221:android:c3236c160b39fd82b24abc",
+        "mobilesdk_app_id": "1:272536925458:android:e639aabebc94723e136fcb",
         "android_client_info": {
-          "package_name": "com.unimatch.unimatch"
+          "package_name": "com.ulpgc.uniMatch"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDr-HwRqUCDkycgFNbWURrTaOtmGlgrk8s"
+          "current_key": "AIzaSyDBq1VkSvrMhaQ09vz-vVLkvItZrwmBZaA"
         }
       ],
       "services": {
