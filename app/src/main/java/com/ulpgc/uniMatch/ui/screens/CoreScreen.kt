@@ -46,6 +46,7 @@ import com.ulpgc.uniMatch.ui.screens.core.preferences.PreferencesScreen
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileInterests
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileScreen
 import com.ulpgc.uniMatch.ui.screens.core.profile.ProfileWall
+import com.ulpgc.uniMatch.ui.screens.utils.DatesParser
 import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 
 object CoreRoutes {
@@ -99,6 +100,7 @@ fun CoreScreen(
 
     val localContext = LocalContext.current
     val locationHelper = LocationHelper(localContext)
+    val datesParser = DatesParser(localContext)
 
     suspend fun getLocation(): Profile.Location? {
         val location = locationHelper.getCurrentLocation()
