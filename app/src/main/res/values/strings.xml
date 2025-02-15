@@ -497,6 +497,7 @@
     <string name="event_participants_count">Participantes: %d</string>
     <string name="event_participants_empty">No hay participantes</string>
     <string name="add_event">Añadir evento</string>
+    <string name="event_details">Detalles del evento</string>
     <string name="event_surveys">Encuestas</string>
     <string name="event_members">Miembros</string>
 

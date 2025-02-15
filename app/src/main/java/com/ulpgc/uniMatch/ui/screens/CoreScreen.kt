@@ -36,6 +36,7 @@ import com.ulpgc.uniMatch.ui.screens.core.TopBar
 import com.ulpgc.uniMatch.ui.screens.core.account.AccountSettingsScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatListScreen
+import com.ulpgc.uniMatch.ui.screens.core.events.AddEventScreen
 import com.ulpgc.uniMatch.ui.screens.core.events.EventDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.events.EventsScreen
 import com.ulpgc.uniMatch.ui.screens.core.home.HomeScreen
@@ -52,6 +53,7 @@ object CoreRoutes {
     const val HOME = "home"
     const val EVENTS = "events"
     const val EVENT = "events/{eventId}"
+    const val ADD_EVENT = "events/add"
     const val CHAT_LIST = "chatList"
     const val CHAT_DETAIL = "chatDetail/{chatId}"
     const val PROFILE = "profile"
@@ -88,7 +90,7 @@ fun CoreScreen(
     val currentRoute = navBackStackEntry?.destination?.route
 
     val isPaddingRequired = when (currentRoute) {
-        CoreRoutes.HOME, CoreRoutes.EVENTS, CoreRoutes.EVENT, CoreRoutes.CHAT_LIST, CoreRoutes.CHAT_DETAIL, CoreRoutes.PROFILE,
+        CoreRoutes.HOME, CoreRoutes.EVENTS, CoreRoutes.EVENT, CoreRoutes.ADD_EVENT, CoreRoutes.CHAT_LIST, CoreRoutes.CHAT_DETAIL, CoreRoutes.PROFILE,
         CoreRoutes.PREFERENCES, CoreRoutes.NOTIFICATIONS, CoreRoutes.PRIVACYPOLICIES,
         CoreRoutes.COOKIESPOLICIES, CoreRoutes.PROFILE_INTERESTS, CoreRoutes.PROFILE_WALL,
         CoreRoutes.ACCOUNT -> true
@@ -117,8 +119,6 @@ fun CoreScreen(
         profileViewModel.updateLocation(getLocation())
 
     }
-
-
 
     Scaffold(
         topBar = {
@@ -216,7 +216,16 @@ fun CoreNavHost(
                 eventViewModel = eventViewModel,
                 onEventClick = { eventId ->
                     navController.navigate(CoreRoutes.EVENT.replace("{eventId}", eventId))
+                },
+                onAddEventClick = {
+                    navController.navigate(CoreRoutes.ADD_EVENT)
                 }
+            )
+        }
+
+        composable(CoreRoutes.ADD_EVENT) {
+            AddEventScreen(
+                eventViewModel = eventViewModel
             )
         }
 

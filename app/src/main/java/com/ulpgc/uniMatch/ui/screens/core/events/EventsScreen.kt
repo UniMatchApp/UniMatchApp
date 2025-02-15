@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -36,7 +37,8 @@ import com.ulpgc.uniMatch.ui.components.chats.SearchBar
 @Composable
 fun EventsScreen(
     eventViewModel: EventViewModel,
-    onEventClick: (String) -> Unit
+    onEventClick: (String) -> Unit,
+    onAddEventClick: () -> Unit
 ) {
 
     val isSearchActive = remember { mutableStateOf(false) }
@@ -69,8 +71,10 @@ fun EventsScreen(
                 )
             }
 
+            Spacer(modifier = Modifier.width(16.dp))
+
             Button(
-                onClick = { },
+                onClick = { onAddEventClick() },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),) {
                 Text(text = stringResource(R.string.add_event), color = Color.White)
             }
