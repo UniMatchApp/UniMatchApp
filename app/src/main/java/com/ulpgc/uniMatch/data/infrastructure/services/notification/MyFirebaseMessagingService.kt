@@ -2,11 +2,12 @@ package com.ulpgc.uniMatch.data.infrastructure.services.notification
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Bundle
+import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -16,34 +17,62 @@ import com.ulpgc.uniMatch.MainActivity
 import com.ulpgc.uniMatch.R
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         if (remoteMessage.data.isNotEmpty()) {
 
             val notificationTitle = remoteMessage.notification?.title
             val notificationBody = remoteMessage.notification?.body
+            val notificationData = remoteMessage.data
 
-            showNotification(notificationTitle, notificationBody, "")
+            // Crear el canal de notificación
+            val channelId = "default_channel"
+            val channelName = "Default Channel"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(channelId, channelName, importance).apply {
+                description = "This is the default notification channel"
+            }
+
+            // Registra el canal de notificación en el sistema
+            val notificationManager: NotificationManager =
+                getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                val intent = Intent(this, PermissionRequestActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                return
+            }
+
+            // Si ya tenemos el permiso, mostrar la notificación
+            showNotification(notificationTitle, notificationBody, notificationData)
         }
     }
 
+    //TODO: Implementar la lógica de la notificación dependiendo del tipo de notificación recibida para que vaya a la pantalla correspondiente
     @SuppressLint("ServiceCast")
-    private fun showNotification(title: String?, body: String?, route: String?) {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManagerCompat
+    private fun showNotification(title: String?, body: String?, notificationData: MutableMap<String, String>) {
+        val notificationManager = NotificationManagerCompat.from(this)
+        val notificationType = notificationData["type"]
+        val route = ""
 
         // Crear un Intent dependiendo de la ruta
         val intent = when (route) {
-            // Puedes agregar más rutas aquí según sea necesario
-            else -> Intent(this, MainActivity::class.java) // Ruta por defecto
+            else -> Intent(this, MainActivity::class.java)
         }
-
-        // Añadir datos adicionales al Intent si es necesario
-        val bundle = Bundle().apply {
-            putString("extra_data", "some_data") // Si necesitas pasar más datos
-        }
-        intent.putExtras(bundle)
 
         // Crear un PendingIntent que se ejecutará cuando el usuario toque la notificación
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
         // Crear la notificación
         val notification = NotificationCompat.Builder(this, "default_channel")
@@ -64,10 +93,4 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
         notificationManager.notify(0, notification)
     }
-
-    override fun onNewToken(token: String) {
-        // Este método se llama cuando se genera un nuevo token FCM
-        // Enviar el token al servidor para enviar notificaciones
-    }
 }
-

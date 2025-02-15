@@ -57,6 +57,10 @@
             </intent-filter>
         </service>
 
+        <activity android:name=".data.infrastructure.services.notification.PermissionRequestActivity">
+        </activity>
+
+
     </application>
 
 
