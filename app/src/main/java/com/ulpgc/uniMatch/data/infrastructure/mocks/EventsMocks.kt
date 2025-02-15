@@ -13,6 +13,10 @@ object EventsMocks {
         return listOf(
             createMockEvent(),
             createMockEvent(),
+            createMockEvent(),
+            createMockEvent(),
+            createMockEvent(),
+            createMockEvent(),
             createMockEvent()
         )
     }
@@ -23,9 +27,9 @@ object EventsMocks {
             title = "Tech Conference 2025",
             price = 150.0,
             location = Profile.Location(
-                latitude = 37.7749,
-                longitude = -122.4194,
-                altitude = 0.0
+                27.997550,
+                -15.411320,
+                0.0
             ),
             date = Date(2025 - 1900, 1, 25), // February 25, 2025 (adjust for Date constructor)
             ownerId = "user567",

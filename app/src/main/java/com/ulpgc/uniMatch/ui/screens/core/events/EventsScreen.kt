@@ -43,6 +43,7 @@ import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
 import com.ulpgc.uniMatch.ui.components.chats.SearchBar
+import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 
 
 @Composable
@@ -110,13 +111,12 @@ fun EventsList(
     onEventClick: (Event) -> Unit
 ) {
     LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-        // Usamos 'items' para iterar sobre la lista de eventos
         items(events ?: emptyList()) { event ->
             EventCard(
                 event = event,
                 onEventClick = { onEventClick(event) }
             )
-            Spacer(modifier = Modifier.height(8.dp)) // Espaciado entre las tarjetas
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -142,12 +142,17 @@ fun EventCard(
                 painter = painter,
                 contentDescription = "Event image",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()  // Ensures the image covers the entire card
+                modifier = Modifier.fillMaxSize()
             )
 
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(event.title, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                Text(event.location.toString(), fontSize = 14.sp, color = Color.Gray)
+                event.location.latitude?.let {
+                    event.location.longitude?.let { it1 ->
+                        LocationHelper.getAddressFromCoordinates(it, it1)
+                            ?.let { Text(it, fontSize = 14.sp, color = Color.Gray) }
+                    }
+                }
                 Text(event.date.toString(), fontSize = 14.sp, color = Color.White)
             }
         }
