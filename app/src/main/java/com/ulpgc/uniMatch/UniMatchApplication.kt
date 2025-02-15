@@ -123,18 +123,18 @@ class UniMatchApplication : Application() {
     }
 
     // ----------------------------------- Services -----------------------------------
-//    private val userService by lazy { apiUserService }
-//    private val profileService by lazy { apiProfileService }
-//    private val matchingService by lazy { apiMatchingService }
-//    private val notificationService by lazy { apiNotificationService }
-//    private val chatService by lazy { apiChatService }
-//    private val eventService by lazy { apiEventService }
+    private val userService by lazy { apiUserService }
+    private val profileService by lazy { apiProfileService }
+    private val matchingService by lazy { apiMatchingService }
+    private val notificationService by lazy { apiNotificationService }
+    private val chatService by lazy { apiChatService }
+    //private val eventService by lazy { apiEventService }
 
-    private val userService by lazy { mockUserService }
+/*    private val userService by lazy { mockUserService }
     private val profileService by lazy { mockProfileService }
     private val matchingService by lazy { mockMatchingService }
     private val notificationService by lazy { mockNotificationService }
-    private val chatService by lazy { mockChatService }
+    private val chatService by lazy { mockChatService }*/
     private val eventService by lazy { mockEventService }
 
     // ----------------------------------- ViewModels -----------------------------------
