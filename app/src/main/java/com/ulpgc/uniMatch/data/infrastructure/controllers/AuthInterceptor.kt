@@ -7,45 +7,14 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
 
-/*
-class AuthInterceptor(private val tokenProvider: TokenProvider) : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val token = tokenProvider.getToken() ?: ""
-
-        val newRequest = chain.request().newBuilder()
-            .addHeader("Authorization", "Bearer $token")
-            .build()
-
-        return chain.proceed(newRequest)
-    }
-}
-*/
-
 class AuthInterceptor(private val tokenProvider: TokenProvider) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = tokenProvider.getToken() ?: ""
         val fcmtoken = tokenProvider.getFCMToken() ?: ""
 
-        val originalRequest = chain.request()
-        val originalBody = originalRequest.body
-
-        val newRequestBody = if (originalBody != null) {
-            val mediaType = originalBody.contentType()
-            val originalJson = originalBody.toString()
-            val jsonObject = JSONObject(originalJson)
-
-            jsonObject.put("fcmtoken", fcmtoken)
-
-            val newJson = jsonObject.toString()
-
-            newJson.toRequestBody(mediaType)
-        } else {
-            null
-        }
-
-        val newRequest = originalRequest.newBuilder()
+        val newRequest = chain.request().newBuilder()
             .addHeader("Authorization", "Bearer $token")
-            .method(originalRequest.method, newRequestBody)
+            .addHeader("X-FCM-Token", fcmtoken)
             .build()
 
         return chain.proceed(newRequest)
