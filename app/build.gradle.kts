@@ -6,6 +6,9 @@ plugins {
     id("com.google.devtools.ksp") version "1.9.20-1.0.14"
 //    id("org.jetbrains.kotlin.android") version "1.9.20"
 
+    // Google services Gradle plugin
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -157,6 +160,13 @@ dependencies {
     implementation(libs.okhttp)
 
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    //Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
+
+
 
 }
 
