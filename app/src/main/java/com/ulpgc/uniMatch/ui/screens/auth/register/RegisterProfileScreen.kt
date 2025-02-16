@@ -152,14 +152,20 @@ fun RegisterProfileScreen(
 
 
     fun calculateAge(birthday: String): Int {
-        val patterns = listOf("d/M/yyyy", "dd/MM/yyyy")
+        val patterns = listOf("d/M/yyyy", "dd/MM/yyyy", "M/d/yyyy", "MM/dd/yyyy")
         val formatter = patterns
             .map { DateTimeFormatter.ofPattern(it) }
             .firstNotNullOfOrNull { runCatching { LocalDate.parse(birthday, it) }.getOrNull() }
+            ?: throw IllegalArgumentException("Invalid date format")
+
+        val normalizedDate = formatter.format(DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+
+        val normalizedLocalDate = LocalDate.parse(normalizedDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
 
         val currentDate = LocalDate.now()
-        return Period.between(formatter, currentDate).years
+        return Period.between(normalizedLocalDate, currentDate).years
     }
+
 
 
     LazyColumn(
