@@ -32,6 +32,8 @@ import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
 import com.ulpgc.uniMatch.ui.components.chats.SearchBar
+import com.ulpgc.uniMatch.ui.components.event.EventCard
+import com.ulpgc.uniMatch.ui.components.event.EventsList
 import com.ulpgc.uniMatch.ui.screens.utils.DateParser
 import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 
@@ -90,43 +92,3 @@ fun EventsScreen(
         )
     }
 }
-
-
-
-
-@Composable
-fun EventsList(
-    events: List<Event>? = emptyList(),
-    onEventClick: (Event) -> Unit
-) {
-    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-        events?.forEach { event ->
-            EventCard(
-                event = event,
-                onEventClick = { onEventClick(event) }
-                )
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-    }
-}
-
-@Composable
-fun EventCard(
-    event: Event,
-    onEventClick: () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onEventClick() },
-        shape = RoundedCornerShape(8.dp),
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(event.title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text(LocationHelper.getAddressFromCoordinates(event.location.latitude, event.location.longitude),fontSize = 14.sp, color = Color.Gray)
-            Text(DateParser.formatDateToString(event.date), fontSize = 14.sp)
-        }
-    }
-}
-

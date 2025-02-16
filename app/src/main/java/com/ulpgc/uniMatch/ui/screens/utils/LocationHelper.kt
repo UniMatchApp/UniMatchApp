@@ -1,19 +1,17 @@
 package com.ulpgc.uniMatch.ui.screens.utils
 
+import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.tasks.await
-import android.Manifest
-import android.location.Geocoder
-import android.util.Log
-import androidx.core.app.ActivityCompat
-import android.location.Address
 import java.util.Locale
 
 class LocationHelper(context: Context) {

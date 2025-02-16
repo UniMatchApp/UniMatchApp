@@ -1,7 +1,8 @@
 package com.ulpgc.uniMatch.ui.screens.core.events
 
-import android.widget.Space
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,39 +12,43 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
+import com.ulpgc.uniMatch.ui.components.event.EventSection
 import com.ulpgc.uniMatch.ui.screens.utils.DateParser
 import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.Icon
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventDetailScreen(
     eventId: String,
@@ -67,13 +72,21 @@ fun EventDetailScreen(
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp),
+                    .size(200.dp),
                 contentAlignment = Alignment.Center
             ) {
+                val painter = rememberAsyncImagePainter(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(event.attachment)
+                        .build()
+                )
+
                 Image(
-                    painter = painterResource(id = android.R.drawable.ic_menu_gallery),
-                    contentDescription = "Event Image"
+                    painter = painter,
+                    contentDescription = "User profile image",
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentScale = ContentScale.Crop
                 )
             }
 
@@ -92,17 +105,7 @@ fun EventDetailScreen(
             )
 
             fields.forEach { (label, value) ->
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(text = label, style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    OutlinedTextField(
-                        value = value,
-                        onValueChange = {},
-                        modifier = Modifier.fillMaxWidth(),
-                        textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
-                        readOnly = true
-                    )
-                }
+                EventSection(label = label, value = value)
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
@@ -110,7 +113,6 @@ fun EventDetailScreen(
             Row(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-
                 Button(
                     onClick = { onEventSurveyClick(eventId) },
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
