@@ -499,4 +499,7 @@
     <string name="event_details">Event Details</string>
     <string name="event_surveys">Surveys</string>
     <string name="event_members">Members</string>
+    <string name="event_add_survey">Add Survey</string>
+    <string name="event_complete">Complete</string>
+
 </resources>

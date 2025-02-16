@@ -500,5 +500,7 @@
     <string name="event_details">Detalles del evento</string>
     <string name="event_surveys">Encuestas</string>
     <string name="event_members">Miembros</string>
+    <string name="event_add_survey">Añadir encuesta</string>
+    <string name="event_complete">Completado</string>
 
 </resources>

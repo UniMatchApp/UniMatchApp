@@ -14,17 +14,19 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun EventSection(
     label: String,
-    value: String
+    value: String,
+    readOnly: Boolean = true,
+    onValueChange: ((String) -> Unit)? = null
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(text = label, style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = value,
-            onValueChange = {},
+            onValueChange = { if (!readOnly) onValueChange?.invoke(it) },
             modifier = Modifier.fillMaxWidth(),
             textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
-            readOnly = true
+            readOnly = readOnly
         )
     }
 }
