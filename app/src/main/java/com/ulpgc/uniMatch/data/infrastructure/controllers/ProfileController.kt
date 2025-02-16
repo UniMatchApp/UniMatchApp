@@ -6,6 +6,7 @@ import com.ulpgc.uniMatch.data.application.services.IntRequest
 import com.ulpgc.uniMatch.data.application.services.ListRequest
 import com.ulpgc.uniMatch.data.application.services.LocationRequest
 import com.ulpgc.uniMatch.data.application.services.StringRequest
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -116,7 +117,7 @@ interface ProfileController {
     suspend fun updateWall(@Body wall: ListRequest): ApiResponse<List<String>>
 
     @PUT("users/location")
-    suspend fun updateLocation(@Body location: LocationRequest): ApiResponse<Profile.Location>
+    suspend fun updateLocation(@Body location: LocationRequest): ApiResponse<Location>
 
     @Multipart
     @POST("users/photo")

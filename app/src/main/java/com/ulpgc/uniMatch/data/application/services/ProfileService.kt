@@ -7,6 +7,7 @@ import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 
 data class StringRequest(val newContent: String?)
@@ -55,7 +56,7 @@ interface ProfileService {
     suspend fun updateSmokes(smokes: Habits?): Result<Habits?>
     suspend fun updateDoesSports(doesSports: Habits?): Result<Habits?>
     suspend fun updateValuesAndBeliefs(valuesAndBeliefs: Religion?): Result<Religion?>
-    suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location?>
+    suspend fun updateLocation(location: Location?): Result<Location?>
 
     suspend fun addImage(imageURI: Uri): Result<String>
     suspend fun removeImage(imageURL: String): Result<Unit>

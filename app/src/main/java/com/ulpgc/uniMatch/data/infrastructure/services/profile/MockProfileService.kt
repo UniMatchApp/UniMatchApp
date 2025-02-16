@@ -8,6 +8,7 @@ import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.mocks.ProfileMock
 import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
@@ -110,8 +111,8 @@ class MockProfileService : ProfileService {
         return Result.success(valuesAndBeliefs)
     }
 
-    override suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location> {
-        return Result.success(Profile.Location(0.0, 0.0, 0.0))
+    override suspend fun updateLocation(location: Location?): Result<Location> {
+        return Result.success(Location(0.0, 0.0, 0.0))
     }
 
     override suspend fun addImage(imageURI: Uri): Result<String> {

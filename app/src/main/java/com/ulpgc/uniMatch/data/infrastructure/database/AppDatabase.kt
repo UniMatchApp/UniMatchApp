@@ -1,7 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.database
 
 import android.content.Context
-import android.provider.CalendarContract.EventsEntity
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -12,12 +11,13 @@ import com.ulpgc.uniMatch.data.infrastructure.database.dao.MessageDao
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.NotificationsDao
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
+import com.ulpgc.uniMatch.data.infrastructure.entities.EventEntity
 import com.ulpgc.uniMatch.data.infrastructure.entities.MatchingEntity
 import com.ulpgc.uniMatch.data.infrastructure.entities.MessageEntity
 import com.ulpgc.uniMatch.data.infrastructure.entities.NotificationEntity
 import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
 
-@Database(entities = [ProfileEntity::class, ChatEntity::class, MessageEntity::class, MatchingEntity::class, NotificationEntity::class, EventsEntity::class], version = 1, exportSchema = false)
+@Database(entities = [ProfileEntity::class, ChatEntity::class, MessageEntity::class, MatchingEntity::class, NotificationEntity::class, EventEntity::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun chatMessageDao(): ChatMessageDao

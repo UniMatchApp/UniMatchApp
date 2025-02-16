@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
@@ -53,7 +54,7 @@ fun PreferencesScreen(
     LaunchedEffect(hasLocationPermission) {
         val location = LocationHelper.getCurrentLocation(context)
         location?.let {
-            var loc = Profile.Location(
+            var loc = Location(
                 latitude = it.second,
                 longitude = it.first,
                 altitude = null

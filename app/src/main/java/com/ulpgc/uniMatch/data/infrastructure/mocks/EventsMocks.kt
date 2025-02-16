@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.data.infrastructure.mocks
 
 import com.ulpgc.uniMatch.data.domain.models.Event
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.domain.models.Survey
 import com.ulpgc.uniMatch.data.domain.models.User
@@ -22,7 +23,7 @@ object EventsMocks {
             eventId = "event123",
             title = "Tech Conference 2025",
             price = 150.0,
-            location = Profile.Location(
+            location = Location(
                 latitude = 37.7749,
                 longitude = -122.4194,
                 altitude = 0.0

@@ -6,6 +6,7 @@ import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import kotlin.random.Random
 
@@ -32,7 +33,7 @@ object ProfileMock {
             name = names.random(),
             age = Random.nextInt(18, 60),
             aboutMe = "I am ${names.random()}, a ${jobs.random()} who loves ${interests.random()}.",
-            location = Profile.Location(
+            location = Location(
                 Random.nextDouble(27.0, 29.0),
                 Random.nextDouble(14.0, 16.0),
                 null
@@ -81,7 +82,7 @@ object ProfileMock {
                 name = name,
                 age = Random.nextInt(18, 60),
                 aboutMe = "I am $name, a ${jobs.random()} who loves ${interests.random()}.",
-                location = Profile.Location(
+                location = Location(
                     Random.nextDouble(27.0, 29.0),
                     Random.nextDouble(14.0, 16.0),
                     null
