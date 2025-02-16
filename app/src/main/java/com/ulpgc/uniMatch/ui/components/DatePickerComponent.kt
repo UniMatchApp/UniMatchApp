@@ -15,7 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.ulpgc.uniMatch.R
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun DatePickerComponent(
@@ -34,9 +36,15 @@ fun DatePickerComponent(
     val datePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
-            val newDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-            displayedDate.value = newDate
-            onDateSelected(newDate)
+            val selectedCalendar = Calendar.getInstance().apply {
+                set(selectedYear, selectedMonth, selectedDay)
+            }
+
+            val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+            val formattedDate = dateFormat.format(selectedCalendar.time)
+
+            displayedDate.value = formattedDate
+            onDateSelected(formattedDate)
         },
         year, month, day
     )
