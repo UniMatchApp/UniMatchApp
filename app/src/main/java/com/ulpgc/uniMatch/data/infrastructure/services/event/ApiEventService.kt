@@ -3,8 +3,13 @@ package com.ulpgc.uniMatch.data.infrastructure.services.event
 import com.ulpgc.uniMatch.data.application.services.EventService
 import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.domain.models.Survey
+import com.ulpgc.uniMatch.data.infrastructure.controllers.EventController
+import com.ulpgc.uniMatch.data.infrastructure.database.dao.EventDao
 
-class ApiEventService : EventService {
+class ApiEventService(
+    private val eventController: EventController,
+    private val eventDao: EventDao
+) : EventService {
     override suspend fun getAll(): Result<List<Event>> {
         TODO("Not yet implemented")
     }

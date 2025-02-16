@@ -6,6 +6,7 @@ import android.app.Application
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.api.ApiClient
 import com.ulpgc.uniMatch.data.application.api.TokenProvider
+import com.ulpgc.uniMatch.data.infrastructure.controllers.EventController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MatchingController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MessageController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.NotificationController
@@ -17,6 +18,7 @@ import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
 import com.ulpgc.uniMatch.data.infrastructure.secure.SecureTokenProvider
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.ApiChatService
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
+import com.ulpgc.uniMatch.data.infrastructure.services.event.ApiEventService
 import com.ulpgc.uniMatch.data.infrastructure.services.event.MockEventService
 import com.ulpgc.uniMatch.data.infrastructure.services.matching.ApiMatchingService
 import com.ulpgc.uniMatch.data.infrastructure.services.matching.MockMatchingService
@@ -116,10 +118,10 @@ class UniMatchApplication : Application() {
     }
 
     private val apiEventService by lazy {
-//        ApiEventService(
-//            eventController = apiClient.retrofit.create(EventController::class.java),
-//            eventDao = database.eventDao()
-//        )
+        ApiEventService(
+            eventController = apiClient.retrofit.create(EventController::class.java),
+            eventDao = database.eventDao()
+        )
     }
 
     // ----------------------------------- Services -----------------------------------

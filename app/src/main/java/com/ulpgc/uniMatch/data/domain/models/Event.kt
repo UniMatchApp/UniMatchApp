@@ -1,6 +1,5 @@
 package com.ulpgc.uniMatch.data.domain.models
 
-import com.ulpgc.uniMatch.data.domain.models.Profile.Location
 import java.util.Date
 
 data class Event (

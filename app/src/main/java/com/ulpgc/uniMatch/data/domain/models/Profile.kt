@@ -53,11 +53,6 @@ data class Profile(
             return dateFormat.parse(birthday) ?: Date()
         }
 
-    data class Location(
-        var latitude: Double?,
-        var longitude: Double?,
-        var altitude: Double?
-    )
 
     data class AgeRange(
         val min: Int,

@@ -3,8 +3,6 @@ package com.ulpgc.uniMatch.data.infrastructure.services.profile
 import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
-import com.google.gson.Gson
-import com.google.protobuf.Internal
 import com.ulpgc.uniMatch.data.application.services.AgeRangeRequest
 import com.ulpgc.uniMatch.data.application.services.IntRequest
 import com.ulpgc.uniMatch.data.application.services.ListRequest
@@ -17,6 +15,7 @@ import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.controllers.ProfileController
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
@@ -26,7 +25,6 @@ import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
 import com.ulpgc.uniMatch.ui.screens.utils.enumToString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -220,7 +218,7 @@ class ApiProfileService(
             Result.success(null)
         }
 
-    override suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location?> {
+    override suspend fun updateLocation(location: Location?): Result<Location?> {
         return safeApiCall {
             Log.i("UpdateLocation", "Updating location in api ${location?.longitude},${location?.latitude}")
             profileController.updateLocation(

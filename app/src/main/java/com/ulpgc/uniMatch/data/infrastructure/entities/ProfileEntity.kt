@@ -9,6 +9,7 @@ import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 
 @Entity(tableName = "profiles")
@@ -53,7 +54,7 @@ data class ProfileEntity(
                 name = profileEntity.name,
                 age = profileEntity.age,
                 aboutMe = profileEntity.aboutMe,
-                location = Profile.Location(profileEntity.latitude, profileEntity.longitude, null),
+                location = Location(profileEntity.latitude, profileEntity.longitude, null),
                 gender = profileEntity.gender,
                 sexualOrientation = profileEntity.sexualOrientation,
                 relationshipType = profileEntity.relationshipType,
