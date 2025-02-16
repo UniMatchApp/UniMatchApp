@@ -5,22 +5,18 @@ import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
 import com.ulpgc.uniMatch.ui.screens.CoreRoutes
-import com.ulpgc.uniMatch.ui.screens.core.topBars.AccountTopBar
-import com.ulpgc.uniMatch.ui.screens.core.topBars.AddEventTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatDetailTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ChatSectionTopBar
-import com.ulpgc.uniMatch.ui.screens.core.topBars.EventTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.EventsTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.HomeTopBar
-import com.ulpgc.uniMatch.ui.screens.core.topBars.NotificationTopBar
-import com.ulpgc.uniMatch.ui.screens.core.topBars.PoliciesTopBar
-import com.ulpgc.uniMatch.ui.screens.core.topBars.PreferencesTopBar
-import com.ulpgc.uniMatch.ui.screens.core.topBars.ProfileSettingsTopBar
 import com.ulpgc.uniMatch.ui.screens.core.topBars.ProfileTopBar
+import com.ulpgc.uniMatch.ui.screens.core.topBars.TopNavBar
 
 
 @Composable
@@ -36,9 +32,19 @@ fun TopBar(
         CoreRoutes.HOME -> HomeTopBar(navController)
         CoreRoutes.EVENTS -> EventsTopBar()
 
-        CoreRoutes.EVENT -> EventTopBar(navController)
+        CoreRoutes.EVENT -> TopNavBar(
+            navController,
+            stringResource(R.string.event_details)
+        )
+        CoreRoutes.ADD_EVENT -> TopNavBar(
+            navController,
+            stringResource(R.string.add_event)
+        )
 
-        CoreRoutes.ADD_EVENT -> AddEventTopBar(navController)
+        CoreRoutes.EVENT_SURVEY -> TopNavBar(
+            navController,
+            stringResource(R.string.event_surveys)
+        )
 
         CoreRoutes.CHAT_LIST -> ChatSectionTopBar(
             chatViewModel = chatViewModel
@@ -48,12 +54,14 @@ fun TopBar(
             navController
         )
 
-        CoreRoutes.PREFERENCES -> PreferencesTopBar(
-            navController
+        CoreRoutes.PREFERENCES -> TopNavBar(
+            navController,
+            stringResource(R.string.edit_preferences)
         )
 
-        CoreRoutes.NOTIFICATIONS -> NotificationTopBar(
-            navController
+        CoreRoutes.NOTIFICATIONS -> TopNavBar(
+            navController,
+            stringResource(R.string.notifications)
         )
 
         CoreRoutes.CHAT_DETAIL -> ChatDetailTopBar(
@@ -61,24 +69,29 @@ fun TopBar(
             chatViewModel
         )
 
-        CoreRoutes.COOKIESPOLICIES -> PoliciesTopBar(
-            navController
+        CoreRoutes.COOKIESPOLICIES -> TopNavBar(
+            navController,
+            stringResource(R.string.cookies_policy)
         )
 
-        CoreRoutes.PRIVACYPOLICIES -> PoliciesTopBar(
-            navController
+        CoreRoutes.PRIVACYPOLICIES -> TopNavBar(
+            navController,
+            stringResource(R.string.privacy_policy)
         )
 
-        CoreRoutes.PROFILE_INTERESTS -> ProfileSettingsTopBar(
-            navController
+        CoreRoutes.PROFILE_INTERESTS -> TopNavBar(
+            navController,
+            stringResource(R.string.edit_profile)
         )
 
-        CoreRoutes.PROFILE_WALL -> ProfileSettingsTopBar(
-            navController
+        CoreRoutes.PROFILE_WALL -> TopNavBar(
+            navController,
+            stringResource(R.string.edit_profile)
         )
 
-        CoreRoutes.ACCOUNT -> AccountTopBar(
-            navController
+        CoreRoutes.ACCOUNT -> TopNavBar(
+            navController,
+            stringResource(R.string.account)
         )
 
         else -> {

@@ -1,9 +1,11 @@
 package com.ulpgc.uniMatch.ui.screens.core.policies
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -12,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.ui.components.policies.TextSection
-import com.ulpgc.uniMatch.ui.screens.core.topBars.PoliciesTopBar
 
 @Composable
 fun PrivacyPolicyScreen() {
@@ -22,12 +23,6 @@ fun PrivacyPolicyScreen() {
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Text(
-            text = stringResource(id = R.string.privacy_policy_title),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
 
         TextSection(
             title = stringResource(id = R.string.information_collection_title),

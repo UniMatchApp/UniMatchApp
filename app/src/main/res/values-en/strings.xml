@@ -492,7 +492,7 @@
     <string name="event_date">Date</string>
     <string name="event_time">Hour</string>
     <string name="event_location">Location</string>
-    <string name="event_participants">Participants</string>
+    <string name="participate">Participate</string>
     <string name="event_participants_count">Participants: %d</string>
     <string name="event_participants_empty">No Participants</string>
     <string name="add_event">Add event</string>
