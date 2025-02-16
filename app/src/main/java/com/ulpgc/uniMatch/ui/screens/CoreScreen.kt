@@ -38,6 +38,7 @@ import com.ulpgc.uniMatch.ui.screens.core.chat.ChatDetailScreen
 import com.ulpgc.uniMatch.ui.screens.core.chat.ChatListScreen
 import com.ulpgc.uniMatch.ui.screens.core.events.AddEventScreen
 import com.ulpgc.uniMatch.ui.screens.core.events.EventDetailScreen
+import com.ulpgc.uniMatch.ui.screens.core.events.EventSurveys
 import com.ulpgc.uniMatch.ui.screens.core.events.EventsScreen
 import com.ulpgc.uniMatch.ui.screens.core.home.HomeScreen
 import com.ulpgc.uniMatch.ui.screens.core.notifications.NotificationsScreen
@@ -54,6 +55,7 @@ object CoreRoutes {
     const val EVENTS = "events"
     const val EVENT = "events/{eventId}"
     const val ADD_EVENT = "events/add"
+    const val EVENT_SURVEY = "events/{eventId}/survey"
     const val CHAT_LIST = "chatList"
     const val CHAT_DETAIL = "chatDetail/{chatId}"
     const val PROFILE = "profile"
@@ -90,7 +92,7 @@ fun CoreScreen(
     val currentRoute = navBackStackEntry?.destination?.route
 
     val isPaddingRequired = when (currentRoute) {
-        CoreRoutes.HOME, CoreRoutes.EVENTS, CoreRoutes.EVENT, CoreRoutes.ADD_EVENT, CoreRoutes.CHAT_LIST, CoreRoutes.CHAT_DETAIL, CoreRoutes.PROFILE,
+        CoreRoutes.HOME, CoreRoutes.EVENTS, CoreRoutes.EVENT, CoreRoutes.EVENT_SURVEY ,CoreRoutes.ADD_EVENT, CoreRoutes.CHAT_LIST, CoreRoutes.CHAT_DETAIL, CoreRoutes.PROFILE,
         CoreRoutes.PREFERENCES, CoreRoutes.NOTIFICATIONS, CoreRoutes.PRIVACYPOLICIES,
         CoreRoutes.COOKIESPOLICIES, CoreRoutes.PROFILE_INTERESTS, CoreRoutes.PROFILE_WALL,
         CoreRoutes.ACCOUNT -> true
@@ -223,10 +225,29 @@ fun CoreNavHost(
             )
         }
 
+        composable(CoreRoutes.EVENT_SURVEY) {
+            EventSurveys(
+                eventViewModel = eventViewModel
+            )
+        }
+
         composable(CoreRoutes.ADD_EVENT) {
             AddEventScreen(
                 eventViewModel = eventViewModel
             )
+        }
+
+        composable(CoreRoutes.EVENT) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
+            EventDetailScreen(
+                eventId = eventId,
+                eventViewModel = eventViewModel,
+                profileViewModel = profileViewModel,
+                onEventSurveyClick = {
+                    navController.navigate(CoreRoutes.EVENT_SURVEY.replace("{eventId}", eventId))
+                }
+            )
+
         }
 
         composable(CoreRoutes.PREFERENCES) {
@@ -254,14 +275,7 @@ fun CoreNavHost(
         }
 
 
-        composable(CoreRoutes.EVENT) { backStackEntry ->
-            val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
-            EventDetailScreen(
-                eventId = eventId,
-                eventViewModel = eventViewModel,
-                userViewModel = userViewModel
-            )
-        }
+
 
 
         composable("profile-wall/{userId}") {

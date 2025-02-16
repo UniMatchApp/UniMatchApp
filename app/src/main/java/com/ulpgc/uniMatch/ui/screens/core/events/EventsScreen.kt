@@ -32,6 +32,8 @@ import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
 import com.ulpgc.uniMatch.ui.components.chats.SearchBar
+import com.ulpgc.uniMatch.ui.screens.utils.DateParser
+import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 
 
 @Composable
@@ -120,11 +122,11 @@ fun EventCard(
         shape = RoundedCornerShape(8.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-//            Image(painter = painterResource(id = R.drawable.event_placeholder), contentDescription = "Event Image")
             Spacer(modifier = Modifier.height(8.dp))
             Text(event.title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text(event.location.toString(), fontSize = 14.sp, color = Color.Gray)
-            Text(event.date.toString(), fontSize = 14.sp)
+            Text(LocationHelper.getAddressFromCoordinates(event.location.latitude, event.location.longitude),fontSize = 14.sp, color = Color.Gray)
+            Text(DateParser.formatDateToString(event.date), fontSize = 14.sp)
         }
     }
 }
+

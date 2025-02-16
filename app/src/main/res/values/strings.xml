@@ -493,7 +493,7 @@
     <string name="event_date">Fecha</string>
     <string name="event_time">Hora</string>
     <string name="event_location">Ubicación</string>
-    <string name="event_participants">Participantes</string>
+    <string name="participate">Participar</string>
     <string name="event_participants_count">Participantes: %d</string>
     <string name="event_participants_empty">No hay participantes</string>
     <string name="add_event">Añadir evento</string>

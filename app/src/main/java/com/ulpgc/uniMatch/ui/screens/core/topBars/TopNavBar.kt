@@ -15,26 +15,20 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ulpgc.uniMatch.R
-import com.ulpgc.uniMatch.ui.theme.MainColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileSettingsTopBar(
-    navController: NavController
-) {
+fun TopNavBar(navController: NavController, title: String) {
     TopAppBar(
         title = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Icono de retroceso
                 IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_arrow_back),
@@ -47,14 +41,14 @@ fun ProfileSettingsTopBar(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
-                    text = stringResource(R.string.edit_profile),
+                    text = title,
                     color = MaterialTheme.colorScheme.secondary
                 )
             }
         },
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = MaterialTheme.colorScheme.background,
         )
     )
 }
