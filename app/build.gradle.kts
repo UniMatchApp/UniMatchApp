@@ -12,6 +12,7 @@ plugins {
 
 }
 
+
 android {
     namespace = "com.ulpgc.uniMatch"
     compileSdk = 34
@@ -154,6 +155,8 @@ dependencies {
 
     // Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+
+    implementation("io.github.cdimascio:dotenv-kotlin:6.5.0")
 
     // ImagePicker
     implementation(libs.imagepicker)
