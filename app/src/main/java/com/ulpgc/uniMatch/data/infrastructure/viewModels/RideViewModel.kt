@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import io.github.cdimascio.dotenv.dotenv
 
 class RideViewModel : ViewModel() {
 
@@ -30,12 +32,17 @@ class RideViewModel : ViewModel() {
     var location by mutableStateOf<Location?>(null)
         private set
 
+    val dotenv = dotenv {
+        directory = "/assets"
+        filename = "env"
+    }
+
     val pickupLocationPlaces: StateFlow<List<Place>> =
         snapshotFlow { pickUp }
             .mapLatest { value ->
                 withContext(Dispatchers.IO) {
                     placesApi.fetchPlaces(
-                        key = "AIzaSyBBnqqHfAy-kVRPPszDNR5J1X3xp3yAEAI",
+                        key = dotenv["MAPS_API_KEY"],
                         input = value.text
                     )
                 }
@@ -49,6 +56,7 @@ class RideViewModel : ViewModel() {
 
     fun onPickUpValueChanged(value: TextFieldValue) {
         pickUp = value
+        Log.i("RideViewModel", "Pickup value changed: ${pickUp.text}")
     }
 
     var selectedPlace by mutableStateOf<Place?>(null)
@@ -57,7 +65,7 @@ class RideViewModel : ViewModel() {
     fun onPlaceClick(placeId: String) {
         viewModelScope.launch {
             val place = placesApi.fetchPlaceWithCoordinates(
-                key = "AIzaSyBBnqqHfAy-kVRPPszDNR5J1X3xp3yAEAI",
+                key = dotenv["MAPS_API_KEY"],
                 placeId = placeId,
                 name = pickUp.text
             )

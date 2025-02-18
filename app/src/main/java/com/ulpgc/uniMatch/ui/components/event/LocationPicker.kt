@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -77,6 +78,7 @@ fun LocationPicker(
                         .clickable {
                             Log.i("PlacesAutoCompleteTextField", "Place clicked: ${place.toString()}")
                             viewModel.onPlaceClick(place.id)
+                            viewModel.onPickUpValueChanged(TextFieldValue(text = place.name))
                             isLazyColumnVisible = false
                         }
                         .padding(16.dp)
