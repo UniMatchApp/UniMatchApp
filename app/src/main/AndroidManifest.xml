@@ -47,7 +47,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <!--Servicio de mensajes push de firebase-->
         <service
             android:name="com.ulpgc.uniMatch.data.infrastructure.services.notification.MyFirebaseMessagingService"

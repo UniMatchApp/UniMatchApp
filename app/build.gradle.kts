@@ -8,6 +8,7 @@ plugins {
 
     // Google services Gradle plugin
     id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.0" // o la versión que uses
 
 }
 
@@ -131,6 +132,28 @@ dependencies {
 
     // Permissions
     implementation("dev.shreyaspatil.permission-flow:permission-flow-android:2.0.0")
+
+    // Places Api
+    implementation("com.google.android.libraries.places:places:3.3.0")
+
+    // Lifecycle
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0-alpha03")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0-alpha03")
+    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha03")
+
+    // Logger
+    implementation("io.github.aakira:napier:2.6.1")
+
+    // Ktor
+    implementation("io.ktor:ktor-client-okhttp:2.2.1")
+    implementation("io.ktor:ktor-client-core:2.2.1")
+    implementation("io.ktor:ktor-client-logging:2.2.1")
+    implementation("io.ktor:ktor-client-serialization:2.2.1")
+    implementation("io.ktor:ktor-client-content-negotiation:2.2.1")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.2.1")
+
+    // Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
     // ImagePicker
     implementation(libs.imagepicker)

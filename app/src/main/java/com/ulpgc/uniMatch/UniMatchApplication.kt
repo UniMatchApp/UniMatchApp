@@ -54,6 +54,8 @@ class UniMatchApplication : Application() {
     }
 
 
+
+
     private val apiClient: ApiClient by lazy {
         try {
             ApiClient(tokenProvider) { provideUserViewModel() }
@@ -123,6 +125,8 @@ class UniMatchApplication : Application() {
             eventDao = database.eventDao()
         )
     }
+
+
 
     // ----------------------------------- Services -----------------------------------
 //    private val userService by lazy { apiUserService }
