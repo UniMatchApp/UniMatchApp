@@ -1,12 +1,22 @@
 package com.ulpgc.uniMatch.data.application.services
 
+import android.net.Uri
 import com.ulpgc.uniMatch.data.domain.models.Event
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Survey
 
 interface EventService {
     suspend fun getAll(): Result<List<Event>>
     suspend fun getOne(id: String): Result<Event>
-    suspend fun create(event: Event): Result<Event>
+    suspend fun create(
+        title: String,
+        price: Double,
+        location: Location,
+        date: String,
+        attachment: Uri,
+        surveys: List<Survey>
+    ): Result<Event>
+    suspend fun getEventsByName(filterNameEvent: String): Result<List<Event>?>
     suspend fun update(id: String, event: Event): Result<Event>
     suspend fun delete(id: String): Result<Unit>
     suspend fun participateEvent(id: String, userId: String): Result<Unit>

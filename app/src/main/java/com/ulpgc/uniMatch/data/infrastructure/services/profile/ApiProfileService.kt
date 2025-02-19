@@ -3,12 +3,12 @@ package com.ulpgc.uniMatch.data.infrastructure.services.profile
 import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
-import com.ulpgc.uniMatch.data.application.services.AgeRangeRequest
-import com.ulpgc.uniMatch.data.application.services.IntRequest
-import com.ulpgc.uniMatch.data.application.services.ListRequest
-import com.ulpgc.uniMatch.data.application.services.LocationRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.AgeRangeRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.IntRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.LocationRequest
 import com.ulpgc.uniMatch.data.application.services.ProfileService
-import com.ulpgc.uniMatch.data.application.services.StringRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.StringRequest
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
 import com.ulpgc.uniMatch.data.domain.enums.Horoscope

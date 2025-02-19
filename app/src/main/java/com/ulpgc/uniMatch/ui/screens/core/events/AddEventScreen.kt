@@ -33,8 +33,7 @@ fun AddEventScreen(
 ) {
 
     Column(modifier = Modifier
-        .padding(16.dp)
-        ,
+        .padding(16.dp),
     ) {
         Box(modifier = Modifier.fillMaxWidth().height(150.dp), contentAlignment = Alignment.Center) {
             Text("Image Placeholder")
