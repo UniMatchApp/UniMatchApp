@@ -29,9 +29,9 @@ object EventsMocks {
             ),
             date = Date(2025 - 1900, 1, 25), // February 25, 2025 (adjust for Date constructor)
             ownerId = "user567",
-            participants = listOf("user123", "user234", "user345"),
+            participants = listOf("User123", "User234", "User345"),
             likes = listOf("user567", "user123"),
-            attachment = "http://example.com/attachment.pdf",
+            attachment = "https://imagenes2.fotos.europapress.es/preview/5309176.jpg?s=1000",
             surveys = listOf(createMockSurvey())
         )
     }
