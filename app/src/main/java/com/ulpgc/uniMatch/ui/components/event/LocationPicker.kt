@@ -4,9 +4,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -67,9 +72,11 @@ fun LocationPicker(
             .fillMaxWidth()
     )
 
-
     if (isLazyColumnVisible) {
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier
+                .wrapContentHeight()
+        ) {
             items(pickupLocationPlaces) { place ->
                 Text(
                     text = place.name,
@@ -87,6 +94,7 @@ fun LocationPicker(
             }
         }
     }
+
 
     // Si hay una ubicación seleccionada, la pasamos a la función onChangeLocation
     selectedLocation?.let {

@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +33,8 @@ fun AddEventScreen(
 ) {
 
     Column(modifier = Modifier
-        .padding(16.dp),
+        .padding(16.dp)
+        ,
     ) {
         Box(modifier = Modifier.fillMaxWidth().height(150.dp), contentAlignment = Alignment.Center) {
             Text("Image Placeholder")
@@ -43,9 +46,8 @@ fun AddEventScreen(
             readOnly = false,
             onValueChange = { /* TODO */ }
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
         Column {
             Text(
                 text = stringResource(R.string.event_location),
@@ -57,7 +59,9 @@ fun AddEventScreen(
                 }
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Column {
             Text(
                 text = stringResource(R.string.event_date),
@@ -66,8 +70,12 @@ fun AddEventScreen(
             EventDatePicker()
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally),
         ) {
             Button(
                 onClick = { /*TODO*/ },

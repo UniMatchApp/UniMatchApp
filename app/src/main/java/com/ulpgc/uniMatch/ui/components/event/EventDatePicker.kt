@@ -52,7 +52,7 @@ fun EventDatePicker() {
     )
 
     Column(
-        modifier = Modifier.padding(vertical = 16.dp)
+
     ) {
         Text(
             text = selectedDateTime,
