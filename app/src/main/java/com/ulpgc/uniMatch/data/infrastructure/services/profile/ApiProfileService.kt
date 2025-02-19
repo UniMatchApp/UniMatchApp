@@ -3,8 +3,6 @@ package com.ulpgc.uniMatch.data.infrastructure.services.profile
 import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
-import com.google.gson.Gson
-import com.google.protobuf.Internal
 import com.ulpgc.uniMatch.data.application.services.AgeRangeRequest
 import com.ulpgc.uniMatch.data.application.services.IntRequest
 import com.ulpgc.uniMatch.data.application.services.ListRequest
@@ -24,20 +22,25 @@ import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
 import com.ulpgc.uniMatch.ui.screens.shared.safeApiCall
 import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
 import com.ulpgc.uniMatch.ui.screens.utils.enumToString
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import javax.inject.Inject
 
 
-class ApiProfileService(
+class ApiProfileService @Inject constructor(
     private val profileController: ProfileController,
     private val profileDao: ProfileDao,
     private val contentResolver: ContentResolver
-) : ProfileService {
+) : ProfileService
+{
 
     override suspend fun getProfile(userId: String): Result<Profile> {
         return safeRequest {
@@ -303,4 +306,19 @@ class ApiProfileService(
     private fun createRequestBody(value: String): RequestBody =
         value.toRequestBody("text/plain".toMediaTypeOrNull())
 }
+
+@Module
+@InstallIn(SingletonComponent::class)
+object ProfileServiceModule {
+
+    @Provides
+    fun provideProfileService(
+        profileController: ProfileController,
+        profileDao: ProfileDao,
+        contentResolver: ContentResolver
+    ): ProfileService {
+        return ApiProfileService(profileController, profileDao, contentResolver)
+    }
+}
+
 

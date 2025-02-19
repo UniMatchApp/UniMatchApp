@@ -3,7 +3,11 @@ package com.ulpgc.uniMatch
 import NotificationSocket
 import UserStatusSocket
 import android.app.Application
+import android.content.ContentResolver
+import android.content.Context
 import android.util.Log
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import com.ulpgc.uniMatch.data.application.api.ApiClient
 import com.ulpgc.uniMatch.data.application.api.TokenProvider
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MatchingController
@@ -31,11 +35,28 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
-import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.EntryPoint
+import dagger.hilt.EntryPoints
+import dagger.hilt.InstallIn
+import dagger.hilt.android.HiltAndroidApp
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import dev.shreyaspatil.permissionFlow.PermissionFlow
+import javax.inject.Singleton
 
-class UniMatchApplication : Application() {
+@HiltAndroidApp
+class UniMatchApplication: Application() {
+
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface WorkerFactoryEntryPoint {
+        fun workerFactory(): CustomWorkerFactory
+    }
+
 
     private val database by lazy { AppDatabase.getDatabase(this) }
 
@@ -198,14 +219,36 @@ class UniMatchApplication : Application() {
     }
 
     override fun onCreate() {
-        super.onCreate()
-
-        Log.i("UniMatchApplication", "Application initialized")
-
         // Eliminar manualmente el archivo de la base de datos
         val db = applicationContext.getDatabasePath("uniMatch_database")
         if (db.exists()) {
             db.delete()
         }
+
+        //Inicializar PermissionFlow
+        PermissionFlow.init(this)
+
+        // Configurar WorkManager
+        val workManagerConfiguration: Configuration = Configuration.Builder()
+            .setWorkerFactory(EntryPoints.get(this, WorkerFactoryEntryPoint::class.java).workerFactory())
+            .setMinimumLoggingLevel(Log.VERBOSE)
+            .build()
+        WorkManager.initialize(this, workManagerConfiguration)
+
+        Log.i("UniMatchApplication", "Application initialized")
+        super.onCreate()
     }
 }
+
+@Module
+@InstallIn(SingletonComponent::class)
+object ContentResolverModule {
+
+    @Provides
+    @Singleton
+    fun provideContentResolver(@ApplicationContext context: Context): ContentResolver {
+        return context.contentResolver
+    }
+}
+
+

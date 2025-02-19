@@ -7,8 +7,13 @@ import com.ulpgc.uniMatch.data.application.services.ListRequest
 import com.ulpgc.uniMatch.data.application.services.LocationRequest
 import com.ulpgc.uniMatch.data.application.services.StringRequest
 import com.ulpgc.uniMatch.data.domain.models.Profile
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -17,6 +22,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import javax.inject.Singleton
 
 interface ProfileController {
 
@@ -129,3 +135,16 @@ interface ProfileController {
         @Path("photoUrl") photoUrl : String
     ): ApiResponse<Unit>
 }
+
+@Module
+@InstallIn(SingletonComponent::class)
+object ProfileControllerModule {
+
+    @Provides
+    @Singleton
+    fun provideProfileController(retrofit: Retrofit): ProfileController {
+        return retrofit.create(ProfileController::class.java)
+    }
+}
+
+

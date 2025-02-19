@@ -60,6 +60,12 @@
         <activity android:name=".data.infrastructure.services.notification.PermissionRequestActivity">
         </activity>
 
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="com.ulpgc.uniMatch.androidx-startup"
+            tools:node="remove">
+        </provider>
+
 
     </application>
 

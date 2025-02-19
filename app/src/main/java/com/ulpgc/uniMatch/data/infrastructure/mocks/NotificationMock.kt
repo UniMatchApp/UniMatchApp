@@ -1,9 +1,8 @@
 package com.ulpgc.uniMatch.data.infrastructure.mocks
 
-import AppNotificationPayload
-import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
-import com.ulpgc.uniMatch.data.domain.enums.NotificationType
+import com.ulpgc.uniMatch.data.domain.models.notification.AppNotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 
 object NotificationMock {
     private val notificationList = mutableListOf<Notification>()

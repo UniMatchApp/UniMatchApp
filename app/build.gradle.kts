@@ -1,24 +1,29 @@
 import com.android.build.api.dsl.Optimization
+import com.android.build.api.dsl.Packaging
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
+    id("com.google.devtools.ksp") version "2.0.0-1.0.21"
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 
     // Google services Gradle plugin
     id("com.google.gms.google-services")
 
+    // Dagger Hilt
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
+
 }
 
 android {
     namespace = "com.ulpgc.uniMatch"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.ulpgc.uniMatch"
         minSdk = 33
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -78,6 +83,7 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+//            excludes += "META-INF/gradle/incremental.annotation.processors"
         }
     }
 }
@@ -86,6 +92,8 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.foundation.layout.android)
     implementation(libs.firebase.messaging.ktx)
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.room.compiler.v261)
 
     implementation(libs.androidx.core.ktx)
@@ -130,7 +138,7 @@ dependencies {
     implementation(libs.play.services.location.v2101)
 
     // Permissions
-    implementation("dev.shreyaspatil.permission-flow:permission-flow-android:2.0.0")
+    implementation(libs.permission.flow.android.v200)
 
     // ImagePicker
     implementation(libs.imagepicker)
@@ -160,12 +168,22 @@ dependencies {
     // OkHttp
     implementation(libs.okhttp)
 
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(libs.androidx.core.splashscreen)
 
     //Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
-    implementation("com.google.firebase:firebase-analytics")
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 
+    // Dagger Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    kapt(libs.androidx.hilt.compiler)
+
+
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 tasks.register("reverseDevicePorts") {

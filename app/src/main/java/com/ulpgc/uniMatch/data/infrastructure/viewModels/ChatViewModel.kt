@@ -1,6 +1,5 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
-import MessageNotificationPayload
 import UserStatusSocket
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -18,6 +17,7 @@ import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.domain.models.Chat
 import com.ulpgc.uniMatch.data.domain.models.Message
 import com.ulpgc.uniMatch.data.domain.models.Profile
+import com.ulpgc.uniMatch.data.domain.models.notification.MessageNotificationPayload
 import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 
 import com.ulpgc.uniMatch.data.infrastructure.events.GetUserStatusEvent

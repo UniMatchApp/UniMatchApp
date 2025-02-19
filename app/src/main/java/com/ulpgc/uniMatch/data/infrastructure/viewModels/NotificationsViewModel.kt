@@ -1,6 +1,5 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
-import MessageNotificationPayload
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +9,7 @@ import com.ulpgc.uniMatch.data.application.events.EventListener
 import com.ulpgc.uniMatch.data.application.services.NotificationsService
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
 import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
+import com.ulpgc.uniMatch.data.domain.models.notification.MessageNotificationPayload
 import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 import com.ulpgc.uniMatch.data.infrastructure.events.AppNotificationEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.EventNotificationEvent

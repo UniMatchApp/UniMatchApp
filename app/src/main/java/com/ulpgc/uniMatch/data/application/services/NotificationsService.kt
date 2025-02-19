@@ -1,6 +1,6 @@
 package com.ulpgc.uniMatch.data.application.services
 
-import NotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.NotificationPayload
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
 import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 

@@ -1,6 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.entities
 
-import NotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.NotificationPayload
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.GsonBuilder
