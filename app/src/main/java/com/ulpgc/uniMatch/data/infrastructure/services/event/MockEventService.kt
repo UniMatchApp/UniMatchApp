@@ -1,7 +1,9 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.event
 
+import android.net.Uri
 import com.ulpgc.uniMatch.data.application.services.EventService
 import com.ulpgc.uniMatch.data.domain.models.Event
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Survey
 import com.ulpgc.uniMatch.data.infrastructure.mocks.EventsMocks
 
@@ -18,7 +20,19 @@ class MockEventService : EventService {
         )
     }
 
-    override suspend fun create(event: Event): Result<Event> {
+    override suspend fun create(
+        title: String,
+        price: Double,
+        location: Location,
+        date: String,
+        attachment: Uri,
+        surveys: List<Survey>
+    ): Result<Event> {
+        TODO("Not yet implemented")
+    }
+
+
+    override suspend fun getEventsByName(filterNameEvent: String): Result<List<Event>> {
         TODO("Not yet implemented")
     }
 

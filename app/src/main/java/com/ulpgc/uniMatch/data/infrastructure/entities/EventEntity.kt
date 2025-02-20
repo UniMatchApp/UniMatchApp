@@ -22,6 +22,7 @@ data class EventEntity (
     val attachment: String,
     val surveys: List<Survey>
 ) {
+
     companion object {
         fun fromDomain(event: Event): EventEntity {
             return EventEntity(

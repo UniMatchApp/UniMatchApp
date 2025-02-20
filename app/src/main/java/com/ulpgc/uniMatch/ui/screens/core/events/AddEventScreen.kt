@@ -40,8 +40,7 @@ fun AddEventScreen(
     var surveyCounter by remember { mutableStateOf(0) }
 
     Column(modifier = Modifier
-        .padding(16.dp)
-        .verticalScroll(rememberScrollState())
+        .padding(16.dp),
     ) {
         Box(modifier = Modifier.fillMaxWidth().height(150.dp), contentAlignment = Alignment.Center) {
             Text("Image Placeholder")
@@ -67,7 +66,9 @@ fun AddEventScreen(
                 }
             )*/
         }
-        Spacer(modifier = Modifier.height(8.dp))
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Column {
             Text(
                 text = stringResource(R.string.event_date),
@@ -86,7 +87,9 @@ fun AddEventScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally),
         ) {
             Button(
                 onClick = {

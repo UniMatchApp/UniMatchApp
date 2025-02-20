@@ -10,11 +10,6 @@ import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
 import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 
-data class StringRequest(val newContent: String?)
-data class IntRequest(val newContent: Int?)
-data class ListRequest(val newContent: List<String>)
-data class AgeRangeRequest(val min: Int, val max: Int)
-data class LocationRequest(val latitude: Double?, val longitude: Double?, val altitude: Double?)
 
 interface ProfileService {
     suspend fun createProfile(
