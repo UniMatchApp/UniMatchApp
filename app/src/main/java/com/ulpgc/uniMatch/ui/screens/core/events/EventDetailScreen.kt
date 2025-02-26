@@ -45,8 +45,6 @@ import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.event.EventSection
-import com.ulpgc.uniMatch.ui.components.event.EventSurvey
-import com.ulpgc.uniMatch.ui.components.event.EventSurveyEditor
 import com.ulpgc.uniMatch.ui.screens.utils.DateParser
 import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 
@@ -112,9 +110,6 @@ fun EventDetailScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Survey with 3 options and random votes in a map with a title
-            EventSurvey("Will you go to the Yumbo?", initialOptions = mapOf("SIIII" to 10, "NO" to 25, "Antonio es Gay" to 15))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

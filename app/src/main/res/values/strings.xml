@@ -502,5 +502,12 @@
     <string name="event_members">Miembros</string>
     <string name="event_add_survey">Añadir encuesta</string>
     <string name="event_complete">Completado</string>
+    <string name="create_survey">Crear</string>
+    <string name="add_option">Añadir opción</string>
+    <string name="delete_option">Eliminar opción </string>
+    <string name="delete_survey">Eliminar encuesta</string>
+    <string name="option_one">Opción 1</string>
+    <string name="option_two">Opción 2</string>
+    <string name="new_option">Nueva opción</string>
 
 </resources>

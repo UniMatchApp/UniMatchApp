@@ -40,7 +40,8 @@ fun AddEventScreen(
     var surveyCounter by remember { mutableStateOf(0) }
 
     Column(modifier = Modifier
-        .padding(16.dp),
+        .padding(16.dp)
+        .verticalScroll(rememberScrollState()),
     ) {
         Box(modifier = Modifier.fillMaxWidth().height(150.dp), contentAlignment = Alignment.Center) {
             Text("Image Placeholder")
@@ -60,11 +61,11 @@ fun AddEventScreen(
                 text = stringResource(R.string.event_location),
                 color = MaterialTheme.colorScheme.onBackground
             )
-            /*LocationPicker(
+            LocationPicker(
                 onChangeLocation = { eventLocation ->
                     Log.i("AddEventScreen", "Location updated: $eventLocation")
                 }
-            )*/
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -8,7 +8,6 @@ import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Survey
 import com.ulpgc.uniMatch.data.infrastructure.controllers.EventController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
-import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.StringRequest
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.EventDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.EventEntity
 import com.ulpgc.uniMatch.ui.screens.shared.safeRequest

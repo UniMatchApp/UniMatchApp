@@ -122,7 +122,8 @@ class UniMatchApplication : Application() {
     private val apiEventService by lazy {
         ApiEventService(
             eventController = apiClient.retrofit.create(EventController::class.java),
-            eventDao = database.eventDao()
+            eventDao = database.eventDao(),
+            contentResolver = contentResolver
         )
     }
 
