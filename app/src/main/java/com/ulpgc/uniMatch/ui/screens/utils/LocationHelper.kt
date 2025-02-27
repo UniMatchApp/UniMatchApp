@@ -3,10 +3,12 @@ package com.ulpgc.uniMatch.ui.screens.utils
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.net.Uri
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -81,6 +83,12 @@ class LocationHelper(context: Context) {
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
+        }
+
+       fun openLocationInMap(context: Context, value: String) {
+            val uri = Uri.parse("geo:0,0?q=${Uri.encode(value)}")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            context.startActivity(intent)
         }
     }
 }

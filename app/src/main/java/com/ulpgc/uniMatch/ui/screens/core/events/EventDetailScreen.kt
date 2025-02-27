@@ -72,7 +72,8 @@ fun EventDetailScreen(
         ) {
             Box(
                 modifier = Modifier
-                    .size(200.dp),
+                    .fillMaxWidth()
+                    .height(200.dp),
                 contentAlignment = Alignment.Center
             ) {
                 val painter = rememberAsyncImagePainter(
@@ -90,7 +91,7 @@ fun EventDetailScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             val formattedDate = DateParser.formatDateToString(it.date)
             val addressFromCoordinates = LocationHelper.getAddressFromCoordinates(it.location.latitude, it.location.longitude)
@@ -105,7 +106,7 @@ fun EventDetailScreen(
             )
 
             fields.forEach { (label, value) ->
-                EventSection(label = label, value = value)
+                EventSection(label = label, value = value, isLocation = label == stringResource(R.string.event_location))
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
