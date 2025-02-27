@@ -9,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -98,21 +99,10 @@ fun AddEventScreen(
                     contentScale = ContentScale.Crop
                 )
             } else {
-                Text("Tap to add image", color = Color.Black)
-            }
-
-            IconButton(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .background(MainColor, CircleShape),
-                onClick = { showDialog = true }
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.icon_add_photo),
-                    contentDescription = "Añadir imagen",
-                    tint = Color.White,
-                    modifier = Modifier.padding(4.dp)
-                )
+                Text("Tap to add image",
+                    modifier = Modifier
+                        .clickable { showDialog = true }
+                        .padding(16.dp))
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
