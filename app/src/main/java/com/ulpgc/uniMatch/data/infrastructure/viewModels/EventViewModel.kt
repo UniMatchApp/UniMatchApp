@@ -1,10 +1,12 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.EventService
 import com.ulpgc.uniMatch.data.domain.models.Event
-import com.ulpgc.uniMatch.data.domain.models.Profile
+import com.ulpgc.uniMatch.data.domain.models.Location
+import com.ulpgc.uniMatch.data.domain.models.Survey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -46,6 +48,36 @@ open class EventViewModel(
             }
         }
     }
+
+
+    fun createEvent(
+        title: String,
+        price: Double,
+        longitude: Double,
+        latitude: Double,
+        date: String,
+        attachment: Uri,
+        surveys: List<Survey>,
+    ) {
+        performLoadingAction {
+            val location = Location(
+                longitude = longitude,
+                latitude = latitude,
+                altitude = 0.0
+            )
+            eventService.create(title, price, location, date, attachment, surveys)
+        }
+    }
+
+    fun createSurvey(surveys: MutableList<Survey>, title: String, options: List<String>): MutableList<Survey> {
+        val survey = Survey(
+            title = title,
+            options = options.toSet()
+        )
+        surveys.add(survey)
+        return surveys
+    }
+
 
 }
 

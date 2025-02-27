@@ -100,7 +100,7 @@ fun EventDetailScreen(
             val fields = listOf(
                 stringResource(R.string.event_title) to it.title,
                 stringResource(R.string.event_date) to formattedDate,
-                stringResource(R.string.event_location) to addressFromCoordinates,
+                stringResource(R.string.event_location) to addressFromCoordinates ,
                 stringResource(R.string.event_members) to participantsText
             )
 

@@ -23,16 +23,18 @@ import com.ulpgc.uniMatch.ui.components.event.survey.SurveyOptionRow
 import com.ulpgc.uniMatch.ui.components.event.survey.SurveyOptions
 import com.ulpgc.uniMatch.ui.components.event.survey.SurveyTitle
 
+
 @Composable
 fun EventSurveyCard(
     title: String = "",
-    initialOptions: Map<String, Int> = mapOf(
-        stringResource(R.string.option_one) to 0,
-        stringResource(R.string.option_two) to 0
+    initialOptions: Map<String, Set<String>> = mapOf(
+        stringResource(R.string.option_one) to setOf(),
+        stringResource(R.string.option_two) to setOf()
     ),
     isEditing: Boolean = false,
     onDeleteSurvey: (() -> Unit)? = null,
-    onConfirmSurvey: ((String, List<String>) -> Unit)? = null
+    onConfirmSurvey: ((String, List<String>) -> Unit)? = null,
+    onVoteSurvey: ((String) -> Unit)? = null
 ) {
     var selectedOption by remember { mutableStateOf<String?>(null) }
     var options by remember { mutableStateOf(initialOptions) }
@@ -75,7 +77,7 @@ fun EventSurveyCard(
                     onConfirmSurvey = {
                         isConfirmed = true
                         onConfirmSurvey?.invoke(editTitle, editOptions)
-                        options = editOptions.associateWith { 0 }
+                        options = editOptions.associateWith { setOf<String>() }
                     },
                     optionsSize = editOptions.size
                 )
@@ -95,17 +97,114 @@ fun EventSurveyCard(
                     selectedOption = selectedOption,
                     onVote = { selected ->
                         options = options.mapValues { (key, value) ->
-                            when {
-                                key == selectedOption -> value - 1
-                                key == selected -> value + 1
-                                else -> value
+                            if (key == selectedOption) {
+                                value - (selectedOption ?: "")
+                            } else if (key == selected) {
+                                value + selected
+                            } else {
+                                value
                             }
                         }
                         selectedOption = if (selectedOption == selected) null else selected
                     }
-                )
 
+                )
             }
         }
     }
 }
+
+
+
+
+
+
+//@Composable
+//fun EventSurveyCard(
+//    title: String = "",
+//    initialOptions: Map<String, Set<String>> = mapOf(
+//        stringResource(R.string.option_one) to setOf(),
+//        stringResource(R.string.option_two) to setOf()
+//    ),
+//    isEditing: Boolean = false,
+//    onDeleteSurvey: (() -> Unit)? = null,
+//    onConfirmSurvey: ((String, List<String>) -> Unit)? = null,
+//    onVoteSurvey: ((String) -> Unit)? = null
+//) {
+//    var selectedOption by remember { mutableStateOf<String?>(null) }
+//    var options by remember { mutableStateOf(initialOptions) }
+//    var editTitle by remember { mutableStateOf(title) }
+//    var editOptions by remember { mutableStateOf(initialOptions.keys.toList()) }
+//    var isConfirmed by remember { mutableStateOf(!isEditing) }
+//
+//    Column(
+//        modifier = Modifier
+//            .padding(16.dp)
+//            .background(MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(8.dp))
+//            .fillMaxWidth()
+//            .padding(16.dp)
+//    ) {
+//        if (!isConfirmed) {
+//            Column {
+//                SurveyTitle(
+//                    title = editTitle,
+//                    onDeleteSurvey = onDeleteSurvey,
+//                    onTitleChange = { editTitle = it },
+//                    isEditing = true
+//                )
+//
+//                Spacer(modifier = Modifier.height(16.dp))
+//                SurveyOptions(
+//                    options = editOptions,
+//                    isEditing = true,
+//                    onOptionChange = { index, newValue ->
+//                        editOptions = editOptions.toMutableList().also { it[index] = newValue }
+//                    },
+//                    onOptionRemove = { index ->
+//                        editOptions = editOptions.toMutableList().also { it.removeAt(index) }
+//                    },
+//                    onVote = {}
+//                )
+//                Spacer(modifier = Modifier.height(8.dp))
+//
+//                SurveyBottomButtons(
+//                    onAddOption = { editOptions = editOptions + "New Option ${editOptions.size + 1}" },
+//                    onConfirmSurvey = {
+//                        isConfirmed = true
+//                        onConfirmSurvey?.invoke(editTitle, editOptions)
+//                        options = editOptions.associateWith { setOf() }
+//                    },
+//                    optionsSize = editOptions.size
+//                )
+//            }
+//        } else {
+//            Column {
+//                SurveyTitle(
+//                    title = editTitle,
+//                    isEditing = true,
+//                    onDeleteSurvey = onDeleteSurvey,
+//                )
+//
+//                SurveyOptions(
+//                    options = options.keys.toList(),
+//                    isEditing = false,
+//                    votes = options,
+//                    selectedOption = selectedOption,
+//                    onVote = { selected ->
+//                        options = options.mapValues { (key, value) ->
+//                            when {
+//                                key == selectedOption -> value - 1
+//                                key == selected -> value + 1
+//                                else -> value
+//                            }
+//                        }
+//                        selectedOption = if (selectedOption == selected) null else selected
+//                    }
+//                )
+//
+//            }
+//        }
+//    }
+//}
+
+

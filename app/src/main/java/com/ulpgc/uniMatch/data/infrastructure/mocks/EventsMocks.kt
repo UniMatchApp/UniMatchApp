@@ -2,9 +2,7 @@ package com.ulpgc.uniMatch.data.infrastructure.mocks
 
 import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.domain.models.Location
-import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.domain.models.Survey
-import com.ulpgc.uniMatch.data.domain.models.User
 import java.util.Date
 
 object EventsMocks {
@@ -40,10 +38,8 @@ object EventsMocks {
     fun createMockSurvey(): Survey {
         return Survey(
             title = "Event Feedback",
-            options = mapOf(
-                "How did you hear about the event?" to setOf("Social Media", "Friend", "Email"),
-                "Was the event useful?" to setOf("Yes", "No", "Not sure")
-            )
+            options = setOf("User123", "User234"),
+
         )
     }
 }

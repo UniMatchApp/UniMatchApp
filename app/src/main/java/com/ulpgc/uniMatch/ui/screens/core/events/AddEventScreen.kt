@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.ui.screens.core.events
 
 import LocationPicker
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,7 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.models.Survey
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.event.EventDatePicker
 import com.ulpgc.uniMatch.ui.components.event.EventSection
 import com.ulpgc.uniMatch.ui.components.event.EventSurveyCard
@@ -34,9 +38,10 @@ import com.ulpgc.uniMatch.ui.components.event.EventSurveyCard
 
 @Composable
 fun AddEventScreen(
-    eventViewModel: EventViewModel
+    eventViewModel: EventViewModel,
+    profileViewModel: ProfileViewModel
 ) {
-    var surveys by remember { mutableStateOf(mutableListOf<Int>()) }
+    var surveys by remember { mutableStateOf(mutableListOf<Survey>()) }
     var surveyCounter by remember { mutableStateOf(0) }
 
     Column(modifier = Modifier
@@ -83,7 +88,17 @@ fun AddEventScreen(
         surveys.forEach { surveyId ->
             EventSurveyCard(
                 isEditing = true,
-                onDeleteSurvey = { surveys = surveys.filter { it != surveyId }.toMutableList() }
+                onDeleteSurvey = {
+                    surveys = surveys.filter {
+                        it != surveyId
+                    }.toMutableList()
+                },
+                onConfirmSurvey = { title, options ->
+                    surveys = eventViewModel.createSurvey(surveys, title, options)
+                },
+                onVoteSurvey = { option ->
+
+                }
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -94,7 +109,7 @@ fun AddEventScreen(
         ) {
             Button(
                 onClick = {
-                    surveys = (surveys + surveyCounter).toMutableList()
+                    surveys = ((surveys + surveyCounter) as MutableList<Survey>)
                     surveyCounter++
                 },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
@@ -108,7 +123,15 @@ fun AddEventScreen(
             Spacer(modifier = Modifier.width(16.dp))
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { eventViewModel.createEvent(
+                    title = "title",
+                    price = 0.0,
+                    longitude = 0.0,
+                    latitude = 0.0,
+                    date = "date",
+                    attachment = Uri.EMPTY,
+                    surveys = surveys
+                ) },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
             ) {
                 Text(
