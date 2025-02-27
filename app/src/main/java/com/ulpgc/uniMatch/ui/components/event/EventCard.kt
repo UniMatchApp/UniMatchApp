@@ -33,7 +33,7 @@ fun EventCard(
         Column(modifier = Modifier.padding(16.dp)) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(event.title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text(LocationHelper.getAddressFromCoordinates(event.location.latitude, event.location.longitude),fontSize = 14.sp, color = Color.Gray)
+            Text(LocationHelper.getAddressFromCoordinates(event.location?.latitude, event.location?.longitude),fontSize = 14.sp, color = Color.Gray)
             Text(DateParser.formatDateToString(event.date), fontSize = 14.sp)
         }
     }

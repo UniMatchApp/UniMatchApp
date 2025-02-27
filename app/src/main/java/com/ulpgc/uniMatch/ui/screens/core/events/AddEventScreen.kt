@@ -34,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,19 +49,25 @@ import coil.compose.rememberAsyncImagePainter
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Survey
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.event.EventDatePicker
 import com.ulpgc.uniMatch.ui.components.event.EventSection
 import com.ulpgc.uniMatch.ui.components.event.EventSurveyCard
 import com.ulpgc.uniMatch.ui.theme.MainColor
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun AddEventScreen(
     eventViewModel: EventViewModel,
+    errorViewModel: ErrorViewModel,
     profileViewModel: ProfileViewModel,
 ) {
+
+    val coroutineScope = rememberCoroutineScope()
+
     var surveys by remember { mutableStateOf(mutableListOf<Survey>()) }
     var surveyCounter by remember { mutableStateOf(0) }
 
@@ -108,7 +115,7 @@ fun AddEventScreen(
         Spacer(modifier = Modifier.height(16.dp))
         EventSection(
             label = stringResource(R.string.event_title),
-            value = "Enter a title",
+            value = eventViewModel.eventData.collectAsState().value?.title ?: "New Title",
             readOnly = false,
             onValueChange = { eventViewModel.setTitle(it) }
         )
@@ -191,10 +198,17 @@ fun AddEventScreen(
             Spacer(modifier = Modifier.width(16.dp))
 
             Button(
-                onClick = { eventViewModel.createEvent()
-                    eventViewModel.eventData.value?.let {
-                        Log.i("AddEventScreen", "Event created: $it")
-                    } },
+                onClick = {
+                    coroutineScope.launch {
+                        val result = eventViewModel.createEvent()
+                        result.onSuccess {
+                            Log.i("AddEventScreen", "Evento creado correctamente")
+                            // Aquí podrías mostrar un mensaje de éxito o navegar a otra pantalla
+                        }.onFailure { error ->
+                            errorViewModel.showError(error.message ?: "Ocurrió un error inesperado")
+                        }
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
             ) {
                 Text(

@@ -94,7 +94,7 @@ fun EventDetailScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             val formattedDate = DateParser.formatDateToString(it.date)
-            val addressFromCoordinates = LocationHelper.getAddressFromCoordinates(it.location.latitude, it.location.longitude)
+            val addressFromCoordinates = LocationHelper.getAddressFromCoordinates(it.location?.latitude, it.location?.longitude)
 
             val participantsText = it.participants.joinToString(", ")
 

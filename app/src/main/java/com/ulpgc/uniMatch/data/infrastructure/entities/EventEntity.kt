@@ -28,9 +28,9 @@ data class EventEntity (
             return EventEntity(
                 id = event.eventId,
                 title = event.title,
-                price = event.price,
-                latitude = event.location.latitude,
-                longitude = event.location.longitude,
+                price = event.price ?: 0.0,
+                latitude = event.location?.latitude,
+                longitude = event.location?.longitude,
                 dateTimestamp = event.date.time,
                 ownerId = event.ownerId,
                 participants = event.participants,

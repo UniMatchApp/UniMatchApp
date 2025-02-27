@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.io.File
+import java.util.Date
+
 
 open class EventViewModel(
     private val eventService: EventService
@@ -22,11 +24,15 @@ open class EventViewModel(
     private val _eventsData = MutableStateFlow<List<Event>?>(null)
     val eventsData: StateFlow<List<Event>?> get() = _eventsData
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> get() = _isLoading
+    private val _eventCreated = MutableStateFlow(EventData())
+    val eventCreated: StateFlow<EventData> get() = _eventCreated
 
     private val _eventData = MutableStateFlow<Event?>(null)
     val eventData: StateFlow<Event?> get() = _eventData
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> get() = _isLoading
+
 
     fun loadEvents() {
         performLoadingAction {
@@ -51,39 +57,58 @@ open class EventViewModel(
         }
     }
 
-    fun setTitle(title: String) {
-        val event = eventData.value
-        if (event != null) {
-            _eventData.value = event.copy(title = title)
+
+
+    suspend fun createEvent(): Result<Unit> {
+        return try {
+            val event = _eventCreated.value
+
+            when {
+                event.title.isNullOrBlank() -> return Result.failure(IllegalArgumentException("El título no puede estar vacío"))
+                event.attachment.isNullOrBlank() -> return Result.failure(IllegalArgumentException("Debe haber un archivo adjunto"))
+                event.date == null -> return Result.failure(IllegalArgumentException("Debe haber una fecha válida"))
+            }
+
+            Log.i("EventViewModel", "Creando evento: $event")
+
+            val file = File(event.attachment)
+            val uri: Uri = Uri.fromFile(file)
+
+            eventService.create(
+                event.title!!,
+                0.0,
+                event.location ?: null,
+                DateParser.formatDateToString(event.date!!),
+                uri,
+                event.surveys ?: emptyList()
+            )
+
+            Result.success(Unit)
+
+        } catch (e: Exception) {
+            Result.failure(e)
         }
+    }
+
+    fun setTitle(title: String) {
+        _eventCreated.value = _eventCreated.value.copy(title = title)
     }
 
     fun setLocation(latitude: Double, longitude: Double, altitude: Double) {
-        val location = Location(
-            latitude = latitude,
-            longitude = longitude,
-            altitude = altitude
-        )
-        val event = eventData.value
-        if (event != null) {
-            _eventData.value = event.copy(location = location)
-        }
+        val location = Location(latitude, longitude, altitude)
+        _eventCreated.value = _eventCreated.value.copy(location = location)
     }
 
-
-    fun createEvent() {
-        performLoadingAction {
-            val event = eventData.value
-            Log.i("EventViewModel", "Event: $event")
-            if (event != null) {
-                val file = File(event.attachment)
-                val uri: Uri = Uri.fromFile(file)
-                eventService.create(event.title, event.price, event.location, DateParser.formatDateToString(event.date), uri, event.surveys)
-            } else {
-                throw IllegalStateException("No event data available")
-            }
-        }
+    fun setDateTime(date: String) {
+        Log.i("EventViewModel", "Fecha recibida: $date")
+        _eventCreated.value = _eventCreated.value.copy(date = DateParser.formatStringToDate(date))
+        Log.i("EventViewModel", "Fecha guardada: ${_eventCreated.value.date}")
     }
+
+    fun setUri(uri: Uri) {
+        _eventCreated.value = _eventCreated.value.copy(attachment = uri.toString())
+    }
+
 
 
     fun createSurvey(surveys: MutableList<Survey>, title: String, options: List<String>): MutableList<Survey> {
@@ -94,21 +119,13 @@ open class EventViewModel(
         surveys.add(survey)
         return surveys
     }
-
-    fun setDateTime(date: String) {
-        val event = eventData.value
-        if (event != null) {
-            _eventData.value = event.copy(date = DateParser.formatStringToDate(date))
-        }
-    }
-
-    fun setUri(it: Uri) {
-        val event = eventData.value
-        if (event != null) {
-            _eventData.value = event.copy(attachment = it.toString())
-        }
-    }
-
-
 }
+
+data class EventData(
+    val title: String? = null,
+    val attachment: String? = null,
+    val location: Location? = null,
+    val date: Date? = null,
+    val surveys: List<Survey>? = null
+)
 
