@@ -11,5 +11,10 @@ class DateParser() {
             val formatter = SimpleDateFormat(pattern, Locale.getDefault())
             return formatter.format(date)
         }
+
+        fun formatStringToDate(date: String, pattern: String = "dd-MM-yyyy HH:mm"): Date {
+            val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+            return formatter.parse(date)
+        }
     }
 }

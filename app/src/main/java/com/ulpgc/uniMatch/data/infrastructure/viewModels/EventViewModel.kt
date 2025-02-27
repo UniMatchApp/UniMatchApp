@@ -1,15 +1,19 @@
 package com.ulpgc.uniMatch.data.infrastructure.viewModels
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ulpgc.uniMatch.data.application.services.EventService
 import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Survey
+import com.ulpgc.uniMatch.ui.screens.utils.DateParser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
+
 open class EventViewModel(
     private val eventService: EventService
 ) : ViewModel() {
@@ -36,8 +40,6 @@ open class EventViewModel(
         }
     }
 
-
-
     private fun performLoadingAction(action: suspend () -> Unit) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -49,25 +51,40 @@ open class EventViewModel(
         }
     }
 
-
-    fun createEvent(
-        title: String,
-        price: Double,
-        longitude: Double,
-        latitude: Double,
-        date: String,
-        attachment: Uri,
-        surveys: List<Survey>,
-    ) {
-        performLoadingAction {
-            val location = Location(
-                longitude = longitude,
-                latitude = latitude,
-                altitude = 0.0
-            )
-            eventService.create(title, price, location, date, attachment, surveys)
+    fun setTitle(title: String) {
+        val event = eventData.value
+        if (event != null) {
+            _eventData.value = event.copy(title = title)
         }
     }
+
+    fun setLocation(latitude: Double, longitude: Double, altitude: Double) {
+        val location = Location(
+            latitude = latitude,
+            longitude = longitude,
+            altitude = altitude
+        )
+        val event = eventData.value
+        if (event != null) {
+            _eventData.value = event.copy(location = location)
+        }
+    }
+
+
+    fun createEvent() {
+        performLoadingAction {
+            val event = eventData.value
+            Log.i("EventViewModel", "Event: $event")
+            if (event != null) {
+                val file = File(event.attachment)
+                val uri: Uri = Uri.fromFile(file)
+                eventService.create(event.title, event.price, event.location, DateParser.formatDateToString(event.date), uri, event.surveys)
+            } else {
+                throw IllegalStateException("No event data available")
+            }
+        }
+    }
+
 
     fun createSurvey(surveys: MutableList<Survey>, title: String, options: List<String>): MutableList<Survey> {
         val survey = Survey(
@@ -76,6 +93,20 @@ open class EventViewModel(
         )
         surveys.add(survey)
         return surveys
+    }
+
+    fun setDateTime(date: String) {
+        val event = eventData.value
+        if (event != null) {
+            _eventData.value = event.copy(date = DateParser.formatStringToDate(date))
+        }
+    }
+
+    fun setUri(it: Uri) {
+        val event = eventData.value
+        if (event != null) {
+            _eventData.value = event.copy(attachment = it.toString())
+        }
     }
 
 

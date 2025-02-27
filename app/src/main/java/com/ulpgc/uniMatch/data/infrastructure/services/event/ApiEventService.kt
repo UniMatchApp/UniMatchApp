@@ -90,7 +90,6 @@ class ApiEventService(
         date: String,
         attachment: Uri,
         surveys: List<Survey>
-
     ): Result<Event> {
         return safeRequest {
             val response = eventController.createEvent(

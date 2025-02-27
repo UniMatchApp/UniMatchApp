@@ -25,7 +25,9 @@ import java.util.Calendar
 
 
 @Composable
-fun EventDatePicker() {
+fun EventDatePicker(
+    onDateSelect : (String) -> Unit
+) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
