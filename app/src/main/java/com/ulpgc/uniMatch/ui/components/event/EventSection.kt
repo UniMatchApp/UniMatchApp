@@ -33,7 +33,7 @@ fun EventSection(
         OutlinedTextField(
             value = value,
             onValueChange = { if (!readOnly) onValueChange?.invoke(it) },
-            enabled = false,
+            enabled = !readOnly,
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(enabled = isLocation) {

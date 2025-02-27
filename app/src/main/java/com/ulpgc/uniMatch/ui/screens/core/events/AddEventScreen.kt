@@ -201,7 +201,10 @@ fun AddEventScreen(
             Spacer(modifier = Modifier.width(16.dp))
 
             Button(
-                onClick = { eventViewModel.createEvent() },
+                onClick = { eventViewModel.createEvent()
+                    eventViewModel.eventData.value?.let {
+                        Log.i("AddEventScreen", "Event created: $it")
+                    } },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
             ) {
                 Text(
