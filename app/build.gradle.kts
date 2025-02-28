@@ -94,6 +94,7 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.espresso.core)
     ksp(libs.androidx.room.compiler.v261)
 
     implementation(libs.androidx.core.ktx)
