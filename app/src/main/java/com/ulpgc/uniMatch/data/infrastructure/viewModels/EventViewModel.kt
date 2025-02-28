@@ -114,15 +114,16 @@ open class EventViewModel(
 
 
 
-    fun createSurvey(surveys: MutableList<Survey>, title: String, options: List<String>): MutableList<Survey> {
+    fun createSurvey(title: String, options: List<String>) {
         val survey = Survey(
             title = title,
             options = options.toSet()
         )
-        surveys.add(survey)
-        _eventCreated.value = _eventCreated.value.copy(surveys = surveys)
-        Log.i("EventViewModel", "Encuesta creada: $survey | Encuestas: $surveys")
-        return surveys
+        val updatedSurveys = _eventCreated.value.surveys?.toMutableList() ?: mutableListOf()
+        updatedSurveys.add(survey)
+
+        _eventCreated.value = _eventCreated.value.copy(surveys = updatedSurveys)
+        Log.i("EventViewModel", "Encuesta creada: ${_eventCreated.value.surveys}")
     }
 
     fun dislikeEvent(eventId: String) {

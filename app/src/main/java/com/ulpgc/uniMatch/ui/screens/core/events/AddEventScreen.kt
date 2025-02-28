@@ -70,8 +70,7 @@ fun AddEventScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    var surveys by remember { mutableStateOf(mutableListOf<Survey>()) }
-    var surveyCounter by remember { mutableStateOf(0) }
+
 
     var showDialog by remember { mutableStateOf(false) }
     val activity = LocalContext.current as? ComponentActivity
@@ -79,6 +78,7 @@ fun AddEventScreen(
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
     var eventToCreate = eventViewModel.eventCreated.collectAsState().value
+    var surveys by remember { mutableStateOf(eventToCreate.surveys) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -166,20 +166,21 @@ fun AddEventScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        surveys.forEach { survey ->
+        surveys?.forEach { survey ->
             EventSurveyCard(
                 isEditing = true,
                 onDeleteSurvey = {
-                    surveys = surveys.filter {
+                    surveys = surveys?.filter {
                         it != survey
-                    }.toMutableList()
+                    }?.toMutableList()
                 },
                 onConfirmSurvey = { title, options ->
-                    surveys = eventViewModel.createSurvey(surveys, title, options)
+                    eventViewModel.createSurvey(title, options)
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -187,7 +188,8 @@ fun AddEventScreen(
         ) {
             Button(
                 onClick = {
-                    surveys = (surveys + Survey("Title", setOf())).toMutableList()
+                    surveys = (surveys?.plus((Survey("Title", setOf()))))?.toMutableList()
+                    Log.i("AddEventScreen", "Encuesta añadida $surveys")
                 },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
             ) {
