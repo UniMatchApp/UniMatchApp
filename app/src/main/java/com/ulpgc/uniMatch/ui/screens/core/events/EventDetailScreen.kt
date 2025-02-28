@@ -44,6 +44,7 @@ import coil.request.ImageRequest
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.ui.components.event.EventSection
 import com.ulpgc.uniMatch.ui.screens.utils.DateParser
 import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
@@ -54,6 +55,7 @@ fun EventDetailScreen(
     eventId: String,
     eventViewModel: EventViewModel,
     profileViewModel: ProfileViewModel,
+    userViewModel: UserViewModel,
     onEventSurveyClick: (String) -> Unit
 ) {
     val event = eventViewModel.eventData.collectAsState().value
@@ -125,10 +127,23 @@ fun EventDetailScreen(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        if (event.participants.contains(userViewModel.userId)) {
+                            eventViewModel.removeParticipation(eventId)
+                        } else {
+                            eventViewModel.addParticipation(eventId)
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                 ) {
-                    Text(text = stringResource(R.string.participate), color = MaterialTheme.colorScheme.onBackground)
+                    Text(
+                        text = if (event.participants.contains(userViewModel.userId)) {
+                            stringResource(R.string.remove_participation)
+                        } else {
+                            stringResource(R.string.participate)
+                        },
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -141,10 +156,16 @@ fun EventDetailScreen(
                         modifier = Modifier.padding(end = 8.dp)
                     )
 
-                    val isLiked = event.likes.contains(profile?.userId ?: "")
+                    val isLiked = event.likes.contains(userViewModel.userId)
 
                     IconButton(
-                        onClick = { /*TODO: Lógica para dar like o quitar like*/ },
+                        onClick = {
+                            if (isLiked) {
+                                eventViewModel.dislikeEvent(eventId)
+                            } else {
+                                eventViewModel.likeEvent(eventId)
+                            }
+                        },
                         modifier = Modifier.align(Alignment.CenterVertically)
                     ) {
                         Icon(

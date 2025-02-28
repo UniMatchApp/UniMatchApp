@@ -19,10 +19,10 @@ interface EventService {
     suspend fun getEventsByName(filterNameEvent: String): Result<List<Event>?>
     suspend fun update(id: String, event: Event): Result<Event>
     suspend fun delete(id: String): Result<Unit>
-    suspend fun participateEvent(id: String, userId: String): Result<Unit>
-    suspend fun removeParticipation(id: String, userId: String): Result<Unit>
-    suspend fun likeEvent(id: String, userId: String): Result<Unit>
-    suspend fun dislikeEvent(id: String, userId: String): Result<Unit>
+    suspend fun participateEvent(id: String): Result<Unit>
+    suspend fun removeParticipation(id: String): Result<Unit>
+    suspend fun likeEvent(id: String): Result<Unit>
+    suspend fun dislikeEvent(id: String): Result<Unit>
     suspend fun createSurvey(eventId: String, survey: Survey): Result<Survey>
     suspend fun deleteSurvey(eventId: String, surveyTitle: String): Result<Unit>
     suspend fun editSurvey(eventId: String, survey: Survey): Result<Survey>
