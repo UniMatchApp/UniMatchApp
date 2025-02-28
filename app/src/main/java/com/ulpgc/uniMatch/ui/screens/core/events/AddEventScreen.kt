@@ -141,16 +141,13 @@ fun AddEventScreen(
             )
             LocationPicker(
                 onChangeLocation = { eventLocation ->
-                    eventLocation.latitude?.let {
-                        eventLocation.longitude?.let { it1 ->
-                            eventLocation.altitude?.let { it2 ->
-                                eventViewModel.setLocation(it,
-                                    it1, it2
-                                )
-                            }
+                    eventLocation.apply {
+                        if (latitude != null && longitude != null && altitude != null) {
+                            eventViewModel.setLocation(latitude!!, longitude!!, altitude!!)
                         }
                     }
                 }
+
             )
         }
 
@@ -170,19 +167,16 @@ fun AddEventScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        surveys.forEach { surveyId ->
+        surveys.forEach { survey ->
             EventSurveyCard(
                 isEditing = true,
                 onDeleteSurvey = {
                     surveys = surveys.filter {
-                        it != surveyId
+                        it != survey
                     }.toMutableList()
                 },
                 onConfirmSurvey = { title, options ->
                     surveys = eventViewModel.createSurvey(surveys, title, options)
-                },
-                onVoteSurvey = { option ->
-
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -194,7 +188,7 @@ fun AddEventScreen(
         ) {
             Button(
                 onClick = {
-                    surveys = ((surveys + surveyCounter) as MutableList<Survey>)
+                    surveys = (surveys + Survey(title = "Survey #$surveyCounter", options = setOf())).toMutableList()
                     surveyCounter++
                 },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)

@@ -46,19 +46,19 @@ class MockEventService : EventService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun participateEvent(id: String, userId: String): Result<Unit> {
+    override suspend fun participateEvent(id: String): Result<Unit> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeParticipation(id: String, userId: String): Result<Unit> {
+    override suspend fun removeParticipation(id: String): Result<Unit> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun likeEvent(id: String, userId: String): Result<Unit> {
+    override suspend fun likeEvent(id: String): Result<Unit> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun dislikeEvent(id: String, userId: String): Result<Unit> {
+    override suspend fun dislikeEvent(id: String): Result<Unit> {
         TODO("Not yet implemented")
     }
 

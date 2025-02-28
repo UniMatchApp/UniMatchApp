@@ -130,7 +130,8 @@ class ApiEventService(
         TODO("Not yet implemented")
     }
 
-    override suspend fun participateEvent(id: String, userId: String): Result<Unit> {
+
+    override suspend fun participateEvent(id: String): Result<Unit> {
         return safeRequest {
             val response = eventController.participateEvent(id)
 
@@ -142,7 +143,7 @@ class ApiEventService(
         }
     }
 
-    override suspend fun removeParticipation(id: String, userId: String): Result<Unit> {
+    override suspend fun removeParticipation(id: String): Result<Unit> {
         return safeRequest {
             val response = eventController.unparticipateEvent(id)
 
@@ -154,7 +155,7 @@ class ApiEventService(
         }
     }
 
-    override suspend fun likeEvent(id: String, userId: String): Result<Unit> {
+    override suspend fun likeEvent(id: String): Result<Unit> {
         return safeRequest {
             val response = eventController.likeEvent(id)
 
@@ -166,7 +167,7 @@ class ApiEventService(
         }
     }
 
-    override suspend fun dislikeEvent(id: String, userId: String): Result<Unit> {
+    override suspend fun dislikeEvent(id: String): Result<Unit> {
         return safeRequest {
             val response = eventController.unlikeEvent(id)
 

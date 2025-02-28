@@ -63,22 +63,24 @@ open class EventViewModel(
         return try {
             val event = _eventCreated.value
 
-            when {
-                event.title.isNullOrBlank() -> return Result.failure(IllegalArgumentException("El título no puede estar vacío"))
-                event.attachment.isNullOrBlank() -> return Result.failure(IllegalArgumentException("Debe haber un archivo adjunto"))
-                event.date == null -> return Result.failure(IllegalArgumentException("Debe haber una fecha válida"))
-            }
+            val title = event.title
+            val attachment = event.attachment
+            val date = event.date
+
+            if (title.isNullOrBlank()) return Result.failure(IllegalArgumentException("El título no puede estar vacío"))
+            if (attachment.isNullOrBlank()) return Result.failure(IllegalArgumentException("Debe haber un archivo adjunto"))
+            if (date == null) return Result.failure(IllegalArgumentException("Debe haber una fecha válida"))
 
             Log.i("EventViewModel", "Creando evento: $event")
 
-            val file = File(event.attachment)
+            val file = File(attachment)
             val uri: Uri = Uri.fromFile(file)
 
             eventService.create(
-                event.title!!,
+                title,
                 0.0,
                 event.location ?: null,
-                DateParser.formatDateToString(event.date!!),
+                DateParser.formatDateToString(date),
                 uri,
                 event.surveys ?: emptyList()
             )
@@ -89,6 +91,7 @@ open class EventViewModel(
             Result.failure(e)
         }
     }
+
 
     fun setTitle(title: String) {
         _eventCreated.value = _eventCreated.value.copy(title = title)
@@ -117,6 +120,8 @@ open class EventViewModel(
             options = options.toSet()
         )
         surveys.add(survey)
+        _eventCreated.value = _eventCreated.value.copy(surveys = surveys)
+        Log.i("EventViewModel", "Encuesta creada: $survey | Encuestas: $surveys")
         return surveys
     }
 

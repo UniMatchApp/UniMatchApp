@@ -26,7 +26,7 @@ import com.ulpgc.uniMatch.ui.components.event.survey.SurveyTitle
 
 @Composable
 fun EventSurveyCard(
-    title: String = "",
+    title: String = "Title",
     initialOptions: Map<String, Set<String>> = mapOf(
         stringResource(R.string.option_one) to setOf(),
         stringResource(R.string.option_two) to setOf()
@@ -73,10 +73,14 @@ fun EventSurveyCard(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 SurveyBottomButtons(
-                    onAddOption = { editOptions = editOptions + "New Option ${editOptions.size + 1}" },
+                    onAddOption = { editOptions =
+                        editOptions + "New Option ${editOptions.size + 1}"
+                    },
                     onConfirmSurvey = {
                         isConfirmed = true
-                        onConfirmSurvey?.invoke(editTitle, editOptions)
+                        if (onConfirmSurvey != null) {
+                            onConfirmSurvey(editTitle, editOptions)
+                        }
                         options = editOptions.associateWith { setOf<String>() }
                     },
                     optionsSize = editOptions.size
