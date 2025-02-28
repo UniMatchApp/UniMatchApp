@@ -119,6 +119,42 @@ open class EventViewModel(
         surveys.add(survey)
         return surveys
     }
+
+    fun dislikeEvent(eventId: String) {
+        performLoadingAction {
+            val event = eventData.value
+            if (event != null) {
+                eventService.dislikeEvent(eventId)
+            }
+        }
+    }
+
+    fun likeEvent(eventId: String) {
+        performLoadingAction {
+            val event = eventData.value
+            if (event != null) {
+                eventService.likeEvent(eventId)
+            }
+        }
+    }
+
+    fun addParticipation(eventId: String) {
+        performLoadingAction {
+            val event = eventData.value
+            if (event != null) {
+                eventService.participateEvent(eventId)
+            }
+        }
+    }
+
+    fun removeParticipation(eventId: String) {
+        performLoadingAction {
+            val event = eventData.value
+            if (event != null) {
+                eventService.removeParticipation(eventId)
+            }
+        }
+    }
 }
 
 data class EventData(
