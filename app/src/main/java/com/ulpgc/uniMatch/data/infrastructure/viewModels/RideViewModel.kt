@@ -75,7 +75,8 @@ class RideViewModel : ViewModel() {
                 longitude = place.longitud,
                 0.0
             )
-            pickUp = TextFieldValue(text = place.name)
+            onPickUpValueChanged(TextFieldValue(text = place.name))
+
         }
     }
 }

@@ -69,7 +69,7 @@ fun LocationPicker(
                         .clickable {
                             Log.i("PlacesAutoCompleteTextField", "Place clicked: ${place.toString()}")
                             viewModel.onPlaceClick(place.id)
-                            viewModel.onPickUpValueChanged(TextFieldValue(text = place.name))
+//                            viewModel.onPickUpValueChanged(TextFieldValue(text = place.name))
                             isLazyColumnVisible = false
                         }
                         .padding(16.dp)

@@ -28,6 +28,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.domain.models.Survey
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
@@ -75,6 +77,8 @@ fun AddEventScreen(
     val activity = LocalContext.current as? ComponentActivity
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    var eventToCreate = eventViewModel.eventCreated.collectAsState().value
 
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -113,12 +117,20 @@ fun AddEventScreen(
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
+
+        var titleText by remember { mutableStateOf(eventToCreate?.title) }
+
         EventSection(
             label = stringResource(R.string.event_title),
-            value = eventViewModel.eventData.collectAsState().value?.title ?: "New Title",
+            value = titleText ?: "Title",
             readOnly = false,
-            onValueChange = { eventViewModel.setTitle(it) }
+            onValueChange = { newText ->
+                titleText = newText
+                eventViewModel.setTitle(newText)
+            }
         )
+
+
         Spacer(modifier = Modifier.height(8.dp))
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -129,7 +141,6 @@ fun AddEventScreen(
             )
             LocationPicker(
                 onChangeLocation = { eventLocation ->
-                    Log.i("AddEventScreen", "Location updated: $eventLocation")
                     eventLocation.latitude?.let {
                         eventLocation.longitude?.let { it1 ->
                             eventLocation.altitude?.let { it2 ->
@@ -152,7 +163,6 @@ fun AddEventScreen(
             )
             EventDatePicker(
                 onDateSelect = { date ->
-                    Log.i("AddEventScreen", "Date updated: $date")
                     eventViewModel.setDateTime(date)
                 }
             )

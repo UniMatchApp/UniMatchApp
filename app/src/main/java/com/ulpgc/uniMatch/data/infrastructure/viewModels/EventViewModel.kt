@@ -92,17 +92,17 @@ open class EventViewModel(
 
     fun setTitle(title: String) {
         _eventCreated.value = _eventCreated.value.copy(title = title)
+        Log.i("EventViewModel", "Título guardado: ${_eventCreated.value.title}")
     }
 
     fun setLocation(latitude: Double, longitude: Double, altitude: Double) {
+        Log.i("EventViewModel", "Ubicación guardada: $latitude, $longitude, $altitude")
         val location = Location(latitude, longitude, altitude)
         _eventCreated.value = _eventCreated.value.copy(location = location)
     }
 
     fun setDateTime(date: String) {
-        Log.i("EventViewModel", "Fecha recibida: $date")
         _eventCreated.value = _eventCreated.value.copy(date = DateParser.formatStringToDate(date))
-        Log.i("EventViewModel", "Fecha guardada: ${_eventCreated.value.date}")
     }
 
     fun setUri(uri: Uri) {

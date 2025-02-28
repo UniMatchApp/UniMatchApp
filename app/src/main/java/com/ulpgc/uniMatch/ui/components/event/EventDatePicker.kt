@@ -42,6 +42,7 @@ fun EventDatePicker(
         context,
         { _: TimePicker, selectedHour: Int, selectedMinute: Int ->
             selectedDateTime += " $selectedHour:$selectedMinute"
+            onDateSelect(selectedDateTime)
         }, hour, minute, true
     )
 

@@ -12,9 +12,18 @@ class DateParser() {
             return formatter.format(date)
         }
 
-        fun formatStringToDate(date: String, pattern: String = "dd-MM-yyyy HH:mm"): Date {
-            val formatter = SimpleDateFormat(pattern, Locale.getDefault())
-            return formatter.parse(date)
+        fun formatStringToDate(date: String): Date {
+            val possiblePatterns = listOf("dd/MM/yyyy HH:mm", "d/M/yyyy HH:mm", "dd-M-yyyy HH:mm")
+            for (pattern in possiblePatterns) {
+                try {
+                    val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+                    return formatter.parse(date)!!
+                } catch (e: Exception) {
+
+                }
+            }
+            throw IllegalArgumentException("Formato de fecha no válido")
         }
+
     }
 }

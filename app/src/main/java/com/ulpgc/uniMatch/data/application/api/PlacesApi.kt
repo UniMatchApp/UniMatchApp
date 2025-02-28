@@ -72,6 +72,7 @@ class PlacesApi {
         val detailsDto = response.bodyAsText()
         val jsonResponse = Json.parseToJsonElement(detailsDto)
 
+        val name = jsonResponse.jsonObject["result"]?.jsonObject?.get("name")?.jsonPrimitive?.content ?: name
         val lat = jsonResponse.jsonObject["result"]?.jsonObject?.get("geometry")?.jsonObject?.get("location")?.jsonObject?.get("lat")?.jsonPrimitive?.double ?: 0.0
         val lng = jsonResponse.jsonObject["result"]?.jsonObject?.get("geometry")?.jsonObject?.get("location")?.jsonObject?.get("lng")?.jsonPrimitive?.double ?: 0.0
         return Place(placeId, name, lat, lng)
