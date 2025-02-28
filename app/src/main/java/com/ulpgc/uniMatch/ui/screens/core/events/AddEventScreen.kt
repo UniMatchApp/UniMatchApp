@@ -131,9 +131,8 @@ fun AddEventScreen(
         )
 
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
         Column {
             Text(
                 text = stringResource(R.string.event_location),
@@ -188,8 +187,7 @@ fun AddEventScreen(
         ) {
             Button(
                 onClick = {
-                    surveys = (surveys + Survey(title = "Survey #$surveyCounter", options = setOf())).toMutableList()
-                    surveyCounter++
+                    surveys = (surveys + Survey("Title", setOf())).toMutableList()
                 },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
             ) {
@@ -207,7 +205,6 @@ fun AddEventScreen(
                         val result = eventViewModel.createEvent()
                         result.onSuccess {
                             Log.i("AddEventScreen", "Evento creado correctamente")
-                            // Aquí podrías mostrar un mensaje de éxito o navegar a otra pantalla
                         }.onFailure { error ->
                             errorViewModel.showError(error.message ?: "Ocurrió un error inesperado")
                         }
