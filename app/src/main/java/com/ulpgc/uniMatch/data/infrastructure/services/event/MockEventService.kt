@@ -22,13 +22,15 @@ class MockEventService : EventService {
 
     override suspend fun create(
         title: String,
-        price: Double,
-        location: Location,
+        price: Double?,
+        location: Location?,
         date: String,
         attachment: Uri,
-        surveys: List<Survey>
+        surveys: List<Survey>?
     ): Result<Event> {
-        TODO("Not yet implemented")
+        return Result.success(
+            EventsMocks.createMockEvent()
+        )
     }
 
 

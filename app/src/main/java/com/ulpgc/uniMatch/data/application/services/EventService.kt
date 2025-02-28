@@ -10,11 +10,11 @@ interface EventService {
     suspend fun getOne(id: String): Result<Event>
     suspend fun create(
         title: String,
-        price: Double,
-        location: Location,
+        price: Double?,
+        location: Location?,
         date: String,
         attachment: Uri,
-        surveys: List<Survey>
+        surveys: List<Survey>?
     ): Result<Event>
     suspend fun getEventsByName(filterNameEvent: String): Result<List<Event>?>
     suspend fun update(id: String, event: Event): Result<Event>

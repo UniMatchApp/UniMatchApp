@@ -5,8 +5,8 @@ import java.util.Date
 data class Event (
     val eventId: String,
     val title: String,
-    val price: Double,
-    val location: Location,
+    val price: Double?,
+    val location: Location?,
     val date: Date,
     val ownerId: String,
     val participants: List<String>,

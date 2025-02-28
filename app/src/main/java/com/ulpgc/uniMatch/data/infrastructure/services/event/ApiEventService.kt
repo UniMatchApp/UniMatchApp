@@ -72,6 +72,8 @@ class ApiEventService(
         }
     }
 
+
+
     private fun createRequestBody(value: String): RequestBody =
         value.toRequestBody("text/plain".toMediaTypeOrNull())
 
@@ -85,28 +87,32 @@ class ApiEventService(
 
     override suspend fun create(
         title: String,
-        price: Double,
-        location: Location,
+        price: Double?,
+        location: Location?,
         date: String,
         attachment: Uri,
-        surveys: List<Survey>
+        surveys: List<Survey>?
     ): Result<Event> {
         return safeRequest {
-            val response = eventController.createEvent(
-                title = createRequestBody(title),
-                price = createRequestBody(price.toString()),
-                latitude = location.latitude,
-                longitude = location.longitude,
-                date = createRequestBody(date.toString()),
-                attachment = createImagePart(attachment),
-                surveys = ListRequest(surveys.map { it.title })
-            )
-
-            if (!response.success) {
-                throw Exception(response.errorMessage ?: "Unknown error occurred")
+            val response = surveys?.let { ListRequest(it.map { it.title }) }?.let {
+                eventController.createEvent(
+                    title = createRequestBody(title),
+                    price = createRequestBody(price.toString()),
+                    latitude = location?.latitude,
+                    longitude = location?.longitude,
+                    date = createRequestBody(date.toString()),
+                    attachment = createImagePart(attachment),
+                    surveys = it
+                )
             }
 
-            val createdEvent = response.value?.toDomainModel()
+            if (response != null) {
+                if (!response.success) {
+                    throw Exception(response.errorMessage ?: "Unknown error occurred")
+                }
+            }
+
+            val createdEvent = response?.value?.toDomainModel()
 
             if (createdEvent != null) {
                 eventDao.insertEvent(EventEntity.fromDomain(createdEvent))
