@@ -188,7 +188,7 @@ fun AddEventScreen(
         ) {
             Button(
                 onClick = {
-                    surveys = (surveys?.plus((Survey("Title", setOf()))))?.toMutableList()
+
                     Log.i("AddEventScreen", "Encuesta añadida $surveys")
                 },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
