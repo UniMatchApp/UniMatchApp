@@ -69,8 +69,9 @@ fun EventDetailScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp, vertical = 16.dp)
-                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Box(
                 modifier = Modifier
@@ -87,8 +88,7 @@ fun EventDetailScreen(
                 Image(
                     painter = painter,
                     contentDescription = "User profile image",
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
             }
@@ -96,30 +96,38 @@ fun EventDetailScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             val formattedDate = DateParser.formatDateToString(it.date)
-            val addressFromCoordinates = LocationHelper.getAddressFromCoordinates(it.location?.latitude, it.location?.longitude)
+            val addressFromCoordinates = LocationHelper.getAddressFromCoordinates(
+                it.location?.latitude,
+                it.location?.longitude
+            )
 
             val participantsText = it.participants.joinToString(", ")
 
             val fields = listOf(
                 stringResource(R.string.event_title) to it.title,
                 stringResource(R.string.event_date) to formattedDate,
-                stringResource(R.string.event_location) to addressFromCoordinates ,
+                stringResource(R.string.event_location) to addressFromCoordinates,
                 stringResource(R.string.event_members) to participantsText
             )
 
             fields.forEach { (label, value) ->
-                EventSection(label = label, value = value, isLocation = label == stringResource(R.string.event_location))
-                Spacer(modifier = Modifier.height(16.dp))
+                EventSection(
+                    label = label,
+                    value = value,
+                    isLocation = label == stringResource(R.string.event_location)
+                )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
                     onClick = { onEventSurveyClick(eventId) },
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier.weight(1.7f)
                 ) {
                     Text(text = stringResource(R.string.event_surveys), color = MaterialTheme.colorScheme.onBackground)
                 }
@@ -134,7 +142,8 @@ fun EventDetailScreen(
                             eventViewModel.addParticipation(eventId)
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier.weight(1.7f)
                 ) {
                     Text(
                         text = if (event.participants.contains(userViewModel.userId)) {
@@ -145,28 +154,31 @@ fun EventDetailScreen(
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
+
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                    .padding(vertical = 10.dp),
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     Text(
                         text = event.likes.count().toString(),
                         color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(end = 8.dp)
                     )
 
                     val isLiked = event.likes.contains(userViewModel.userId)
 
                     IconButton(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clip(CircleShape),
                         onClick = {
                             if (isLiked) {
                                 eventViewModel.dislikeEvent(eventId)
                             } else {
                                 eventViewModel.likeEvent(eventId)
                             }
-                        },
-                        modifier = Modifier.align(Alignment.CenterVertically)
+                        }
                     ) {
                         Icon(
                             imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
@@ -176,7 +188,7 @@ fun EventDetailScreen(
                     }
                 }
             }
-
+            Spacer(modifier = Modifier.weight(0.01f))
         }
     }
 }
