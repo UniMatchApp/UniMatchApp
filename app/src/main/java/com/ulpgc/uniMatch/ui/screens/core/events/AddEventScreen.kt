@@ -36,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,15 +71,16 @@ fun AddEventScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-
-
     var showDialog by remember { mutableStateOf(false) }
     val activity = LocalContext.current as? ComponentActivity
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
-    var eventToCreate = eventViewModel.eventCreated.collectAsState().value
-    var surveys by remember { mutableStateOf(eventToCreate.surveys) }
+
+    val eventToCreate by eventViewModel.eventCreated.collectAsState()
+    val surveys by rememberUpdatedState(eventToCreate.surveys)
+    var titleText by remember { mutableStateOf(eventToCreate?.title) }
+
 
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -118,8 +120,6 @@ fun AddEventScreen(
         }
         Spacer(modifier = Modifier.height(16.dp))
 
-        var titleText by remember { mutableStateOf(eventToCreate?.title) }
-
         EventSection(
             label = stringResource(R.string.event_title),
             value = titleText ?: "Title",
@@ -129,7 +129,6 @@ fun AddEventScreen(
                 eventViewModel.setTitle(newText)
             }
         )
-
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -167,18 +166,19 @@ fun AddEventScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         surveys?.forEach { survey ->
+            Log.i("AddEventScreen", "Encuesta: $survey")
             EventSurveyCard(
+                title = survey.title,
+                initialOptions = survey.options,
                 isEditing = true,
                 onDeleteSurvey = {
-                    surveys = surveys?.filter {
-                        it != survey
-                    }?.toMutableList()
+                    eventViewModel.deleteSurvey(survey)
                 },
                 onConfirmSurvey = { title, options ->
-                    eventViewModel.createSurvey(title, options)
+                    eventViewModel.setSurvey(survey, title, options)
                 }
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
         Row(
@@ -188,8 +188,7 @@ fun AddEventScreen(
         ) {
             Button(
                 onClick = {
-
-                    Log.i("AddEventScreen", "Encuesta añadida $surveys")
+                    eventViewModel.createSurvey()
                 },
                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
             ) {

@@ -57,8 +57,6 @@ open class EventViewModel(
         }
     }
 
-
-
     suspend fun createEvent(): Result<Unit> {
         return try {
             val event = _eventCreated.value
@@ -114,10 +112,10 @@ open class EventViewModel(
 
 
 
-    fun createSurvey(title: String, options: List<String>) {
+    fun createSurvey() {
         val survey = Survey(
-            title = title,
-            options = options.toSet()
+            title = "",
+            options = emptyMap()
         )
         val updatedSurveys = _eventCreated.value.surveys?.toMutableList() ?: mutableListOf()
         updatedSurveys.add(survey)
@@ -161,6 +159,34 @@ open class EventViewModel(
             }
         }
     }
+
+    fun setSurvey(survey: Survey, title: String, options: List<String>) {
+        val updatedSurveys = _eventCreated.value.surveys?.toMutableList() ?: mutableListOf()
+
+        val surveyIndex = updatedSurveys.indexOf(survey)
+        if (surveyIndex != -1) {
+            val optionsMap: Map<String, Set<String>> = options.associateWith { setOf("") }
+            updatedSurveys[surveyIndex] = Survey(
+                title = title,
+                options = optionsMap
+            )
+
+            _eventCreated.value = _eventCreated.value.copy(surveys = updatedSurveys)
+            Log.i("EventViewModel", "Encuesta actualizada en el índice $surveyIndex: ${_eventCreated.value.surveys}")
+        } else {
+            Log.e("EventViewModel", "Encuesta no encontrada en la lista: $survey")
+        }
+    }
+
+
+
+    fun deleteSurvey(survey: Survey) {
+        _eventCreated.value = _eventCreated.value.copy(
+            surveys = _eventCreated.value.surveys?.filter { it != survey }
+        )
+    }
+
+
 }
 
 data class EventData(

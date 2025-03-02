@@ -1,5 +1,7 @@
 package com.ulpgc.uniMatch.data.infrastructure.mocks
 
+import androidx.compose.ui.res.stringResource
+import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Survey
@@ -38,8 +40,9 @@ object EventsMocks {
     fun createMockSurvey(): Survey {
         return Survey(
             title = "Event Feedback",
-            options = setOf("User123", "User234"),
-
+            options = mapOf(
+                "Opción 1" to setOf(),
+                "Opción 2" to setOf())
         )
     }
 }

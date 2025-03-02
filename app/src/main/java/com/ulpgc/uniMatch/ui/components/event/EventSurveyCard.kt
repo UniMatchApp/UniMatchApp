@@ -26,20 +26,26 @@ import com.ulpgc.uniMatch.ui.components.event.survey.SurveyTitle
 
 @Composable
 fun EventSurveyCard(
-    title: String = "Title",
-    initialOptions: Map<String, Set<String>> = mapOf(
-        stringResource(R.string.option_one) to setOf(),
-        stringResource(R.string.option_two) to setOf()
-    ),
+    title: String,
+    initialOptions: Map<String, Set<String>>,
     isEditing: Boolean = false,
     onDeleteSurvey: (() -> Unit)? = null,
     onConfirmSurvey: ((String, List<String>) -> Unit)? = null,
     onVoteSurvey: ((String) -> Unit)? = null
 ) {
+
+    val finalTitle = if (title.isBlank()) stringResource(R.string.event_title) else title
+    val finalOptions = if (initialOptions.isEmpty()) {
+        mapOf(
+            stringResource(R.string.option_one) to setOf(),
+            stringResource(R.string.option_two) to setOf()
+        )
+    } else initialOptions
+
     var selectedOption by remember { mutableStateOf<String?>(null) }
-    var options by remember { mutableStateOf(initialOptions) }
-    var editTitle by remember { mutableStateOf(title) }
-    var editOptions by remember { mutableStateOf(initialOptions.keys.toList()) }
+    var options by remember { mutableStateOf(finalOptions) }
+    var editTitle by remember { mutableStateOf(finalTitle) }
+    var editOptions by remember { mutableStateOf(finalOptions.keys.toList()) }
     var isConfirmed by remember { mutableStateOf(!isEditing) }
 
     Column(
