@@ -67,8 +67,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddEventScreen(
     eventViewModel: EventViewModel,
-    errorViewModel: ErrorViewModel,
-    profileViewModel: ProfileViewModel,
+    errorViewModel: ErrorViewModel
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -84,9 +83,6 @@ fun AddEventScreen(
 
     var titleText by remember { mutableStateOf(eventToCreate?.title) }
 
-    LaunchedEffect(surveys) {
-        Log.i("UI Update", "Surveys in UI: $surveys")
-    }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
