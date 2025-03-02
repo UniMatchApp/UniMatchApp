@@ -18,6 +18,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.models.Survey
 import com.ulpgc.uniMatch.ui.components.event.survey.SurveyBottomButtons
 import com.ulpgc.uniMatch.ui.components.event.survey.SurveyOptionRow
 import com.ulpgc.uniMatch.ui.components.event.survey.SurveyOptions
@@ -26,21 +27,20 @@ import com.ulpgc.uniMatch.ui.components.event.survey.SurveyTitle
 
 @Composable
 fun EventSurveyCard(
-    title: String,
-    initialOptions: Map<String, Set<String>>,
+    survey: Survey,
     isEditing: Boolean = false,
     onDeleteSurvey: (() -> Unit)? = null,
     onConfirmSurvey: ((String, List<String>) -> Unit)? = null,
     onVoteSurvey: ((String) -> Unit)? = null
 ) {
 
-    val finalTitle = if (title.isBlank()) stringResource(R.string.event_title) else title
-    val finalOptions = if (initialOptions.isEmpty()) {
+    val finalTitle = if (survey.title.isBlank()) stringResource(R.string.event_title) else survey.title
+    val finalOptions = if (survey.options.isEmpty()) {
         mapOf(
             stringResource(R.string.option_one) to setOf(),
             stringResource(R.string.option_two) to setOf()
         )
-    } else initialOptions
+    } else survey.options
 
     var selectedOption by remember { mutableStateOf<String?>(null) }
     var options by remember { mutableStateOf(finalOptions) }
