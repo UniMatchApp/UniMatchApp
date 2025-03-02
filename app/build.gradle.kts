@@ -94,7 +94,7 @@ dependencies {
     implementation(libs.firebase.messaging.ktx)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.work)
-    implementation(libs.androidx.foundation.layout.android)
+    implementation(libs.androidx.espresso.core)
     ksp(libs.androidx.room.compiler.v261)
 
     implementation(libs.androidx.core.ktx)
@@ -190,7 +190,7 @@ kapt {
 tasks.register("reverseDevicePorts") {
     doLast {
         exec {
-            commandLine("adb", "reverse", "tcp:8081", "tcp:8081")
+            commandLine("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "../reverse_device_ports.ps1")
         }
     }
 }

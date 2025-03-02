@@ -296,12 +296,37 @@ class ApiProfileService @Inject constructor(
     }
 
     private fun createImagePart(uri: Uri): MultipartBody.Part {
+        // Obtener el tipo MIME del archivo
+        println("URI: $uri ${contentResolver.getType(uri)}")
+        val mimeType = contentResolver.getType(uri) ?: "image/*"
+
+        // Determinar la extensión del archivo basado en el tipo MIME
+        val fileExtension = when (mimeType) {
+            "image/jpeg" -> "jpg"
+            "image/png" -> "png"
+            "image/gif" -> "gif"
+            "image/webp" -> "webp"
+            else -> "txt" // Extensión por defecto si no se reconoce el tipo MIME
+        }
+
+        println("Fileextension: $fileExtension con mimetype: $mimeType")
+
+        // Leer el archivo y convertirlo en un RequestBody
         val inputStream = contentResolver.openInputStream(uri)
             ?: throw IllegalArgumentException("Cannot open image input stream")
-        val requestBody =
-            inputStream.use { it.readBytes().toRequestBody("image/png".toMediaTypeOrNull()) }
-        return MultipartBody.Part.createFormData("thumbnail", uri.lastPathSegment, requestBody)
+        val requestBody = inputStream.use {
+            it.readBytes().toRequestBody(mimeType.toMediaTypeOrNull()) // Usar el tipo MIME correcto
+        }
+        println("RequestBody: $requestBody")
+
+        // Crear la parte MultipartBody.Part
+        return MultipartBody.Part.createFormData(
+            "thumbnail", // Nombre del campo en la solicitud
+            "thumbnail.$fileExtension", // Nombre del archivo con la extensión correcta
+            requestBody
+        )
     }
+
 
     private fun createRequestBody(value: String): RequestBody =
         value.toRequestBody("text/plain".toMediaTypeOrNull())
