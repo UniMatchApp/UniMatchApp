@@ -270,7 +270,8 @@ fun CoreNavHost(
             ChatDetailScreen(
                 chatId = chatId,
                 chatViewModel = chatViewModel,
-                userViewModel = userViewModel
+                userViewModel = userViewModel,
+                context = LocalContext.current
             )
         }
 

@@ -69,6 +69,9 @@ open class ChatViewModel(
     private val _otherUser = MutableStateFlow<Profile?>(null)
     val otherUser: StateFlow<Profile?> get() = _otherUser
 
+    private val _selectedAttachment = MutableLiveData<String?>(null)
+    val selectedAttachment: LiveData<String?> get() = _selectedAttachment
+
     override suspend fun onEventReceived(event: Event) {
         when (event) {
             is MessageNotificationEvent -> {
@@ -238,7 +241,7 @@ open class ChatViewModel(
     }
 
 
-    fun sendMessage(chatId: String, content: String, attachment: String?) {
+    fun sendMessage(chatId: String, content: String) {
         viewModelScope.launch {
 
             if (userViewModel.userId.isNullOrEmpty()) {
@@ -246,7 +249,11 @@ open class ChatViewModel(
                 return@launch
             }
 
-            val result = chatService.sendMessage(userViewModel.userId!!, chatId, content, attachment)
+            if (content.isEmpty()) {
+                return@launch
+            }
+
+            val result = chatService.sendMessage(userViewModel.userId!!, chatId, content, _selectedAttachment.value)
 
             result.onFailure { error ->
                 Log.e("ChatViewModel", "Error sending message: ${error.message}")
@@ -365,6 +372,16 @@ open class ChatViewModel(
                 userViewModel.userId!!, messageId, newContent
             )
 
+            result.onSuccess { message ->
+                _messages.value = _messages.value?.map {
+                    if (it.messageId == messageId) {
+                        it.copy(content = newContent)
+                    } else {
+                        it
+                    }
+                }
+            }
+
             result.onFailure { error ->
                 Log.e("ChatViewModel", "Error editing message: ${error.message}")
             }
@@ -384,6 +401,10 @@ open class ChatViewModel(
                 if (forAll) DeletedMessageStatus.DELETED_FOR_BOTH else DeletedMessageStatus.DELETED_BY_SENDER
             )
 
+            result.onSuccess {
+                _messages.value = _messages.value?.filter { it.messageId != messageId }
+            }
+
             result.onFailure { error ->
                 Log.e("ChatViewModel", "Error deleting message: ${error.message}")
             }
@@ -401,9 +422,56 @@ open class ChatViewModel(
                 userViewModel.userId!!, messageId, DeletedMessageStatus.NOT_DELETED
             )
 
+            result.onSuccess {
+                _messages.value = _messages.value?.filter { it.messageId != messageId }
+            }
+
             result.onFailure { error ->
                 Log.e("ChatViewModel", "Error deleting message: ${error.message}")
             }
         }
+    }
+
+    fun deleteMessage(messageId: String) {
+        viewModelScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
+
+            if (_messages.value?.find { it.messageId == messageId }?.senderId == userViewModel.userId) {
+                deleteMessageAsSender(messageId)
+            } else {
+                deleteMessageAsRecipient(messageId)
+            }
+        }
+    }
+
+    fun removeAttachment() {
+        _selectedAttachment.value = null
+    }
+
+    fun setSelectedAttachment(attachment: String) {
+        _selectedAttachment.value = attachment
+    }
+
+    fun isMessageDeletable(message: Message): Boolean {
+        if (message.senderId == userViewModel.userId && message.createdAt > System.currentTimeMillis() - 1000 * 60 * 5) {
+            return true
+        }
+
+        if (message.recipientId == userViewModel.userId) {
+            return true
+        }
+
+        return false
+    }
+
+    fun isMessageEditable(message: Message): Boolean {
+        if (message.senderId == userViewModel.userId && message.createdAt > System.currentTimeMillis() - 1000 * 60 * 5) {
+            return true
+        }
+
+        return false
     }
 }
