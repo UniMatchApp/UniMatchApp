@@ -178,12 +178,11 @@ open class EventViewModel(
         }
     }
 
-
-
     fun deleteSurvey(survey: Survey) {
         _eventCreated.value = _eventCreated.value.copy(
             surveys = _eventCreated.value.surveys?.filter { it != survey }
         )
+        Log.i("DeleteSurvey", "Surveys after deletion: ${_eventCreated.value.surveys}")
     }
 
 

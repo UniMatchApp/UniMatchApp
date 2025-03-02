@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,6 +59,7 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.ui.components.event.EventDatePicker
 import com.ulpgc.uniMatch.ui.components.event.EventSection
 import com.ulpgc.uniMatch.ui.components.event.EventSurveyCard
+import com.ulpgc.uniMatch.ui.components.event.survey.SurveysList
 import com.ulpgc.uniMatch.ui.theme.MainColor
 import kotlinx.coroutines.launch
 
@@ -78,9 +80,13 @@ fun AddEventScreen(
 
 
     val eventToCreate by eventViewModel.eventCreated.collectAsState()
-    val surveys by rememberUpdatedState(eventToCreate.surveys)
+    val surveys = eventToCreate.surveys
+
     var titleText by remember { mutableStateOf(eventToCreate?.title) }
 
+    LaunchedEffect(surveys) {
+        Log.i("UI Update", "Surveys in UI: $surveys")
+    }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -165,20 +171,16 @@ fun AddEventScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        surveys?.forEach { survey ->
-            Log.i("AddEventScreen", "Encuesta: $survey")
-            EventSurveyCard(
-                title = survey.title,
-                initialOptions = survey.options,
-                isEditing = true,
-                onDeleteSurvey = {
+        if (surveys != null) {
+            Log.i("UI", "Rendering survey: $surveys")
+            SurveysList(surveys,
+                onDeleteSurveyClick = { survey ->
                     eventViewModel.deleteSurvey(survey)
                 },
-                onConfirmSurvey = { title, options ->
+                onConfirmSurveyClick = { survey, title, options ->
                     eventViewModel.setSurvey(survey, title, options)
                 }
             )
-            Spacer(modifier = Modifier.height(8.dp))
         }
 
         Row(
