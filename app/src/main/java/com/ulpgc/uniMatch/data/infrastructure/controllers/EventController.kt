@@ -5,6 +5,7 @@ import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -31,15 +32,29 @@ interface EventController {
         @Part("surveys") surveys: ListRequest
     ): ApiResponse<Event>
 
-    @POST("events/{eventId}/like")
+    @PUT("events/{eventId}/survey/{title}/select")
+    suspend fun selectSurvey(
+        @Path("eventId") eventId: String,
+        @Path("title") title: String,
+        @Body option: String
+    ): ApiResponse<Event>
+
+    @PUT("events/{eventId}/survey/{title}/deselect")
+    suspend fun deselectSurvey(
+        @Path("eventId") eventId: String,
+        @Path("title") title: String,
+        @Body option: String
+    ): ApiResponse<Event>
+
+    @POST("events/like/{eventId}")
     suspend fun likeEvent(@Path("eventId") eventId: String): ApiResponse<Event>
 
-    @POST("events/{eventId}/participate")
+    @POST("events/participate/{eventId}")
     suspend fun participateEvent(@Path("eventId") eventId: String): ApiResponse<Event>
 
-    @DELETE("events/{eventId}/like")
+    @DELETE("events/like/{eventId}")
     suspend fun unlikeEvent(@Path("eventId") eventId: String): ApiResponse<Event>
 
-    @DELETE("events/{eventId}/participate")
+    @DELETE("events/participate/{eventId}")
     suspend fun unparticipateEvent(@Path("eventId") eventId: String): ApiResponse<Event>
 }

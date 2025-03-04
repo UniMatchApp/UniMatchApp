@@ -7,9 +7,11 @@ import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Survey
 import com.ulpgc.uniMatch.data.infrastructure.controllers.EventController
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.AgeRangeRequest
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.EventDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.EventEntity
+import com.ulpgc.uniMatch.ui.screens.shared.safeApiCall
 import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -170,14 +172,15 @@ class ApiEventService(
     override suspend fun dislikeEvent(id: String): Result<Unit> {
         return safeRequest {
             val response = eventController.unlikeEvent(id)
-
             if (!response.success) {
                 throw Exception(response.errorMessage ?: "Unknown error occurred")
             }
-
             return@safeRequest
         }
     }
+
+
+
 
     override suspend fun createSurvey(eventId: String, survey: Survey): Result<Survey> {
         TODO("Not yet implemented")
@@ -195,15 +198,18 @@ class ApiEventService(
         eventId: String,
         surveyTitle: String,
         option: String
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
+    ): Result<Unit> =
+        safeApiCall { eventController.selectSurvey(eventId, surveyTitle, option) }.mapCatching {
+            Unit
+        }
+
 
     override suspend fun deselectSurvey(
         eventId: String,
         surveyTitle: String,
         option: String
-    ): Result<Unit> {
-        TODO("Not yet implemented")
-    }
+    ): Result<Unit> =
+        safeApiCall { eventController.deselectSurvey(eventId, surveyTitle, option) }.mapCatching {
+            Unit
+        }
 }

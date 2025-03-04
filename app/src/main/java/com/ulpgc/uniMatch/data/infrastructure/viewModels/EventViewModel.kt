@@ -46,17 +46,6 @@ open class EventViewModel(
         }
     }
 
-    private fun performLoadingAction(action: suspend () -> Unit) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                action()
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
     suspend fun createEvent(): Result<Unit> {
         return try {
             val event = _eventCreated.value
@@ -77,19 +66,16 @@ open class EventViewModel(
             eventService.create(
                 title,
                 0.0,
-                event.location ?: null,
+                event.location,
                 DateParser.formatDateToString(date),
                 uri,
                 event.surveys ?: emptyList()
             )
-
             Result.success(Unit)
-
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
-
 
     fun setTitle(title: String) {
         _eventCreated.value = _eventCreated.value.copy(title = title)
@@ -109,8 +95,6 @@ open class EventViewModel(
     fun setUri(uri: Uri) {
         _eventCreated.value = _eventCreated.value.copy(attachment = uri.toString())
     }
-
-
 
     fun createSurvey() {
         val survey = Survey(
@@ -185,6 +169,16 @@ open class EventViewModel(
         Log.i("DeleteSurvey", "Surveys after deletion: ${_eventCreated.value.surveys}")
     }
 
+    private fun performLoadingAction(action: suspend () -> Unit) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                action()
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
 
 }
 

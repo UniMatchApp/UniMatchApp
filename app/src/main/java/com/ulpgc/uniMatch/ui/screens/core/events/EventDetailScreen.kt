@@ -87,7 +87,7 @@ fun EventDetailScreen(
 
                 Image(
                     painter = painter,
-                    contentDescription = "User profile image",
+                    contentDescription = "Event profile image",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
