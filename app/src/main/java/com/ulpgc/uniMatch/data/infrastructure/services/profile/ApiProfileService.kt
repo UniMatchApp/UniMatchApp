@@ -3,6 +3,7 @@ package com.ulpgc.uniMatch.data.infrastructure.services.profile
 import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
+import com.ulpgc.uniMatch.data.application.DTO.ProfileInfoDTO
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.AgeRangeRequest
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.IntRequest
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
@@ -37,9 +38,9 @@ class ApiProfileService(
     private val contentResolver: ContentResolver
 ) : ProfileService {
 
-    override suspend fun getProfileName(userId: String): Result<String> {
+    override suspend fun getProfileInfo(userId: String): Result<ProfileInfoDTO> {
         return safeRequest {
-            val response = profileController.getProfileName(userId)
+            val response = profileController.getProfileInfo(userId)
             response.value ?: throw NullPointerException()
         }
     }

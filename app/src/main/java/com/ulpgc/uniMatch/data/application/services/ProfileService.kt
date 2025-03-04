@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.data.application.services
 
 import android.net.Uri
+import com.ulpgc.uniMatch.data.application.DTO.ProfileInfoDTO
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
 import com.ulpgc.uniMatch.data.domain.enums.Horoscope
@@ -13,9 +14,9 @@ import com.ulpgc.uniMatch.data.domain.models.Profile
 
 interface ProfileService {
 
-    suspend fun getProfileName(
+    suspend fun getProfileInfo(
         userId: String
-    ): Result<String>
+    ): Result<ProfileInfoDTO>
 
     suspend fun createProfile(
         fullName: String,

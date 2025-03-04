@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.data.infrastructure.controllers
 
+import com.ulpgc.uniMatch.data.application.DTO.ProfileInfoDTO
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
 import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
@@ -22,7 +23,7 @@ import retrofit2.http.Path
 interface ProfileController {
 
     @GET("users/profile/{id}/name")
-    suspend fun getProfileName(@Path("id") id: String): ApiResponse<String>
+    suspend fun getProfileInfo(@Path("id") id: String): ApiResponse<ProfileInfoDTO>
 
     @GET("users/{id}")
     suspend fun getProfile(@Path("id") id: String): ApiResponse<Profile>

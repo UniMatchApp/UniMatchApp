@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.profile
 
 import android.net.Uri
+import com.ulpgc.uniMatch.data.application.DTO.ProfileInfoDTO
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
@@ -127,7 +128,7 @@ class MockProfileService : ProfileService {
         return Result.success(listOf("mock_wall1", "mock_wall2"))
     }
 
-    override suspend fun getProfileName(userId: String): Result<String> {
+    override suspend fun getProfileInfo(userId: String): Result<ProfileInfoDTO> {
         TODO("Not yet implemented")
     }
 
