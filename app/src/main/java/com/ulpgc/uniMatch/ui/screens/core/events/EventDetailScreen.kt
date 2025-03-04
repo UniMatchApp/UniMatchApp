@@ -59,10 +59,16 @@ fun EventDetailScreen(
     onEventSurveyClick: (String) -> Unit
 ) {
     val event = eventViewModel.eventData.collectAsState().value
+    val profileNames = profileViewModel.profileNames.collectAsState().value
 
     LaunchedEffect(eventId) {
         eventViewModel.loadEvent(eventId)
+    }
 
+    LaunchedEffect(event?.participants) {
+        event?.participants?.forEach { userId ->
+            profileViewModel.getProfileName(userId)
+        }
     }
 
     event?.let {
@@ -101,13 +107,11 @@ fun EventDetailScreen(
                 it.location?.longitude
             )
 
-            val participantsText = it.participants.joinToString(", ")
-
             val fields = listOf(
                 stringResource(R.string.event_title) to it.title,
                 stringResource(R.string.event_date) to formattedDate,
                 stringResource(R.string.event_location) to addressFromCoordinates,
-                stringResource(R.string.event_members) to participantsText
+                stringResource(R.string.event_members) to profileNames.joinToString(", ")
             )
 
             fields.forEach { (label, value) ->
