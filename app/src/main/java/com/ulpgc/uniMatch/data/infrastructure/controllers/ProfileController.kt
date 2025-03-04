@@ -21,6 +21,9 @@ import retrofit2.http.Path
 
 interface ProfileController {
 
+    @GET("users/profile/{id}/name")
+    suspend fun getProfileName(@Path("id") id: String): ApiResponse<String>
+
     @GET("users/{id}")
     suspend fun getProfile(@Path("id") id: String): ApiResponse<Profile>
 

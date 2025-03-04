@@ -12,6 +12,11 @@ import com.ulpgc.uniMatch.data.domain.models.Profile
 
 
 interface ProfileService {
+
+    suspend fun getProfileName(
+        userId: String
+    ): Result<String>
+
     suspend fun createProfile(
         fullName: String,
         age: Int,

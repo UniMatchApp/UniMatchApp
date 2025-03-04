@@ -164,7 +164,6 @@ class ApiEventService(
             if (!response.success) {
                 throw Exception(response.errorMessage ?: "Unknown error occurred")
             }
-
             return@safeRequest
         }
     }

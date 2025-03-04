@@ -59,10 +59,10 @@ fun EventDetailScreen(
     onEventSurveyClick: (String) -> Unit
 ) {
     val event = eventViewModel.eventData.collectAsState().value
-    val profile = profileViewModel.profileData.collectAsState().value
 
     LaunchedEffect(eventId) {
         eventViewModel.loadEvent(eventId)
+
     }
 
     event?.let {

@@ -37,6 +37,13 @@ class ApiProfileService(
     private val contentResolver: ContentResolver
 ) : ProfileService {
 
+    override suspend fun getProfileName(userId: String): Result<String> {
+        return safeRequest {
+            val response = profileController.getProfileName(userId)
+            response.value ?: throw NullPointerException()
+        }
+    }
+
     override suspend fun getProfile(userId: String): Result<Profile> {
         return safeRequest {
             var profileEntity = profileDao.getProfileById(userId)

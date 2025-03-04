@@ -127,6 +127,10 @@ class MockProfileService : ProfileService {
         return Result.success(listOf("mock_wall1", "mock_wall2"))
     }
 
+    override suspend fun getProfileName(userId: String): Result<String> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun createProfile(
         fullName: String,
         age: Int,

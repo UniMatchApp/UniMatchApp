@@ -35,6 +35,19 @@ open class ProfileViewModel(
     private val _profiles = MutableStateFlow<List<Profile>>(emptyList())
     val profiles: StateFlow<List<Profile>> get() = _profiles
 
+    private val _profileNames = MutableStateFlow<List<String>>(emptyList())
+    val profileNames: StateFlow<List<String>> get() = _profileNames
+
+    fun getProfileName(userId: String) {
+        performLoadingAction {
+            val result = profileService.getProfileName(userId)
+            result.onSuccess { name ->
+                Log.i("ProfileViewModel", "Profile name loaded $name")
+                _profileNames.value += name
+            }
+        }
+    }
+
     fun loadProfile() {
         performLoadingAction {
             val result = profileService.getProfile(userViewModel.userId!!)
