@@ -40,10 +40,10 @@ open class ProfileViewModel(
 
     fun getProfileName(userId: String) {
         performLoadingAction {
-            val result = profileService.getProfileName(userId)
-            result.onSuccess { name ->
-                Log.i("ProfileViewModel", "Profile name loaded $name")
-                _profileNames.value += name
+            val result = profileService.getProfileInfo(userId)
+            result.onSuccess { dto ->
+                Log.i("ProfileViewModel", "Profile name loaded $dto")
+                _profileNames.value += dto.name
             }
         }
     }
