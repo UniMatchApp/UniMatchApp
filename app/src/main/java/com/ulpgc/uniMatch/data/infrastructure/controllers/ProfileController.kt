@@ -22,7 +22,7 @@ import retrofit2.http.Path
 
 interface ProfileController {
 
-    @GET("users/profile/{id}/name")
+    @GET("users/profile/{id}/info")
     suspend fun getProfileInfo(@Path("id") id: String): ApiResponse<ProfileInfoDTO>
 
     @GET("users/{id}")
