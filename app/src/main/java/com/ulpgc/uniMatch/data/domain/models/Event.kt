@@ -11,7 +11,7 @@ data class Event (
     val ownerId: String,
     val participants: List<String>,
     val likes: List<String>,
-    val attachment: String,
+    val attachment: String?,
     val surveys: List<Survey>
 ) {
     fun toDomainModel(): Event {
