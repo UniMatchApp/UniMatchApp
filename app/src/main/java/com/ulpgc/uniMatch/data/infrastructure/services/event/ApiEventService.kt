@@ -129,7 +129,15 @@ class ApiEventService(
     }
 
     override suspend fun delete(id: String): Result<Unit> {
-        TODO("Not yet implemented")
+        return safeRequest {
+            val response = eventController.delete(id)
+
+            if (!response.success) {
+                throw Exception(response.errorMessage ?: "Unknown error occurred")
+            }
+
+            return@safeRequest
+        }
     }
 
 

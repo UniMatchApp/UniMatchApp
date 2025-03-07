@@ -57,4 +57,7 @@ interface EventController {
 
     @POST("events/unparticipate/{eventId}")
     suspend fun unparticipateEvent(@Path("eventId") eventId: String): ApiResponse<Event>
+
+    @DELETE("events/{eventId}")
+    suspend fun delete(@Path("eventId") eventId: String): ApiResponse<Unit>
 }

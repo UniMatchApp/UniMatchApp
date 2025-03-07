@@ -173,6 +173,20 @@ open class EventViewModel(
         Log.i("DeleteSurvey", "Surveys after deletion: ${_eventCreated.value.surveys}")
     }
 
+    fun deleteEvent(eventId: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        viewModelScope.launch {
+            val result = eventService.delete(eventId)
+
+            result.onFailure {
+                Log.e("EventViewModel", "Error al eliminar evento: $it")
+                onFailure("Error al eliminar evento")
+            }.onSuccess {
+                Log.i("EventViewModel", "Evento eliminado exitosamente.")
+                onSuccess() // Llamamos al callback en caso de éxito
+            }
+        }
+    }
+
     private fun performLoadingAction(action: suspend () -> Unit) {
         viewModelScope.launch {
             _isLoading.value = true

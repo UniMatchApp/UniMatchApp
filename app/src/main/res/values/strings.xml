@@ -510,5 +510,8 @@
     <string name="option_two">Opción 2</string>
     <string name="new_option">Nueva opción</string>
     <string name="remove_participation">Eliminar participación</string>
+    <string name="delete_event">Eliminar evento</string>
+    <string name="are_you_sure_delete_event">¿Estás seguro de que deseas eliminar este evento?</string>
+    <string name="confirm_delete_event">Confirmar eliminación</string>
 
 </resources>

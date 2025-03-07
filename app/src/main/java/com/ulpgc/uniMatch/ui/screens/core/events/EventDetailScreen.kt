@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -30,6 +31,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,15 +45,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.ui.components.event.EventSection
 import com.ulpgc.uniMatch.ui.screens.utils.DateParser
 import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -56,10 +65,14 @@ fun EventDetailScreen(
     eventViewModel: EventViewModel,
     profileViewModel: ProfileViewModel,
     userViewModel: UserViewModel,
-    onEventSurveyClick: (String) -> Unit
+    errorViewModel: ErrorViewModel,
+    onEventSurveyClick: (String) -> Unit,
+    navController: NavController,
 ) {
     val event = eventViewModel.eventData.collectAsState().value
     val profileNames = profileViewModel.profileNames.collectAsState().value
+    var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(eventId) {
         eventViewModel.loadEvent(eventId)
@@ -194,6 +207,67 @@ fun EventDetailScreen(
                 }
             }
             Spacer(modifier = Modifier.weight(0.01f))
+
+            if (event.ownerId == userViewModel.userId) {
+                Button(
+                    onClick = {
+                        showDeleteConfirmationDialog = true
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.delete_event),
+                        color = Color.White
+                    )
+                }
+            }
+
         }
     }
+
+    if (showDeleteConfirmationDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmationDialog = false },
+            title = { Text(stringResource(R.string.confirm_delete_event)) },
+            text = { Text(stringResource(R.string.are_you_sure_delete_event)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            if (event != null) {
+                                eventViewModel.deleteEvent(
+                                    event.eventId,
+                                    onSuccess = {
+                                        navController.popBackStack()
+                                    },
+                                    onFailure = { errorMessage ->
+                                        errorViewModel.showError(errorMessage)
+                                    }
+                                )
+                            }
+                        }
+                        showDeleteConfirmationDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
+                ) {
+                    Text(text = stringResource(R.string.delete), color = Color.White)
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        showDeleteConfirmationDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(text = stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onBackground)
+                }
+            }
+        )
+    }
 }
+
+

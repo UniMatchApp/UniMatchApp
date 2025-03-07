@@ -509,5 +509,8 @@
     <string name="option_two">Option 2</string>
     <string name="new_option">New option</string>
     <string name="remove_participation" >Remove participation</string>
+    <string name="delete_event">Delete event</string>
+    <string name="are_you_sure_delete_event">Are you sure you want to delete this event?</string>
+    <string name="confirm_delete_event">Confirm delete</string>
 
 </resources>

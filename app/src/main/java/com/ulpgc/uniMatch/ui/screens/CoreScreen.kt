@@ -245,9 +245,11 @@ fun CoreNavHost(
                 eventViewModel = eventViewModel,
                 profileViewModel = profileViewModel,
                 userViewModel = userViewModel,
+                errorViewModel = errorViewModel,
                 onEventSurveyClick = {
                     navController.navigate(CoreRoutes.EVENT_SURVEY.replace("{eventId}", eventId))
-                }
+                },
+                navController = navController
             )
 
         }
