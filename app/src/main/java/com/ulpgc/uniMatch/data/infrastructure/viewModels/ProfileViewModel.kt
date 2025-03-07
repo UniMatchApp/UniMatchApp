@@ -48,6 +48,10 @@ open class ProfileViewModel(
         }
     }
 
+    fun clearProfileNames() {
+        _profileNames.value = emptyList()
+    }
+
     fun loadProfile() {
         performLoadingAction {
             val result = profileService.getProfile(userViewModel.userId!!)

@@ -113,6 +113,7 @@ open class EventViewModel(
             val event = eventData.value
             if (event != null) {
                 eventService.dislikeEvent(eventId)
+                loadEvent(eventId)
             }
         }
     }
@@ -122,6 +123,7 @@ open class EventViewModel(
             val event = eventData.value
             if (event != null) {
                 eventService.likeEvent(eventId)
+                loadEvent(eventId)
             }
         }
     }
@@ -131,6 +133,7 @@ open class EventViewModel(
             val event = eventData.value
             if (event != null) {
                 eventService.participateEvent(eventId)
+                loadEvent(eventId)
             }
         }
     }
@@ -140,6 +143,7 @@ open class EventViewModel(
             val event = eventData.value
             if (event != null) {
                 eventService.removeParticipation(eventId)
+                loadEvent(eventId)
             }
         }
     }

@@ -52,9 +52,9 @@ interface EventController {
     @POST("events/participate/{eventId}")
     suspend fun participateEvent(@Path("eventId") eventId: String): ApiResponse<Event>
 
-    @DELETE("events/like/{eventId}")
+    @POST("events/dislike/{eventId}")
     suspend fun unlikeEvent(@Path("eventId") eventId: String): ApiResponse<Event>
 
-    @DELETE("events/participate/{eventId}")
+    @POST("events/unparticipate/{eventId}")
     suspend fun unparticipateEvent(@Path("eventId") eventId: String): ApiResponse<Event>
 }

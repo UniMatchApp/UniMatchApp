@@ -66,6 +66,7 @@ fun EventDetailScreen(
     }
 
     LaunchedEffect(event?.participants) {
+        profileViewModel.clearProfileNames()
         event?.participants?.forEach { userId ->
             profileViewModel.getProfileName(userId)
         }
