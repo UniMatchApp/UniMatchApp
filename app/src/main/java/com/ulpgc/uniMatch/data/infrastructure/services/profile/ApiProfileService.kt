@@ -4,20 +4,21 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.DTO.ProfileInfoDTO
-import com.ulpgc.uniMatch.data.application.services.AgeRangeRequest
-import com.ulpgc.uniMatch.data.application.services.IntRequest
-import com.ulpgc.uniMatch.data.application.services.ListRequest
-import com.ulpgc.uniMatch.data.application.services.LocationRequest
 import com.ulpgc.uniMatch.data.application.services.ProfileService
-import com.ulpgc.uniMatch.data.application.services.StringRequest
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
 import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.controllers.ProfileController
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.AgeRangeRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.IntRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.LocationRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.StringRequest
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
 import com.ulpgc.uniMatch.ui.screens.shared.safeApiCall
@@ -231,7 +232,7 @@ class ApiProfileService @Inject constructor(
             Result.success(null)
         }
 
-    override suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location?> {
+    override suspend fun updateLocation(location: Location?): Result<Location?> {
         return safeApiCall {
             Log.i("UpdateLocation", "Updating location in api ${location?.longitude},${location?.latitude}")
             profileController.updateLocation(

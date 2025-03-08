@@ -1,6 +1,5 @@
 package com.ulpgc.uniMatch.data.application.api
 
-import NotificationPayload
 import com.google.gson.GsonBuilder
 import com.ulpgc.uniMatch.BuildConfig
 import com.ulpgc.uniMatch.data.domain.models.notification.NotificationPayload

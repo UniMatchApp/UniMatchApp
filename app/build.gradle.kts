@@ -140,31 +140,31 @@ dependencies {
     implementation(libs.play.services.location.v2101)
 
     // Permissions
-    implementation("dev.shreyaspatil.permission-flow:permission-flow-android:2.0.0")
+    implementation(libs.permission.flow.android.v200)
 
     // Places Api
-    implementation("com.google.android.libraries.places:places:3.3.0")
+    implementation(libs.places)
 
     // Lifecycle
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0-alpha03")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0-alpha03")
-    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha03")
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx.v260alpha03)
+    implementation (libs.androidx.lifecycle.runtime.compose)
 
     // Logger
-    implementation("io.github.aakira:napier:2.6.1")
+    implementation(libs.napier)
 
     // Ktor
-    implementation("io.ktor:ktor-client-okhttp:2.2.1")
+    implementation(libs.ktor.client.okhttp)
     implementation("io.ktor:ktor-client-core:2.2.1")
-    implementation("io.ktor:ktor-client-logging:2.2.1")
-    implementation("io.ktor:ktor-client-serialization:2.2.1")
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.serialization)
     implementation("io.ktor:ktor-client-content-negotiation:2.2.1")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.2.1")
+    implementation(libs.ktor.serialization.kotlinx.json)
 
     // Serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
-    implementation("io.github.cdimascio:dotenv-kotlin:6.5.0")
+    implementation(libs.dotenv.kotlin)
     implementation(libs.permission.flow.android.v200)
 
     // ImagePicker

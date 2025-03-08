@@ -71,7 +71,9 @@ fun EventCard(
                     color = Color.LightGray
                 )
                 Text(
-                    LocationHelper.getAddressFromCoordinates(event.location.latitude, event.location.longitude),
+                    LocationHelper.getAddressFromCoordinates(event.location?.latitude,
+                        event.location?.longitude
+                    ),
                     fontSize = 12.sp,
                     color = Color.LightGray
                 )

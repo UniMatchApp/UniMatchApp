@@ -43,6 +43,7 @@ class RideViewModel : ViewModel() {
                 withContext(Dispatchers.IO) {
                     placesApi.fetchPlaces(
                         key = dotenv["MAPS_API_KEY"],
+//                        key = dotenv["MAPS_API_KEY"],
                         input = value.text
                     )
                 }

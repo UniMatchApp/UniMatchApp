@@ -1,22 +1,18 @@
 package com.ulpgc.uniMatch.data.infrastructure.controllers
 
+import com.ulpgc.uniMatch.data.application.DTO.ProfileInfoDTO
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
-import com.ulpgc.uniMatch.data.application.services.AgeRangeRequest
-import com.ulpgc.uniMatch.data.application.services.IntRequest
-import com.ulpgc.uniMatch.data.application.services.ListRequest
-import com.ulpgc.uniMatch.data.application.services.LocationRequest
-import com.ulpgc.uniMatch.data.application.services.StringRequest
 import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.AgeRangeRequest
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.IntRequest
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.LocationRequest
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.StringRequest
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Retrofit
