@@ -47,6 +47,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <!--Servicio de mensajes push de firebase-->
         <service
             android:name="com.ulpgc.uniMatch.data.infrastructure.services.notification.MyFirebaseMessagingService"
@@ -58,6 +59,12 @@
 
         <activity android:name=".data.infrastructure.services.notification.PermissionRequestActivity">
         </activity>
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="com.ulpgc.uniMatch.androidx-startup"
+            tools:node="remove">
+        </provider>
 
 
     </application>

@@ -8,6 +8,10 @@ import com.ulpgc.uniMatch.data.domain.enums.EventStatus
 import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.domain.enums.NotificationStatus
 import com.ulpgc.uniMatch.data.domain.enums.NotificationTypeEnum
+import com.ulpgc.uniMatch.data.domain.models.notification.AppNotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.EventNotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.MatchNotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.MessageNotificationPayload
 import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 import com.ulpgc.uniMatch.data.infrastructure.events.AppNotificationEvent
 import com.ulpgc.uniMatch.data.infrastructure.events.EventNotificationEvent

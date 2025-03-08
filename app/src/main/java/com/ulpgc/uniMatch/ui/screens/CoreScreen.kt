@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ulpgc.uniMatch.data.domain.models.Location
+import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ChatViewModel
@@ -274,7 +275,8 @@ fun CoreNavHost(
             ChatDetailScreen(
                 chatId = chatId,
                 chatViewModel = chatViewModel,
-                userViewModel = userViewModel
+                userViewModel = userViewModel,
+                context = LocalContext.current
             )
         }
 

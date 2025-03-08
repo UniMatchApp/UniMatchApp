@@ -4,19 +4,18 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.DTO.ProfileInfoDTO
-import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.AgeRangeRequest
-import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.IntRequest
-import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
-import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.LocationRequest
+import com.ulpgc.uniMatch.data.application.services.AgeRangeRequest
+import com.ulpgc.uniMatch.data.application.services.IntRequest
+import com.ulpgc.uniMatch.data.application.services.ListRequest
+import com.ulpgc.uniMatch.data.application.services.LocationRequest
 import com.ulpgc.uniMatch.data.application.services.ProfileService
-import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.StringRequest
+import com.ulpgc.uniMatch.data.application.services.StringRequest
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
 import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
-import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.controllers.ProfileController
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.ProfileDao
@@ -24,19 +23,25 @@ import com.ulpgc.uniMatch.data.infrastructure.entities.ProfileEntity
 import com.ulpgc.uniMatch.ui.screens.shared.safeApiCall
 import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
 import com.ulpgc.uniMatch.ui.screens.utils.enumToString
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import javax.inject.Inject
 
 
-class ApiProfileService(
+class ApiProfileService @Inject constructor(
     private val profileController: ProfileController,
     private val profileDao: ProfileDao,
     private val contentResolver: ContentResolver
-) : ProfileService {
+) : ProfileService
+{
 
     override suspend fun getProfileInfo(userId: String): Result<ProfileInfoDTO> {
         return safeRequest {
@@ -77,15 +82,15 @@ class ApiProfileService(
 
 
     override suspend fun updateGenderPriority(gender: Gender?): Result<Gender?> =
-       try {
-           safeApiCall {
-               profileController.updateGenderPriority(StringRequest(enumToString(gender)))
-           }.mapCatching { response ->
-               response?.let { Gender.valueOf(it) }
-           }
-       } catch (e: NullPointerException) {
-           Result.success(null)
-       }
+        try {
+            safeApiCall {
+                profileController.updateGenderPriority(StringRequest(enumToString(gender)))
+            }.mapCatching { response ->
+                response?.let { Gender.valueOf(it) }
+            }
+        } catch (e: NullPointerException) {
+            Result.success(null)
+        }
 
     override suspend fun updateRelationshipType(
         relationshipType: RelationshipType
@@ -226,7 +231,7 @@ class ApiProfileService(
             Result.success(null)
         }
 
-    override suspend fun updateLocation(location: Location?): Result<Location?> {
+    override suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location?> {
         return safeApiCall {
             Log.i("UpdateLocation", "Updating location in api ${location?.longitude},${location?.latitude}")
             profileController.updateLocation(
@@ -299,14 +304,54 @@ class ApiProfileService(
     }
 
     private fun createImagePart(uri: Uri): MultipartBody.Part {
+        // Obtener el tipo MIME del archivo
+        println("URI: $uri ${contentResolver.getType(uri)}")
+        val mimeType = contentResolver.getType(uri) ?: "image/*"
+
+        // Determinar la extensión del archivo basado en el tipo MIME
+        val fileExtension = when (mimeType) {
+            "image/jpeg" -> "jpg"
+            "image/png" -> "png"
+            "image/gif" -> "gif"
+            "image/webp" -> "webp"
+            else -> "txt" // Extensión por defecto si no se reconoce el tipo MIME
+        }
+
+        println("Fileextension: $fileExtension con mimetype: $mimeType")
+
+        // Leer el archivo y convertirlo en un RequestBody
         val inputStream = contentResolver.openInputStream(uri)
             ?: throw IllegalArgumentException("Cannot open image input stream")
-        val requestBody =
-            inputStream.use { it.readBytes().toRequestBody("image/png".toMediaTypeOrNull()) }
-        return MultipartBody.Part.createFormData("thumbnail", uri.lastPathSegment, requestBody)
+        val requestBody = inputStream.use {
+            it.readBytes().toRequestBody(mimeType.toMediaTypeOrNull()) // Usar el tipo MIME correcto
+        }
+        println("RequestBody: $requestBody")
+
+        // Crear la parte MultipartBody.Part
+        return MultipartBody.Part.createFormData(
+            "thumbnail", // Nombre del campo en la solicitud
+            "thumbnail.$fileExtension", // Nombre del archivo con la extensión correcta
+            requestBody
+        )
     }
+
 
     private fun createRequestBody(value: String): RequestBody =
         value.toRequestBody("text/plain".toMediaTypeOrNull())
 }
+
+@Module
+@InstallIn(SingletonComponent::class)
+object ProfileServiceModule {
+
+    @Provides
+    fun provideProfileService(
+        profileController: ProfileController,
+        profileDao: ProfileDao,
+        contentResolver: ContentResolver
+    ): ProfileService {
+        return ApiProfileService(profileController, profileDao, contentResolver)
+    }
+}
+
 

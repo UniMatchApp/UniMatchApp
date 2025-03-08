@@ -1,3 +1,5 @@
+package com.ulpgc.uniMatch.data.domain.models.notification
+
 import com.ulpgc.uniMatch.data.domain.enums.ContentStatus
 import com.ulpgc.uniMatch.data.domain.enums.DeletedMessageStatus
 import com.ulpgc.uniMatch.data.domain.enums.EventStatus

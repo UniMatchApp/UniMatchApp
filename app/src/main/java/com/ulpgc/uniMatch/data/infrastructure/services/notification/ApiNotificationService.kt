@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.toList
 
-class ApiNotificationService (
+class ApiNotificationService(
     private val notificationController: NotificationController,
     private val notificationDao: NotificationsDao
 ) : NotificationsService {

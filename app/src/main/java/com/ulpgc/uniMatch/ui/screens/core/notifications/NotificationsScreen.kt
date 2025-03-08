@@ -1,9 +1,5 @@
 package com.ulpgc.uniMatch.ui.screens.core.notifications
 
-import AppNotificationPayload
-import EventNotificationPayload
-import MatchNotificationPayload
-import MessageNotificationPayload
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -52,6 +48,10 @@ import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Profile
+import com.ulpgc.uniMatch.data.domain.models.notification.AppNotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.EventNotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.MatchNotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.MessageNotificationPayload
 import com.ulpgc.uniMatch.data.domain.models.notification.Notification
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel

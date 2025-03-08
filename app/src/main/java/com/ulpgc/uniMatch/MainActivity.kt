@@ -19,8 +19,8 @@ import com.ulpgc.uniMatch.ui.screens.AuthScreen
 import com.ulpgc.uniMatch.ui.screens.CoreScreen
 import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
 import com.ulpgc.uniMatch.ui.theme.UniMatchTheme
+import dagger.hilt.android.HiltAndroidApp
 import dev.shreyaspatil.permissionFlow.PermissionFlow
-
 
 class MainActivity : ComponentActivity() {
 
@@ -41,7 +41,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val app = application as UniMatchApplication
 
         app.userViewModel.checkUserSession()

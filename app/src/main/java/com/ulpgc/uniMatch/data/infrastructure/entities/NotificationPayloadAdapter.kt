@@ -1,10 +1,10 @@
 package com.ulpgc.uniMatch.data.infrastructure.entities
 
-import AppNotificationPayload
-import EventNotificationPayload
-import MatchNotificationPayload
-import MessageNotificationPayload
-import NotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.AppNotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.EventNotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.MatchNotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.MessageNotificationPayload
+import com.ulpgc.uniMatch.data.domain.models.notification.NotificationPayload
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement

@@ -112,6 +112,7 @@ class MockProfileService : ProfileService {
         return Result.success(valuesAndBeliefs)
     }
 
+
     override suspend fun updateLocation(location: Location?): Result<Location> {
         return Result.success(Location(0.0, 0.0, 0.0))
     }
