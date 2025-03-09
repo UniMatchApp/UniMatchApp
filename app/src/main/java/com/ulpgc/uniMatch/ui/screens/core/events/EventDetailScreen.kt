@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -30,6 +31,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,14 +45,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.ui.components.event.EventSection
 import com.ulpgc.uniMatch.ui.screens.utils.DateParser
 import com.ulpgc.uniMatch.ui.screens.utils.LocationHelper
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -54,25 +64,39 @@ fun EventDetailScreen(
     eventId: String,
     eventViewModel: EventViewModel,
     profileViewModel: ProfileViewModel,
-    onEventSurveyClick: (String) -> Unit
+    userViewModel: UserViewModel,
+    errorViewModel: ErrorViewModel,
+    onEventSurveyClick: (String) -> Unit,
+    navController: NavController,
 ) {
     val event = eventViewModel.eventData.collectAsState().value
-    val profile = profileViewModel.profileData.collectAsState().value
+    val profileNames = profileViewModel.profileNames.collectAsState().value
+    var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(eventId) {
         eventViewModel.loadEvent(eventId)
+    }
+
+    LaunchedEffect(event?.participants) {
+        profileViewModel.clearProfileNames()
+        event?.participants?.forEach { userId ->
+            profileViewModel.getProfileName(userId)
+        }
     }
 
     event?.let {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 24.dp, vertical = 16.dp)
-                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Box(
                 modifier = Modifier
-                    .size(200.dp),
+                    .fillMaxWidth()
+                    .height(200.dp),
                 contentAlignment = Alignment.Center
             ) {
                 val painter = rememberAsyncImagePainter(
@@ -83,39 +107,45 @@ fun EventDetailScreen(
 
                 Image(
                     painter = painter,
-                    contentDescription = "User profile image",
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    contentDescription = "Event profile image",
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             val formattedDate = DateParser.formatDateToString(it.date)
-            val addressFromCoordinates = LocationHelper.getAddressFromCoordinates(it.location.latitude, it.location.longitude)
-
-            val participantsText = it.participants.joinToString(", ")
+            val addressFromCoordinates = LocationHelper.getAddressFromCoordinates(
+                it.location?.latitude,
+                it.location?.longitude
+            )
 
             val fields = listOf(
                 stringResource(R.string.event_title) to it.title,
                 stringResource(R.string.event_date) to formattedDate,
                 stringResource(R.string.event_location) to addressFromCoordinates,
-                stringResource(R.string.event_members) to participantsText
+                stringResource(R.string.event_members) to profileNames.joinToString(", ")
             )
 
             fields.forEach { (label, value) ->
-                EventSection(label = label, value = value)
-                Spacer(modifier = Modifier.height(16.dp))
+                EventSection(
+                    label = label,
+                    value = value,
+                    isLocation = label == stringResource(R.string.event_location)
+                )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
                     onClick = { onEventSurveyClick(eventId) },
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier.weight(1.7f)
                 ) {
                     Text(text = stringResource(R.string.event_surveys), color = MaterialTheme.colorScheme.onBackground)
                 }
@@ -123,27 +153,50 @@ fun EventDetailScreen(
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Button(
-                    onClick = { /*TODO*/ },
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                    onClick = {
+                        if (event.participants.contains(userViewModel.userId)) {
+                            eventViewModel.removeParticipation(eventId)
+                        } else {
+                            eventViewModel.addParticipation(eventId)
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier.weight(1.7f)
                 ) {
-                    Text(text = stringResource(R.string.participate), color = MaterialTheme.colorScheme.onBackground)
+                    Text(
+                        text = if (event.participants.contains(userViewModel.userId)) {
+                            stringResource(R.string.remove_participation)
+                        } else {
+                            stringResource(R.string.participate)
+                        },
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
+
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                    .padding(vertical = 10.dp),
+                    horizontalArrangement = Arrangement.Center,
                 ) {
                     Text(
                         text = event.likes.count().toString(),
                         color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.padding(end = 8.dp)
                     )
 
-                    val isLiked = event.likes.contains(profile?.userId ?: "")
+                    val isLiked = event.likes.contains(userViewModel.userId)
 
                     IconButton(
-                        onClick = { /*TODO: Lógica para dar like o quitar like*/ },
-                        modifier = Modifier.align(Alignment.CenterVertically)
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clip(CircleShape),
+                        onClick = {
+                            if (isLiked) {
+                                eventViewModel.dislikeEvent(eventId)
+                            } else {
+                                eventViewModel.likeEvent(eventId)
+                            }
+                        }
                     ) {
                         Icon(
                             imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
@@ -153,7 +206,68 @@ fun EventDetailScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.weight(0.01f))
+
+            if (event.ownerId == userViewModel.userId) {
+                Button(
+                    onClick = {
+                        showDeleteConfirmationDialog = true
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.delete_event),
+                        color = Color.White
+                    )
+                }
+            }
 
         }
     }
+
+    if (showDeleteConfirmationDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmationDialog = false },
+            title = { Text(stringResource(R.string.confirm_delete_event)) },
+            text = { Text(stringResource(R.string.are_you_sure_delete_event)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            if (event != null) {
+                                eventViewModel.deleteEvent(
+                                    event.eventId,
+                                    onSuccess = {
+                                        navController.popBackStack()
+                                    },
+                                    onFailure = { errorMessage ->
+                                        errorViewModel.showError(errorMessage)
+                                    }
+                                )
+                            }
+                        }
+                        showDeleteConfirmationDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
+                ) {
+                    Text(text = stringResource(R.string.delete), color = Color.White)
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        showDeleteConfirmationDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(text = stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onBackground)
+                }
+            }
+        )
+    }
 }
+
+

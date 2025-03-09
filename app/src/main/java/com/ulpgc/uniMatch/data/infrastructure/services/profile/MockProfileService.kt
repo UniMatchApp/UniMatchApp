@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.profile
 
 import android.net.Uri
+import com.ulpgc.uniMatch.data.application.DTO.ProfileInfoDTO
 import com.ulpgc.uniMatch.data.application.services.ProfileService
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
@@ -8,6 +9,7 @@ import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.mocks.ProfileMock
 import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
@@ -110,8 +112,9 @@ class MockProfileService : ProfileService {
         return Result.success(valuesAndBeliefs)
     }
 
-    override suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location> {
-        return Result.success(Profile.Location(0.0, 0.0, 0.0))
+
+    override suspend fun updateLocation(location: Location?): Result<Location> {
+        return Result.success(Location(0.0, 0.0, 0.0))
     }
 
     override suspend fun addImage(imageURI: Uri): Result<String> {
@@ -124,6 +127,10 @@ class MockProfileService : ProfileService {
 
     override suspend fun updateWall(wall: List<String>): Result<List<String>> {
         return Result.success(listOf("mock_wall1", "mock_wall2"))
+    }
+
+    override suspend fun getProfileInfo(userId: String): Result<ProfileInfoDTO> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun createProfile(

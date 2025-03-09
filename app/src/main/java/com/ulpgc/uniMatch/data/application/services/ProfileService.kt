@@ -1,24 +1,26 @@
 package com.ulpgc.uniMatch.data.application.services
 
 import android.net.Uri
+import com.ulpgc.uniMatch.data.application.DTO.ProfileInfoDTO
 import com.ulpgc.uniMatch.data.domain.enums.Gender
 import com.ulpgc.uniMatch.data.domain.enums.Habits
 import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-data class StringRequest(val newContent: String?)
-data class IntRequest(val newContent: Int?)
-data class ListRequest(val newContent: List<String>)
-data class AgeRangeRequest(val min: Int, val max: Int)
-data class LocationRequest(val latitude: Double?, val longitude: Double?, val altitude: Double?)
 
 interface ProfileService {
+
+    suspend fun getProfileInfo(
+        userId: String
+    ): Result<ProfileInfoDTO>
+
     suspend fun createProfile(
         fullName: String,
         age: Int,
@@ -58,7 +60,7 @@ interface ProfileService {
     suspend fun updateSmokes(smokes: Habits?): Result<Habits?>
     suspend fun updateDoesSports(doesSports: Habits?): Result<Habits?>
     suspend fun updateValuesAndBeliefs(valuesAndBeliefs: Religion?): Result<Religion?>
-    suspend fun updateLocation(location: Profile.Location?): Result<Profile.Location?>
+    suspend fun updateLocation(location: Location?): Result<Location?>
 
     suspend fun addImage(imageURI: Uri): Result<String>
     suspend fun removeImage(imageURL: String): Result<Unit>

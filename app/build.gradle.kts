@@ -9,6 +9,7 @@ plugins {
 
     // Google services Gradle plugin
     id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.0" // o la versión que uses
 
     // Dagger Hilt
     id("kotlin-kapt")
@@ -141,6 +142,31 @@ dependencies {
     // Permissions
     implementation(libs.permission.flow.android.v200)
 
+    // Places Api
+    implementation(libs.places)
+
+    // Lifecycle
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx.v260alpha03)
+    implementation (libs.androidx.lifecycle.runtime.compose)
+
+    // Logger
+    implementation(libs.napier)
+
+    // Ktor
+    implementation(libs.ktor.client.okhttp)
+    implementation("io.ktor:ktor-client-core:2.2.1")
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.client.serialization)
+    implementation("io.ktor:ktor-client-content-negotiation:2.2.1")
+    implementation(libs.ktor.serialization.kotlinx.json)
+
+    // Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    implementation(libs.dotenv.kotlin)
+    implementation(libs.permission.flow.android.v200)
+
     // ImagePicker
     implementation(libs.imagepicker)
 
@@ -172,6 +198,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
 
     //Firebase
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
@@ -179,7 +206,6 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
     kapt(libs.androidx.hilt.compiler)
-
 
 }
 

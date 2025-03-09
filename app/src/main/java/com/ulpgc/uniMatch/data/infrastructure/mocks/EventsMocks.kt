@@ -1,9 +1,10 @@
 package com.ulpgc.uniMatch.data.infrastructure.mocks
 
+import androidx.compose.ui.res.stringResource
+import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Event
-import com.ulpgc.uniMatch.data.domain.models.Profile
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Survey
-import com.ulpgc.uniMatch.data.domain.models.User
 import java.util.Date
 
 object EventsMocks {
@@ -22,7 +23,7 @@ object EventsMocks {
             eventId = "event123",
             title = "Tech Conference 2025",
             price = 150.0,
-            location = Profile.Location(
+            location = Location(
                 latitude = 37.7749,
                 longitude = -122.4194,
                 altitude = 0.0
@@ -40,9 +41,8 @@ object EventsMocks {
         return Survey(
             title = "Event Feedback",
             options = mapOf(
-                "How did you hear about the event?" to setOf("Social Media", "Friend", "Email"),
-                "Was the event useful?" to setOf("Yes", "No", "Not sure")
-            )
+                "Opción 1" to setOf(),
+                "Opción 2" to setOf())
         )
     }
 }

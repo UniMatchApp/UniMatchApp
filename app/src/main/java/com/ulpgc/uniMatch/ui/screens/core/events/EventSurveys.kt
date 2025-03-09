@@ -8,6 +8,7 @@ fun EventSurveys(
     eventViewModel: EventViewModel
 ) {
 
-    /*TOOD: Implement this screen*/
+
+
 
 }

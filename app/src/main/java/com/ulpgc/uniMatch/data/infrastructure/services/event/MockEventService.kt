@@ -1,7 +1,9 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.event
 
+import android.net.Uri
 import com.ulpgc.uniMatch.data.application.services.EventService
 import com.ulpgc.uniMatch.data.domain.models.Event
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Survey
 import com.ulpgc.uniMatch.data.infrastructure.mocks.EventsMocks
 
@@ -18,7 +20,21 @@ class MockEventService : EventService {
         )
     }
 
-    override suspend fun create(event: Event): Result<Event> {
+    override suspend fun create(
+        title: String,
+        price: Double?,
+        location: Location?,
+        date: String,
+        attachment: Uri,
+        surveys: List<Survey>?
+    ): Result<Event> {
+        return Result.success(
+            EventsMocks.createMockEvent()
+        )
+    }
+
+
+    override suspend fun getEventsByName(filterNameEvent: String): Result<List<Event>> {
         TODO("Not yet implemented")
     }
 
@@ -30,19 +46,19 @@ class MockEventService : EventService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun participateEvent(id: String, userId: String): Result<Unit> {
+    override suspend fun participateEvent(id: String): Result<Unit> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun removeParticipation(id: String, userId: String): Result<Unit> {
+    override suspend fun removeParticipation(id: String): Result<Unit> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun likeEvent(id: String, userId: String): Result<Unit> {
+    override suspend fun likeEvent(id: String): Result<Unit> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun dislikeEvent(id: String, userId: String): Result<Unit> {
+    override suspend fun dislikeEvent(id: String): Result<Unit> {
         TODO("Not yet implemented")
     }
 

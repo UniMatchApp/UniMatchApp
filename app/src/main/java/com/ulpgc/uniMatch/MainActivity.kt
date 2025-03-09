@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
+import com.google.android.libraries.places.api.Places
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel

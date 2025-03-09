@@ -11,6 +11,7 @@ import com.ulpgc.uniMatch.data.domain.enums.Horoscope
 import com.ulpgc.uniMatch.data.domain.enums.RelationshipType
 import com.ulpgc.uniMatch.data.domain.enums.Religion
 import com.ulpgc.uniMatch.data.domain.enums.SexualOrientation
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +34,23 @@ open class ProfileViewModel(
 
     private val _profiles = MutableStateFlow<List<Profile>>(emptyList())
     val profiles: StateFlow<List<Profile>> get() = _profiles
+
+    private val _profileNames = MutableStateFlow<List<String>>(emptyList())
+    val profileNames: StateFlow<List<String>> get() = _profileNames
+
+    fun getProfileName(userId: String) {
+        performLoadingAction {
+            val result = profileService.getProfileInfo(userId)
+            result.onSuccess { dto ->
+                Log.i("ProfileViewModel", "Profile name loaded $dto")
+                _profileNames.value += dto.name
+            }
+        }
+    }
+
+    fun clearProfileNames() {
+        _profileNames.value = emptyList()
+    }
 
     fun loadProfile() {
         performLoadingAction {
@@ -334,7 +352,7 @@ open class ProfileViewModel(
         fieldSelector = Profile::maxDistance
     )
 
-    fun updateLocation(location: Profile.Location?) {
+    fun updateLocation(location: Location?) {
         performLoadingAction {
             Log.i("UpadteLocaton", "Updating field $location")
             val result = profileService.updateLocation(location)

@@ -499,4 +499,18 @@
     <string name="event_details">Event Details</string>
     <string name="event_surveys">Surveys</string>
     <string name="event_members">Members</string>
+    <string name="event_add_survey">Add Survey</string>
+    <string name="event_complete">Complete</string>
+    <string name="create_survey">Create</string>
+    <string name="add_option">Add option</string>
+    <string name="delete_option">Delete option</string>
+    <string name="delete_survey">Delete survey</string>
+    <string name="option_one">Option 1</string>
+    <string name="option_two">Option 2</string>
+    <string name="new_option">New option</string>
+    <string name="remove_participation" >Remove participation</string>
+    <string name="delete_event">Delete event</string>
+    <string name="are_you_sure_delete_event">Are you sure you want to delete this event?</string>
+    <string name="confirm_delete_event">Confirm delete</string>
+
 </resources>

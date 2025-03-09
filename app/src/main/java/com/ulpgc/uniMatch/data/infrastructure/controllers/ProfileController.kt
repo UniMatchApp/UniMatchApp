@@ -1,12 +1,14 @@
 package com.ulpgc.uniMatch.data.infrastructure.controllers
 
+import com.ulpgc.uniMatch.data.application.DTO.ProfileInfoDTO
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
-import com.ulpgc.uniMatch.data.application.services.AgeRangeRequest
-import com.ulpgc.uniMatch.data.application.services.IntRequest
-import com.ulpgc.uniMatch.data.application.services.ListRequest
-import com.ulpgc.uniMatch.data.application.services.LocationRequest
-import com.ulpgc.uniMatch.data.application.services.StringRequest
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.AgeRangeRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.IntRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.LocationRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.StringRequest
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +27,9 @@ import retrofit2.http.Path
 import javax.inject.Singleton
 
 interface ProfileController {
+
+    @GET("users/profile/{id}/info")
+    suspend fun getProfileInfo(@Path("id") id: String): ApiResponse<ProfileInfoDTO>
 
     @GET("users/{id}")
     suspend fun getProfile(@Path("id") id: String): ApiResponse<Profile>
@@ -122,7 +127,7 @@ interface ProfileController {
     suspend fun updateWall(@Body wall: ListRequest): ApiResponse<List<String>>
 
     @PUT("users/location")
-    suspend fun updateLocation(@Body location: LocationRequest): ApiResponse<Profile.Location>
+    suspend fun updateLocation(@Body location: LocationRequest): ApiResponse<Location>
 
     @Multipart
     @POST("users/photo")

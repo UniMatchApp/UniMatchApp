@@ -10,6 +10,7 @@ import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.ulpgc.uniMatch.data.application.api.ApiClient
 import com.ulpgc.uniMatch.data.application.api.TokenProvider
+import com.ulpgc.uniMatch.data.infrastructure.controllers.EventController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MatchingController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.MessageController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.NotificationController
@@ -21,6 +22,7 @@ import com.ulpgc.uniMatch.data.infrastructure.secure.SecureStorage
 import com.ulpgc.uniMatch.data.infrastructure.secure.SecureTokenProvider
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.ApiChatService
 import com.ulpgc.uniMatch.data.infrastructure.services.chat.MockChatService
+import com.ulpgc.uniMatch.data.infrastructure.services.event.ApiEventService
 import com.ulpgc.uniMatch.data.infrastructure.services.event.MockEventService
 import com.ulpgc.uniMatch.data.infrastructure.services.matching.ApiMatchingService
 import com.ulpgc.uniMatch.data.infrastructure.services.matching.MockMatchingService
@@ -35,6 +37,7 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.HomeViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.NotificationsViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.PermissionsViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ProfileViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import dagger.Module
@@ -96,8 +99,7 @@ class UniMatchApplication: Application() {
             messageController = apiClient.retrofit.create(MessageController::class.java),
             matchingController = apiClient.retrofit.create(MatchingController::class.java),
             chatMessageDao = database.chatMessageDao(),
-            profileService = apiProfileService,
-            context = this
+            profileService = apiProfileService
         )
     }
 
@@ -138,25 +140,26 @@ class UniMatchApplication: Application() {
     }
 
     private val apiEventService by lazy {
-//        ApiEventService(
-//            eventController = apiClient.retrofit.create(EventController::class.java),
-//            eventDao = database.eventDao()
-//        )
+        ApiEventService(
+            eventController = apiClient.retrofit.create(EventController::class.java),
+            eventDao = database.eventDao(),
+            contentResolver = contentResolver
+        )
     }
 
     // ----------------------------------- Services -----------------------------------
     private val userService by lazy { apiUserService }
     private val profileService by lazy { apiProfileService }
-    private val matchingService by lazy { apiMatchingService }
-    private val notificationService by lazy { apiNotificationService }
-    private val chatService by lazy { apiChatService }
+//    private val matchingService by lazy { apiMatchingService }
+//    private val notificationService by lazy { apiNotificationService }
+//    private val chatService by lazy { apiChatService }
 //    private val eventService by lazy { apiEventService }
 
 //    private val userService by lazy { mockUserService }
 //    private val profileService by lazy { mockProfileService }
-//    private val matchingService by lazy { mockMatchingService }
-//    private val notificationService by lazy { mockNotificationService }
-//    private val chatService by lazy { mockChatService }
+    private val matchingService by lazy { mockMatchingService }
+    private val notificationService by lazy { mockNotificationService }
+    private val chatService by lazy { mockChatService }
     private val eventService by lazy { mockEventService }
 
     // ----------------------------------- ViewModels -----------------------------------

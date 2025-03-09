@@ -21,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Profile
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.AuthState
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
@@ -104,12 +105,12 @@ fun CoreScreen(
     val localContext = LocalContext.current
     val locationHelper = LocationHelper(localContext)
 
-    suspend fun getLocation(): Profile.Location? {
+    suspend fun getLocation(): Location? {
         val location = locationHelper.getCurrentLocation()
         val profileLocation =
             location?.longitude?.let {
                 location.latitude.let { it1 ->
-                    Profile.Location(it,
+                    Location(it,
                         it1, null)
                 }
             }
@@ -233,7 +234,8 @@ fun CoreNavHost(
 
         composable(CoreRoutes.ADD_EVENT) {
             AddEventScreen(
-                eventViewModel = eventViewModel
+                eventViewModel = eventViewModel,
+                errorViewModel = errorViewModel
             )
         }
 
@@ -243,9 +245,12 @@ fun CoreNavHost(
                 eventId = eventId,
                 eventViewModel = eventViewModel,
                 profileViewModel = profileViewModel,
+                userViewModel = userViewModel,
+                errorViewModel = errorViewModel,
                 onEventSurveyClick = {
                     navController.navigate(CoreRoutes.EVENT_SURVEY.replace("{eventId}", eventId))
-                }
+                },
+                navController = navController
             )
 
         }

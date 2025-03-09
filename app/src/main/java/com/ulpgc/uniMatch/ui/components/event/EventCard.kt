@@ -2,6 +2,11 @@ package com.ulpgc.uniMatch.ui.components.event
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -66,7 +71,9 @@ fun EventCard(
                     color = Color.LightGray
                 )
                 Text(
-                    LocationHelper.getAddressFromCoordinates(event.location.latitude, event.location.longitude),
+                    LocationHelper.getAddressFromCoordinates(event.location?.latitude,
+                        event.location?.longitude
+                    ),
                     fontSize = 12.sp,
                     color = Color.LightGray
                 )
