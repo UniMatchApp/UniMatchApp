@@ -211,8 +211,10 @@ fun ChatDetailScreen(
                         showDeleteDialog = false
                         selectedMessage = null
                     }
+                    chatViewModel.removeAttachment()
                 },
                 messageToEdit = selectedMessage,
+                selectedAttachment = selectedAttachment,
                 context = context
             )
         }
@@ -328,6 +330,7 @@ fun MessageInput(
     onClick: () -> Unit,
     context: Context,
     messageToEdit: Message? = null,
+    selectedAttachment: String?,
     onTyping: (Boolean) -> Unit,
     onStoppedTyping: () -> Unit
 ) {
@@ -346,8 +349,10 @@ fun MessageInput(
     )
 
     LaunchedEffect(messageToEdit) {
-        if (messageToEdit?.let { viewModel.isMessageEditable(it) } == true) {
-            inputText = TextFieldValue(messageToEdit.content) ?: TextFieldValue("")
+        if (messageToEdit == null) {
+            inputText = TextFieldValue("")
+        } else if (messageToEdit.let { viewModel.isMessageEditable(it) }) {
+            inputText = TextFieldValue(messageToEdit.content)
         }
     }
 
@@ -397,7 +402,7 @@ fun MessageInput(
             },
             trailingIcon = {
                 IconButton(onClick = {
-                    if (inputText.text.isNotEmpty()) {
+                    if (inputText.text.isNotEmpty() || selectedAttachment != null) {
                         if (messageToEdit == null || !viewModel.isMessageEditable(messageToEdit)) {
                             viewModel.sendMessage(chatId, inputText.text)
                         } else {

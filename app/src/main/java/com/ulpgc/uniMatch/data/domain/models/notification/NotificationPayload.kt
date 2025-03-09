@@ -59,6 +59,8 @@ class MessageNotificationPayload(
     private val recipient: String,
     private val content: String,
     private val thumbnail: String?,
+    private val createdAt: Long,
+    private val updatedAt: Long,
     private val receptionStatus: ReceptionStatus,
     private val contentStatus: ContentStatus,
     private val deletedStatus : DeletedMessageStatus
@@ -76,7 +78,19 @@ class MessageNotificationPayload(
     }
 
     fun getThumbnail(): String? {
-        return thumbnail
+        if (thumbnail != null && thumbnail.isNotEmpty()) {
+            return thumbnail
+        } else {
+            return null
+        }
+    }
+
+    fun getCreatedAt(): Long {
+        return createdAt
+    }
+
+    fun getUpdatedAt(): Long {
+        return updatedAt
     }
 
     fun getReceptionStatus(): ReceptionStatus {

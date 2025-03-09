@@ -41,6 +41,12 @@ class MockChatService : ChatService {
         )
     }
 
+    override suspend fun getChat(loggedUserId: String, chatId: String): Result<Chat?> {
+        return Result.success(
+            ChatPreviewDataMock.createChatPreviewDataMocks().firstOrNull()
+        )
+    }
+
     override suspend fun getMessages(
         chatId: String,
         offset: Int,
@@ -48,6 +54,12 @@ class MockChatService : ChatService {
     ): Result<List<Message>> {
         return Result.success(
             MessageMock.createMockMessages(10)
+        )
+    }
+
+    override suspend fun getLatestMessage(chatId: String): Result<Message> {
+        return Result.success(
+            MessageMock.createMockMessages(1).first()
         )
     }
 
@@ -103,19 +115,15 @@ class MockChatService : ChatService {
         userId: String,
         messageId: String,
         deletedStatus : DeletedMessageStatus
-    ): Result<Message> {
-        return Result.success(
-            Message(
-                messageId,
-                "content",
-                userId,
-                UUID.randomUUID().toString(),
-                null,
-                ReceptionStatus.READ,
-                ContentStatus.NOT_EDITED,
-                deletedStatus = deletedStatus
+    ): Result<Unit> {
+        return Result.success(Unit)
+    }
 
-            )
-        )
+    override suspend fun deleteLocalMessage(messageId: String): Result<Unit> {
+        return Result.success(Unit)
+    }
+
+    override suspend fun messageExistsLocal(messageId: String): Result<Boolean> {
+        return Result.success(true)
     }
 }

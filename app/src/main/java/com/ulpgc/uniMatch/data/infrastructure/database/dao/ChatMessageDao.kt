@@ -127,6 +127,10 @@ interface ChatMessageDao {
 
     // Obtiene el último mensaje de un chat
     @Query("SELECT * FROM messages WHERE chatId = :chatId ORDER BY timestamp DESC LIMIT 1")
+    fun getLatestMessage(chatId: String): MessageEntity
+
+    // Obtiene el último mensaje de un chat
+    @Query("SELECT * FROM messages WHERE chatId = :chatId ORDER BY timestamp DESC LIMIT 1")
     suspend fun getLastMessageForChat(chatId: String): MessageEntity?
 
     // Marca todos los mensajes como leídos en un chat y actualiza el contador
@@ -141,6 +145,9 @@ interface ChatMessageDao {
 
     @Query("DELETE FROM messages WHERE chatId = :chatId")
     suspend fun deleteMessagesByChat(chatId: String)
+
+    @Query("DELETE FROM messages WHERE messageId = :messageId")
+    suspend fun deleteMessage(messageId: String)
 
     @Query("DELETE FROM chats WHERE id = :chatId")
     suspend fun deleteChat(chatId: String)

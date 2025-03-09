@@ -32,6 +32,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 open class ChatViewModel(
@@ -103,26 +104,59 @@ open class ChatViewModel(
                 return@launch
             }
 
-            Log.i("ChatViewModel", "New message received: $message")
-
             val newMessage = Message(
                 messageId = notification.contentId,
                 senderId = message.getSender(),
                 attachment = message.getThumbnail(),
                 content = message.getContent(),
-                createdAt = notification.date,
+                createdAt = message.getCreatedAt(),
+                updatedAt = message.getUpdatedAt(),
                 recipientId = message.getRecipient(),
                 receptionStatus = message.getReceptionStatus(),
                 contentStatus = message.getContentStatus(),
                 deletedStatus = message.getDeletedStatus()
             )
 
+            // Comprobar si el mensaje ya existe localmente
+            val messageExists = chatService.messageExistsLocal(newMessage.messageId)
+
+            // Comprobar si el mensaje ya ha sido leído
+            val messageRead = newMessage.receptionStatus == ReceptionStatus.READ
+
+            // Si el mensaje ha sido eliminado para ambos, eliminarlo localmente
+            if (newMessage.deletedStatus == DeletedMessageStatus.DELETED_FOR_BOTH) {
+                chatService.deleteLocalMessage(newMessage.messageId)
+
+                // Eliminar el mensaje de la lista de mensajes
+                _messages.value = _messages.value?.filter { it.messageId != newMessage.messageId }
+
+                // Obtener el ultimo mensaje del chat
+                val lastMessage = withContext(Dispatchers.IO) {
+                    chatService.getLatestMessage(newMessage.senderId)
+                }
+
+                // Actualizar el chat con el nuevo mensaje
+                _chatList.value?.find { it.userId == newMessage.senderId }?.let {
+                    val newUnreadCount = if (messageRead) it.unreadMessagesCount else it.unreadMessagesCount - 1
+                    _chatList.value = _chatList.value?.toMutableList()?.apply {
+                        set(indexOf(it), it.copy(
+                            lastMessage = lastMessage.getOrNull(),
+                            unreadMessagesCount = newUnreadCount
+                        ))
+                    }
+                }
+                return@launch
+            }
+
+            // Guardar el mensaje si no ha sido eliminado
             chatService.saveMessage(newMessage, userViewModel.userId!!)
 
+            // Marcar el mensaje como recibido si no lo ha sido
             if (newMessage.senderId != userViewModel.userId && newMessage.receptionStatus != ReceptionStatus.RECEIVED) {
                 setMessagesAsReceived(listOf(newMessage))
             }
 
+            // Actualizar el mensaje en la lista de mensajes
             _messages.value?.find { it.messageId == newMessage.messageId }?.let {
                 _messages.value = _messages.value!!.toMutableList().apply {
                     this[indexOf(it)] = newMessage
@@ -131,11 +165,13 @@ open class ChatViewModel(
                 _messages.value = _messages.value?.plus(newMessage)
             }
 
+            val newMessageCounter = if (messageExists.getOrDefault(false)) 0 else 1
             _chatList.value?.find { it.userId == newMessage.senderId }?.let {
-                _chatList.value = _chatList.value?.toMutableList().apply {
-                    this?.set(indexOf(it),
-                        it.copy(lastMessage = newMessage, unreadMessagesCount = it.unreadMessagesCount + 1)
-                    )
+                _chatList.value = _chatList.value?.toMutableList()?.apply {
+                    set(indexOf(it), it.copy(
+                        lastMessage = newMessage,
+                        unreadMessagesCount = it.unreadMessagesCount + newMessageCounter
+                    ))
                 }
             }
         }
@@ -419,11 +455,12 @@ open class ChatViewModel(
             }
 
             val result = chatService.deleteMessage(
-                userViewModel.userId!!, messageId, DeletedMessageStatus.NOT_DELETED
+                userViewModel.userId!!, messageId, DeletedMessageStatus.DELETED_BY_RECIPIENT
             )
 
             result.onSuccess {
                 _messages.value = _messages.value?.filter { it.messageId != messageId }
+
             }
 
             result.onFailure { error ->

@@ -41,19 +41,16 @@ data class Message(
 
 data class ModifyMessageDTO(
     @SerializedName("content") var content: String? = null,
-    @SerializedName("status") var status: ReceptionStatus? = null,
-    @SerializedName("deletedStatus") var deletedStatus: DeletedMessageStatus = DeletedMessageStatus.NOT_DELETED
+    @SerializedName("receptionStatus") var status: ReceptionStatus? = null
 ) {
     companion object {
         fun create(
             content: String? = null,
             status: ReceptionStatus? = null,
-            deletedStatus: DeletedMessageStatus = DeletedMessageStatus.NOT_DELETED
         ): ModifyMessageDTO {
             return ModifyMessageDTO(
                 content = content,
-                status = status,
-                deletedStatus = deletedStatus
+                status = status
             )
         }
     }

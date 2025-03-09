@@ -190,6 +190,10 @@ class NotificationSocket(
 
             Log.i("NotificationSocket", "Message Notification Payload: $messagePayload")
 
+            val createdAt = messagePayload.getLong("createdAt")
+            val updatedAt = messagePayload.getLong("updatedAt")
+
+
             val messagePayloadObject = MessageNotificationPayload(
                 id = messagePayload.getString("id"),
                 sender = messagePayload.getString("sender"),
@@ -198,7 +202,9 @@ class NotificationSocket(
                 thumbnail = messagePayload.optString("thumbnail", ""),
                 receptionStatus = receptionStatusEnum,
                 contentStatus = contentStatus,
-                deletedStatus = deletedStatus
+                deletedStatus = deletedStatus,
+                createdAt = createdAt,
+                updatedAt = updatedAt
             )
 
             val notification = statusEnum?.let {

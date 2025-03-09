@@ -1,8 +1,10 @@
 package com.ulpgc.uniMatch.ui.components.chats
 
 import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
@@ -67,6 +69,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -78,6 +84,37 @@ fun formatTimestamp(timestamp: Long): String {
     return sdf.format(date)
 }
 
+fun getMimeTypeFromFile(filePath: String): String {
+    val file = File(filePath)
+    return if (file.exists()) {
+        Files.probeContentType(Paths.get(filePath)) ?: "application/octet-stream"
+    } else {
+        "application/octet-stream"
+    }
+}
+
+suspend fun getMimeTypeFromUrl(url: String): String {
+    return withContext(Dispatchers.IO) {
+        try {
+            val connection = URL(url).openConnection() as HttpURLConnection
+            connection.requestMethod = "HEAD"
+            connection.connect()
+            connection.contentType ?: "application/octet-stream"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            "application/octet-stream"
+        }
+    }
+}
+
+suspend fun getMimeType(attachment: String): String {
+    return if (attachment.startsWith("http://") || attachment.startsWith("https://")) {
+        getMimeTypeFromUrl(attachment)
+    } else {
+        getMimeTypeFromFile(attachment)
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MessageBubble(
@@ -87,6 +124,13 @@ fun MessageBubble(
     onLongClick: () -> Unit
 ) {
     val context = LocalContext.current
+
+    var mimeType by remember { mutableStateOf("application/octet-stream") }
+
+    LaunchedEffect(message.attachment) {
+        mimeType = getMimeType(message.attachment ?: "")
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,7 +160,6 @@ fun MessageBubble(
                 message.attachment?.let { attachment ->
                     Spacer(modifier = Modifier.height(8.dp))
                     val fileName = attachment.split('/').last()
-                    val mimeType = context.contentResolver.getType(Uri.parse(attachment)) ?: "application/octet-stream"
 
                     Box(
                         modifier = Modifier
@@ -168,14 +211,16 @@ fun MessageBubble(
                         color = MaterialTheme.colorScheme.onTertiary,
                     )
 
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    MessageStatusIcon(message.receptionStatus)
+                    if (isCurrentUser) {
+                        Spacer(modifier = Modifier.width(4.dp))
+                        MessageStatusIcon(message.receptionStatus)
+                    }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun getFileIcon(mimeType: String): ImageVector {
@@ -202,10 +247,20 @@ suspend fun downloadFile(
     onError: (String) -> Unit
 ) {
     try {
-        // Usar Coroutine para hacer la descarga en segundo plano
+        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        var downloadId: Long = -1
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
+                if (downloadId == id) {
+                    onSuccess()
+                    context?.unregisterReceiver(this)
+                }
+            }
+        }
+
         withContext(Dispatchers.IO) {
             val uri = Uri.parse(attachment)
-            val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
             val request = DownloadManager.Request(uri).apply {
                 setTitle("Descargando archivo...")
@@ -214,35 +269,26 @@ suspend fun downloadFile(
                 setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
             }
 
-            // Encolar la descarga y obtener el ID de la descarga
-            val downloadId = downloadManager.enqueue(request)
+            downloadId = downloadManager.enqueue(request)
+        }
 
-            // Crear un BroadcastReceiver para recibir la finalización de la descarga
-            val receiver = object : android.content.BroadcastReceiver() {
-                override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
-                    val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
-                    if (downloadId == id) {
-                        // La descarga ha terminado, llamar a onSuccess
-                        onSuccess()
-                        context?.unregisterReceiver(this)  // Desregistrar el receptor
-                    }
-                }
-            }
-
-            // Registrar el receptor para recibir la finalización de la descarga
-            val filter = android.content.IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-            ContextCompat.registerReceiver(
-                context,
+        withContext(Dispatchers.Main) {
+            val intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+            context.registerReceiver(
                 receiver,
-                filter,
-                ContextCompat.RECEIVER_NOT_EXPORTED
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+                Context.RECEIVER_NOT_EXPORTED
             )
         }
+
     } catch (e: Exception) {
         Log.e("DownloadFile", "Error al iniciar la descarga: ${e.message}")
-        onError("Error al descargar el archivo: ${e.message}")
+        withContext(Dispatchers.Main) {
+            onError("Error al descargar el archivo: ${e.message}")
+        }
     }
 }
+
 
 private fun downloadFileAsync(
     attachment: String,

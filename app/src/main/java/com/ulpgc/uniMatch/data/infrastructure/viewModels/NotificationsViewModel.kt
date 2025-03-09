@@ -82,7 +82,7 @@ class NotificationsViewModel (
         }
     }
 
-    private fun handleMessageNotification(notification: Notification) {
+    private suspend fun handleMessageNotification(notification: Notification) {
         if (notification.recipient != userViewModel.userId) {
             return
         }

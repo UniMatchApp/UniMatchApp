@@ -14,7 +14,11 @@ interface ChatService {
 
     suspend fun getChats(loggedUserId: String): Result<List<Chat>>
 
+    suspend fun getChat(loggedUserId: String, chatId: String): Result<Chat?>
+
     suspend fun getMessages(chatId: String, offset: Int, limit: Int): Result<List<Message>>
+
+    suspend fun getLatestMessage(chatId: String): Result<Message>
 
     suspend fun getChatsByName(loggedUserId: String, filterName: String): Result<List<Chat>>
 
@@ -36,5 +40,9 @@ interface ChatService {
         userId: String,
         messageId: String,
         deletedStatus : DeletedMessageStatus
-    ): Result<Message>
+    ): Result<Unit>
+
+    suspend fun deleteLocalMessage(messageId: String): Result<Unit>
+
+    suspend fun messageExistsLocal(messageId: String): Result<Boolean>
 }

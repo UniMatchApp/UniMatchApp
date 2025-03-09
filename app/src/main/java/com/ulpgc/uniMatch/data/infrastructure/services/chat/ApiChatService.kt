@@ -1,6 +1,8 @@
 package com.ulpgc.uniMatch.data.infrastructure.services.chat
 
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import com.ulpgc.uniMatch.data.application.services.ChatService
 import com.ulpgc.uniMatch.data.application.services.ProfileService
@@ -16,6 +18,11 @@ import com.ulpgc.uniMatch.data.infrastructure.entities.ChatEntity
 import com.ulpgc.uniMatch.data.infrastructure.entities.MessageEntity
 import com.ulpgc.uniMatch.ui.screens.shared.safeRequest
 import kotlinx.coroutines.flow.first
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.InputStream
+import java.net.URLConnection
 import java.util.UUID
 
 
@@ -24,7 +31,9 @@ class ApiChatService(
     private val matchingController: MatchingController,
     private val chatMessageDao: ChatMessageDao,
     private val profileService: ProfileService,
+    private val context: Context
 ) : ChatService {
+
     override suspend fun sendMessage(
         loggedUserId: String,
         chatId: String,
@@ -40,10 +49,39 @@ class ApiChatService(
                 attachment = attachment,
                 receptionStatus = ReceptionStatus.SENDING
             )
+
             chatMessageDao.insertMessages(listOf(MessageEntity.fromDomain(message, loggedUserId)))
 
+            val messageId = message.messageId.toRequestBody(MultipartBody.FORM)
+            val content = message.content.toRequestBody(MultipartBody.FORM)
+            val senderId = message.senderId.toRequestBody(MultipartBody.FORM)
+            val recipientId = message.recipientId.toRequestBody(MultipartBody.FORM)
+            val receptionStatus =
+                message.receptionStatus.toString().toRequestBody(MultipartBody.FORM)
+            val contentStatus = message.contentStatus.toString().toRequestBody(MultipartBody.FORM)
+            val deletedStatus = message.deletedStatus.toString().toRequestBody(MultipartBody.FORM)
+            val createdAt = message.createdAt.toString().toRequestBody(MultipartBody.FORM)
+            val updatedAt = message.updatedAt.toString().toRequestBody(MultipartBody.FORM)
+
+            val attachmentPart = if (attachment != null) {
+                getAttachmentPart(context, Uri.parse(attachment))
+            } else {
+                null
+            }
+
             val result = runCatching {
-                messageController.sendMessage(message)
+                messageController.sendMessage(
+                    messageId,
+                    content,
+                    senderId,
+                    recipientId,
+                    attachmentPart,
+                    receptionStatus,
+                    contentStatus,
+                    deletedStatus,
+                    createdAt,
+                    updatedAt
+                )
             }
 
             if (result.isFailure) {
@@ -65,6 +103,25 @@ class ApiChatService(
             message
         }
     }
+
+    fun getAttachmentPart(context: Context, attachmentUri: Uri): MultipartBody.Part? {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(attachmentUri)
+        val fileName = attachmentUri.lastPathSegment ?: "file"
+
+        val mimeType = URLConnection.guessContentTypeFromName(fileName) ?: "application/octet-stream"
+
+        inputStream?.let {
+            val bytes = it.readBytes()
+
+            val requestBody = bytes.toRequestBody(mimeType.toMediaTypeOrNull())
+
+            return MultipartBody.Part.createFormData("thumbnail", fileName, requestBody)
+        }
+
+        return null
+    }
+
+
 
 
     override suspend fun saveMessage(message: Message, loggedUserId: String): Result<Unit> {
@@ -172,6 +229,38 @@ class ApiChatService(
         }
     }
 
+    override suspend fun getChat(loggedUserId: String, chatId: String): Result<Chat?> {
+        return safeRequest {
+            val chatEntity = chatMessageDao.getChatById(chatId)
+            if (chatEntity != null) {
+                val lastMessageEntity = chatMessageDao.getLastMessageForChat(chatEntity.id)
+                val unreadMessagesCount = chatMessageDao.countUnreadMessages(loggedUserId, chatEntity.id)
+
+                return@safeRequest Chat(
+                    userId = chatEntity.id,
+                    userName = chatEntity.name,
+                    profilePictureUrl = chatEntity.profilePictureUrl,
+                    lastMessage = lastMessageEntity?.let { MessageEntity.toDomain(it) },
+                    unreadMessagesCount = unreadMessagesCount
+                )
+            } else {
+                profileService.getProfile(chatId).onSuccess { profile ->
+                    val newChat = Chat(
+                        userId = profile.userId,
+                        userName = profile.name,
+                        profilePictureUrl = profile.preferredImage,
+                        lastMessage = null,
+                        unreadMessagesCount = 0
+                    )
+                    chatMessageDao.insertChat(ChatEntity.fromDomain(newChat))
+                    return@safeRequest newChat
+                }
+            }
+            return@safeRequest null
+        }
+    }
+
+
     override suspend fun getMessages(
         chatId: String,
         offset: Int,
@@ -195,6 +284,24 @@ class ApiChatService(
             return@safeRequest messages
         }
 
+    }
+
+    override suspend fun getLatestMessage(chatId: String): Result<Message> {
+        return safeRequest {
+            chatMessageDao.getLatestMessage(chatId).let { messageEntity ->
+                Message(
+                    messageId = messageEntity.messageId,
+                    content = messageEntity.content,
+                    senderId = messageEntity.senderId,
+                    recipientId = messageEntity.recipientId,
+                    createdAt = messageEntity.timestamp,
+                    receptionStatus = messageEntity.receptionStatus,
+                    contentStatus = messageEntity.contentStatus,
+                    deletedStatus = messageEntity.deletedStatus,
+                    attachment = messageEntity.attachment
+                )
+            }
+        }
     }
 
     override suspend fun getChatsByName(
@@ -304,31 +411,32 @@ class ApiChatService(
         userId: String,
         messageId: String,
         deletedStatus: DeletedMessageStatus,
-    ): Result<Message> {
+    ): Result<Unit> {
         return safeRequest {
-            chatMessageDao.setMessageDeletedStatus(messageId, deletedStatus)
-            val response = messageController.modifyMessage(
+            chatMessageDao.deleteMessage(messageId)
+            val response = messageController.deleteMessage(
                 messageId,
-                ModifyMessageDTO.create(
-                    userId,
-                    deletedStatus = deletedStatus
-                )
             )
-            if (!response.success || response.value == null) {
+
+            if (response.success) {
+                return@safeRequest
+            } else {
                 throw Throwable(response.errorMessage ?: "Unknown error occurred")
             }
 
-            return@safeRequest Message(
-                messageId = messageId,
-                content = response.value.content,
-                senderId = response.value.senderId,
-                recipientId = response.value.recipientId,
-                createdAt = response.value.createdAt,
-                receptionStatus = response.value.receptionStatus,
-                contentStatus = response.value.contentStatus,
-                deletedStatus = response.value.deletedStatus,
-                attachment = response.value.attachment
-            )
+        }
+    }
+
+    override suspend fun deleteLocalMessage(messageId: String): Result<Unit> {
+        return safeRequest {
+            chatMessageDao.deleteMessage(messageId)
+        }
+    }
+
+    override suspend fun messageExistsLocal(messageId: String): Result<Boolean> {
+        return safeRequest {
+            val count = chatMessageDao.messageExists(messageId)
+            return@safeRequest count > 0
         }
     }
 }
