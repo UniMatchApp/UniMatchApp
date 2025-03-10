@@ -53,15 +53,13 @@ open class EventViewModel(
             val title = event.title
             val attachment = event.attachment
             val date = event.date
+            val uri = event.attachment
 
             if (title.isNullOrBlank()) return Result.failure(IllegalArgumentException("El título no puede estar vacío"))
-            if (attachment.isNullOrBlank()) return Result.failure(IllegalArgumentException("Debe haber un archivo adjunto"))
+            if (uri == null) return Result.failure(IllegalArgumentException("Debe haber un archivo adjunto"))
             if (date == null) return Result.failure(IllegalArgumentException("Debe haber una fecha válida"))
 
             Log.i("EventViewModel", "Creando evento: $event")
-
-            val file = File(attachment)
-            val uri: Uri = Uri.fromFile(file)
 
             eventService.create(
                 title,
@@ -93,7 +91,7 @@ open class EventViewModel(
     }
 
     fun setUri(uri: Uri) {
-        _eventCreated.value = _eventCreated.value.copy(attachment = uri.toString())
+        _eventCreated.value = _eventCreated.value.copy(attachment = uri)
     }
 
     fun createSurvey() {
@@ -202,7 +200,7 @@ open class EventViewModel(
 
 data class EventData(
     val title: String? = null,
-    val attachment: String? = null,
+    val attachment: Uri? = null,
     val location: Location? = null,
     val date: Date? = null,
     val surveys: List<Survey>? = null

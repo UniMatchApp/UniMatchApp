@@ -2,6 +2,7 @@ package com.ulpgc.uniMatch.data.infrastructure.services.event
 
 import android.content.ContentResolver
 import android.net.Uri
+import android.util.Log
 import com.ulpgc.uniMatch.data.application.services.EventService
 import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.domain.models.Location
@@ -80,11 +81,35 @@ class ApiEventService(
         value.toRequestBody("text/plain".toMediaTypeOrNull())
 
     private fun createImagePart(uri: Uri): MultipartBody.Part {
+        // Obtener el tipo MIME del archivo
+       Log.i("CreateImagePart", "URI: $uri ${contentResolver.getType(uri)}")
+        val mimeType = contentResolver.getType(uri) ?: "image/*"
+
+        // Determinar la extensión del archivo basado en el tipo MIME
+        val fileExtension = when (mimeType) {
+            "image/jpeg" -> "jpg"
+            "image/png" -> "png"
+            "image/gif" -> "gif"
+            "image/webp" -> "webp"
+            else -> "txt" // Extensión por defecto si no se reconoce el tipo MIME
+        }
+
+        Log.i("CreateImagePart", "Fileextension: $fileExtension con mimetype: $mimeType")
+
+        // Leer el archivo y convertirlo en un RequestBody
         val inputStream = contentResolver.openInputStream(uri)
             ?: throw IllegalArgumentException("Cannot open image input stream")
-        val requestBody =
-            inputStream.use { it.readBytes().toRequestBody("image/png".toMediaTypeOrNull()) }
-        return MultipartBody.Part.createFormData("thumbnail", uri.lastPathSegment, requestBody)
+        val requestBody = inputStream.use {
+            it.readBytes().toRequestBody(mimeType.toMediaTypeOrNull()) // Usar el tipo MIME correcto
+        }
+        Log.i("CreateImagePart", "RequestBody: $requestBody")
+
+        // Crear la parte MultipartBody.Part
+        return MultipartBody.Part.createFormData(
+            "thumbnail", // Nombre del campo en la solicitud
+            "thumbnail.$fileExtension", // Nombre del archivo con la extensión correcta
+            requestBody
+        )
     }
 
     override suspend fun create(
@@ -102,11 +127,13 @@ class ApiEventService(
                     price = createRequestBody(price.toString()),
                     latitude = location?.latitude,
                     longitude = location?.longitude,
-                    date = createRequestBody(date.toString()),
+                    date = createRequestBody(date),
                     attachment = createImagePart(attachment),
                     surveys = it
                 )
             }
+
+            Log.i("ApiService", "${response}")
 
             if (response != null) {
                 if (!response.success) {

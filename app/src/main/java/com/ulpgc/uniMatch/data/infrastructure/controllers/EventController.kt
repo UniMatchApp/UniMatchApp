@@ -8,6 +8,7 @@ import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
@@ -22,6 +23,7 @@ interface EventController {
     suspend fun getEventById(@Path("eventId") eventId: String): ApiResponse<Event>
 
     @POST("events")
+    @Multipart
     suspend fun createEvent(
         @Part("title") title: RequestBody,
         @Part("price") price: RequestBody,
