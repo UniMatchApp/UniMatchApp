@@ -7,7 +7,7 @@ import java.util.Locale
 class DateParser() {
 
     companion object {
-        fun formatDateToString(date: Date, pattern: String = "dd-MM-yyyy HH:mm"): String {
+        fun formatDateToString(date: Date, pattern: String = "yyyy-MM-dd HH:mm"): String {
             val formatter = SimpleDateFormat(pattern, Locale.getDefault())
             return formatter.format(date)
         }

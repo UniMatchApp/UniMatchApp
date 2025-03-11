@@ -3,6 +3,7 @@ package com.ulpgc.uniMatch.data.infrastructure.controllers
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
 import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.SurveyRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -31,7 +32,7 @@ interface EventController {
         @Part("longitude") longitude: Double?,
         @Part("date") date: RequestBody,
         @Part attachment: MultipartBody.Part,
-        @Part("surveys") surveys: ListRequest
+        @Part("surveys") surveys: SurveyRequest
     ): ApiResponse<Event>
 
     @PUT("events/{eventId}/survey/{title}/select")

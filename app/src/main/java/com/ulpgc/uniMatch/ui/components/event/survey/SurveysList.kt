@@ -13,8 +13,9 @@ import androidx.compose.runtime.*
 @Composable
 fun SurveysList(
     surveys: List<Survey>,
-    onDeleteSurveyClick: (Survey) -> Unit,
-    onConfirmSurveyClick: (Survey, String, List<String>) -> Unit
+    isEditing: Boolean = true,
+    onDeleteSurveyClick: ((Survey) -> Unit)? = null,  // Hacemos la función opcional
+    onConfirmSurveyClick: ((Survey, String, List<String>) -> Unit)? = null  // Hacemos la función opcional
 ) {
     var surveyList by remember { mutableStateOf(surveys) }
 
@@ -28,12 +29,14 @@ fun SurveysList(
         key(survey.title) {
             EventSurveyCard(
                 survey = survey,
-                isEditing = true,
+                isEditing = isEditing,
                 onDeleteSurvey = {
-                    onDeleteSurveyClick(survey)
+                    // Solo llamamos a la función si no es nula
+                    onDeleteSurveyClick?.invoke(survey)
                 },
                 onConfirmSurvey = { title, options ->
-                    onConfirmSurveyClick(survey, title, options)
+                    // Solo llamamos a la función si no es nula
+                    onConfirmSurveyClick?.invoke(survey, title, options)
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))

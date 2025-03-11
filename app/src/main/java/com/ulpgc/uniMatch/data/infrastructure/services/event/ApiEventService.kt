@@ -9,7 +9,9 @@ import com.ulpgc.uniMatch.data.domain.models.Location
 import com.ulpgc.uniMatch.data.domain.models.Survey
 import com.ulpgc.uniMatch.data.infrastructure.controllers.EventController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.AgeRangeRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.CreateSurveyDTO
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.SurveyRequest
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.EventDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.EventEntity
 import com.ulpgc.uniMatch.ui.screens.shared.safeApiCall
@@ -61,6 +63,7 @@ class ApiEventService(
         return safeRequest {
             val response = eventController.getEventById(id)
 
+            Log.i("ApiService", "${response}")
             if (!response.success) {
                 throw Exception(response.errorMessage ?: "Unknown error occurred")
             }
@@ -121,7 +124,14 @@ class ApiEventService(
         surveys: List<Survey>?
     ): Result<Event> {
         return safeRequest {
-            val response = surveys?.let { ListRequest(it.map { it.title }) }?.let {
+            val surveyRequest = surveys?.map { survey ->
+                CreateSurveyDTO(
+                    title = survey.title,
+                    options = survey.options.keys.toList()
+                )
+            }?.let { SurveyRequest(it) }
+
+            val response = surveyRequest?.let {
                 eventController.createEvent(
                     title = createRequestBody(title),
                     price = createRequestBody(price.toString()),
