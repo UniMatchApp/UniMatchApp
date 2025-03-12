@@ -513,5 +513,6 @@
     <string name="delete_event">Eliminar evento</string>
     <string name="are_you_sure_delete_event">¿Estás seguro de que deseas eliminar este evento?</string>
     <string name="confirm_delete_event">Confirmar eliminación</string>
+    <string name= "owner_cannot_drop">El propietario no puede abandonar su evento</string>
 
 </resources>

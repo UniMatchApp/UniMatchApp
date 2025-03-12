@@ -235,7 +235,8 @@ fun CoreNavHost(
         composable(CoreRoutes.ADD_EVENT) {
             AddEventScreen(
                 eventViewModel = eventViewModel,
-                errorViewModel = errorViewModel
+                errorViewModel = errorViewModel,
+                navController = navController
             )
         }
 

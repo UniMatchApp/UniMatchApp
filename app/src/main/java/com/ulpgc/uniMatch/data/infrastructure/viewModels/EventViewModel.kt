@@ -136,12 +136,17 @@ open class EventViewModel(
         }
     }
 
-    fun removeParticipation(eventId: String) {
+    fun removeParticipation(eventId: String, onFailure: (String) -> Unit) {
         performLoadingAction {
             val event = eventData.value
             if (event != null) {
-                eventService.removeParticipation(eventId)
-                loadEvent(eventId)
+                val result = eventService.removeParticipation(eventId)
+                result.onFailure {
+                    Log.e("EventViewModel", "Error al eliminar participación: $it")
+                    onFailure("Error al eliminar participación")
+                }.onSuccess {
+                    loadEvent(eventId)
+                }
             }
         }
     }

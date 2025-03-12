@@ -72,6 +72,7 @@ fun EventDetailScreen(
     val event = eventViewModel.eventData.collectAsState().value
     val profileNames = profileViewModel.profileNames.collectAsState().value
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
+    val owner_cannot_drop = stringResource(R.string.owner_cannot_drop)
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(eventId) {
@@ -155,7 +156,11 @@ fun EventDetailScreen(
                 Button(
                     onClick = {
                         if (event.participants.contains(userViewModel.userId)) {
-                            eventViewModel.removeParticipation(eventId)
+                            eventViewModel.removeParticipation(
+                                eventId,
+                                onFailure = { errorMessage ->
+                                    errorViewModel.showError(owner_cannot_drop)
+                                })
                         } else {
                             eventViewModel.addParticipation(eventId)
                         }
