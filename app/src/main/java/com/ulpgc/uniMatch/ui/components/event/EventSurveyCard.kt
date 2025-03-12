@@ -98,7 +98,7 @@ fun EventSurveyCard(
             Column {
                 SurveyTitle(
                     title = editTitle,
-                    isEditing = true,
+                    isEditing = false,
                     onDeleteSurvey = onDeleteSurvey,
                 )
 
