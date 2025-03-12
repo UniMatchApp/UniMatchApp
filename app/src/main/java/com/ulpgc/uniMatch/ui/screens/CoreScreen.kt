@@ -228,7 +228,8 @@ fun CoreNavHost(
 
         composable(CoreRoutes.EVENT_SURVEY) {
             EventSurveys(
-                eventViewModel = eventViewModel
+                eventViewModel = eventViewModel,
+                userViewModel = userViewModel
             )
         }
 

@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun SurveyOptions(
+    userId: String = "",
     options: List<String>,
     votes: Map<String, Set<String>> = emptyMap(),
     isEditing: Boolean,
-    selectedOption: String? = null,
     onOptionChange: (Int, String) -> Unit = { _, _ -> },
     onOptionRemove: (Int) -> Unit = {},
     onVote: (String) -> Unit = {}
@@ -15,15 +15,17 @@ fun SurveyOptions(
     val maxVotes = votes.values.maxOfOrNull { it.size } ?: 1
 
     options.forEachIndexed { index, option ->
-        SurveyOptionRow(
-            option = option,
-            votes = votes[option]?.size ?: 0,
-            isSelected = option == selectedOption,
-            maxVotes = maxVotes,
-            onVote = {onVote(option)} ,
-            isEditing = isEditing,
-            onOptionChange = { newValue -> onOptionChange(index, newValue) },
-            onOptionRemove = { onOptionRemove(index) }
-        )
+        votes[option]?.contains(userId)?.let {
+            SurveyOptionRow(
+                option = option,
+                votes = votes[option]?.size ?: 0,
+                isSelected = it,
+                maxVotes = maxVotes,
+                onVote = {onVote(option)} ,
+                isEditing = isEditing,
+                onOptionChange = { newValue -> onOptionChange(index, newValue) },
+                onOptionRemove = { onOptionRemove(index) }
+            )
+        }
     }
 }

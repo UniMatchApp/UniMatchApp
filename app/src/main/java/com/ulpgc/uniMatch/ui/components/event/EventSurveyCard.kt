@@ -28,11 +28,13 @@ import com.ulpgc.uniMatch.ui.components.event.survey.SurveyTitle
 
 @Composable
 fun EventSurveyCard(
+    userId: String = "",
     survey: Survey,
     isEditing: Boolean = false,
     onDeleteSurvey: (() -> Unit)? = null,
     onConfirmSurvey: ((String, List<String>) -> Unit)? = null,
-    onVoteSurvey: ((String) -> Unit)? = null
+    onVoteSurvey: ((String) -> Unit)? = null,
+    onQuitVoteSurvey: ((String) -> Unit)? = null
 ) {
 
     val finalTitle = if (survey.title.isBlank()) stringResource(R.string.event_title) else survey.title
@@ -43,7 +45,6 @@ fun EventSurveyCard(
         )
     } else survey.options
 
-    var selectedOption by remember { mutableStateOf<String?>(null) }
     var options by remember { mutableStateOf(finalOptions) }
     var editTitle by remember { mutableStateOf(finalTitle) }
     var editOptions by remember { mutableStateOf(finalOptions.keys.toList()) }
@@ -102,25 +103,30 @@ fun EventSurveyCard(
                 )
 
                 SurveyOptions(
+                    userId = userId,
                     options = options.keys.toList(),
                     isEditing = false,
                     votes = options,
-                    selectedOption = selectedOption,
                     onVote = { selected ->
+                        val isSelected = options[selected]?.contains(userId) == true
+
                         options = options.mapValues { (key, value) ->
-                            if (key == selectedOption) {
-                                value - (selectedOption ?: "")
-                            } else if (key == selected) {
-                                value + selected
-                            } else {
-                                value
+                            when {
+                                key == selected && isSelected -> value - userId
+                                key == selected -> value + userId
+                                value.contains(userId) -> value - userId
+                                else -> value
                             }
                         }
-                        selectedOption = if (selectedOption == selected) null else selected
-                        Log.i("Survey", "EventSurveyCard ${survey.title} with option $selected")
-                        onVoteSurvey?.invoke(selected)
-                    }
 
+                        Log.i("Survey", "EventSurveyCard $options")
+
+                        if (isSelected) {
+                            onQuitVoteSurvey?.invoke(selected)
+                        } else {
+                            onVoteSurvey?.invoke(selected)
+                        }
+                    }
 
                 )
             }

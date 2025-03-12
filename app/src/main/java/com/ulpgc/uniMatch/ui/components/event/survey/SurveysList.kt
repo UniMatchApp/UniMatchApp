@@ -12,11 +12,13 @@ import androidx.compose.runtime.*
 
 @Composable
 fun SurveysList(
+    userId: String = "",
     surveys: List<Survey>,
     isEditing: Boolean = true,
     onDeleteSurveyClick: ((Survey) -> Unit)? = null,
     onConfirmSurveyClick: ((Survey, String, List<String>) -> Unit)? = null,
-    onVoteSurvey: ((Survey, String) -> Unit)? = null
+    onVoteSurvey: ((Survey, String) -> Unit)? = null,
+    OnQuitVoteSurvey: ((Survey, String) -> Unit)? = null
 ) {
     var surveyList by remember { mutableStateOf(surveys) }
 
@@ -27,6 +29,7 @@ fun SurveysList(
     surveyList.forEach { survey ->
         key(survey.title) {
             EventSurveyCard(
+                userId = userId,
                 survey = survey,
                 isEditing = isEditing,
                 onDeleteSurvey = {
@@ -40,6 +43,9 @@ fun SurveysList(
                 onVoteSurvey = { option ->
                     Log.i("Survey", "SurveyList ${survey.title} with option $option")
                     onVoteSurvey?.invoke(survey, option)
+                },
+                onQuitVoteSurvey = { option ->
+                    OnQuitVoteSurvey?.invoke(survey, option)
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))

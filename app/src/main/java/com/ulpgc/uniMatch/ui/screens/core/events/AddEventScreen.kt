@@ -158,7 +158,8 @@ fun AddEventScreen(
 
                 if (surveys != null) {
                         Log.i("UI", "Rendering survey: $surveys")
-                        SurveysList(surveys,
+                        SurveysList(
+                                surveys = surveys,
                                 onDeleteSurveyClick = { survey ->
                                         eventViewModel.deleteSurvey(survey)
                                 },

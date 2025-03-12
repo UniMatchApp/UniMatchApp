@@ -113,6 +113,15 @@ open class EventViewModel(
         }
     }
 
+    fun quitVoteSurvey(eventId: String, surveyTitle: String, selectedOption: String) {
+        performLoadingAction {
+            eventService.deselectSurvey(eventId, surveyTitle, selectedOption)
+            loadEvent(eventId)
+        }
+    }
+
+
+
     fun dislikeEvent(eventId: String) {
         performLoadingAction {
             val event = eventData.value
