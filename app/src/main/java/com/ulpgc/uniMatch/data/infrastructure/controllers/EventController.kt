@@ -2,7 +2,9 @@ package com.ulpgc.uniMatch.data.infrastructure.controllers
 
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
 import com.ulpgc.uniMatch.data.domain.models.Event
+import com.ulpgc.uniMatch.data.domain.models.SelectSurveyDTO
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.StringRequest
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.SurveyRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -35,18 +37,16 @@ interface EventController {
         @Part("surveys") surveys: SurveyRequest
     ): ApiResponse<Event>
 
-    @PUT("events/{eventId}/survey/{title}/select")
+    @PUT("events/{eventId}/survey/select")
     suspend fun selectSurvey(
         @Path("eventId") eventId: String,
-        @Path("title") title: String,
-        @Body option: String
+        @Body Survey: SelectSurveyDTO
     ): ApiResponse<Event>
 
-    @PUT("events/{eventId}/survey/{title}/deselect")
+    @PUT("events/{eventId}/survey/deselect")
     suspend fun deselectSurvey(
         @Path("eventId") eventId: String,
-        @Path("title") title: String,
-        @Body option: String
+        @Body Survey: SelectSurveyDTO
     ): ApiResponse<Event>
 
     @POST("events/like/{eventId}")

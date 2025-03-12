@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.components.event
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -74,7 +75,7 @@ fun EventSurveyCard(
                     onOptionRemove = { index ->
                         editOptions = editOptions.toMutableList().also { it.removeAt(index) }
                     },
-                    onVote = {}
+
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -116,7 +117,10 @@ fun EventSurveyCard(
                             }
                         }
                         selectedOption = if (selectedOption == selected) null else selected
+                        Log.i("Survey", "EventSurveyCard ${survey.title} with option $selected")
+                        onVoteSurvey?.invoke(selected)
                     }
+
 
                 )
             }

@@ -14,16 +14,15 @@ import androidx.compose.runtime.*
 fun SurveysList(
     surveys: List<Survey>,
     isEditing: Boolean = true,
-    onDeleteSurveyClick: ((Survey) -> Unit)? = null,  // Hacemos la función opcional
-    onConfirmSurveyClick: ((Survey, String, List<String>) -> Unit)? = null  // Hacemos la función opcional
+    onDeleteSurveyClick: ((Survey) -> Unit)? = null,
+    onConfirmSurveyClick: ((Survey, String, List<String>) -> Unit)? = null,
+    onVoteSurvey: ((Survey, String) -> Unit)? = null
 ) {
     var surveyList by remember { mutableStateOf(surveys) }
 
     LaunchedEffect(surveys) {
         surveyList = surveys
     }
-
-    Log.i("SurveysList", "SurveysList $surveyList")
 
     surveyList.forEach { survey ->
         key(survey.title) {
@@ -37,6 +36,10 @@ fun SurveysList(
                 onConfirmSurvey = { title, options ->
                     // Solo llamamos a la función si no es nula
                     onConfirmSurveyClick?.invoke(survey, title, options)
+                },
+                onVoteSurvey = { option ->
+                    Log.i("Survey", "SurveyList ${survey.title} with option $option")
+                    onVoteSurvey?.invoke(survey, option)
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))

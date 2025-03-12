@@ -106,6 +106,13 @@ open class EventViewModel(
         Log.i("EventViewModel", "Encuesta creada: ${_eventCreated.value.surveys}")
     }
 
+    fun voteSurvey(eventId: String, surveyTitle: String, selectedOption: String) {
+        performLoadingAction {
+            eventService.selectSurvey(eventId, surveyTitle, selectedOption)
+            loadEvent(eventId)
+        }
+    }
+
     fun dislikeEvent(eventId: String) {
         performLoadingAction {
             val event = eventData.value
@@ -195,6 +202,8 @@ open class EventViewModel(
             }
         }
     }
+
+
 
 }
 

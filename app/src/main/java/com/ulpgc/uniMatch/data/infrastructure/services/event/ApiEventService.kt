@@ -6,11 +6,13 @@ import android.util.Log
 import com.ulpgc.uniMatch.data.application.services.EventService
 import com.ulpgc.uniMatch.data.domain.models.Event
 import com.ulpgc.uniMatch.data.domain.models.Location
+import com.ulpgc.uniMatch.data.domain.models.SelectSurveyDTO
 import com.ulpgc.uniMatch.data.domain.models.Survey
 import com.ulpgc.uniMatch.data.infrastructure.controllers.EventController
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.AgeRangeRequest
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.CreateSurveyDTO
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.ListRequest
+import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.StringRequest
 import com.ulpgc.uniMatch.data.infrastructure.controllers.requestHelpers.SurveyRequest
 import com.ulpgc.uniMatch.data.infrastructure.database.dao.EventDao
 import com.ulpgc.uniMatch.data.infrastructure.entities.EventEntity
@@ -243,17 +245,24 @@ class ApiEventService(
         surveyTitle: String,
         option: String
     ): Result<Unit> =
-        safeApiCall { eventController.selectSurvey(eventId, surveyTitle, option) }.mapCatching {
+        safeApiCall {
+            Log.i("Survey", "Selecting survey $surveyTitle with option $option and event $eventId")
+            eventController.selectSurvey(
+                eventId,
+                SelectSurveyDTO.create(surveyTitle, option))
+        }.mapCatching {
             Unit
         }
-
 
     override suspend fun deselectSurvey(
         eventId: String,
         surveyTitle: String,
         option: String
     ): Result<Unit> =
-        safeApiCall { eventController.deselectSurvey(eventId, surveyTitle, option) }.mapCatching {
+        safeApiCall { eventController.deselectSurvey(
+            eventId,
+            SelectSurveyDTO.create(surveyTitle, option))
+        }.mapCatching {
             Unit
         }
 }

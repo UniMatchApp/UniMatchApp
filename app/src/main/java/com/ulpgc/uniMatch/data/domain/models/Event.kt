@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.data.domain.models
 
+import com.google.gson.annotations.SerializedName
 import java.util.Date
 
 data class Event (
@@ -27,5 +28,22 @@ data class Event (
             attachment = attachment,
             surveys = surveys
         )
+    }
+}
+
+data class SelectSurveyDTO(
+    @SerializedName("title") var title: String,
+    @SerializedName("option") var option: String
+) {
+    companion object {
+        fun create(
+            title: String,
+            option: String
+        ): SelectSurveyDTO {
+            return SelectSurveyDTO(
+                title = title,
+                option = option
+            )
+        }
     }
 }

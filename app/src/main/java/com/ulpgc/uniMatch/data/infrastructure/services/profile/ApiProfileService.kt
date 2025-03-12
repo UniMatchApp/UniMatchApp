@@ -339,7 +339,7 @@ class ApiProfileService @Inject constructor(
 
     private fun createRequestBody(value: String): RequestBody =
         value.toRequestBody("text/plain".toMediaTypeOrNull())
-}
+    }
 
 @Module
 @InstallIn(SingletonComponent::class)
