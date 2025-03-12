@@ -40,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.ulpgc.uniMatch.R
@@ -54,7 +55,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddEventScreen(
         eventViewModel: EventViewModel,
-        errorViewModel: ErrorViewModel
+        errorViewModel: ErrorViewModel,
+        navController: NavController
 ) {
 
         val coroutineScope = rememberCoroutineScope()
@@ -191,6 +193,7 @@ fun AddEventScreen(
                                                 val result = eventViewModel.createEvent()
                                                 result.onSuccess {
                                                         Log.i("AddEventScreen", "Evento creado correctamente")
+                                                        navController.popBackStack()
                                                 }.onFailure { error ->
                                                         errorViewModel.showError(error.message ?: "Ocurrió un error inesperado")
                                                 }
