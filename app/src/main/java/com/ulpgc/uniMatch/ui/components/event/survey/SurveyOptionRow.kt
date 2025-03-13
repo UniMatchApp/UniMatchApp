@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.components.event.survey
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -28,6 +29,8 @@ fun SurveyOptionRow(
     onOptionChange: (String) -> Unit = {},
     onOptionRemove: () -> Unit = {}
 ) {
+
+    Log.i("Survey", "SurveyOptionRow $option")
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (!isEditing) {
             RadioButton(

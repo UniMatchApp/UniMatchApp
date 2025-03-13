@@ -66,7 +66,6 @@ fun AddEventScreen(
 
         var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
-
         val eventToCreate by eventViewModel.eventCreated.collectAsState()
         val surveys = eventToCreate.surveys
 

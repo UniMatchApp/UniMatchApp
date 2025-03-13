@@ -15,17 +15,15 @@ fun SurveyOptions(
     val maxVotes = votes.values.maxOfOrNull { it.size } ?: 1
 
     options.forEachIndexed { index, option ->
-        votes[option]?.contains(userId)?.let {
-            SurveyOptionRow(
-                option = option,
-                votes = votes[option]?.size ?: 0,
-                isSelected = it,
-                maxVotes = maxVotes,
-                onVote = {onVote(option)} ,
-                isEditing = isEditing,
-                onOptionChange = { newValue -> onOptionChange(index, newValue) },
-                onOptionRemove = { onOptionRemove(index) }
-            )
-        }
+        SurveyOptionRow(
+            option = option,
+            votes = votes[option]?.size ?: 0,
+            isSelected = votes[option]?.contains(userId) ?: false,
+            maxVotes = maxVotes,
+            onVote = {onVote(option)} ,
+            isEditing = isEditing,
+            onOptionChange = { newValue -> onOptionChange(index, newValue) },
+            onOptionRemove = { onOptionRemove(index) }
+        )
     }
 }
