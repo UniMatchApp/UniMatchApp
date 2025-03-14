@@ -33,6 +33,9 @@ open class EventViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> get() = _isLoading
 
+    fun resetEventCreated() {
+        _eventCreated.value = EventData()
+    }
 
     fun loadEvents() {
         performLoadingAction {
@@ -227,8 +230,6 @@ open class EventViewModel(
             _eventsData.value = eventService.getEventsByName(filteredEvent).getOrNull()
         }
     }
-
-
 }
 
 data class EventData(

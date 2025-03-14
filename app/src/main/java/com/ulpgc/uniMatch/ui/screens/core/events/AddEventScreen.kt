@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -82,6 +83,13 @@ fun AddEventScreen(
                         surveys = it
                 }
                 Log.i("AddEventScreen", "Surveys: $surveys")
+        }
+
+        DisposableEffect(navController) {
+                onDispose {
+                        eventViewModel.resetEventCreated()
+                }
+                // Este código se ejecutará cuando la pantalla se deje
         }
 
 
