@@ -19,15 +19,14 @@ import com.ulpgc.uniMatch.ui.components.event.survey.SurveyTitle
 fun EventSurveyCard(
     userId: String = "",
     survey: Survey,
-    isEditing: Boolean = false,
     onDeleteSurvey: (() -> Unit)? = null,
     onVoteSurvey: ((String) -> Unit)? = null,
     onQuitVoteSurvey: ((String) -> Unit)? = null
 ) {
-    Log.i("Survey", "IsEditing survey card $isEditing")
 
     var title = survey.title
     var options by remember { mutableStateOf(survey.options) }
+    Log.i("Survey", "EventSurveyCard $options")
 
     Column(
         modifier = Modifier

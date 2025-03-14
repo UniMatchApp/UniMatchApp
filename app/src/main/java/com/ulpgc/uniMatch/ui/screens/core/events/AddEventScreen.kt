@@ -45,8 +45,10 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.ulpgc.uniMatch.R
+import com.ulpgc.uniMatch.data.domain.models.Survey
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.ui.components.event.EventDatePicker
 import com.ulpgc.uniMatch.ui.components.event.EventSection
 import com.ulpgc.uniMatch.ui.components.event.survey.SurveysList
@@ -56,10 +58,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddEventScreen(
         eventViewModel: EventViewModel,
+        userViewModel: UserViewModel,
         errorViewModel: ErrorViewModel,
         navController: NavController
 ) {
 
+        val userId = userViewModel.userId
         val coroutineScope = rememberCoroutineScope()
 
         var showDialog by remember { mutableStateOf(false) }
@@ -69,9 +73,17 @@ fun AddEventScreen(
 
         val eventToCreate by eventViewModel.eventCreated.collectAsState()
 
-        var surveys = eventToCreate.surveys
+        var surveys  by remember {mutableStateOf(
+                mapOf<Survey, Boolean>())}
 
         var titleText by remember { mutableStateOf(eventToCreate.title) }
+
+        LaunchedEffect(eventToCreate) {
+                eventToCreate.surveys?.let {
+                        surveys = it
+                }
+                Log.i("AddEventScreen", "Surveys: $surveys")
+        }
 
 
         val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -157,10 +169,11 @@ fun AddEventScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                if (surveys != null) {
-                        Log.i("UI", "Rendering survey: $surveys")
+
+                if (userId != null) {
                         SurveysList(
-                                surveys = surveys ?: emptyList(),
+                                userId = userId,
+                                surveys = surveys,
                                 onDeleteSurveyClick = { survey ->
                                         eventViewModel.deleteSurvey(survey)
                                 },
@@ -169,6 +182,7 @@ fun AddEventScreen(
                                 }
                         )
                 }
+
                 Row(
                         modifier = Modifier
                                 .fillMaxWidth()

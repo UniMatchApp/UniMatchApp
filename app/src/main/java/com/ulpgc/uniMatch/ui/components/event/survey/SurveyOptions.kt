@@ -1,5 +1,6 @@
 package com.ulpgc.uniMatch.ui.components.event.survey
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 
 @Composable
@@ -12,8 +13,9 @@ fun SurveyOptions(
     onOptionRemove: (Int) -> Unit = {},
     onVote: (String) -> Unit = {}
 ) {
-    val maxVotes = votes.values.maxOfOrNull { it.size } ?: 1
+    val maxVotes = votes.values.maxOfOrNull { it.size } ?: 0
 
+    Log.i("Survey", "SurveyOptions $votes")
     options.forEachIndexed { index, option ->
         SurveyOptionRow(
             option = option,

@@ -67,7 +67,7 @@ open class EventViewModel(
                 event.location,
                 DateParser.formatDateToString(date),
                 uri,
-                event.surveys ?: emptyList()
+                event.surveys?.keys?.toList() ?: emptyList()
             )
             Result.success(Unit)
         } catch (e: Exception) {
@@ -99,8 +99,9 @@ open class EventViewModel(
             title = "",
             options = emptyMap()
         )
-        val updatedSurveys = _eventCreated.value.surveys?.toMutableList() ?: mutableListOf()
-        updatedSurveys.add(survey)
+        val updatedSurveys = _eventCreated.value.surveys?.toMutableMap() ?: mutableMapOf()
+        updatedSurveys[survey] = true
+        Log.i("EventViewModel", "Encuesta updated creada: $updatedSurveys")
 
         _eventCreated.value = _eventCreated.value.copy(surveys = updatedSurveys)
         Log.i("EventViewModel", "Encuesta creada: ${_eventCreated.value.surveys}")
@@ -168,27 +169,31 @@ open class EventViewModel(
     }
 
     fun setSurvey(survey: Survey, title: String, options: List<String>) {
-        val updatedSurveys = _eventCreated.value.surveys?.toMutableList() ?: mutableListOf()
+        val updatedSurveys = _eventCreated.value.surveys?.toMutableMap() ?: mutableMapOf()
 
-        val surveyIndex = updatedSurveys.indexOf(survey)
-        if (surveyIndex != -1) {
-            val optionsMap: Map<String, Set<String>> = options.associateWith { setOf("") }
-            updatedSurveys[surveyIndex] = Survey(
-                title = title,
-                options = optionsMap
-            )
+        if (updatedSurveys.containsKey(survey)) {
+            val optionsMap: Map<String, Set<String>> = options.associateWith { setOf() }
+
+            val updatedSurvey = survey.copy(title = title, options = optionsMap)
+
+            updatedSurveys.remove(survey)
+
+            updatedSurveys[updatedSurvey] = false
 
             _eventCreated.value = _eventCreated.value.copy(surveys = updatedSurveys)
-            Log.i("EventViewModel", "Encuesta actualizada en el índice $surveyIndex: ${_eventCreated.value.surveys}")
+
+            Log.i("EventViewModel", "Encuesta actualizada: ${_eventCreated.value.surveys}")
         } else {
             Log.e("EventViewModel", "Encuesta no encontrada en la lista: $survey")
         }
     }
 
+
+
     fun deleteSurvey(survey: Survey) {
+
         _eventCreated.value = _eventCreated.value.copy(
-            surveys = _eventCreated.value.surveys?.filter { it != survey }
-        )
+            surveys = _eventCreated.value.surveys?.filterKeys { it != survey })
         Log.i("DeleteSurvey", "Surveys after deletion: ${_eventCreated.value.surveys}")
     }
 
@@ -231,6 +236,6 @@ data class EventData(
     val attachment: Uri? = null,
     val location: Location? = null,
     val date: Date? = null,
-    val surveys: List<Survey>? = null
+    val surveys: Map<Survey, Boolean>? = null
 )
 

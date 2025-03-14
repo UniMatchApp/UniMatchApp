@@ -17,46 +17,43 @@ import com.ulpgc.uniMatch.ui.components.event.AddSurveyCard
 @Composable
 fun SurveysList(
     userId: String = "",
-    surveys: List<Survey> = emptyList(),
-    isEditing: Boolean = true,
+    surveys: Map<Survey, Boolean> = emptyMap(),
     onDeleteSurveyClick: ((Survey) -> Unit)? = null,
     onConfirmSurveyClick: ((Survey, String, List<String>) -> Unit)? = null,
     onVoteSurvey: ((Survey, String) -> Unit)? = null,
     OnQuitVoteSurvey: ((Survey, String) -> Unit)? = null
 ) {
 
-    var surveyMap by remember {
-        mutableStateOf(surveys.associateWith { isEditing })
+    LaunchedEffect(surveys) {
+        Log.i("Survey", "Survey list $surveys")
     }
-    Log.i("Survey", "IsEditing survey list $surveyMap")
 
     LazyColumn (
         modifier = Modifier
             .heightIn(max = Short.MAX_VALUE.toInt().dp)
     ) {
-        items(surveyMap.keys.toList(), key = { it.title }) { survey ->
-            if(!isEditing) {
+        items(surveys.keys.toList(), key = { it.title }) { survey ->
+
+            val isEditable = surveys[survey] ?: false
+
+            if(isEditable) {
+                AddSurveyCard(
+                    survey = survey,
+                    onDeleteSurvey = { onDeleteSurveyClick?.invoke(survey) },
+                    onConfirmSurvey = { title, options ->
+                        onConfirmSurveyClick?.invoke(survey, title, options)
+                    }
+                )
+            } else {
                 EventSurveyCard(
                     userId = userId,
                     survey = survey,
-                    isEditing = isEditing,
                     onDeleteSurvey = { onDeleteSurveyClick?.invoke(survey) },
                     onVoteSurvey = { option ->
 
                         onVoteSurvey?.invoke(survey, option)
                     },
                     onQuitVoteSurvey = { option -> OnQuitVoteSurvey?.invoke(survey, option) }
-                )
-            } else {
-                AddSurveyCard(
-                    survey = survey,
-                    isEditing = surveyMap[survey] ?: false,
-                    onDeleteSurvey = { onDeleteSurveyClick?.invoke(survey) },
-                    onConfirmSurvey = { title, options ->
-                        onConfirmSurveyClick?.invoke(survey, title, options)
-                        surveyMap = surveyMap.toMutableMap().also { it[survey] = false }
-                        Log.i("Survey", "IsEditing survey list onConfirme $surveyMap")
-                    }
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))

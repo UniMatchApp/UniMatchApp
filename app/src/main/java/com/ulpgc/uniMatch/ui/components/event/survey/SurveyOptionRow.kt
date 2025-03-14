@@ -30,7 +30,7 @@ fun SurveyOptionRow(
     onOptionRemove: () -> Unit = {}
 ) {
 
-    Log.i("Survey", "SurveyOptionRow $option")
+    Log.i("Survey", "SurveyOptionRow $votes")
     Row(verticalAlignment = Alignment.CenterVertically) {
         if (!isEditing) {
             RadioButton(

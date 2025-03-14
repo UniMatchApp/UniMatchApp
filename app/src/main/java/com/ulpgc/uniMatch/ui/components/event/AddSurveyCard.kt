@@ -18,11 +18,9 @@ import com.ulpgc.uniMatch.ui.components.event.survey.SurveyTitle
 @Composable
 fun AddSurveyCard(
     survey: Survey,
-    isEditing: Boolean = false,
     onDeleteSurvey: (() -> Unit)? = null,
     onConfirmSurvey: ((String, List<String>) -> Unit)? = null,
 ) {
-    Log.i("Survey", "IsEditing survey card $isEditing")
 
     val defaultTitle = stringResource(R.string.event_title)
     val defaultOptions = mapOf(
