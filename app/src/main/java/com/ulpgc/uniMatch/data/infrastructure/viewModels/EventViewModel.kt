@@ -217,6 +217,13 @@ open class EventViewModel(
         }
     }
 
+    fun filterEvents(filteredEvent: String) {
+        performLoadingAction {
+            _eventsData.value = eventService.getAll().getOrThrow().filter {
+                it.title.contains(filteredEvent, ignoreCase = true)
+            }
+        }
+    }
 
 
 }
