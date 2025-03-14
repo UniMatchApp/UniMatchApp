@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,9 +68,10 @@ fun AddEventScreen(
         var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
         val eventToCreate by eventViewModel.eventCreated.collectAsState()
-        val surveys = eventToCreate.surveys
 
-        var titleText by remember { mutableStateOf(eventToCreate?.title) }
+        var surveys = eventToCreate.surveys
+
+        var titleText by remember { mutableStateOf(eventToCreate.title) }
 
 
         val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -158,7 +160,7 @@ fun AddEventScreen(
                 if (surveys != null) {
                         Log.i("UI", "Rendering survey: $surveys")
                         SurveysList(
-                                surveys = surveys,
+                                surveys = surveys ?: emptyList(),
                                 onDeleteSurveyClick = { survey ->
                                         eventViewModel.deleteSurvey(survey)
                                 },
@@ -167,7 +169,6 @@ fun AddEventScreen(
                                 }
                         )
                 }
-
                 Row(
                         modifier = Modifier
                                 .fillMaxWidth()

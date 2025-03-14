@@ -2,18 +2,10 @@ package com.ulpgc.uniMatch.ui.components.event
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,30 +15,19 @@ import com.ulpgc.uniMatch.ui.components.event.survey.SurveyBottomButtons
 import com.ulpgc.uniMatch.ui.components.event.survey.SurveyOptions
 import com.ulpgc.uniMatch.ui.components.event.survey.SurveyTitle
 
-
 @Composable
 fun EventSurveyCard(
     userId: String = "",
     survey: Survey,
     isEditing: Boolean = false,
     onDeleteSurvey: (() -> Unit)? = null,
-    onConfirmSurvey: ((String, List<String>) -> Unit)? = null,
     onVoteSurvey: ((String) -> Unit)? = null,
     onQuitVoteSurvey: ((String) -> Unit)? = null
 ) {
+    Log.i("Survey", "IsEditing survey card $isEditing")
 
-    val finalTitle = if (survey.title.isBlank()) stringResource(R.string.event_title) else survey.title
-    val finalOptions = if (survey.options.isEmpty()) {
-        mapOf(
-            stringResource(R.string.option_one) to setOf(),
-            stringResource(R.string.option_two) to setOf()
-        )
-    } else survey.options
-
-    var options by remember { mutableStateOf(finalOptions) }
-    var editTitle by remember { mutableStateOf(finalTitle) }
-    var editOptions by remember { mutableStateOf(finalOptions.keys.toList()) }
-    var isConfirmed by remember { mutableStateOf(!isEditing) }
+    var title = survey.title
+    var options by remember { mutableStateOf(survey.options) }
 
     Column(
         modifier = Modifier
@@ -55,81 +36,30 @@ fun EventSurveyCard(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        if (!isConfirmed) {
-            Column {
-                SurveyTitle(
-                    title = editTitle,
-                    onDeleteSurvey = onDeleteSurvey,
-                    onTitleChange = { editTitle = it },
-                    isEditing = true
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                SurveyOptions(
-                    options = editOptions,
-                    isEditing = true,
-                    onOptionChange = { index, newValue ->
-                        editOptions = editOptions.toMutableList().also { it[index] = newValue }
-                    },
-                    onOptionRemove = { index ->
-                        editOptions = editOptions.toMutableList().also { it.removeAt(index) }
-                    },
-
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                SurveyBottomButtons(
-                    onAddOption = { editOptions =
-                        editOptions + "New Option ${editOptions.size + 1}"
-                    },
-                    onConfirmSurvey = {
-                        isConfirmed = true
-                        if (onConfirmSurvey != null) {
-                            onConfirmSurvey(editTitle, editOptions)
-                        }
-                        options = editOptions.associateWith { setOf<String>() }
-                    },
-                    optionsSize = editOptions.size
-                )
-            }
-        } else {
-            Column {
-                SurveyTitle(
-                    title = editTitle,
-                    isEditing = isEditing,
-                    onDeleteSurvey = onDeleteSurvey,
-                )
-
-                SurveyOptions(
-                    userId = userId,
-                    options = options.keys.toList(),
-                    isEditing = false,
-                    votes = options,
-                    onVote = { selected ->
-                        val isSelected = options[selected]?.contains(userId) == true
-
-                        options = options.mapValues { (key, value) ->
-                            when {
-                                key == selected && isSelected -> value - userId
-                                key == selected -> value + userId
-                                value.contains(userId) -> value - userId
-                                else -> value
-                            }
-                        }
-
-                        Log.i("Survey", "EventSurveyCard $options")
-
-                        if (isSelected) {
-                            onQuitVoteSurvey?.invoke(selected)
-                        } else {
-                            onVoteSurvey?.invoke(selected)
-                        }
+        SurveyTitle(
+            title = title,
+            isEditing = false,
+            onDeleteSurvey = onDeleteSurvey)
+        SurveyOptions(
+            userId = userId,
+            options = options.keys.toList(),
+            isEditing = false,
+            votes = options,
+            onVote = { selected ->
+                val isSelected = options[selected]?.contains(userId) == true
+                options = options.mapValues { (key, value) ->
+                    when {
+                        key == selected && isSelected -> value - userId
+                        key == selected -> value + userId
+                        value.contains(userId) -> value - userId
+                        else -> value
                     }
-
-                )
+                }
+                Log.i("Survey", "EventSurveyCard $options")
+                if (isSelected) onQuitVoteSurvey?.invoke(selected)
+                else onVoteSurvey?.invoke(selected)
             }
-        }
+        )
+
     }
 }
-
-
