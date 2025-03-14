@@ -73,8 +73,7 @@ fun AddEventScreen(
 
         val eventToCreate by eventViewModel.eventCreated.collectAsState()
 
-        var surveys  by remember {mutableStateOf(
-                mapOf<Survey, Boolean>())}
+        var surveys  by remember {mutableStateOf(mapOf<Survey, Boolean>())}
 
         var titleText by remember { mutableStateOf(eventToCreate.title) }
 
@@ -172,6 +171,7 @@ fun AddEventScreen(
 
                 if (userId != null) {
                         SurveysList(
+                                ownerId = userId,
                                 userId = userId,
                                 surveys = surveys,
                                 onDeleteSurveyClick = { survey ->

@@ -16,6 +16,7 @@ import com.ulpgc.uniMatch.ui.components.event.AddSurveyCard
 
 @Composable
 fun SurveysList(
+    ownerId : String = "",
     userId: String = "",
     surveys: Map<Survey, Boolean> = emptyMap(),
     onDeleteSurveyClick: ((Survey) -> Unit)? = null,
@@ -46,6 +47,7 @@ fun SurveysList(
                 )
             } else {
                 EventSurveyCard(
+                    ownerId = ownerId,
                     userId = userId,
                     survey = survey,
                     onDeleteSurvey = { onDeleteSurveyClick?.invoke(survey) },
