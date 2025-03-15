@@ -77,6 +77,7 @@ fun AddEventScreen(
         var surveys  by remember {mutableStateOf(mapOf<Survey, Boolean>())}
 
         var titleText by remember { mutableStateOf(eventToCreate.title) }
+        var isEditingSurvey by remember { mutableStateOf(false) }
 
         LaunchedEffect(eventToCreate) {
                 eventToCreate.surveys?.let {
@@ -184,9 +185,11 @@ fun AddEventScreen(
                                 surveys = surveys,
                                 onDeleteSurveyClick = { survey ->
                                         eventViewModel.deleteSurvey(survey)
+                                        isEditingSurvey = false
                                 },
                                 onConfirmSurveyClick = { survey, title, options ->
                                         eventViewModel.setSurvey(survey, title, options)
+                                        isEditingSurvey = false
                                 }
                         )
                 }
@@ -198,7 +201,12 @@ fun AddEventScreen(
                 ) {
                         Button(
                                 onClick = {
-                                        eventViewModel.createSurvey()
+                                        if (isEditingSurvey) {
+                                                errorViewModel.showError("Termine de editar su encuesta antes de crear .")
+                                        } else {
+                                                eventViewModel.createSurvey()
+                                                isEditingSurvey = true
+                                        }
                                 },
                                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                         ) {

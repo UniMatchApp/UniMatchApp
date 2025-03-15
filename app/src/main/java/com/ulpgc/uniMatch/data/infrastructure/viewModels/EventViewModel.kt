@@ -83,7 +83,7 @@ open class EventViewModel(
         Log.i("EventViewModel", "Título guardado: ${_eventCreated.value.title}")
     }
 
-    fun setLocation(latitude: Double, longitude: Double, altitude: Double) {
+    fun setLocation(longitude: Double, latitude: Double, altitude: Double) {
         Log.i("EventViewModel", "Ubicación guardada: $latitude, $longitude, $altitude")
         val location = Location(latitude, longitude, altitude)
         _eventCreated.value = _eventCreated.value.copy(location = location)
