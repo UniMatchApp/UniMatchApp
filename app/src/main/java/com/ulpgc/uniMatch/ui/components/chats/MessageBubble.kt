@@ -74,15 +74,25 @@ import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
 fun formatTimestamp(timestamp: Long): String {
     val date = Date(timestamp)
-    val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-    Log.d("MessageBubble", "timestamp: $timestamp -> formatTimestamp: ${sdf.format(date)}")
-    return sdf.format(date)
+    val now = Calendar.getInstance()
+    val cal = Calendar.getInstance().apply { time = date }
+
+    return if (cal.get(Calendar.YEAR) == now.get(Calendar.YEAR) &&
+        cal.get(Calendar.DAY_OF_YEAR) == now.get(Calendar.DAY_OF_YEAR)) {
+        // Si es hoy, solo muestra la hora
+        SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)
+    } else {
+        // Si es de días anteriores, muestra día, mes, año y hora
+        SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(date)
+    }
 }
+
 
 fun getMimeTypeFromFile(filePath: String): String {
     val file = File(filePath)

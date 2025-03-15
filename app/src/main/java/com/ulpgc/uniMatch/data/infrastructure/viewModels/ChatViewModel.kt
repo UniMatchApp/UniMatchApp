@@ -162,7 +162,8 @@ open class ChatViewModel(
                     this[indexOf(it)] = newMessage
                 }
             } ?: run {
-                _messages.value = _messages.value?.plus(newMessage)
+                _messages.value = (_messages.value?.plus(newMessage))
+                    ?.sortedBy { it.createdAt }
             }
 
             val newMessageCounter = if (messageExists.getOrDefault(false)) 0 else 1
@@ -270,8 +271,13 @@ open class ChatViewModel(
                 }.getOrDefault(emptyList())).toMutableList()
 
 
-            this@ChatViewModel._messages.value = (this@ChatViewModel._messages.value?.plus(messages))?.distinctBy { it.messageId }
-                ?.toMutableList()
+            this@ChatViewModel._messages.value =
+                this@ChatViewModel._messages.value
+                    ?.plus(messages)
+                    ?.distinctBy { it.messageId }
+                    ?.sortedBy { it.createdAt }
+                    ?.toMutableList()
+
             _isLoading.value = false
         }
     }

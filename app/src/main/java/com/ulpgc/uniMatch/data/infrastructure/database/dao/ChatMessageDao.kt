@@ -56,6 +56,10 @@ interface ChatMessageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMessages(messages: List<MessageEntity>)
 
+    // Actualiza el id del mensaje local por el id del mensaje en la base de datos
+    @Query("UPDATE messages SET messageId = :messageId WHERE messageId = :localId")
+    suspend fun updateLocalMessageId(localId: String, messageId: String)
+
     @Query(
         """
     UPDATE messages SET
@@ -99,6 +103,17 @@ interface ChatMessageDao {
             attachment = message.attachment,
         )
 
+    }
+
+    @Transaction
+    suspend fun updateMessageTransaction(
+        oldMessageId: String,
+        newMessageId: String?,
+        status: ReceptionStatus
+    ) {
+        setMessageStatus(oldMessageId, status)
+        updateChatId(oldMessageId, newMessageId ?: oldMessageId)
+        updateLocalMessageId(oldMessageId, newMessageId ?: oldMessageId)
     }
 
     @Query("SELECT COUNT(*) FROM messages WHERE messageId = :messageId")

@@ -19,7 +19,7 @@ import com.ulpgc.uniMatch.data.domain.models.Message
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index(value = ["chatId"])]
+    indices = [Index(value = ["chatId"]), Index(value = ["messageId"], unique = true)]
 )
 data class MessageEntity(
     @PrimaryKey val messageId: String,

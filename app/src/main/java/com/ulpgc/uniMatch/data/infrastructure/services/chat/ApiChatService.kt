@@ -91,10 +91,18 @@ class ApiChatService(
             } else {
                 val response = result.getOrNull()
                 val messageId = response?.value?.messageId
-                chatMessageDao.setMessageStatus(message.messageId, ReceptionStatus.SENT)
-                message.receptionStatus = ReceptionStatus.SENT
-                chatMessageDao.updateChatId(message.messageId, messageId ?: message.messageId)
+
+                // Se ejecuta como transacción
+                chatMessageDao.updateMessageTransaction(
+                    oldMessageId = message.messageId,
+                    newMessageId = messageId ?: message.messageId,
+                    status = ReceptionStatus.SENT
+                )
+
+                // Reflejamos el cambio en el objeto en memoria
                 message.messageId = messageId ?: message.messageId
+                message.receptionStatus = ReceptionStatus.SENT
+
                 Log.i("ApiChatService", "Message sent: $message")
             }
 
