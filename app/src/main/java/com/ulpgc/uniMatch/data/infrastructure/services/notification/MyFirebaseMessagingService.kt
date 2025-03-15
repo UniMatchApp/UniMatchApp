@@ -40,9 +40,24 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         if (remoteMessage.data.isNotEmpty()) {
             val notificationData = remoteMessage.data
 
+            Log.i("Notification", "Data: $notificationData")
+
+            val notificationId = notificationData["id"]?.let { generateNotificationId(it) } ?: 0
             val notificationTitle = remoteMessage.data["title"]
             val notificationBody = remoteMessage.data["body"]
             val notificationType = notificationData["type"]
+            val action = notificationData["action"]
+
+            if (action == "edit") {
+                val oldId = notificationData["oldId"]?.let { generateNotificationId(it) } ?: 0
+                removeNotification(oldId)
+            }
+
+            if (action == "delete") {
+                Log.i("Notification", "Removing notification")
+                removeNotification(notificationId)
+                return
+            }
 
             // Crear el canal de notificación
             createNotificationChannel()
@@ -75,15 +90,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 val profileName = outputData.getString("profileName")
                 Log.i("WorkManager", "Profile name: $profileName")
                 Log.i("WorkManager", "Notification type: $notificationType")
-                val modifiedBody = when (notificationType) {
-                    NotificationTypeEnum.MESSAGE.toString() -> "$profileName: $notificationBody"
-                    NotificationTypeEnum.MATCH.toString() -> "$profileName has matched with you!"
-                    else -> notificationBody
-                }
-                showNotification(notificationTitle, modifiedBody)
+                val modifiedBody = generateModifiedBody(notificationType!!, profileName!!, notificationBody!!)
+                showNotification(notificationTitle, modifiedBody, notificationId)
             } else {
                 Log.e("WorkManager", "Work failed")
             }
+        }
+    }
+
+    private fun generateModifiedBody(notificationType: String, profileName: String, notificationBody: String): String {
+        return when (notificationType) {
+            NotificationTypeEnum.MESSAGE.toString() -> "$profileName: $notificationBody"
+            NotificationTypeEnum.MATCH.toString() -> "$profileName has matched with you!"
+            else -> notificationBody
         }
     }
 
@@ -105,10 +124,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .build()
     }
 
-    // Aquí iría el código para mostrar las notificaciones de manera similar a como lo tienes
-    private fun showNotification(title: String?, body: String?) {
+    private fun showNotification(title: String?, body: String?, notificationId: Int) {
         val notificationManager = NotificationManagerCompat.from(this)
-
 
         val notification = NotificationCompat.Builder(this, "default_channel")
             .setContentTitle(title)
@@ -124,9 +141,23 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         ) {
             return
         }
-        notificationManager.notify(0, notification)
+
+        notificationManager.notify(notificationId, notification)
     }
+
+    private fun removeNotification(notificationId: Int) {
+        val notificationManager = NotificationManagerCompat.from(this)
+        notificationManager.cancel(notificationId)
+    }
+
+    fun generateNotificationId(notificationId: String): Int {
+        return notificationId.hashCode()
+    }
+
 }
+
+
+
 
 @HiltWorker
 class ProfileWork @AssistedInject constructor(
