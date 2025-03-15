@@ -78,6 +78,7 @@ fun AddEventScreen(
 
         var titleText by remember { mutableStateOf(eventToCreate.title) }
         var isEditingSurvey by remember { mutableStateOf(false) }
+        val finishSurveyEdition = stringResource(R.string.finish_survey_edition)
 
         LaunchedEffect(eventToCreate) {
                 eventToCreate.surveys?.let {
@@ -202,7 +203,7 @@ fun AddEventScreen(
                         Button(
                                 onClick = {
                                         if (isEditingSurvey) {
-                                                errorViewModel.showError("Termine de editar su encuesta antes de crear .")
+                                                errorViewModel.showError(finishSurveyEdition)
                                         } else {
                                                 eventViewModel.createSurvey()
                                                 isEditingSurvey = true
