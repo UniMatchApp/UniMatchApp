@@ -77,6 +77,8 @@ fun AddEventScreen(
         var surveys  by remember {mutableStateOf(mapOf<Survey, Boolean>())}
 
         var titleText by remember { mutableStateOf(eventToCreate.title) }
+        var isEditingSurvey by remember { mutableStateOf(false) }
+        val finishSurveyEdition = stringResource(R.string.finish_survey_edition)
 
         LaunchedEffect(eventToCreate) {
                 eventToCreate.surveys?.let {
@@ -184,9 +186,11 @@ fun AddEventScreen(
                                 surveys = surveys,
                                 onDeleteSurveyClick = { survey ->
                                         eventViewModel.deleteSurvey(survey)
+                                        isEditingSurvey = false
                                 },
                                 onConfirmSurveyClick = { survey, title, options ->
                                         eventViewModel.setSurvey(survey, title, options)
+                                        isEditingSurvey = false
                                 }
                         )
                 }
@@ -198,7 +202,12 @@ fun AddEventScreen(
                 ) {
                         Button(
                                 onClick = {
-                                        eventViewModel.createSurvey()
+                                        if (isEditingSurvey) {
+                                                errorViewModel.showError(finishSurveyEdition)
+                                        } else {
+                                                eventViewModel.createSurvey()
+                                                isEditingSurvey = true
+                                        }
                                 },
                                 colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
                         ) {
