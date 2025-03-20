@@ -60,4 +60,9 @@ interface MessageController {
     suspend fun deleteMessage(
         @Path("messageId") messageId: String,
     ): ApiResponse<Unit>
+
+    @DELETE("messages/user/{userId}")
+    suspend fun deleteAllMessages(
+        @Path("userId") userId: String
+    ): ApiResponse<Unit>
 }

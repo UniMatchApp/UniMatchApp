@@ -485,6 +485,9 @@
     <string name="start_chat">Enter a message to start the chat.</string>
     <string name="typing">Typing…</string>
     <string name="events">Events</string>
+    <string name="delete_chat">Delete Chat</string>
+    <string name="delete_chat_confirmation">Are you sure you want to delete this chat?</string>
+    <string name="confirm_delete_chat">Once deleted, you will not be able to recover this chat unless you reload the chat screen.</string>
 
     <!--EVENTS-->
     <string name="event_title">Title</string>

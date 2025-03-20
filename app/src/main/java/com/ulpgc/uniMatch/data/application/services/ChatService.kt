@@ -42,6 +42,8 @@ interface ChatService {
         deletedStatus : DeletedMessageStatus
     ): Result<Unit>
 
+    suspend fun deleteChat(userId: String, chatId: String): Result<Unit>
+
     suspend fun deleteLocalMessage(messageId: String): Result<Unit>
 
     suspend fun messageExistsLocal(messageId: String): Result<Boolean>

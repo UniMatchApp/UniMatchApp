@@ -18,6 +18,7 @@ import java.util.Locale
 fun ChatList(
     chats: List<Chat>,
     onChatClick: (Chat) -> Unit,
+    onChatDelete: (Chat) -> Unit,
     userStatusMap: Map<String, ChatStatus>
 ) {
     LazyColumn(
@@ -38,6 +39,7 @@ fun ChatList(
                 lastMessageTime = lastMessageTime,
                 unreadMessagesCount = chat.unreadMessagesCount,
                 onChatClick = { onChatClick(chat) },
+                onChatDelete = { onChatDelete(chat) },
                 userStatus = userStatusMap[chat.userId]
             )
         }

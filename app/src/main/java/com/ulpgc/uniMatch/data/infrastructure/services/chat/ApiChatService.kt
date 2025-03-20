@@ -435,6 +435,21 @@ class ApiChatService(
         }
     }
 
+
+    override suspend fun deleteChat(userId: String, chatId: String): Result<Unit> {
+        return safeRequest {
+            chatMessageDao.deleteChat(chatId)
+            chatMessageDao.deleteMessagesByChat(chatId)
+            val response = messageController.deleteAllMessages(chatId)
+
+            if (response.success) {
+                return@safeRequest
+            } else {
+                throw Throwable(response.errorMessage ?: "Unknown error occurred")
+            }
+        }
+    }
+
     override suspend fun deleteLocalMessage(messageId: String): Result<Unit> {
         return safeRequest {
             chatMessageDao.deleteMessage(messageId)

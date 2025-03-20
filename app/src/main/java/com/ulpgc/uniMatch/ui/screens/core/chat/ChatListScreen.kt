@@ -66,6 +66,9 @@ fun ChatListScreen(
                 onChatClick = { chat ->
                     onChatClick(chat.userId)
                 },
+                onChatDelete = { chat ->
+                    viewModel.deleteChat(chat)
+                },
                 userStatusMap = usersStatus.value
             )
             Button(

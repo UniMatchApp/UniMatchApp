@@ -119,6 +119,10 @@ class MockChatService : ChatService {
         return Result.success(Unit)
     }
 
+    override suspend fun deleteChat(userId: String, chatId: String): Result<Unit> {
+        return Result.success(Unit)
+    }
+
     override suspend fun deleteLocalMessage(messageId: String): Result<Unit> {
         return Result.success(Unit)
     }

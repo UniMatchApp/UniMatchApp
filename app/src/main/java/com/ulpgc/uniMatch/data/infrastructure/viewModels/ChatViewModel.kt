@@ -490,6 +490,25 @@ open class ChatViewModel(
         }
     }
 
+    fun deleteChat(chat: Chat) {
+        viewModelScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
+
+            val result = chatService.deleteChat(userViewModel.userId!!, chat.userId)
+
+            result.onSuccess {
+                _chatList.value = _chatList.value?.filter { it.userId != chat.userId }
+            }
+
+            result.onFailure { error ->
+                Log.e("ChatViewModel", "Error deleting chat: ${error.message}")
+            }
+        }
+    }
+
     fun removeAttachment() {
         _selectedAttachment.value = null
     }
