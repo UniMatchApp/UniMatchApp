@@ -123,6 +123,10 @@ class MockChatService : ChatService {
         return Result.success(Unit)
     }
 
+    override suspend fun updateMessageAttachment(messageId: String, attachment: String): Result<Unit> {
+        return Result.success(Unit)
+    }
+
     override suspend fun messageExistsLocal(messageId: String): Result<Boolean> {
         return Result.success(true)
     }

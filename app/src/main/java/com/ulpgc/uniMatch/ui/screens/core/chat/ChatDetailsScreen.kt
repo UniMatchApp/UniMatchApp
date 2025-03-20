@@ -170,7 +170,10 @@ fun ChatDetailScreen(
                                         showOptionsMenu = true
                                     }
                                 }
-                            }
+                            },
+                            onDownload = {
+                                chatViewModel.updateMessageAttachment(message.messageId, it)
+                            },
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }

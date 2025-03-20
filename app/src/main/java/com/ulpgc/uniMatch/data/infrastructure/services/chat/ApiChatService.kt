@@ -441,6 +441,12 @@ class ApiChatService(
         }
     }
 
+    override suspend fun updateMessageAttachment(messageId: String, attachment: String): Result<Unit> {
+        return safeRequest {
+            chatMessageDao.updateMessageAttachment(messageId, attachment)
+        }
+    }
+
     override suspend fun messageExistsLocal(messageId: String): Result<Boolean> {
         return safeRequest {
             val count = chatMessageDao.messageExists(messageId)
