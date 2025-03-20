@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.ui.components.chats
 
 import android.app.DownloadManager
+import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -60,6 +61,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.documentfile.provider.DocumentFile
 import coil.compose.rememberAsyncImagePainter
 import com.ulpgc.uniMatch.data.domain.enums.ReceptionStatus
 import com.ulpgc.uniMatch.data.domain.models.Message
@@ -94,13 +96,11 @@ fun formatTimestamp(timestamp: Long): String {
 }
 
 
-fun getMimeTypeFromFile(filePath: String): String {
-    val file = File(filePath)
-    return if (file.exists()) {
-        Files.probeContentType(Paths.get(filePath)) ?: "application/octet-stream"
-    } else {
-        "application/octet-stream"
-    }
+fun getMimeTypeFromFile(context: Context, filePath: String): String {
+    val uri = Uri.parse(filePath)
+    val contentResolver = context.contentResolver
+    val mimeType = contentResolver.getType(uri) ?: "application/octet-stream"
+    return mimeType
 }
 
 suspend fun getMimeTypeFromUrl(url: String): String {
@@ -117,11 +117,11 @@ suspend fun getMimeTypeFromUrl(url: String): String {
     }
 }
 
-suspend fun getMimeType(attachment: String): String {
+suspend fun getMimeType(context: Context, attachment: String): String {
     return if (attachment.startsWith("http://") || attachment.startsWith("https://")) {
         getMimeTypeFromUrl(attachment)
     } else {
-        getMimeTypeFromFile(attachment)
+        getMimeTypeFromFile(context, attachment)
     }
 }
 
@@ -131,14 +131,15 @@ fun MessageBubble(
     message: Message,
     isCurrentUser: Boolean,
     isSelected: Boolean,
-    onLongClick: () -> Unit
+    onLongClick: () -> Unit,
+    onDownload: (uri: String) -> Unit
 ) {
     val context = LocalContext.current
 
     var mimeType by remember { mutableStateOf("application/octet-stream") }
 
     LaunchedEffect(message.attachment) {
-        mimeType = getMimeType(message.attachment ?: "")
+        mimeType = getMimeType(context, message.attachment ?: "")
     }
 
     Row(
@@ -192,7 +193,8 @@ fun MessageBubble(
                                 isCurrentUser = isCurrentUser,
                                 fileName = fileName,
                                 context = context,
-                                onLongClick = onLongClick
+                                onLongClick = onLongClick,
+                                onSuccessDownload = onDownload
                             )
 
                             Spacer(modifier = Modifier.width(8.dp))
@@ -244,16 +246,16 @@ fun getFileIcon(mimeType: String): ImageVector {
     }
 }
 
-fun isFileDownloaded(attachment: String): Boolean {
-    val file = File(attachment)
-    return file.exists()
+fun isFileDownloaded(context: Context, attachment: String): Boolean {
+    val uri = Uri.parse(attachment)
+    return DocumentFile.fromSingleUri(context, uri)?.exists() == true
 }
 
 suspend fun downloadFile(
     attachment: String,
     fileName: String,
     context: Context,
-    onSuccess: () -> Unit,
+    onSuccess: (uri: String) -> Unit,
     onError: (String) -> Unit
 ) {
     try {
@@ -263,7 +265,8 @@ suspend fun downloadFile(
             override fun onReceive(context: Context?, intent: Intent?) {
                 val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
                 if (downloadId == id) {
-                    onSuccess()
+                    // TODO: Se debe devolver la ruta de descarga
+                    onSuccess(attachment)
                     context?.unregisterReceiver(this)
                 }
             }
@@ -304,7 +307,7 @@ private fun downloadFileAsync(
     attachment: String,
     fileName: String,
     context: Context,
-    onSuccess: () -> Unit = {},
+    onSuccess: (uri: String) -> Unit = {},
     onError: (String) -> Unit = {}
 ) {
     CoroutineScope(Dispatchers.IO).launch {
@@ -312,9 +315,7 @@ private fun downloadFileAsync(
             attachment = attachment,
             fileName = fileName,
             context = context,
-            onSuccess = {
-                onSuccess()
-            },
+            onSuccess = onSuccess,
             onError = {
                 Log.e("DownloadFileAsync", "Error al descargar el archivo: $it")
                 onError(it)
@@ -382,17 +383,18 @@ fun MessageBubbleContent(
     isCurrentUser: Boolean,
     fileName: String,
     context: Context,
+    onSuccessDownload: (uri: String) -> Unit,
     onLongClick: () -> Unit
 ) {
     when {
         mimeType.startsWith("image/") -> {
-            ImageAttachment(attachment = attachment, fileName = fileName, context = context)
+            ImageAttachment(attachment = attachment, fileName = fileName, context = context, onSuccess = onSuccessDownload)
         }
         mimeType.startsWith("video/") -> {
-            VideoAttachment(attachment = attachment, fileName = fileName, context = context)
+            VideoAttachment(attachment = attachment, fileName = fileName, context = context, onSuccess = onSuccessDownload)
         }
         else -> {
-            DefaultFileAttachment(mimeType = mimeType, fileName = fileName, attachmentUrl = attachment, context = context)
+            DefaultFileAttachment(mimeType = mimeType, fileName = fileName, attachmentUrl = attachment, context = context, onSuccess = onSuccessDownload)
         }
     }
 }
@@ -401,6 +403,7 @@ fun MessageBubbleContent(
 fun ImageAttachment(
     attachment: String,
     fileName: String,
+    onSuccess: (uri: String) -> Unit,
     context: Context
 ) {
     var isDownloading by remember { mutableStateOf(false) }
@@ -408,7 +411,7 @@ fun ImageAttachment(
 
     // Comprobación inicial en un efecto de composición
     LaunchedEffect(attachment) {
-        isDownloaded = isFileDownloaded(attachment)
+        isDownloaded = isFileDownloaded(context, attachment)
     }
 
     Box(
@@ -467,6 +470,7 @@ fun ImageAttachment(
                                 onSuccess = {
                                     isDownloaded = true
                                     isDownloading = false
+                                    onSuccess(it)
                                 },
                                 onError = {
                                     isDownloading = false
@@ -488,6 +492,7 @@ fun ImageAttachment(
 fun VideoAttachment(
     attachment: String,
     fileName: String,
+    onSuccess: (uri: String) -> Unit,
     context: Context
 ) {
     var isDownloading by remember { mutableStateOf(false) }
@@ -495,7 +500,7 @@ fun VideoAttachment(
 
     // Comprobación inicial en un efecto de composición
     LaunchedEffect(attachment) {
-        isDownloaded = isFileDownloaded(attachment)
+        isDownloaded = isFileDownloaded(context, attachment)
     }
 
     Box(
@@ -553,6 +558,7 @@ fun VideoAttachment(
                                 onSuccess = {
                                     isDownloaded = true
                                     isDownloading = false
+                                    onSuccess(it)
                                 },
                                 onError = {
                                     isDownloading = false
@@ -575,13 +581,14 @@ fun DefaultFileAttachment(
     mimeType: String,
     fileName: String,
     attachmentUrl: String,
+    onSuccess: (uri: String) -> Unit,
     context: Context
 ) {
     var isDownloading by remember { mutableStateOf(false) }
     var isDownloaded by remember { mutableStateOf(false) }
 
     LaunchedEffect(attachmentUrl) {
-        isDownloaded = File(context.filesDir, fileName).exists()
+        isDownloaded = isFileDownloaded(context, attachmentUrl)
     }
 
     Box(
@@ -628,6 +635,7 @@ fun DefaultFileAttachment(
                             onSuccess = {
                                 isDownloaded = true
                                 isDownloading = false
+                                onSuccess(it)
                             },
                             onError = {
                                 isDownloading = false
@@ -643,7 +651,7 @@ fun DefaultFileAttachment(
                 }
             } else {
                 Button(
-                    onClick = { openFile(context, fileName, mimeType) }
+                    onClick = { openFile(context, attachmentUrl, mimeType) }
                 ) {
                     Text("Abrir")
                 }
@@ -653,22 +661,18 @@ fun DefaultFileAttachment(
 }
 
 
-fun openFile(context: Context, fileName: String, mimeType: String) {
-    val file = when {
-        mimeType.startsWith("video/") -> File(context.getExternalFilesDir(Environment.DIRECTORY_MOVIES), fileName)
-        mimeType.startsWith("image/") -> File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName)
-        else -> File(context.filesDir, fileName)
+fun openFile(context: Context, fileUri: String, mimeType: String) {
+    val uri = Uri.parse(fileUri) // Usa la URI directamente
+
+    val intent = Intent(Intent.ACTION_VIEW).apply {
+        setDataAndType(uri, mimeType)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
 
-    if (file.exists()) {
-        val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(uri, mimeType)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
+    try {
         context.startActivity(intent)
-    } else {
-        Toast.makeText(context, "El archivo no existe", Toast.LENGTH_SHORT).show()
+    } catch (e: ActivityNotFoundException) {
+        Toast.makeText(context, "No hay una aplicación para abrir este archivo", Toast.LENGTH_SHORT)
+            .show()
     }
 }
-

@@ -46,5 +46,7 @@ interface ChatService {
 
     suspend fun deleteLocalMessage(messageId: String): Result<Unit>
 
+    suspend fun updateMessageAttachment(messageId: String, attachment: String): Result<Unit>
+
     suspend fun messageExistsLocal(messageId: String): Result<Boolean>
 }

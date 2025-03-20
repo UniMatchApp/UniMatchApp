@@ -119,6 +119,12 @@ open class ChatViewModel(
 
             // Comprobar si el mensaje ya existe localmente
             val messageExists = chatService.messageExistsLocal(newMessage.messageId)
+            val existentMessage = _messages.value?.find { it.messageId == newMessage.messageId }
+
+            // Si el mensaje ya existe localmente y tenia attachment, mantener el attachment
+            if (messageExists.getOrDefault(false) || (existentMessage?.attachment != null && newMessage.attachment == null)) {
+                newMessage.attachment = existentMessage?.attachment
+            }
 
             // Comprobar si el mensaje ya ha sido leído
             val messageRead = newMessage.receptionStatus == ReceptionStatus.READ
@@ -505,6 +511,31 @@ open class ChatViewModel(
 
             result.onFailure { error ->
                 Log.e("ChatViewModel", "Error deleting chat: ${error.message}")
+            }
+        }
+    }
+
+    fun updateMessageAttachment(messageId: String, attachment: String) {
+        viewModelScope.launch {
+            if (userViewModel.userId.isNullOrEmpty()) {
+                errorViewModel.showError("User is not authenticated")
+                return@launch
+            }
+
+            val result = chatService.updateMessageAttachment(messageId, attachment)
+
+            result.onSuccess {
+                _messages.value = _messages.value?.map {
+                    if (it.messageId == messageId) {
+                        it.copy(attachment = attachment)
+                    } else {
+                        it
+                    }
+                }
+            }
+
+            result.onFailure { error ->
+                Log.e("ChatViewModel", "Error updating message attachment: ${error.message}")
             }
         }
     }

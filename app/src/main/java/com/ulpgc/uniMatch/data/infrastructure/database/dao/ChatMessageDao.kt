@@ -48,6 +48,10 @@ interface ChatMessageDao {
     )
     fun getAllChatsOrderedByLastMessage(): Flow<List<ChatEntity>>
 
+    // Actualiza el contenido de un mensaje
+    @Query("UPDATE messages SET attachment = :attachment WHERE messageId = :messageId")
+    fun updateMessageAttachment(messageId: String, attachment: String): Unit
+
     // Inserta o actualiza un chat
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertChat(chat: ChatEntity)
