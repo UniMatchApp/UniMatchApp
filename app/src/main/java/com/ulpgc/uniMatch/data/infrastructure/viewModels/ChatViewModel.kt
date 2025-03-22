@@ -507,6 +507,7 @@ open class ChatViewModel(
 
             result.onSuccess {
                 _chatList.value = _chatList.value?.filter { it.userId != chat.userId }
+                _messages.value = _messages.value?.filter { it.senderId != chat.userId && it.recipientId != chat.userId }
             }
 
             result.onFailure { error ->
