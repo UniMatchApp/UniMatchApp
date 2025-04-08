@@ -105,4 +105,26 @@ class SecureStorage(context: Context) {
             apply()
         }
     }
+
+    fun updateEmail(newEmail: String) {
+        val userId = sharedPreferences.getString("userId", null)
+        val registrationDate = sharedPreferences.getString("registrationDate", null)
+        val blockedUsers = sharedPreferences.getStringSet("blockedUsers", emptySet())?.toList() ?: emptyList()
+        val reportedUsers = sharedPreferences.getStringSet("reportedUsers", emptySet())?.toList() ?: emptyList()
+        val registered = sharedPreferences.getBoolean("registered", false)
+        val token = sharedPreferences.getString("token", null)
+
+        if (userId != null && registrationDate != null && token != null) {
+            val parsedDate = DateFormat.getDateInstance().parse(registrationDate)
+            saveUser(
+                userId = userId,
+                email = newEmail,
+                registrationDate = parsedDate,
+                blockedUsers = blockedUsers,
+                reportedUsers = reportedUsers,
+                registered = registered,
+                token = token
+            )
+        }
+    }
 }

@@ -154,6 +154,20 @@ open class UserViewModel(
         }
     }
 
+    fun updateEmail(newEmail: String, inputUserId: String) {
+        viewModelScope.launch {
+            val result = userService.updateEmail(newEmail, inputUserId)
+            result.onSuccess {
+                _email.value = newEmail
+                Log.i("UserViewModel", "Email updated successfully")
+            }.onFailure {
+                errorViewModel.showError(it.message ?: "Unknown error occurred while updating email")
+                Log.e("UserViewModel", "Failed to update email: ${it.message}")
+            }
+        }
+    }
+
+
     fun resetPassword(newPassword: String, inputUserId: String?) {
         viewModelScope.launch {
             val result = userService.resetPassword(newPassword, inputUserId ?: userId!!)

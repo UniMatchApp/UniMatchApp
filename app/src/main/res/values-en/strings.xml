@@ -448,6 +448,9 @@
     <string name="delete_account_confirmation_text">Introduce DELETE to confirm the deletion of your account.</string>
     <string name="change_password_title">Change password</string>
     <string name="current_password">Current password</string>
+    <string name="change_email">Change Email</string>
+    <string name="change_email_title">Change Your Email</string>
+    <string name="new_email">New Email</string>
 
 
 

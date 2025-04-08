@@ -32,7 +32,7 @@ object EventsMocks {
             ownerId = "user567",
             participants = listOf("User123", "User234", "User345"),
             likes = listOf("user567", "user123"),
-            attachment = "https://imagenes2.fotos.europapress.es/preview/5309176.jpg?s=1000",
+            attachment = "https://www.exordo.com/blog/wp-content/uploads/2023/12/Resized-image.jpeg",
             surveys = listOf(createMockSurvey())
         )
     }

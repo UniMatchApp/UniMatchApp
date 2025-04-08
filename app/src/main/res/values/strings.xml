@@ -450,6 +450,9 @@
     <string name="delete_account_confirmation_text">Introduce DELETE para confirmar la eliminación de tu cuenta.</string>
     <string name="change_password_title">Cambiar contraseña</string>
     <string name="current_password">Contraseña actual</string>
+    <string name="change_email">Cambiar email</string>
+    <string name="change_email_title">"Cambiar email</string>
+    <string name="new_email">Nuevo email</string>
 
 
     <!--MISC-->

@@ -91,6 +91,14 @@ class MockUserService : UserService {
         }
     }
 
+    override suspend fun updateEmail(newEmail: String, userId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            safeRequest {
+                return@safeRequest
+            }
+        }
+    }
+
     override suspend fun resendCode(email: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {
             safeRequest {

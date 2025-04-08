@@ -12,6 +12,8 @@ data class PasswordRequest(val password: String)
 
 data class ReportRequest(val predefinedReason: String, val comment: String?)
 
+data class EmailUpdateRequest(val email: String)
+
 
 interface UserService {
     suspend fun login(email: String, password: String): Result<LoginResponse>
@@ -23,6 +25,7 @@ interface UserService {
     suspend fun forgotPassword(email: String): Result<String>
     suspend fun verifyCode(email: String, code: String): Result<Unit>
     suspend fun resetPassword(newPassword: String, userId: String): Result<Unit>
+    suspend fun updateEmail(newEmail: String, userId: String): Result<Unit>
     suspend fun resendCode(email: String): Result<Boolean>
     suspend fun deleteAccount(userId: String): Result<Unit>
 }

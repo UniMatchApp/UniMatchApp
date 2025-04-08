@@ -2,6 +2,7 @@ package com.ulpgc.uniMatch.data.infrastructure.services.user
 
 
 import android.util.Log
+import com.ulpgc.uniMatch.data.application.services.EmailUpdateRequest
 import com.ulpgc.uniMatch.data.application.services.LoginRequest
 import com.ulpgc.uniMatch.data.application.services.LoginResponse
 import com.ulpgc.uniMatch.data.application.services.PasswordRequest
@@ -149,8 +150,21 @@ class ApiUserService(
             safeApiCall {
                 userController.resetPassword(PasswordRequest(newPassword), userId)
             }
-        }.mapCatching { Unit }
+        }.mapCatching { }
     }
+
+    override suspend fun updateEmail(newEmail: String, userId: String): Result<Unit> {
+        return withContext(Dispatchers.IO) {
+            safeRequest {
+                val response = userController.updateEmail(EmailUpdateRequest(newEmail))
+                if (!response.success) {
+                    throw Exception(response.errorMessage ?: "Unknown error occurred")
+                }
+                secureStorage.updateEmail(newEmail)
+            }
+        }
+    }
+
 
     override suspend fun resendCode(email: String): Result<Boolean> {
         return withContext(Dispatchers.IO) {

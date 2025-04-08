@@ -1,6 +1,7 @@
 package com.ulpgc.uniMatch.data.infrastructure.controllers
 
 import com.ulpgc.uniMatch.data.application.api.ApiResponse
+import com.ulpgc.uniMatch.data.application.services.EmailUpdateRequest
 import com.ulpgc.uniMatch.data.application.services.LoginRequest
 import com.ulpgc.uniMatch.data.application.services.LoginResponse
 import com.ulpgc.uniMatch.data.application.services.PasswordRequest
@@ -38,6 +39,11 @@ interface UserController {
 
     @POST("users/auth/{email}/resend-code")
     suspend fun resendCode(@Path("email") email: String): ApiResponse<Boolean>
+
+    @PUT("users/email")
+    suspend fun updateEmail(
+        @Body emailUpdateRequest: EmailUpdateRequest
+    ): ApiResponse<String>
 
     @DELETE("users")
     suspend fun deleteAccount(): ApiResponse<Unit>

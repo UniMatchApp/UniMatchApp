@@ -28,6 +28,7 @@ fun AccountSettingsScreen(
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showDeleteAccountDialog by remember { mutableStateOf(false) }
     var showChangePasswordDialog by remember { mutableStateOf(false) }
+    var showChangeEmailDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -50,6 +51,11 @@ fun AccountSettingsScreen(
             title = stringResource(R.string.delete_account),
             onClick = { showDeleteAccountDialog = true }
         )
+        AccountOptionItem(
+            iconId = R.drawable.ic_email,
+            title = stringResource(R.string.change_email),
+            onClick = { showChangeEmailDialog = true }
+        )
     }
 
     if (showChangePasswordDialog) {
@@ -59,6 +65,16 @@ fun AccountSettingsScreen(
                 showChangePasswordDialog = false
             },
             onDismiss = { showChangePasswordDialog = false }
+        )
+    }
+
+    if (showChangeEmailDialog) {
+        ChangeEmailDialog(
+            onConfirm = { newEmail ->
+                userViewModel.updateEmail(newEmail, userViewModel.userId!!)
+                showChangeEmailDialog = false
+            },
+            onDismiss = { showChangeEmailDialog = false }
         )
     }
 
@@ -253,3 +269,51 @@ fun AccountOptionItem(iconId: Int, title: String, onClick : () -> Unit) {
         )
     }
 }
+
+@Composable
+fun ChangeEmailDialog(
+    onConfirm: (newEmail: String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var newEmail by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.change_email_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = newEmail,
+                    onValueChange = { newEmail = it },
+                    label = { Text(stringResource(R.string.new_email)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onConfirm(newEmail) },
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                enabled = newEmail.isNotBlank() && android.util.Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()
+            ) {
+                Text(text = stringResource(R.string.confirm), color = Color.White)
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+            ) {
+                Text(text = stringResource(R.string.cancel), color = Color.White)
+            }
+        }
+    )
+}
+
