@@ -29,7 +29,7 @@ import com.ulpgc.uniMatch.data.infrastructure.viewModels.RideViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationPicker(
-    viewModel: RideViewModel = viewModel(),
+    viewModel: RideViewModel,
     onChangeLocation: (Location) -> Unit
 ) {
     val pickupLocationPlaces by viewModel.pickupLocationPlaces.collectAsStateWithLifecycle()

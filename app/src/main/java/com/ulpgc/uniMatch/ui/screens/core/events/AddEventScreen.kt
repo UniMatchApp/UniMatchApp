@@ -42,17 +42,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.ulpgc.uniMatch.BuildConfig
 import com.ulpgc.uniMatch.R
 import com.ulpgc.uniMatch.data.domain.models.Survey
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.ErrorViewModel
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.EventViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.RideViewModel
+import com.ulpgc.uniMatch.data.infrastructure.viewModels.RideViewModelFactory
 import com.ulpgc.uniMatch.data.infrastructure.viewModels.UserViewModel
 import com.ulpgc.uniMatch.ui.components.event.EventDatePicker
 import com.ulpgc.uniMatch.ui.components.event.EventSection
 import com.ulpgc.uniMatch.ui.components.event.survey.SurveysList
+import io.github.cdimascio.dotenv.Dotenv
 import kotlinx.coroutines.launch
 
 
@@ -79,6 +85,16 @@ fun AddEventScreen(
         var titleText by remember { mutableStateOf(eventToCreate.title) }
         var isEditingSurvey by remember { mutableStateOf(false) }
         val finishSurveyEdition = stringResource(R.string.finish_survey_edition)
+
+        val owner = LocalViewModelStoreOwner.current
+
+        val apiKey = BuildConfig.MAPS_API_KEY
+
+        val rideViewModel: RideViewModel = viewModel(
+                viewModelStoreOwner = owner!!,
+                factory = RideViewModelFactory(apiKey)
+        )
+
 
         LaunchedEffect(eventToCreate) {
                 eventToCreate.surveys?.let {
@@ -151,6 +167,7 @@ fun AddEventScreen(
                                 color = MaterialTheme.colorScheme.onBackground
                         )
                         LocationPicker(
+                                viewModel = rideViewModel,
                                 onChangeLocation = { eventLocation ->
                                         eventLocation.apply {
                                                 if (latitude != null && longitude != null && altitude != null) {

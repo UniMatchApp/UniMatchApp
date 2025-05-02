@@ -27,6 +27,7 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("String", "MAPS_API_KEY", "\"AIzaSyDNB82n0FiTF3wQLPl1tS-RQfAWV8DnHOI\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

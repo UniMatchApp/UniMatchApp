@@ -5,11 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ulpgc.uniMatch.BuildConfig
 import com.ulpgc.uniMatch.data.application.api.PlacesApi
 import com.ulpgc.uniMatch.data.domain.Place
 import com.ulpgc.uniMatch.data.domain.models.Location
@@ -20,9 +18,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import io.github.cdimascio.dotenv.dotenv
 
-class RideViewModel : ViewModel() {
+class RideViewModel(private val apiKey: String) : ViewModel() {
 
     var pickUp by mutableStateOf(TextFieldValue(text = ""))
         private set
@@ -32,18 +29,12 @@ class RideViewModel : ViewModel() {
     var location by mutableStateOf<Location?>(null)
         private set
 
-    val dotenv = dotenv {
-        directory = "/assets"
-        filename = "env"
-    }
-
     val pickupLocationPlaces: StateFlow<List<Place>> =
         snapshotFlow { pickUp }
             .mapLatest { value ->
                 withContext(Dispatchers.IO) {
                     placesApi.fetchPlaces(
-                        key = dotenv["MAPS_API_KEY"],
-//                        key = dotenv["MAPS_API_KEY"],
+                        key = apiKey,
                         input = value.text
                     )
                 }
@@ -53,7 +44,6 @@ class RideViewModel : ViewModel() {
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = emptyList()
             )
-
 
     fun onPickUpValueChanged(value: TextFieldValue) {
         pickUp = value
@@ -66,7 +56,7 @@ class RideViewModel : ViewModel() {
     fun onPlaceClick(placeId: String) {
         viewModelScope.launch {
             val place = placesApi.fetchPlaceWithCoordinates(
-                key = dotenv["MAPS_API_KEY"],
+                key = apiKey,
                 placeId = placeId,
                 name = pickUp.text
             )
@@ -77,7 +67,6 @@ class RideViewModel : ViewModel() {
                 0.0
             )
             onPickUpValueChanged(TextFieldValue(text = place.name))
-
         }
     }
 }
