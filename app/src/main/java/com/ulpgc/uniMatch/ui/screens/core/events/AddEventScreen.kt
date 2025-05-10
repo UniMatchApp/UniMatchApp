@@ -213,7 +213,6 @@ fun AddEventScreen(
                                                 isEditingSurvey = false
                                         }
                                 }
-
                         )
                 }
 

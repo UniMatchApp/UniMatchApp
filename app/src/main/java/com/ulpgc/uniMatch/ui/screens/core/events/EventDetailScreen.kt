@@ -143,15 +143,20 @@ fun EventDetailScreen(
                     .padding(top = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(
-                    onClick = { onEventSurveyClick(eventId) },
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
-                    modifier = Modifier.weight(1.7f)
-                ) {
-                    Text(text = stringResource(R.string.event_surveys), color = MaterialTheme.colorScheme.onBackground)
-                }
+                if (event.participants.contains(userViewModel.userId)) {
+                    Button(
+                        onClick = { onEventSurveyClick(eventId) },
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary),
+                        modifier = Modifier.weight(1.7f)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.event_surveys),
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
 
-                Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
 
                 Button(
                     onClick = {
