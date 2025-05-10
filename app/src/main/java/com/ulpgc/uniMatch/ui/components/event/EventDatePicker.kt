@@ -54,9 +54,9 @@ fun EventDatePicker(
         }, year, month, day
     )
 
-    Column(
+    datePickerDialog.datePicker.minDate = System.currentTimeMillis()
 
-    ) {
+    Column {
         Text(
             text = selectedDateTime,
             modifier = Modifier

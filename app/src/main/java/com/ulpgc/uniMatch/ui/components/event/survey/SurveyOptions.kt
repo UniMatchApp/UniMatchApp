@@ -22,10 +22,11 @@ fun SurveyOptions(
             votes = votes[option]?.size ?: 0,
             isSelected = votes[option]?.contains(userId) ?: false,
             maxVotes = maxVotes,
-            onVote = {onVote(option)} ,
+            onVote = { onVote(option) },
             isEditing = isEditing,
             onOptionChange = { newValue -> onOptionChange(index, newValue) },
-            onOptionRemove = { onOptionRemove(index) }
+            onOptionRemove = { onOptionRemove(index) },
+            placeholder = "Option ${index + 1}"
         )
     }
 }

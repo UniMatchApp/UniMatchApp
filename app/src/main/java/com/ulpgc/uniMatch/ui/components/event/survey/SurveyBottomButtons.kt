@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,7 +34,11 @@ fun SurveyBottomButtons(
                 onAddOption()
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.add_option))
-                Text(stringResource(R.string.add_option))
+                Text(
+                    stringResource(R.string.add_option),
+                    color = colorScheme.onPrimary
+
+                )
             }
 
         }
@@ -41,7 +46,10 @@ fun SurveyBottomButtons(
         Button(onClick = {
             onConfirmSurvey()
         }) {
-            Text(stringResource(R.string.create_survey))
+            Text(
+                stringResource(R.string.create_survey),
+                color = colorScheme.onPrimary
+            )
         }
     }
 }

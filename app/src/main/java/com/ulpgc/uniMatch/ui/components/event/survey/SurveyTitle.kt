@@ -22,13 +22,13 @@ fun SurveyTitle(
     title: String,
     onDeleteSurvey: (() -> Unit)? = null,
     onTitleChange: ((String) -> Unit)? = null,
-    isEditing: Boolean = false
+    isEditing: Boolean = false,
+    placeholder: String = ""
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
-
         BasicTextField(
             value = title,
             onValueChange = {
@@ -41,19 +41,25 @@ fun SurveyTitle(
             modifier = Modifier.weight(1f),
             decorationBox = { innerTextField ->
                 if (title.isEmpty()) {
-                    Text(stringResource(R.string.event_title), style = TextStyle(fontSize = 18.sp, color = Color.Gray))
+                    Text(
+                        text = placeholder,
+                        style = TextStyle(fontSize = 18.sp, color = Color.Gray)
+                    )
                 }
                 innerTextField()
             }
         )
 
-        if(isEditing) {
+        if (isEditing) {
             IconButton(
                 onClick = { onDeleteSurvey?.invoke() },
             ) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(R.string.delete_survey))
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = stringResource(R.string.delete_survey),
+                    tint = Color.Gray
+                )
             }
         }
     }
-
 }

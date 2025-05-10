@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -151,7 +152,8 @@ fun AddEventScreen(
 
                 EventSection(
                         label = stringResource(R.string.event_title),
-                        value = titleText ?: "Title",
+                        placeholder = stringResource(R.string.event_title),
+                        value = titleText ?: "",
                         readOnly = false,
                         onValueChange = { newText ->
                                 titleText = newText
@@ -206,9 +208,12 @@ fun AddEventScreen(
                                         isEditingSurvey = false
                                 },
                                 onConfirmSurveyClick = { survey, title, options ->
-                                        eventViewModel.setSurvey(survey, title, options)
-                                        isEditingSurvey = false
+                                        val success = eventViewModel.setSurvey(survey, title, options)
+                                        if (success) {
+                                                isEditingSurvey = false
+                                        }
                                 }
+
                         )
                 }
 
@@ -216,6 +221,7 @@ fun AddEventScreen(
                         modifier = Modifier
                                 .fillMaxWidth()
                                 .align(Alignment.CenterHorizontally),
+                        horizontalArrangement = Arrangement.End
                 ) {
                         Button(
                                 onClick = {
@@ -230,7 +236,7 @@ fun AddEventScreen(
                         ) {
                                 Text(
                                         text = stringResource(R.string.event_add_survey),
-                                        color = MaterialTheme.colorScheme.onBackground
+                                        color = MaterialTheme.colorScheme.onPrimary
                                 )
                         }
 
@@ -252,7 +258,7 @@ fun AddEventScreen(
                         ) {
                                 Text(
                                         text = stringResource(R.string.event_complete),
-                                        color = MaterialTheme.colorScheme.onBackground
+                                        color = MaterialTheme.colorScheme.onPrimary
                                 )
                         }
                 }

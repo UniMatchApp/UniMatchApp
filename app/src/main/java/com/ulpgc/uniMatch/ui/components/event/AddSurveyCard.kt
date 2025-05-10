@@ -21,16 +21,13 @@ fun AddSurveyCard(
     onDeleteSurvey: (() -> Unit)? = null,
     onConfirmSurvey: ((String, List<String>) -> Unit)? = null,
 ) {
+    val defaultOptionList = listOf("", "")
 
-    val defaultTitle = stringResource(R.string.event_title)
-    val defaultOptions = mapOf(
-        stringResource(R.string.option_one) to setOf<String>(),
-        stringResource(R.string.option_two) to setOf<String>()
-    )
+    val finalTitle = survey.title
+    var title by remember { mutableStateOf(finalTitle) }
 
-    val finalTitle = survey.title.ifBlank { defaultTitle }
-    var options by remember {
-        mutableStateOf(if (survey.options.isEmpty()) defaultOptions else survey.options)
+    var optionList by remember {
+        mutableStateOf(survey.options.keys.toList().ifEmpty { defaultOptionList })
     }
 
     Column(
@@ -40,16 +37,16 @@ fun AddSurveyCard(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        var title by remember { mutableStateOf(finalTitle) }
-        var optionList by remember { mutableStateOf(options.keys.toList()) }
-
         SurveyTitle(
             title = title,
+            placeholder = stringResource(R.string.event_title),
             onDeleteSurvey = onDeleteSurvey,
             onTitleChange = { title = it },
             isEditing = true
         )
+
         Spacer(modifier = Modifier.height(16.dp))
+
         SurveyOptions(
             options = optionList,
             isEditing = true,
@@ -60,16 +57,16 @@ fun AddSurveyCard(
                 optionList = optionList.toMutableList().apply { removeAt(index) }
             }
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         SurveyBottomButtons(
             onAddOption = {
-                optionList = optionList + "New Option ${optionList.size + 1}"
+                optionList = optionList + ""
             },
             onConfirmSurvey = {
-                Log.i("Survey", "AddSurveyCard survey card onConfirme $title, $optionList")
+                Log.i("Survey", "AddSurveyCard survey card onConfirm $title, $optionList")
                 onConfirmSurvey?.invoke(title, optionList)
-
-                options = optionList.associateWith { setOf<String>() }
             },
             optionsSize = optionList.size
         )

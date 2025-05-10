@@ -171,7 +171,12 @@ open class EventViewModel(
         }
     }
 
-    fun setSurvey(survey: Survey, title: String, options: List<String>) {
+    fun setSurvey(survey: Survey, title: String, options: List<String>): Boolean {
+        if (title.isBlank() || options.isEmpty() || options.any { it.isBlank() }) {
+            Log.e("EventViewModel", "Error: El título o las opciones no pueden estar vacíos")
+            return false
+        }
+
         val updatedSurveys = _eventCreated.value.surveys?.toMutableMap() ?: mutableMapOf()
 
         if (updatedSurveys.containsKey(survey)) {
@@ -180,16 +185,19 @@ open class EventViewModel(
             val updatedSurvey = survey.copy(title = title, options = optionsMap)
 
             updatedSurveys.remove(survey)
-
             updatedSurveys[updatedSurvey] = false
 
             _eventCreated.value = _eventCreated.value.copy(surveys = updatedSurveys)
 
             Log.i("EventViewModel", "Encuesta actualizada: ${_eventCreated.value.surveys}")
+            return true
         } else {
             Log.e("EventViewModel", "Encuesta no encontrada en la lista: $survey")
+            return false
         }
     }
+
+
 
 
 

@@ -24,6 +24,7 @@ fun EventSection(
     value: String,
     readOnly: Boolean = true,
     isLocation: Boolean = false,
+    placeholder: String = "",
     onValueChange: ((String) -> Unit)? = null
 ) {
     val context = LocalContext.current
@@ -42,6 +43,7 @@ fun EventSection(
                         openLocationInMap(context, value)
                     }
                 },
+            placeholder = { Text(placeholder) },
             textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onBackground),
             readOnly = readOnly
         )
